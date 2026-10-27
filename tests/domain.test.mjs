@@ -356,3 +356,13 @@ test('unknown demand can be measured later without retaining an unknown confiden
   assert.equal(s.state.needs[0].confidence, 'estimated');
   assert.equal(validateState(s.state), s.state);
 });
+
+test('fabric cutting conserves tiny currency amounts without negative rounding residuals', () => {
+  const s = stock(0, { category: 'fabric', unit: 'piece' });
+  s.run('lot.add', { id: 'fabric', materialId: 'thread', quantity: 1, cost: 2, properties: { widthCm: 100, heightCm: 100 } });
+  s.run('fabric.cut', { lotId: 'fabric', xCm: 2, yCm: 26, widthCm: 55, heightCm: 48 });
+  const pieces = s.state.lots.filter(l => l.sourceLotId === 'fabric');
+  assert.equal(pieces.reduce((total, l) => total + l.cost, 0), 2);
+  assert.ok(pieces.every(l => l.cost >= 0 && Number.isInteger(l.cost)));
+  assert.equal(validateState(s.state), s.state);
+});
