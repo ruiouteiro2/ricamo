@@ -1,6 +1,6 @@
 {
   "name": "ricamo",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Offline embroidery studio, inventory and project companion",
   "author": "RuiOuteiro2",
   "license": "MIT",
@@ -15,7 +15,7 @@
     "test:e2e": "node tests/run-browser.mjs",
     "package:win": "npm run build && electron-builder --win nsis --x64 --publish never",
     "package:dir": "npm run build && electron-builder --dir --publish never",
-    "test:desktop": "npm run build && npm run test:desktop:smoke && npm run test:desktop:documents && npm run test:desktop:drafts && npm run test:desktop:projects && npm run test:desktop:export-cancel && npm run test:desktop:kits && npm run test:desktop:planning && npm run test:desktop:example && npm run test:desktop:data && npm run test:desktop:work && npm run test:desktop:work-empty && npm run test:desktop:materials && npm run test:desktop:attachments",
+    "test:desktop": "npm run build && npm run test:desktop:smoke && npm run test:desktop:documents && npm run test:desktop:drafts && npm run test:desktop:projects && npm run test:desktop:export-cancel && npm run test:desktop:kits && npm run test:desktop:planning && npm run test:desktop:example && npm run test:desktop:data && npm run test:desktop:work && npm run test:desktop:work-empty && npm run test:desktop:materials && npm run test:desktop:attachments && npm run test:desktop:library && npm run test:desktop:stock-count && npm run test:desktop:library-details && npm run test:desktop:support && npm run test:desktop:owner-documents && npm run test:desktop:pdf-motifs && npm run test:desktop:design-size && npm run test:desktop:reference-batch && npm run test:desktop:generator-options && npm run test:desktop:catalogue-references && npm run test:desktop:label-options",
     "test:desktop:smoke": "node tests/desktop-smoke.mjs",
     "test:desktop:documents": "node tests/desktop-documents.mjs",
     "test:desktop:drafts": "node tests/desktop-drafts.mjs",
@@ -32,7 +32,19 @@
     "test:desktop:work": "node tests/desktop-work-companion.mjs",
     "test:desktop:work-empty": "node tests/desktop-work-empty-palette.mjs",
     "test:desktop:materials": "node tests/desktop-material-descriptors.mjs",
-    "test:desktop:attachments": "node tests/desktop-attachments.mjs"
+    "test:desktop:attachments": "node tests/desktop-attachments.mjs",
+    "test:desktop:library": "node tests/desktop-pattern-library.mjs",
+    "test:desktop:stock-count": "node tests/desktop-stock-count.mjs",
+    "test:desktop:library-details": "node tests/desktop-library-details.mjs",
+    "test:desktop:support": "node tests/desktop-support.mjs",
+    "test:desktop:owner-documents": "node tests/desktop-owner-documents.mjs",
+    "test:desktop:pdf-motifs": "node tests/desktop-pdf-motifs.mjs",
+    "test:desktop:design-size": "node tests/desktop-design-size.mjs",
+    "release:audit": "node build/release-audit.mjs",
+    "test:desktop:reference-batch": "node tests/desktop-reference-batch.mjs",
+    "test:desktop:generator-options": "node tests/desktop-generator-options.mjs",
+    "test:desktop:catalogue-references": "node tests/desktop-catalogue-references.mjs",
+    "test:desktop:label-options": "node tests/desktop-label-options.mjs"
   },
   "dependencies": {
     "@lucide/vue": "1.62.0",
@@ -79,7 +91,10 @@
       ],
       "icon": "build/icon.ico",
       "signExecutable": false,
-      "requestedExecutionLevel": "asInvoker"
+      "requestedExecutionLevel": "asInvoker",
+      "files": [
+        "!node_modules/@napi-rs/canvas-linux-*/**"
+      ]
     },
     "nsis": {
       "oneClick": false,
