@@ -1,3 +1,4 @@
+import {applyProjectProcurement} from './pattern-procurement.mjs';
 import {applyPatternSupplies} from './pattern-supplies.mjs';
 import { threadCatalogueHandlers, validateThreadCatalogues } from './thread-catalogues.mjs';
 import { catalogueReferenceHandlers, validateCatalogueReferences } from './catalogue-references.mjs';
@@ -43,6 +44,7 @@ const handlers = {
   ...fabricPlanningHandlers,
   ...referenceHandlers,
   'project.estimate': applyProjectThreadEstimate,
+  'project.procurement.apply': applyProjectProcurement,
   'material.createWithLot': (state, payload, context) => {
     const id = payload.material.id || context.id();
     saveMaterial(state, { ...payload.material, id }, context);
