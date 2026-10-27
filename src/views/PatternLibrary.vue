@@ -6,10 +6,11 @@ import EmptyState from '../components/EmptyState.vue';
 import AppDialog from '../components/AppDialog.vue';
 import FormField from '../components/FormField.vue';
 import PatternThumbnail from '../components/PatternThumbnail.vue';
+import GeneratorQuality from '../components/GeneratorQuality.vue';
 import { state, dispatch, navigate, notify, importAsset, normalize } from '../state';
 import { detectFile, digestBytes } from '../../core/files.mjs';
 import { t, number, date, errorText } from '../i18n';
-import { dmcPalette, inventoryPalette, DEFAULT_SETTINGS, importLegacy } from '../engine/adapter.mjs';
+import { dmcPalette, inventoryPalette, preferredInventoryPalette, validateSettings, DEFAULT_SETTINGS, importLegacy } from '../engine/adapter.mjs';
 import { createBlank, validateRevision } from '../../core/pattern.mjs';
 import { drawPattern } from '../pattern-render.mjs';
 
@@ -18,10 +19,11 @@ const imageInput = ref(), referenceInput = ref(), nativeInput = ref(), sourceCan
 const title = ref(''), sourceAsset = ref(null), bitmap = ref(null), generated = shallowRef(null), paletteKind = ref('catalogue');
 const sourceFile = shallowRef(null);
 const settings = reactive({ ...DEFAULT_SETTINGS }), adjustments = reactive({ x: 0, y: 0, width: 100, height: 100, rotation: 0, flipX: false, flipY: false, brightness: 100, contrast: 100 });
+const protectedRegions=ref([]),protection=reactive({x:1,y:1,width:3,height:3}),protectionReset=ref(false),preferenceTolerance=ref(6);
 const keepRatio = ref(true), taskId = ref(null), pendingInput = ref(null), previewVersion = ref('');
 let worker, timeout, sourceToken = 0;
 const patterns = computed(() => state.value.patterns.filter(p => filter.value === 'all' || (filter.value === 'archived' ? p.archived : !p.archived)).filter(p => normalize([p.name, p.notes, ...(p.tags ?? [])].join(' ')).includes(normalize(search.value))).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)));
-const fingerprint = () => JSON.stringify({ settings, adjustments, paletteKind: paletteKind.value, source: sourceAsset.value?.digest });
+const fingerprint = () => JSON.stringify({ settings, adjustments, paletteKind: paletteKind.value, preferenceTolerance:preferenceTolerance.value,protectedRegions:protectedRegions.value,inventory:paletteKind.value==='catalogue'?null:{materials:state.value.materials,lots:state.value.lots,reservations:state.value.reservations},source: sourceAsset.value?.digest });
 const stalePreview = computed(() => Boolean(generated.value) && previewVersion.value !== fingerprint());
 const current = pattern => pattern.revisions?.find(r => r.id === pattern.currentRevisionId);
 const validDimensions = () => {
@@ -55,9 +57,14 @@ function drawSource() {
     const ratio = validDimensions() || 1, w = ratio >= 1 ? 440 : Math.round(300 * ratio), h = ratio >= 1 ? Math.round(440 / ratio) : 300;
     const rendered = transformed(Math.max(1, w), Math.max(1, h));
     sourceCanvas.value.width = rendered.width; sourceCanvas.value.height = rendered.height; sourceCanvas.value.getContext('2d').drawImage(rendered, 0, 0);
+    const overlay=sourceCanvas.value.getContext('2d');overlay.strokeStyle='#b06e12';overlay.lineWidth=2;for(const r of protectedRegions.value)overlay.strokeRect(r.x/settings.width*rendered.width,r.y/settings.height*rendered.height,r.width/settings.width*rendered.width,r.height/settings.height*rendered.height);
   } catch { /* Input validation is shown when generation is requested. */ }
 }
 watch(adjustments, () => { resizeFrom('width'); drawSource(); });
+watch(()=>JSON.stringify([adjustments.x,adjustments.y,adjustments.width,adjustments.height,adjustments.rotation,adjustments.flipX,adjustments.flipY,settings.width,settings.height]),()=>{if(protectedRegions.value.length){protectedRegions.value=[];protectionReset.value=true;drawSource();}});
+watch(protectedRegions,drawSource,{deep:true});
+function addProtection(){error.value='';const r={x:protection.x-1,y:protection.y-1,width:protection.width,height:protection.height};if(!Object.values(r).every(Number.isInteger)||r.x<0||r.y<0||r.width<1||r.height<1||r.x+r.width>settings.width||r.y+r.height>settings.height||protectedRegions.value.length>=20){error.value=t('protectionInvalid');return}protectedRegions.value=[...protectedRegions.value,r];protectionReset.value=false;}
+
 watch(generated, async value => { await nextTick(); if (value && resultCanvas.value) { const cellSize = Math.min(440 / value.width, 300 / value.height); drawPattern(resultCanvas.value, value, { cellSize, width: value.width * cellSize, height: value.height * cellSize }); } });
 function cancelGeneration() { taskId.value = null; worker?.terminate(); worker = null; clearTimeout(timeout); busy.value = false; }
 function closeDialog() { cancelGeneration(); dialog.value = ''; error.value = ''; bitmap.value?.close(); bitmap.value = null; sourceFile.value = null; sourceAsset.value = null; sourceToken++; }
@@ -76,7 +83,7 @@ async function chooseImage(event) {
     bitmap.value?.close(); bitmap.value = decoded; sourceFile.value = file;
     sourceAsset.value = { id: null, name: file.name, mime, digest, size: bytes.length }; title.value = file.name.replace(/\.[^.]+$/, '');
     Object.assign(adjustments, { x: 0, y: 0, width: 100, height: 100, rotation: 0, flipX: false, flipY: false, brightness: 100, contrast: 100 });
-    Object.assign(settings, DEFAULT_SETTINGS); keepRatio.value = true; resizeFrom('width'); generated.value = null; dialog.value = 'image';
+    Object.assign(settings, DEFAULT_SETTINGS);protectedRegions.value=[];protectionReset.value=false; keepRatio.value = true; resizeFrom('width'); generated.value = null; dialog.value = 'image';
     await nextTick(); drawSource();
   } catch (caught) { error.value = errorText(caught); }
   finally { if (decoded && decoded !== bitmap.value) decoded.close(); if (token === sourceToken) busy.value = false; }
@@ -85,8 +92,9 @@ function generate() {
   if (busy.value) return;
   error.value = '';
   try {
-    const effectivePalette = paletteKind.value === 'inventory' ? inventoryPalette(state.value.materials, state.value.lots) : dmcPalette;
-    const canvas = transformed(settings.width, settings.height), rgba = canvas.getContext('2d').getImageData(0, 0, settings.width, settings.height).data;
+    const effectiveSettings=validateSettings({...settings,protectedRegions:protectedRegions.value});
+    const effectivePalette = paletteKind.value === 'inventory' ? inventoryPalette(state.value.materials, state.value.lots) : paletteKind.value==='preferred'?preferredInventoryPalette(state.value.materials,state.value.lots,{tolerance:preferenceTolerance.value}):dmcPalette;
+    const canvas = transformed(effectiveSettings.width, effectiveSettings.height), rgba = canvas.getContext('2d').getImageData(0, 0, effectiveSettings.width, effectiveSettings.height).data;
     const id = crypto.randomUUID(), inputHash = fingerprint(); taskId.value = id; busy.value = true;
     worker = new Worker(new URL('../engine/worker.js', import.meta.url), { type: 'module' });
     worker.onmessage = event => {
@@ -97,7 +105,7 @@ function generate() {
     };
     worker.onerror = () => { cancelGeneration(); error.value = t('generationFailed'); };
     timeout = setTimeout(() => { if (taskId.value === id) { cancelGeneration(); error.value = t('generationTimeout'); } }, 120000);
-    worker.postMessage({ id, rgba, settings: JSON.parse(JSON.stringify(settings)), palette: effectivePalette, source: { attachmentId: sourceAsset.value.id, digest: sourceAsset.value.digest, adjustments: { ...adjustments } } }, [rgba.buffer]);
+    worker.postMessage({ id, rgba, settings: effectiveSettings, palette: effectivePalette, source: { attachmentId: sourceAsset.value.id, digest: sourceAsset.value.digest, adjustments: { ...adjustments } } }, [rgba.buffer]);
   } catch (caught) { cancelGeneration(); error.value = patternError(caught); }
 }
 function patternError(caught) { const code = caught?.code || caught?.message; return code === 'engine.inventoryPaletteEmpty' ? t('inventoryPaletteEmpty') : code === 'patternCrop' ? t('patternCrop') : errorText(caught); }
@@ -178,10 +186,12 @@ onBeforeUnmount(() => { cancelGeneration(); bitmap.value?.close(); sourceToken++
       </template>
       <template v-if="dialog === 'image'">
         <label class="checkbox-label"><input v-model="keepRatio" type="checkbox" @change="resizeFrom('width')" />{{ t('keepRatio') }}</label>
-        <div class="form-section"><div class="form-grid"><FormField :label="t('palette')" v-slot="{ id }"><select :id="id" v-model="paletteKind"><option value="catalogue">{{ t('catalogue') }}</option><option value="inventory">{{ t('inventoryOnly') }}</option></select></FormField><FormField :label="t('maxColors')" v-slot="{ id }"><input :id="id" v-model.number="settings.maxColors" type="number" min="1" max="80" /></FormField><FormField :label="t('mode')" v-slot="{ id }"><select :id="id" v-model="settings.mode"><option v-for="mode in ['detail','balanced','simple']" :key="mode" :value="mode">{{ t(mode) }}</option></select></FormField><FormField :label="t('fabricCount')" v-slot="{ id }"><input :id="id" v-model.number="settings.count" type="number" min="6" max="40" step="0.1" /></FormField></div></div>
+        <div class="form-section"><div class="form-grid"><FormField :label="t('palette')" v-slot="{ id }"><select :id="id" v-model="paletteKind"><option value="catalogue">{{ t('catalogue') }}</option><option value="inventory">{{ t('inventoryOnly') }}</option><option value="preferred">{{t('inventoryPreferred')}}</option></select></FormField><FormField :label="t('maxColors')" v-slot="{ id }"><input :id="id" v-model.number="settings.maxColors" type="number" min="1" max="80" /></FormField><FormField :label="t('mode')" v-slot="{ id }"><select :id="id" v-model="settings.mode"><option v-for="mode in ['detail','balanced','simple']" :key="mode" :value="mode">{{ t(mode) }}</option></select></FormField><FormField :label="t('fabricCount')" v-slot="{ id }"><input :id="id" v-model.number="settings.count" type="number" min="6" max="40" step="0.1" /></FormField></div></div>
+        <p v-if="paletteKind!=='catalogue'" class="notice">{{t('inventoryGenerationHelp')}}</p><FormField v-if="paletteKind==='preferred'" :label="t('preferenceTolerance')" :help="t('preferenceRule')" v-slot="{id,describedby}"><input :id="id" v-model.number="preferenceTolerance" :aria-describedby="describedby" type="number" min="0" max="15" step="0.5" /></FormField>
         <details class="form-section"><summary>{{ t('imageAdjustments') }}</summary><div class="form-grid" style="margin-top:16px"><FormField v-for="field in ['x','y','width','height']" :key="field" :label="t(`crop_${field}`)" v-slot="{ id }"><input :id="id" v-model.number="adjustments[field]" type="number" :min="field === 'width' || field === 'height' ? 1 : 0" max="100" /></FormField><FormField :label="t('brightness')" v-slot="{ id }"><input :id="id" v-model.number="adjustments.brightness" type="range" min="20" max="180" /></FormField><FormField :label="t('contrast')" v-slot="{ id }"><input :id="id" v-model.number="adjustments.contrast" type="range" min="20" max="180" /></FormField><FormField :label="t('removeRegions')" :help="t('removeRegionsHelp')" v-slot="{ id }"><input :id="id" v-model.number="settings.region" type="number" min="0" max="30" /></FormField></div><div class="actions" style="margin-top:14px"><button class="button small" @click="adjustments.rotation = (adjustments.rotation + 90) % 360"><RotateCw :size="16" />{{ t('rotate') }}</button><button class="button small" :aria-pressed="adjustments.flipX" @click="adjustments.flipX = !adjustments.flipX"><FlipHorizontal2 :size="16" />{{ t('flipHorizontal') }}</button><button class="button small" :aria-pressed="adjustments.flipY" @click="adjustments.flipY = !adjustments.flipY"><FlipVertical2 :size="16" />{{ t('flipVertical') }}</button></div></details>
+        <details class="form-section"><summary>{{t('protectedRegions')}}</summary><p class="field-help">{{t('protectionHelp')}}</p><p v-if="protectionReset" class="notice warning">{{t('protectionReset')}}</p><div class="form-grid"><FormField v-for="key in ['x','y','width','height']" :key="key" :label="t(`protection_${key}`)" v-slot="{id}"><input :id="id" v-model.number="protection[key]" type="number" min="1" :max="key==='x'||key==='width'?settings.width:settings.height" /></FormField></div><button class="button small" :disabled="protectedRegions.length>=20" @click="addProtection">{{t('addProtection')}}</button><div v-for="(rect,index) in protectedRegions" :key="index" class="stat-row"><span>{{rect.x+1}}, {{rect.y+1}} · {{rect.width}} × {{rect.height}}</span><button class="button text small" @click="protectedRegions=protectedRegions.filter((_,i)=>i!==index)">{{t('remove')}}</button></div></details>
         <div class="form-grid form-section"><div><h3>{{ t('sourcePreview') }}</h3><canvas ref="sourceCanvas" role="img" :aria-label="t('sourcePreview')" style="max-width:100%;height:auto" /></div><div><h3>{{ t('preview') }}</h3><canvas v-if="generated" ref="resultCanvas" role="img" :aria-label="t('preview')" style="max-width:100%;height:auto;image-rendering:pixelated" /><p v-else class="muted">{{ t('generatePreviewHelp') }}</p><p v-if="stalePreview" class="notice warning">{{ t('stalePreview') }}</p></div></div>
-        <p class="notice">{{ t('transparentHelp') }}</p><p v-if="busy" role="status" class="notice">{{ t('generating') }}</p>
+        <GeneratorQuality v-if="generated && !stalePreview" :revision="generated" /><p class="notice">{{ t('transparentHelp') }}</p><p v-if="busy" role="status" class="notice">{{ t('generating') }}</p>
       </template>
       <template v-if="dialog === 'native' && pendingInput"><p class="notice">{{ pendingInput.revision.width }} × {{ pendingInput.revision.height }} {{ t('stitches') }} · {{ pendingInput.revision.colors.length }} {{ t('colors') }}. {{ t('nativeImportHelp') }}</p><PatternThumbnail :revision="pendingInput.revision" :label="title" /></template>
       <template #footer><button v-if="busy && taskId" class="button" @click="cancelGeneration">{{ t('cancelGeneration') }}</button><button v-else class="button" :disabled="busy" @click="closeDialog">{{ t('cancel') }}</button><button v-if="dialog === 'image'" class="button" :disabled="busy" @click="generate">{{ t('generate') }}</button><button class="button primary" :disabled="busy || !title.trim() || (dialog === 'image' && (!generated || stalePreview))" @click="dialog === 'native' ? confirmImport() : saveNew()">{{ t('save') }}</button></template>
