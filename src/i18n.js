@@ -45,6 +45,9 @@ export function money(value, currency = 'EUR') {
 }
 export function errorText(error) {
   const code = String(error?.code || error?.message || '');
+  if (Object.hasOwn(additional, code) || Object.hasOwn(words, code)) return t(code);
+  if (/ENOSPC|STORAGE_FULL|QuotaExceeded/i.test(code) || error?.name === 'QuotaExceededError') return t('storageFull');
+  if (/EACCES|EPERM|EROFS|STORAGE_PERMISSION|READONLY/i.test(code)) return t('storagePermission');
   if (/INSUFFICIENT|RESERVATION_CONFLICT|STOCK_RESERVED/i.test(code)) return t('insufficientStock');
   if (/REVISION|STALE/i.test(code)) return t('staleState');
   if (/SIZE|TOO_LARGE/i.test(code)) return t('fileTooLarge');
