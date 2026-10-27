@@ -1,0 +1,12 @@
+node_modules/
+dist/
+release/
+test-results/
+playwright-report/
+.cache/
+.runtime/
+*.log
+*.db
+*.db-shm
+*.db-wal
+.DS_Store
