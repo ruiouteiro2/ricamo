@@ -1,0 +1,13 @@
+<script setup>
+import { inventoryErrorText } from '../inventory-errors.mjs';
+import { computed, ref } from 'vue';
+import FormField from './FormField.vue';
+import { state, dispatch, notify } from '../state';
+import { t, errorText } from '../i18n';
+const props=defineProps({current:Object});const emit=defineEmits(['apply']);
+const selected=ref(''),name=ref(''),error=ref(''),busy=ref(false);
+const views=computed(()=>Array.isArray(state.value.settings.preferences?.inventoryViews)?state.value.settings.preferences.inventoryViews:[]);
+function choose(){const view=views.value.find(row=>row.id===selected.value);if(view){name.value=view.name;emit('apply',JSON.parse(JSON.stringify(view.filters)));}}
+async function persist(mode){busy.value=true;error.value='';try{let next=JSON.parse(JSON.stringify(views.value));if(mode==='remove'){next=next.filter(row=>row.id!==selected.value);}else{const title=name.value.trim();if(!title||title.length>100||next.some(row=>row.name===title&&(mode==='new'||row.id!==selected.value)))throw Object.assign(new Error(),{code:'inventory_view_name'});if(mode==='new'&&next.length>=30)throw Object.assign(new Error(),{code:'inventory_view_limit'});const record={id:mode==='new'?crypto.randomUUID():selected.value,name:title,filters:JSON.parse(JSON.stringify(props.current))};next=mode==='new'?[...next,record]:next.map(row=>row.id===record.id?record:row);selected.value=record.id;}await dispatch('settings.save',{preferences:{...state.value.settings.preferences,inventoryViews:next}});if(mode==='remove'){selected.value='';name.value='';}notify();}catch(caught){error.value=inventoryErrorText(caught)}finally{busy.value=false}}
+</script>
+<template><details class="form-section"><summary>{{ t('savedInventoryViews') }}</summary><p v-if="error" role="alert" class="notice error">{{ error }}</p><div class="form-grid"><FormField :label="t('savedInventoryViews')" v-slot="{id}"><select :id="id" v-model="selected" @change="choose"><option value="">{{ t('chooseSavedView') }}</option><option v-for="view in views" :key="view.id" :value="view.id">{{ view.name }}</option></select></FormField><FormField :label="t('viewName')" v-slot="{id}"><input :id="id" v-model="name" maxlength="100" /></FormField></div><div class="actions form-section"><button class="button small" :disabled="busy||!name.trim()" @click="persist('new')">{{ t('saveNewView') }}</button><button class="button small" :disabled="busy||!selected||!name.trim()" @click="persist('update')">{{ t('updateSavedView') }}</button><button class="button small" :disabled="busy||!selected" @click="persist('remove')">{{ t('removeSavedView') }}</button></div></details></template>
