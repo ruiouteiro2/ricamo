@@ -1402,5 +1402,725 @@
   "referenceEditorHelp": [
     "Leggi il documento, segna le parti utili e ritrova il punto da cui riprendere.",
     "Read the document, mark useful details and return to where you left off."
+  ],
+  "manageCategories": [
+    "Categorie e campi",
+    "Categories and fields"
+  ],
+  "customCategories": [
+    "Categorie personali",
+    "Custom categories"
+  ],
+  "customCategoriesHelp": [
+    "Le categorie personali organizzano i materiali. I campi aggiuntivi sono annotazioni: non cambiano quantità, unità o riserve.",
+    "Custom categories organise materials. Additional fields are notes: they do not change quantities, units or reservations."
+  ],
+  "noCustomCategories": [
+    "Non hai ancora categorie personali.",
+    "No custom categories yet."
+  ],
+  "newCategory": [
+    "Nuova categoria",
+    "New category"
+  ],
+  "editCategory": [
+    "Modifica categoria",
+    "Edit category"
+  ],
+  "categoryName": [
+    "Nome della categoria",
+    "Category name"
+  ],
+  "customFields": [
+    "Campi aggiuntivi",
+    "Additional fields"
+  ],
+  "customFieldsHelp": [
+    "Dai un nome a ogni campo, per esempio Misura ago o Collezione. Rimuovere un campo dalla categoria conserva i valori già salvati.",
+    "Name each field, for example Needle size or Collection. Removing a category field preserves values already saved."
+  ],
+  "fieldName": [
+    "Nome del campo",
+    "Field name"
+  ],
+  "removeField": [
+    "Rimuovi campo",
+    "Remove field"
+  ],
+  "addField": [
+    "Aggiungi campo",
+    "Add field"
+  ],
+  "saveCategory": [
+    "Salva categoria",
+    "Save category"
+  ],
+  "customValuesHelp": [
+    "Questi valori restano associati al materiale anche se rinomini la categoria.",
+    "These values stay with the material when the category is renamed."
+  ],
+  "bulkEdit": [
+    "Modifica selezionati",
+    "Edit selected materials"
+  ],
+  "bulkEditHelp": [
+    "Modifica i dettagli di {count} materiali insieme. Quantità, unità, lotti e riserve rimangono invariati. Controlla l’anteprima prima di confermare.",
+    "Edit details for {count} materials together. Quantities, units, lots and reservations stay unchanged. Review the preview before confirming."
+  ],
+  "changeField": [
+    "Modifica: {field}",
+    "Change: {field}"
+  ],
+  "bulkReplaceHelp": [
+    "Il nuovo contenuto sostituirà quello esistente per ogni materiale selezionato.",
+    "The new content replaces the existing content of each selected material."
+  ],
+  "bulkPreview": [
+    "Anteprima per {count} materiali",
+    "Preview for {count} materials"
+  ],
+  "previewChanges": [
+    "Controlla anteprima",
+    "Review preview"
+  ],
+  "confirmBulk": [
+    "Conferma tutte le modifiche",
+    "Confirm all changes"
+  ],
+  "rapidEntry": [
+    "Inserimento rapido",
+    "Rapid entry"
+  ],
+  "rapidEntryHelp": [
+    "Inserisci fino a 200 codici della stessa marca e gamma. Scegli per ogni riga se registrare un lotto o solo la voce di catalogo. I duplicati richiedono una scelta esplicita.",
+    "Enter up to 200 codes from the same brand and range. Choose a stock lot or catalogue entry for each row. Duplicates require an explicit decision."
+  ],
+  "pasteCodes": [
+    "Incolla una lista di codici",
+    "Paste a code list"
+  ],
+  "codesOnePerLine": [
+    "Un codice per riga",
+    "One code per line"
+  ],
+  "addCodes": [
+    "Aggiungi i codici",
+    "Add codes"
+  ],
+  "entryNumber": [
+    "Materiale {number}",
+    "Entry {number}"
+  ],
+  "removeEntry": [
+    "Rimuovi riga",
+    "Remove entry"
+  ],
+  "rapidNameHelp": [
+    "Se vuoto, verranno usati marca e codice.",
+    "Leave blank to use the brand and code."
+  ],
+  "optionalColorHelp": [
+    "Colore esadecimale facoltativo, per esempio #B04A5D.",
+    "Optional hexadecimal colour, for example #B04A5D."
+  ],
+  "entryStockMode": [
+    "Cosa registrare",
+    "Entry type"
+  ],
+  "createInitialLot": [
+    "Con lotto",
+    "With stock lot"
+  ],
+  "catalogueOnly": [
+    "Solo catalogo",
+    "Catalogue only"
+  ],
+  "addEntry": [
+    "Aggiungi riga",
+    "Add entry"
+  ],
+  "rapidPreview": [
+    "{materials} nuovi materiali · {lots} nuovi lotti",
+    "{materials} new materials · {lots} new lots"
+  ],
+  "duplicateDecision": [
+    "Scelta per duplicato",
+    "Duplicate decision"
+  ],
+  "chooseDuplicateAction": [
+    "Scegli come procedere",
+    "Choose an action"
+  ],
+  "keepSeparate": [
+    "Crea un materiale separato",
+    "Create a separate material"
+  ],
+  "addLotToExisting": [
+    "Aggiungi lotto a",
+    "Add a lot to"
+  ],
+  "newMaterial": [
+    "Nuovo materiale",
+    "New material"
+  ],
+  "duplicateDecisionRequired": [
+    "Scegli cosa fare per tutti i codici duplicati prima di confermare.",
+    "Choose an action for every duplicate code before confirming."
+  ],
+  "confirmRapid": [
+    "Registra tutte le righe",
+    "Save all entries"
+  ],
+  "inventoryLabels": [
+    "Etichette PDF",
+    "PDF labels"
+  ],
+  "lotLabel": [
+    "Etichetta lotto",
+    "Lot label"
+  ],
+  "labelsHelp": [
+    "Etichette ritagliabili con codice e identificativo locale leggibile. Stampa il PDF al 100% per mantenere le dimensioni.",
+    "Cut-out labels with the code and readable local ID. Print the PDF at 100% to preserve dimensions."
+  ],
+  "labelContent": [
+    "Contenuto etichette",
+    "Label content"
+  ],
+  "labelCopies": [
+    "Copie per etichetta",
+    "Copies per label"
+  ],
+  "labelCount": [
+    "{count} etichette nel PDF",
+    "{count} labels in the PDF"
+  ],
+  "labelLimit": [
+    "Seleziona al massimo 200 materiali o lotti e 500 etichette totali.",
+    "Select at most 200 materials or lots and 500 total labels."
+  ],
+  "labelPreviewSample": [
+    "L’anteprima mostra le prime quattro etichette. Il PDF include tutta la selezione.",
+    "The preview shows the first four labels. The PDF includes the whole selection."
+  ],
+  "downloadLabels": [
+    "Scarica PDF etichette",
+    "Download label PDF"
+  ],
+  "savedInventoryViews": [
+    "Viste salvate",
+    "Saved views"
+  ],
+  "chooseSavedView": [
+    "Scegli una vista",
+    "Choose a saved view"
+  ],
+  "viewName": [
+    "Nome della vista",
+    "View name"
+  ],
+  "saveNewView": [
+    "Salva come nuova vista",
+    "Save as new view"
+  ],
+  "updateSavedView": [
+    "Aggiorna vista selezionata",
+    "Update selected view"
+  ],
+  "removeSavedView": [
+    "Elimina vista selezionata",
+    "Delete selected view"
+  ],
+  "inventoryWorkflows": [
+    "Inserimento e organizzazione",
+    "Entry and organisation"
+  ],
+  "moreInventoryFilters": [
+    "Altri filtri",
+    "More filters"
+  ],
+  "stockFilter": [
+    "Scorte fisiche",
+    "Physical stock filter"
+  ],
+  "knownPositiveStock": [
+    "Quantità nota maggiore di zero",
+    "Known quantity above zero"
+  ],
+  "knownZeroStock": [
+    "Quantità nota uguale a zero",
+    "Known quantity is zero"
+  ],
+  "reservationFilter": [
+    "Riserve",
+    "Reservation filter"
+  ],
+  "notReserved": [
+    "Senza riserve",
+    "No reservations"
+  ],
+  "lotStatusFilter": [
+    "Stato dei lotti",
+    "Lot status"
+  ],
+  "projectFilterHelp": [
+    "Il filtro progetto include materiali previsti, riservati o movimentati per quel progetto e il suo tessuto scelto.",
+    "The project filter includes planned, reserved or moved materials for that project and its selected fabric."
+  ],
+  "selectedMaterialCount": [
+    "{count} materiali selezionati (massimo 200)",
+    "{count} selected materials (maximum 200)"
+  ],
+  "clearSelection": [
+    "Annulla selezione",
+    "Clear selection"
+  ],
+  "selectVisibleMaterials": [
+    "Seleziona materiali visibili",
+    "Select visible materials"
+  ],
+  "selectMaterial": [
+    "Seleziona {name}",
+    "Select {name}"
+  ],
+  "nameZA": [
+    "Nome Z–A",
+    "Name Z–A"
+  ],
+  "codeAZ": [
+    "Codice A–Z",
+    "Code A–Z"
+  ],
+  "brandAZ": [
+    "Marca e gamma A–Z",
+    "Brand and range A–Z"
+  ],
+  "error.inventory_batch_limit": [
+    "Inserisci da 1 a 200 righe. Per le etichette, il totale massimo è 500.",
+    "Enter 1 to 200 rows. Labels have a maximum total of 500."
+  ],
+  "error.duplicate_selection": [
+    "La selezione contiene identificativi ripetuti.",
+    "The selection contains repeated IDs."
+  ],
+  "error.inventory_bulk_fields": [
+    "Seleziona almeno un dettaglio modificabile. Quantità e unità non possono essere modificate in blocco.",
+    "Select at least one editable detail. Quantities and units cannot be edited in bulk."
+  ],
+  "error.inventory_preview_stale": [
+    "I dati sono cambiati. Controlla nuovamente l’anteprima.",
+    "Data has changed. Review the preview again."
+  ],
+  "error.rapid_duplicate_decision": [
+    "Scegli cosa fare con ogni codice duplicato.",
+    "Choose an action for each duplicate code."
+  ],
+  "error.rapid_target_mismatch": [
+    "Il materiale scelto non corrisponde a marca, gamma e codice.",
+    "The selected material does not match the brand, range and code."
+  ],
+  "error.rapid_attach_requires_lot": [
+    "Aggiungere a un materiale esistente richiede un nuovo lotto.",
+    "Adding to an existing material requires a new lot."
+  ],
+  "error.invalid_custom_fields": [
+    "Usa nomi distinti e non vuoti per i campi, con valori di testo.",
+    "Use distinct non-empty field names and text values."
+  ],
+  "error.inventory_view_name": [
+    "Scegli un nome della vista non vuoto e non già utilizzato.",
+    "Choose a non-empty view name that is not already used."
+  ],
+  "error.inventory_view_limit": [
+    "Puoi salvare al massimo 30 viste.",
+    "You can save up to 30 views."
+  ],
+  "entryOptionalDetails": [
+    "Dettagli facoltativi · riga {number}",
+    "Optional details · entry {number}"
+  ],
+  "before": [
+    "Prima",
+    "Before"
+  ],
+  "after": [
+    "Dopo",
+    "After"
+  ],
+  "inventoryEntryError": [
+    "Riga {number}: {message}",
+    "Entry {number}: {message}"
+  ],
+  "fabricWorkspace": [
+    "Pezza, riserve e tagli",
+    "Fabric piece, reservations and cuts"
+  ],
+  "fabricPlan": [
+    "Simula e riserva",
+    "Plan and reserve"
+  ],
+  "fabricPieceDetails": [
+    "Misure e condizioni",
+    "Measurements and condition"
+  ],
+  "fabricSourcePiece": [
+    "Pezza di origine",
+    "Source piece"
+  ],
+  "fabricPlanHelp": [
+    "La simulazione non modifica le scorte. Una riserva occupa solo la regione indicata; la pezza rimane intera fino alla conferma del taglio.",
+    "Simulation does not change stock. A reservation holds only the indicated region; the piece stays whole until you confirm a physical cut."
+  ],
+  "fabricManualHelp": [
+    "La forma irregolare o i difetti richiedono una verifica manuale. Il rettangolo mostra solo l’ingombro: non garantisce tessuto utilizzabile o area reale.",
+    "Irregular shape or defects need manual inspection. The rectangle shows only the bounding dimensions: it does not guarantee usable fabric or actual area."
+  ],
+  "fabricManualConfirm": [
+    "Ho verificato manualmente che questa regione contiene il tessuto necessario.",
+    "I have manually checked that this region contains the required usable fabric."
+  ],
+  "fabricInputUnit": [
+    "Unità delle misure",
+    "Measurement unit"
+  ],
+  "fabricInches": [
+    "pollici",
+    "inches"
+  ],
+  "fabricWidth": [
+    "Larghezza del rettangolo",
+    "Rectangle width"
+  ],
+  "fabricHeight": [
+    "Altezza del rettangolo",
+    "Rectangle height"
+  ],
+  "fabricRotateCut": [
+    "Ruota il rettangolo di 90°",
+    "Rotate rectangle 90°"
+  ],
+  "fabricRotated": [
+    "ruotato",
+    "rotated"
+  ],
+  "fabricUseDesign": [
+    "Usa schema e margini del progetto",
+    "Use project design and margins"
+  ],
+  "fabricCountHelp": [
+    "Il calcolo usa il count misurato di questa pezza e i quattro margini del progetto. Ruotando, il count orizzontale e verticale rimane quello del tessuto.",
+    "The calculation uses this piece’s measured count and the project’s four margins. Rotation keeps the fabric’s horizontal and vertical counts on their physical axes."
+  ],
+  "fabricCutSize": [
+    "Pezzo da tagliare",
+    "Piece to cut"
+  ],
+  "fabricConfirmHelp": [
+    "Conferma solo dopo aver tagliato fisicamente. La pezza di origine sarà conservata nello storico; i pezzi risultanti saranno registrati separatamente. Le riserve del progetto passeranno al pezzo tagliato.",
+    "Confirm only after physically cutting. The source piece stays in history; resulting pieces are recorded separately. The project reservation moves to the cut piece."
+  ],
+  "fabricDiagramHelp": [
+    "Bordo tratteggiato sottile: zona utilizzabile. Rettangoli pieni chiari: regioni riservate. Bordo tratteggiato spesso: rettangolo proposto. Le coordinate partono dall’angolo superiore sinistro.",
+    "Thin dashed border: usable area. Light filled rectangles: reserved regions. Thick dashed border: proposed rectangle. Coordinates start at the top left corner."
+  ],
+  "fabricTotalArea": [
+    "Area della pezza rettangolare",
+    "Rectangular piece area"
+  ],
+  "fabricBoundingArea": [
+    "Area del rettangolo di ingombro",
+    "Bounding rectangle area"
+  ],
+  "fabricWasteArea": [
+    "Scarto registrato",
+    "Recorded waste"
+  ],
+  "fabricRemnants": [
+    "Ritagli da conservare",
+    "Remnants to keep"
+  ],
+  "fabricWasteHelp": [
+    "I ritagli sono conservati come pezzi reali. Seleziona soltanto quelli effettivamente scartati: la loro area e il loro costo resteranno nello storico.",
+    "Remnants are kept as real pieces. Select only those actually discarded: their area and cost remain in history."
+  ],
+  "fabricDiscardSide": [
+    "Scarta ritaglio: {side}",
+    "Discard remnant: {side}"
+  ],
+  "fabricReserveRegion": [
+    "Riserva questa regione",
+    "Reserve this region"
+  ],
+  "fabricUpdateRegion": [
+    "Aggiorna la regione riservata",
+    "Update reserved region"
+  ],
+  "fabricNewPlan": [
+    "Nuova simulazione",
+    "New simulation"
+  ],
+  "fabricReservedRegions": [
+    "Regioni riservate",
+    "Reserved regions"
+  ],
+  "fabricLoadRegion": [
+    "Apri regione",
+    "Open region"
+  ],
+  "fabricReleaseRegion": [
+    "Libera questa regione",
+    "Release this region"
+  ],
+  "fabricReleaseHelp": [
+    "Liberare la regione riservata per {project}?",
+    "Release the region reserved for {project}?"
+  ],
+  "fabricStockUnchanged": [
+    "Le scorte fisiche non cambiano.",
+    "Physical stock stays unchanged."
+  ],
+  "fabricDetailsHelp": [
+    "Registra le misure reali della pezza. I margini non utilizzabili restano fisicamente presenti, ma non possono essere riservati per il ricamo. I difetti sono descrittivi: non vengono sottratti automaticamente.",
+    "Record the actual piece measurements. Unusable borders remain physically present but cannot be reserved for stitching. Defects are descriptive: they are not automatically subtracted."
+  ],
+  "fabricUnusableEdge": [
+    "Bordo non utilizzabile: {side}",
+    "Unusable border: {side}"
+  ],
+  "fabricWashState": [
+    "Lavaggio del tessuto",
+    "Fabric washing"
+  ],
+  "fabricWash_unknown": [
+    "Non verificato",
+    "Not checked"
+  ],
+  "fabricWash_unwashed": [
+    "Non prelavato",
+    "Not prewashed"
+  ],
+  "fabricWash_prewashed": [
+    "Prelavato",
+    "Prewashed"
+  ],
+  "fabricDefects": [
+    "Difetti e zone da evitare",
+    "Defects and areas to avoid"
+  ],
+  "fabricGeometryNotes": [
+    "Note su forma e misurazione",
+    "Shape and measurement notes"
+  ],
+  "fabricHistoryHelp": [
+    "Il taglio si può correggere solo se tutti i pezzi risultanti sono ancora inutilizzati, invariati, non spostati e senza riserve. Lo storico non viene cancellato.",
+    "A cut can be corrected only while every resulting piece is unused, unchanged, unmoved and unreserved. History is preserved."
+  ],
+  "fabricUndoCut": [
+    "Correggi il taglio",
+    "Reverse recorded cut"
+  ],
+  "fabricUndoHelp": [
+    "Usa questa correzione soltanto se il taglio registrato non è stato realmente eseguito. La pezza di origine tornerà disponibile; i pezzi derivati saranno ritirati dalle scorte, conservando lo storico.",
+    "Use this correction only if the recorded cut was not actually made. The source becomes available again; derived pieces are retired from stock while history is retained."
+  ],
+  "fabricCutReversed": [
+    "Taglio corretto",
+    "Cut reversed"
+  ],
+  "fabricReleaseCutReservation": [
+    "Libera la riserva del pezzo per {project}",
+    "Release the cut piece reservation for {project}"
+  ],
+  "fabric_dimension_limit": [
+    "La misura supera il limite di 300 metri per lato.",
+    "The dimension exceeds the 300 metre limit per side."
+  ],
+  "fabric_margins_exceed_piece": [
+    "I bordi non utilizzabili occupano tutta la pezza. Controlla le misure.",
+    "The unusable borders cover the entire piece. Check the measurements."
+  ],
+  "fabric_invalid_waste": [
+    "I ritagli selezionati non corrispondono a questa simulazione. Controlla le misure e riprova.",
+    "The selected remnants do not match this simulation. Check the measurements and try again."
+  ],
+  "fabric_count_unknown": [
+    "Misura prima il count orizzontale e verticale della pezza.",
+    "Measure the piece’s horizontal and vertical count first."
+  ],
+  "fabric_manual_geometry": [
+    "La forma o i difetti richiedono una verifica manuale.",
+    "Shape or defects require manual inspection."
+  ],
+  "fabric_regions_active": [
+    "Questa pezza contiene regioni riservate. Liberale prima di spostare, modificare o registrare variazioni fisiche della pezza.",
+    "This piece contains reserved regions. Release them before moving, editing or recording physical stock changes."
+  ],
+  "fabric_whole_piece_reserved": [
+    "L’intera pezza è già riservata. Libera prima quella riserva per assegnare singole regioni.",
+    "The whole piece is already reserved. Release that reservation before assigning individual regions."
+  ],
+  "fabric_region_owner": [
+    "La regione non appartiene al progetto selezionato oppure non è più attiva.",
+    "The region does not belong to the selected project or is no longer active."
+  ],
+  "fabric_region_limit": [
+    "Questa pezza ha raggiunto il limite di 100 regioni nello storico.",
+    "This piece has reached the limit of 100 recorded regions."
+  ],
+  "fabric_region_outside_usable": [
+    "Il rettangolo supera la zona utilizzabile della pezza. Controlla posizione, misure e bordi.",
+    "The rectangle extends outside the usable area. Check its position, size and borders."
+  ],
+  "fabric_region_overlap": [
+    "Questa regione si sovrappone a una riserva esistente. Spostala o modifica le misure.",
+    "This region overlaps an existing reservation. Move it or change its dimensions."
+  ],
+  "fabric_manual_confirmation": [
+    "Verifica il tessuto e conferma manualmente la regione utilizzabile.",
+    "Inspect the fabric and manually confirm the usable region."
+  ],
+  "fabric_region_inactive": [
+    "Questa regione non è più riservata. Aggiorna la selezione.",
+    "This region is no longer reserved. Update the selection."
+  ],
+  "fabric_region_changed": [
+    "La simulazione è diversa dalla regione salvata. Aggiorna prima la regione riservata.",
+    "The simulation differs from the saved region. Update the reserved region first."
+  ],
+  "fabric_other_regions": [
+    "Altre regioni sono ancora riservate su questa pezza. Riconcilia e libera quelle riserve prima del taglio; nessuna verrà eliminata automaticamente.",
+    "Other regions are still reserved on this piece. Reconcile and release those reservations before cutting; none will be removed automatically."
+  ],
+  "fabric_undo_legacy": [
+    "Questo taglio non dispone dei dati necessari per una correzione sicura.",
+    "This cut lacks the records required for a safe reversal."
+  ],
+  "fabric_cut_already_reversed": [
+    "Il taglio è già stato corretto.",
+    "This cut has already been reversed."
+  ],
+  "fabric_undo_source_changed": [
+    "La pezza di origine è stata modificata dopo il taglio.",
+    "The source piece was changed after cutting."
+  ],
+  "fabric_undo_piece_changed": [
+    "Un pezzo risultante è stato modificato.",
+    "A resulting piece has been modified."
+  ],
+  "fabric_undo_moved": [
+    "Un pezzo risultante ha movimenti successivi, anche se poi corretti.",
+    "A resulting piece has later stock movements, even if subsequently reversed."
+  ],
+  "fabric_undo_reserved": [
+    "Un pezzo risultante è ancora riservato. Libera esplicitamente la riserva prima della correzione.",
+    "A resulting piece is still reserved. Explicitly release the reservation before reversing the cut."
+  ],
+  "fabric_undo_downstream": [
+    "Un pezzo risultante è stato tagliato di nuovo.",
+    "A resulting piece has been cut again."
+  ],
+  "fabric_undo_linked": [
+    "Un pezzo risultante è associato a un altro progetto.",
+    "A resulting piece is linked to another project."
+  ],
+  "fabric_undo_loaned": [
+    "Un pezzo risultante è stato registrato in prestito.",
+    "A resulting piece has been recorded as loaned."
+  ],
+  "fabric_undo_blocked": [
+    "Il taglio non può essere corretto perché esistono utilizzi o dipendenze successive. Controlla l’elenco.",
+    "The cut cannot be reversed because later use or dependencies exist. Review the list."
+  ],
+  "fabric_use_planner": [
+    "Apri la pianificazione della pezza per registrare questo taglio.",
+    "Open the fabric workspace to record this cut."
+  ],
+  "fabric_plan_version": [
+    "La pianificazione del tessuto usa una versione non supportata.",
+    "The fabric plan uses an unsupported version."
+  ],
+  "fabric_invalid_receipt": [
+    "Lo storico del taglio non è coerente. Nessun dato è stato modificato.",
+    "The cut history is inconsistent. No data has changed."
+  ],
+  "fabric_area_mismatch": [
+    "Le aree del taglio non corrispondono alla pezza di origine.",
+    "Cut areas do not reconcile with the source piece."
+  ],
+  "fabric_cost_mismatch": [
+    "I costi dei pezzi e degli scarti non corrispondono al costo di origine.",
+    "Piece and waste costs do not reconcile with the original cost."
+  ],
+  "fabric_piece_unavailable": [
+    "Serve una singola pezza utilizzabile, con quantità nota pari a 1.",
+    "A single usable piece with known quantity 1 is required."
+  ],
+  "not_fabric_piece": [
+    "Questa operazione richiede una pezza di tessuto inventariata in pezzi.",
+    "This operation requires fabric inventoried as individual pieces."
+  ],
+  "cut_outside_fabric": [
+    "Il rettangolo esce dai bordi della pezza. Controlla posizione e misure.",
+    "The rectangle extends beyond the piece. Check its position and size."
+  ],
+  "manual_geometry": [
+    "Il taglio automatico non è disponibile per pezze irregolari. Registra prima una pezza rettangolare misurata.",
+    "Automatic cutting is unavailable for irregular pieces. First record a measured rectangular piece."
+  ],
+  "fabricCutHistory": [
+    "Tagli",
+    "Cuts"
+  ],
+  "fabricOffsetX": [
+    "Distanza dal bordo sinistro",
+    "Distance from left edge"
+  ],
+  "fabricOffsetY": [
+    "Distanza dal bordo superiore",
+    "Distance from top edge"
+  ],
+  "fabricSide_top": [
+    "superiore",
+    "top"
+  ],
+  "fabricSide_bottom": [
+    "inferiore",
+    "bottom"
+  ],
+  "fabricSide_left": [
+    "sinistro",
+    "left"
+  ],
+  "fabricSide_right": [
+    "destro",
+    "right"
+  ],
+  "cut_waste": [
+    "Scarto del taglio",
+    "Cut waste"
+  ],
+  "cut_undo_piece": [
+    "Ritiro del pezzo dopo correzione",
+    "Piece retired after cut reversal"
+  ],
+  "cut_undo_source": [
+    "Pezza ripristinata dopo correzione",
+    "Source restored after cut reversal"
+  ],
+  "fabricRegionalStockHelp": [
+    "Alcune pezze contengono regioni riservate. Completa il piano di taglio per ottenere pezzi disponibili separatamente.",
+    "Some pieces contain reserved regions. Complete the cutting plan to obtain separately available pieces."
+  ],
+  "physicalFabricCountHelp": [
+    "Se scegli una pezza, il conteggio proviene dalle sue misure. Usa il piano del tessuto per registrarlo. Il conteggio previsto serve quando non hai ancora scelto una pezza.",
+    "When you select a fabric piece, its measured count is used. Record it in fabric planning. Planned count is used when no physical piece has been selected."
+  ],
+  "storageFull": [
+    "Spazio insufficiente. Libera spazio sul disco e riprova. Le modifiche non sono state salvate.",
+    "There is not enough free disk space. Free some space and try again. Your changes have not been saved."
+  ],
+  "storagePermission": [
+    "La cartella dei dati non è scrivibile. Controlla i permessi o scegli una destinazione accessibile, poi riprova.",
+    "The data folder cannot be written. Check its permissions or choose an accessible destination, then try again."
   ]
 }
