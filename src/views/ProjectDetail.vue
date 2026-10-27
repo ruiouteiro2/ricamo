@@ -4,7 +4,7 @@ import {projectRevisionImpact} from '../../core/revision-impact.mjs';
 import { studioStorageKey } from '../example-mode.mjs';
 import { localDate } from '../../core/calendar.mjs';
 import { ref, computed, onBeforeUnmount } from 'vue';
-import { ArrowLeft, Pencil, Copy, Check, Plus, Play, Pause, Clock3, ImagePlus, Flower2, Archive, RotateCcw, FileText } from '@lucide/vue';
+import { ChevronLeft, Pencil, Copy, Check, Plus, Play, Pause, Clock3, ImagePlus, Flower2, Archive, RotateCcw, FileText } from '@lucide/vue';
 import { state, dispatch, navigate, notify, statusText, saveEntityWithAssets } from '../state';
 import { t, number, date, money, errorText } from '../i18n';
 import { projectProgress } from '../../core/projects.mjs';
@@ -83,7 +83,7 @@ onBeforeUnmount(stopTimer);
 </script>
 <template>
   <div v-if="project" class="page">
-    <button class="button text small" style="margin-bottom:16px" @click="navigate('projects')"><ArrowLeft :size="15" />{{ t('projects') }}</button>
+    <button class="button text small" style="margin-bottom:16px" @click="navigate('projects')"><ChevronLeft :size="15" />{{ t('projects') }}</button>
     <PageHeader :eyebrow="`${t(project.technique)} · ${statusText(project.status)}`" :title="project.name" :description="project.recipient ? `${t('recipient')}: ${project.recipient}` : ''"><button class="button" @click="showTransfer=true">{{ t('exportProjectPackage') }}</button><button class="button" @click="editProject"><Pencil :size="15" />{{ t('edit') }}</button><button class="button" @click="duplicate"><Copy :size="15" />{{ t('duplicate') }}</button><button v-if="!closed" class="button primary" @click="tab='work'"><Play :size="15" />{{ t('work') }}</button><button v-else class="button primary" @click="reopen"><RotateCcw :size="15" />{{ t('reopenProject') }}</button></PageHeader>
     <p v-if="error" role="alert" class="notice error">{{ error }}</p>
     <nav class="tabs" :aria-label="t('project')"><button v-for="item in ['overview','materials','work','journal','finishing']" :key="item" :class="{selected:tab===item}" :aria-current="tab===item?'page':undefined" @click="changeTab(item)">{{ t(item) }}</button></nav>
