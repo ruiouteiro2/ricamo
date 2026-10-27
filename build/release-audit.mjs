@@ -21,7 +21,7 @@ const files=entries.filter(path=>!statFile(asar,internal(path)).files);
 const packaged=JSON.parse(read('package.json'));
 assert.equal(packaged.name,manifest.name);assert.equal(packaged.version,manifest.version);assert.equal(packaged.main,manifest.main);
 for(const [name,version]of Object.entries(manifest.dependencies))assert.equal(packaged.dependencies[name],version);
-for(const path of files)assert.ok(['LICENSE','THIRD-PARTY-NOTICES.md','package.json'].includes(path)||['core/','desktop/','dist/','data/','node_modules/'].some(prefix=>path.startsWith(prefix)),`Unexpected packaged file: ${path}`);
+for(const path of files)assert.ok(['LICENSE','THIRD-PARTY-NOTICES.md','package.json','src/engine/dmc.json'].includes(path)||['core/','desktop/','dist/','data/','node_modules/'].some(prefix=>path.startsWith(prefix)),`Unexpected packaged file: ${path}`);
 
 const sources={};
 for(const folder of ['core','desktop','dist','data']){
@@ -33,6 +33,9 @@ for(const folder of ['core','desktop','dist','data']){
   for(const [path,hash]of Object.entries(expected))assert.equal(digest(read(folder+'/'+path)),hash,`Packaged ${folder}/${path} differs`);
   sources[folder]={matchesWorkspace:true,files:expected};
 }
+const dmcHash=digest(readFileSync(join(root,'src/engine/dmc.json')));
+assert.equal(digest(read('src/engine/dmc.json')),dmcHash,'Packaged DMC source data differs');
+sources['src/engine']={matchesWorkspace:true,files:{'dmc.json':dmcHash}};
 for(const name of ['LICENSE','THIRD-PARTY-NOTICES.md'])assert.equal(digest(read(name)),digest(readFileSync(join(root,name))));
 
 const packages=[];
