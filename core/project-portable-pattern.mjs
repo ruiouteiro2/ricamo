@@ -1,3 +1,4 @@
+import {normalizePatternFabric} from './pattern-fabric.mjs';
 import {normalizeBackground} from './generation-background.mjs';
 import { catalogueReference, projectCataloguePalette, validateCatalogueProjection } from './thread-catalogues.mjs';
 import { assert, integer, quantity, text, identifier, oneOf } from './shared.mjs';
@@ -18,13 +19,14 @@ function boolean(value, key, result) {
 function settings(value) {
   object(value);
   const result = numeric(value, ['width', 'height', 'count', 'strands', 'maxColors', 'region', 'waste']);
+  if(value.fabric!==undefined)result.fabric=normalizePatternFabric(value.fabric);
   if (value.mode !== undefined) result.mode = oneOf(value.mode, ['detail', 'balanced', 'simple'], 'mode');
   if (value.protectedRegions !== undefined) {
     assert(Array.isArray(value.protectedRegions) && value.protectedRegions.length <= 20, 'project_package_settings');
     result.protectedRegions = value.protectedRegions.map(rect => Object.fromEntries(['x', 'y', 'width', 'height'].map(key => [key, integer(object(rect)[key], key, { min: key === 'x' || key === 'y' ? 0 : 1, max: 500 })])));
   }
   if(value.background!==undefined)result.background=normalizeBackground(value.background,'project_package_settings');
-  for(const key of ['fixedColors','excludedColors'])if(value[key]!==undefined){assert(Array.isArray(value[key])&&value[key].length<=(key==='fixedColors'?80:6000)&&new Set(value[key]).size===value[key].length&&value[key].every(Number.isInteger),'project_package_settings');result[key]=value[key].map(index=>integer(index,key,{min:0,max:5999}));}
+  for(const key of ['fixedColors','excludedColors'])if(value[key]!==undefined){assert(Array.isArray(value[key])&&value[key].length<=(key==='fixedColors'?500:6000)&&new Set(value[key]).size===value[key].length&&value[key].every(Number.isInteger),'project_package_settings');result[key]=value[key].map(index=>integer(index,key,{min:0,max:5999}));}
   assert(!(result.fixedColors??[]).some(index=>result.excludedColors?.includes(index)),'project_package_settings');
   return result;
 }
@@ -98,7 +100,7 @@ export function portableRevision(revision, privateNotes, { attachmentIds = new S
   if (revision.settings !== undefined) result.settings = settings(revision.settings);
   if (revision.provenance !== undefined) result.provenance = provenance(revision.provenance, attachmentIds, revisionIds);
   projectCataloguePalette(revision,result);
-  for(const parameters of [result.settings,result.provenance?.parameters])if(parameters?.fixedColors?.length||parameters?.excludedColors?.length){const size=result.provenance?.palette?.colors.length??0;assert([...(parameters.fixedColors??[]),...(parameters.excludedColors??[])].every(i=>i<size),'project_package_settings');const remaining=size-(parameters.excludedColors?.length??0);assert(remaining>0&&(parameters.fixedColors?.length??0)<=Math.min(parameters.maxColors??24,{simple:16,balanced:40,detail:80}[parameters.mode??'balanced'],remaining),'project_package_settings');}
+  for(const parameters of [result.settings,result.provenance?.parameters])if(parameters?.fixedColors?.length||parameters?.excludedColors?.length){const size=result.provenance?.palette?.colors.length??0;assert([...(parameters.fixedColors??[]),...(parameters.excludedColors??[])].every(i=>i<size),'project_package_settings');const remaining=size-(parameters.excludedColors?.length??0);assert(remaining>0&&(parameters.fixedColors?.length??0)<=Math.min(parameters.maxColors??24,{simple:16,balanced:40,detail:500}[parameters.mode??'balanced'],remaining),'project_package_settings');}
   if (privateNotes && revision.notes) result.notes = revision.notes;
   return result;
 }
