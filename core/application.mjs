@@ -1,3 +1,7 @@
+import { catalogueReferenceHandlers, validateCatalogueReferences } from './catalogue-references.mjs';
+import { documentOwnerHandlers } from './owner-documents.mjs';
+import { stockCountHandlers } from './stock-count.mjs';
+import { normalizePatternLibrary, validatePatternLibrary } from './pattern-library.mjs';
 import { saveEntityWithAssets } from './entity-assets.mjs';
 import { saveProject, saveSession } from './projects.mjs';
 import { validateMaterialDescriptors, validateDescriptorProperties } from './material-descriptors.mjs';
@@ -20,7 +24,10 @@ import { toolActivityHandlers, validateToolActivity } from './tool-activity.mjs'
 
 export { createState };
 const handlers = {
-  'entity.saveWithAssets': (state, payload, context) => saveEntityWithAssets(state, payload, context, { saveAttachment: handlers['attachment.add'], ownerHandlers: { 'material.save': saveMaterial, 'material.createWithLot': handlers['material.createWithLot'], 'project.save': saveProject, 'session.save': saveSession } }),
+  ...catalogueReferenceHandlers,
+  ...documentOwnerHandlers,
+  ...stockCountHandlers,
+  'entity.saveWithAssets': (state, payload, context) => saveEntityWithAssets(state, payload, context, { saveAttachment: handlers['attachment.add'], ownerHandlers: { ...documentOwnerHandlers, 'material.save': saveMaterial, 'material.createWithLot': handlers['material.createWithLot'], 'project.save': saveProject, 'session.save': saveSession } }),
   ...workCompanionHandlers,
   ...kitWorkflowHandlers,
   'pattern.createWithAsset': (state, payload, context) => createPatternWithAsset(state, payload, context, { saveAttachment: handlers['attachment.add'], savePattern: handlers['pattern.save'] }),
@@ -48,6 +55,8 @@ const handlers = {
       sourceAttachmentId: p.sourceAttachmentId ?? existing?.sourceAttachmentId ?? null,
       favorite: p.favorite ?? existing?.favorite ?? false, archived: p.archived ?? existing?.archived ?? false,
       createdAt: existing?.createdAt ?? ctx.now, updatedAt: ctx.now, revisions: existing?.revisions ?? [] };
+    if (p.catalogueReferences !== undefined) pattern.catalogueReferences = structuredClone(p.catalogueReferences);
+    if (p.library !== undefined) pattern.library = normalizePatternLibrary(p.library);
     if (pattern.sourceAttachmentId) find(state, 'attachments', pattern.sourceAttachmentId);
     if (p.revision) {
       assert(kind === 'structured', 'invalid_pattern_kind');
@@ -118,6 +127,8 @@ export function executeCommand(state, command, context = {}) {
 
 export function validateApplicationState(state) {
   validateState(state);
+  validatePatternLibrary(state);
+  validateCatalogueReferences(state);
   validateMaterialDescriptors(state);
   validateKitWorkflows(state);
   validateWorkCompanion(state);
