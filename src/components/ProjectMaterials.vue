@@ -10,6 +10,7 @@ import {projectFabricConfig} from '../../core/design-size.mjs';
 import DesignSizeSummary from './DesignSizeSummary.vue';
 import { fabricProjectFit } from '../../core/fabric-planning.mjs';
 import FabricWorkspace from './FabricWorkspace.vue';
+import PatternSupplies from './PatternSupplies.vue';
 import ThreadEstimateSettings from './ThreadEstimateSettings.vue';
 import EntityForm from './EntityForm.vue';
 import EmptyState from './EmptyState.vue';
@@ -72,6 +73,7 @@ function configureFabric() {
 }
 </script>
 <template>
+ <PatternSupplies v-if="pattern" :pattern="pattern" :project="project"/>
   <div class="stack">
     <p v-if="error" class="notice error" role="alert">{{ error }}</p>
     <section class="panel"><div class="panel-heading"><h2>{{ t('materials') }}</h2><div class="actions"><button v-if="revision && !closed" class="button small" :disabled="busy" @click="threadSettings=true"><Calculator :size="15" />{{ t('estimateMaterials') }}</button><button v-if="!closed" class="button small primary" @click="openNeed()"><Plus :size="15" />{{ t('addNeed') }}</button></div></div>
