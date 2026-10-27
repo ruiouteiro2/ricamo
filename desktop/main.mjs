@@ -1,13 +1,15 @@
-import { app, BrowserWindow, ipcMain, dialog, session, Menu } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog, session, Menu, protocol } from 'electron';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, extname } from 'node:path';
 import { mkdir, writeFile, readFile, rename, readdir, unlink } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { Repository } from './repository.mjs';
 import { inspectBackup } from '../core/backup.mjs';
-import { BACKUP_LIMIT, safeDisplayName } from '../core/files.mjs';
+import { BACKUP_LIMIT, safeDisplayName, boundedBytes } from '../core/files.mjs';
+import { createAssetHandler } from './protocol.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
+protocol.registerSchemesAsPrivileged([{ scheme: 'ricamo', privileges: { standard: true, secure: true, supportFetchAPI: true } }]);
 if (process.env.RICAMO_DATA_DIR) app.setPath('userData', process.env.RICAMO_DATA_DIR);
 const lock = app.requestSingleInstanceLock();
 let window, repository, pendingRestore, automaticBackupTimer;
@@ -46,12 +48,13 @@ function handle(channel, action) {
 }
 async function start() {
   repository = new Repository(join(app.getPath('userData'), 'ricamo.sqlite'));
+  protocol.handle('ricamo', await createAssetHandler(join(root, 'dist')));
   Menu.setApplicationMenu(null);
   session.defaultSession.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
   session.defaultSession.setPermissionCheckHandler(() => false);
   session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
     const url = new URL(details.url);
-    callback({ cancel: !['file:', 'data:', 'blob:', 'devtools:'].includes(url.protocol) });
+    callback({ cancel: !['ricamo:', 'data:', 'blob:', 'devtools:'].includes(url.protocol) || (url.protocol === 'ricamo:' && url.host !== 'app') });
   });
   window = new BrowserWindow({ width: 1440, height: 960, minWidth: 760, minHeight: 600, title: 'Ricamo', backgroundColor: '#f7f5f1', show: false,
     webPreferences: { preload: join(root, 'desktop', 'preload.cjs'), contextIsolation: true, sandbox: true, nodeIntegration: false, webSecurity: true, spellcheck: false, webviewTag: false } });
@@ -67,8 +70,9 @@ async function start() {
   handle('get-asset', id => repository.getAsset(id));
   handle('save-file', async ({ name, data }) => {
     name = safeDisplayName(name);
-    if (!['.csv', '.tsv', '.json', '.ricamo', '.ricamobackup', '.pdf', '.png', '.txt'].includes(extname(name).toLowerCase())) throw Object.assign(new Error(), { code: 'invalid_file_type' });
-    const bytes = typeof data === 'string' ? Buffer.from(data, 'utf8') : Buffer.from(data);
+    if (!['.csv', '.tsv', '.json', '.ricamo', '.ricamopattern', '.ricamoproject', '.ricamobackup', '.pdf', '.png', '.txt'].includes(extname(name).toLowerCase())) throw Object.assign(new Error(), { code: 'invalid_file_type' });
+    if (typeof data === 'string' && Buffer.byteLength(data, 'utf8') > BACKUP_LIMIT) throw Object.assign(new Error(), { code: 'file_too_large' });
+    const bytes = typeof data === 'string' ? Buffer.from(data, 'utf8') : boundedBytes(data, BACKUP_LIMIT);
     if (bytes.length > BACKUP_LIMIT) throw Object.assign(new Error(), { code: 'file_too_large' });
     const choice = await dialog.showSaveDialog(window, { defaultPath: name, filters: [{ name: 'Ricamo', extensions: [extname(name).slice(1)] }] });
     if (choice.canceled) return false;
@@ -91,13 +95,13 @@ async function start() {
   });
   handle('restore', async (token, revision) => {
     if (!pendingRestore || token !== pendingRestore.token || Date.now() > pendingRestore.expires) throw Object.assign(new Error(), { code: 'invalid_restore_token' });
-    await localBackup('before-restore');
-    const result = repository.restore(pendingRestore.prepared, revision);
+    const prepared = pendingRestore.prepared;
     pendingRestore = null;
-    return result;
+    await localBackup('before-restore');
+    return repository.restore(prepared, revision);
   });
   handle('print', () => new Promise((resolve, reject) => window.webContents.print({ silent: false, printBackground: true }, (success, reason) => success ? resolve(true) : reject(Object.assign(new Error(reason), { code: 'print_failed' })))));
-  await window.loadFile(join(root, 'dist', 'index.html'));
+  await window.loadURL('ricamo://app/index.html');
   window.show();
   automaticBackupTimer = setInterval(() => { localBackup().catch(() => { /* Manual backup remains available; data is never discarded. */ }); }, 30 * 60_000);
   window.on('closed', () => { window = null; });
