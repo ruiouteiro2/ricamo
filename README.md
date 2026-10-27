@@ -19,7 +19,20 @@ npm start
 
 `npm run dev` opens the browser development server. Browser storage is separate from the desktop SQLite database. `npm run package:win` creates the x64 installer in `release/`; build on Windows for the Windows distribution.
 
-Native regression scripts are `tests/desktop-smoke.mjs`, `tests/desktop-documents.mjs` and `tests/desktop-drafts.mjs`. They create isolated data under ignored `.runtime/`. Set `RICAMO_EXECUTABLE` to test a packaged executable; otherwise they launch the development Electron runtime against the built frontend.
+Run the real browser journeys with `npm run test:e2e`. The runner builds the production frontend, starts its own preview on an unused loopback port, runs inventory and tool journeys sequentially, and shuts the server down on completion or failure. A failed journey returns a nonzero exit status. Browser test artifacts go under ignored `.runtime/`; each journey uses separate browser storage. Install the matching Playwright Chromium runtime first with `npx playwright install chromium` if it is not already available. Required Linux libraries and environment settings remain the caller's responsibility.
+
+```sh
+npm run test:e2e
+npm run test:desktop
+npm run test:performance:domain
+npm run test:performance
+```
+
+`test:desktop` builds the frontend and runs smoke, document and draft tests in sequence. After a build, `test:desktop:smoke`, `test:desktop:documents` and `test:desktop:drafts` run those checks individually. They create isolated data under ignored `.runtime/`. Set `RICAMO_EXECUTABLE` to test a packaged executable; otherwise they launch the development Electron runtime. Keep the executable and source/build under test in agreement.
+
+`test:performance:domain` measures a synthetic core workload without launching a browser. `test:performance` builds and exercises Electron with the representative library, recording source/build/executable identity, timings, persistence checks and limitations under `.runtime/`. Set `RICAMO_PERF_OUTPUT` to an alternative artifact directory. These are host-specific measurements, not proof of performance on every Windows PC.
+
+The Windows icon comes from the original `build/icon.svg`; `npm run icons:build` regenerates the committed multi-size `build/icon.ico` using local Playwright Chromium. Windows packaging applies the Ricamo icon, product name, version, author and copyright resources with `win.signExecutable: false`. It deliberately remains unsigned; product metadata is not a verified publisher signature.
 
 ## Data and distribution
 
