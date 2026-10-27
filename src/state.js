@@ -11,7 +11,11 @@ export const toast = ref('');
 export const route = ref({ page: 'home', id: null });
 let toastTimer, queue = Promise.resolve();
 export function notify(message = t('success')) { toast.value = message; clearTimeout(toastTimer); toastTimer = setTimeout(() => { toast.value = ''; }, 4000); }
-export function navigate(page, id = null) { route.value = { page, id }; window.scrollTo({ top: 0 }); }
+export function navigate(page, id = null) {
+  const event = new CustomEvent('ricamo:before-navigate', { cancelable: true, detail: { page, id } });
+  if (!window.dispatchEvent(event)) return;
+  route.value = { page, id }; window.scrollTo({ top: 0 });
+}
 function adopt(next) { state.value = next; language.value = next.settings.language; document.documentElement.lang = language.value; return next; }
 export async function initialise() {
   try { adopt(await storage.load()); ready.value = true; loadingError.value = null; }
