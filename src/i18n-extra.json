@@ -1680,8 +1680,8 @@
     "Select visible materials"
   ],
   "selectMaterial": [
-    "Seleziona {name}",
-    "Select {name}"
+    "Scegli",
+    "Choose"
   ],
   "nameZA": [
     "Nome Z–A",
@@ -3360,8 +3360,8 @@
     "Forecast assumptions are invalid."
   ],
   "pdf_export_limit": [
-    "Il PDF supera il limite di 500 pagine. Ridurre il contenuto da esportare.",
-    "The PDF exceeds the 500-page limit. Reduce the exported content."
+    "La stampa richiederebbe più di 500 pagine o non entra nel foglio. Riduci la dimensione delle celle sulla carta o i margini.",
+    "The chart would require more than 500 pages or does not fit the sheet. Reduce the printed cell size or margins."
   ],
   "pdf_label_overflow": [
     "Il testo completo non entra a una dimensione leggibile. Aumenta larghezza o altezza dell’etichetta; nessun testo o identificativo è stato rimosso.",
@@ -5045,11 +5045,11 @@
   ],
   "generationBackgroundWhite": [
     "Componi su bianco",
-    "Composite over white"
+    "Compose on white"
   ],
   "generationBackgroundColor": [
-    "Componi su un colore",
-    "Composite over a colour"
+    "Componi su colore",
+    "Compose on a colour"
   ],
   "generationBackgroundColour": [
     "Colore del fondo",
@@ -5772,8 +5772,8 @@
     "There are no stitches with proven correspondence to carry."
   ],
   "print_document_limit": [
-    "Il documento supera i limiti di stampa (200 pagine, 64 MB o 128 milioni di pixel a 96 dpi). Stampa la pagina corrente o esporta il PDF.",
-    "The document exceeds print limits (200 pages, 64 MB or 128 million pixels at 96 dpi). Print the current page or export the PDF."
+    "Il documento supera 500 pagine, 64 MB o la dimensione massima di un foglio. Riduci la dimensione delle celle sul foglio oppure esporta il PDF.",
+    "The document exceeds 500 pages, 64 MB or the maximum sheet dimensions. Reduce the reading-chart cell size or export the PDF."
   ],
   "print_document_invalid": [
     "Impossibile preparare questo documento per la stampa. Il file originale è conservato.",
@@ -5892,8 +5892,8 @@
     "Buy this fabric"
   ],
   "fabricOverSummary": [
-    "su {x} × {y} fili",
-    "over {x} × {y} threads"
+    "Ogni croce copre {x} × {y} fili del tessuto.",
+    "Each cross spans {x} × {y} fabric threads."
   ],
   "patternSupplies": [
     "Tessuto, misure e materiali",
@@ -6058,5 +6058,929 @@
   "printHandedOff": [
     "Documento inviato alla finestra di stampa.",
     "Document handed to the print system."
+  ],
+  "strands": [
+    "Numero di fili",
+    "Number of strands"
+  ],
+  "range": [
+    "Tipo / linea",
+    "Type / line"
+  ],
+  "unit_ball": [
+    "gomitoli",
+    "balls"
+  ],
+  "unit_cone": [
+    "rocche",
+    "cones"
+  ],
+  "ball": [
+    "gomitoli",
+    "balls"
+  ],
+  "cone": [
+    "rocche",
+    "cones"
+  ],
+  "allBrands": [
+    "Tutte le marche",
+    "All brands"
+  ],
+  "allMaterialTypes": [
+    "Tutti i tipi",
+    "All types"
+  ],
+  "threadProductType": [
+    "Tipo di filo",
+    "Thread type"
+  ],
+  "materialProductType": [
+    "Tipo di materiale",
+    "Material type"
+  ],
+  "materialColorCode": [
+    "Codice colore / numero del filo",
+    "Colour code / thread number"
+  ],
+  "materialCodeSearchExample": [
+    "Es. 310, E168, DMC, Anchor…",
+    "E.g. 310, E168, DMC, Anchor…"
+  ],
+  "materialMatches": [
+    "{count} articoli disponibili nel catalogo locale",
+    "{count} products in the local catalogue"
+  ],
+  "materialColorUnavailable": [
+    "Colore digitale non disponibile",
+    "Digital colour unavailable"
+  ],
+  "materialNoMatches": [
+    "Nessun articolo corrispondente. Prova un codice diverso o aggiorna i cataloghi nelle impostazioni.",
+    "No matching product. Try another code or update the catalogues in settings."
+  ],
+  "cellMaterialTitle": [
+    "Materiale della cella · colonna {x}, riga {y}",
+    "Cell material · column {x}, row {y}"
+  ],
+  "cellMaterialHelp": [
+    "Scegli il materiale da applicare a questa cella. Le altre celle rimangono indipendenti.",
+    "Choose the material for this cell. Other cells remain independent."
+  ],
+  "cellEmpty": [
+    "Cella vuota",
+    "Empty cell"
+  ],
+  "cellThreads": [
+    "Fili",
+    "Threads"
+  ],
+  "cellBeads": [
+    "Perline e decorazioni",
+    "Beads and embellishments"
+  ],
+  "changeMaterial": [
+    "Cambia materiale",
+    "Change material"
+  ],
+  "buyMaterial": [
+    "Apri l’articolo",
+    "Open product"
+  ],
+  "cellExistingPalette": [
+    "Oppure scegli dalla tavolozza dello schema",
+    "Or choose from this pattern’s palette"
+  ],
+  "beadOnePerCell": [
+    "Una perlina o decorazione per cella.",
+    "One bead or embellishment per cell."
+  ],
+  "gridCells": [
+    "celle della griglia",
+    "grid cells"
+  ],
+  "beadSizeUnknown": [
+    "Dimensione dell’articolo da verificare.",
+    "Product size needs checking."
+  ],
+  "beadOverlapWarning": [
+    "Questo articolo è più largo di una cella sul tessuto scelto. Lascia spazio nelle celle vicine; la sagoma mostra l’ingombro.",
+    "This product is wider than one cell on the selected fabric. Leave room in neighbouring cells; the outline shows its footprint."
+  ],
+  "beadAttachmentThread": [
+    "Filo per fissare le perline",
+    "Bead attachment thread"
+  ],
+  "beadAttachmentUnknown": [
+    "Da scegliere",
+    "To be chosen"
+  ],
+  "beadAttachmentRequiredHelp": [
+    "Il filo di fissaggio non è ancora scelto: il fabbisogno rimarrà incompleto fino alla selezione.",
+    "The attachment thread has not been chosen: requirements remain incomplete until you select it."
+  ],
+  "cellStrandsHelp": [
+    "Fili usati insieme per ogni punto. Il numero di fili nella matassa è registrato separatamente nel catalogo.",
+    "Strands worked together in each stitch. The number of separable strands in the skein is recorded separately in the catalogue."
+  ],
+  "applyToCell": [
+    "Applica alla cella",
+    "Apply to cell"
+  ],
+  "workKind_bead": [
+    "Perline / decorazioni",
+    "Beads / embellishments"
+  ],
+  "materialAutoColor": [
+    "Colore del materiale",
+    "Material colour"
+  ],
+  "materialAutoColorHelp": [
+    "Il colore viene ricavato automaticamente da marca, tipo e codice. Se manca una corrispondenza verificata, resta non disponibile.",
+    "Colour is filled automatically from brand, type and code. Without a verified match, it remains unavailable."
+  ],
+  "chooseCatalogueMaterial": [
+    "Scegli il materiale dal catalogo",
+    "Choose a catalogue material"
+  ],
+  "manualMaterialIdentity": [
+    "Inserisci o modifica marca, tipo e codice",
+    "Enter or edit brand, type and code"
+  ],
+  "pattern.materialKind": [
+    "Tipo di materiale non valido.",
+    "Invalid material type."
+  ],
+  "pattern.materialProduct": [
+    "Il prodotto non corrisponde a marca, tipo e codice del materiale.",
+    "The product does not match the material’s brand, type and code."
+  ],
+  "pattern.materialColor": [
+    "Il colore non corrisponde al prodotto selezionato.",
+    "The colour does not match the selected product."
+  ],
+  "pattern.beadThread": [
+    "Una perlina non può essere usata come filo. Scegli il filo di fissaggio separatamente.",
+    "A bead cannot be used as thread. Choose its attachment thread separately."
+  ],
+  "pattern.attachmentThread": [
+    "Controlla il filo di fissaggio e il numero di fili.",
+    "Check the attachment thread and strand count."
+  ],
+  "supplier_material_identity": [
+    "La scheda prodotto non corrisponde a marca, tipo e codice del materiale. Seleziona di nuovo il prodotto.",
+    "The product record does not match the material brand, type and code. Select the product again."
+  ],
+  "supplierCatalogues": [
+    "Cataloghi dei fornitori",
+    "Supplier catalogues"
+  ],
+  "supplierScanHelp": [
+    "Aggiorna le schede pubbliche di Casa Cenina e Tessiland. La scansione legge solo i cataloghi: progetti e immagini restano sul computer. Puoi interrompere e riprendere; i prodotti già acquisiti restano disponibili offline.",
+    "Update public product records from Casa Cenina and Tessiland. Only catalogues are requested: your projects and images stay on this computer. Pause and resume at any time; acquired products remain available offline."
+  ],
+  "supplierDesktopOnly": [
+    "Gli aggiornamenti sono disponibili nell’app installata. Qui puoi usare i prodotti inclusi nell’app.",
+    "Updates are available in the installed app. Bundled products are available here."
+  ],
+  "supplierState_idle": [
+    "Da aggiornare",
+    "Ready to update"
+  ],
+  "supplierState_running": [
+    "Aggiornamento in corso",
+    "Updating"
+  ],
+  "supplierState_cancelling": [
+    "Interruzione in corso",
+    "Stopping"
+  ],
+  "supplierState_cancelled": [
+    "Interrotto",
+    "Stopped"
+  ],
+  "supplierState_paused": [
+    "In pausa",
+    "Paused"
+  ],
+  "supplierState_blocked": [
+    "Accesso non disponibile",
+    "Access unavailable"
+  ],
+  "supplierState_partial": [
+    "Acquisizione parziale",
+    "Partially acquired"
+  ],
+  "supplierState_complete": [
+    "Pagine individuate acquisite",
+    "Discovered pages acquired"
+  ],
+  "supplierState_offline": [
+    "Catalogo incluso",
+    "Bundled catalogue"
+  ],
+  "supplierScanCounts": [
+    "{products} prodotti · {done} pagine lette · {pending} da leggere · {blocked} non disponibili",
+    "{products} products · {done} pages read · {pending} pending · {blocked} unavailable"
+  ],
+  "supplierCompleteScope": [
+    "Tutte le pagine pertinenti individuate sono state elaborate. Il sito può contenere prodotti non esposti nelle pagine pubbliche; i dati non confermano disponibilità o prezzi attuali.",
+    "All discovered relevant pages were processed. The site may contain products not exposed on public pages; these records do not confirm current availability or prices."
+  ],
+  "supplierStart": [
+    "Aggiorna catalogo",
+    "Update catalogue"
+  ],
+  "supplierResume": [
+    "Riprendi aggiornamento",
+    "Resume update"
+  ],
+  "supplierRestart": [
+    "Ricomincia la scansione",
+    "Scan again"
+  ],
+  "supplierPause": [
+    "Interrompi",
+    "Stop"
+  ],
+  "supplierUnavailablePages": [
+    "Pagine non disponibili",
+    "Unavailable pages"
+  ],
+  "supplier_http_403": [
+    "Il sito rifiuta le richieste pubbliche (403). I prodotti già acquisiti restano disponibili; puoi riprovare più tardi.",
+    "The site refuses public requests (403). Acquired products remain available; you can retry later."
+  ],
+  "supplier_http_401": [
+    "Il sito richiede un accesso non disponibile per la scansione pubblica.",
+    "The site requires access unavailable to the public scanner."
+  ],
+  "supplier_http_404": [
+    "Pagina non trovata sul sito del fornitore.",
+    "Supplier page not found."
+  ],
+  "supplier_http_429": [
+    "Il sito richiede di rallentare. La scansione è stata interrotta; riprova più tardi.",
+    "The site requests a slower rate. Scanning stopped; try again later."
+  ],
+  "supplier_http_500": [
+    "Il sito del fornitore ha restituito un errore.",
+    "The supplier website returned an error."
+  ],
+  "supplier_http_502": [
+    "Il sito del fornitore è temporaneamente non disponibile.",
+    "The supplier website is temporarily unavailable."
+  ],
+  "supplier_http_503": [
+    "Il sito del fornitore è temporaneamente non disponibile.",
+    "The supplier website is temporarily unavailable."
+  ],
+  "supplier_cancelled": [
+    "Scansione interrotta. Riprendi per continuare dalle pagine in attesa.",
+    "Scan stopped. Resume to continue with pending pages."
+  ],
+  "supplier_budget": [
+    "Raggiunto il limite di questa sessione. Riprendi per continuare dalle pagine in attesa.",
+    "This session reached its limit. Resume to continue with pending pages."
+  ],
+  "supplier_interrupted": [
+    "La sessione precedente è stata interrotta. Puoi riprendere senza perdere i prodotti acquisiti.",
+    "The previous session was interrupted. Resume without losing acquired products."
+  ],
+  "supplier_frontier_limit": [
+    "Il numero di pagine supera il limite della scansione: copertura parziale.",
+    "The number of pages exceeds the scan limit: coverage is partial."
+  ],
+  "supplier_pages_unavailable": [
+    "Alcune pagine non sono disponibili o leggibili. Il catalogo è parziale.",
+    "Some pages are unavailable or unreadable. Catalogue coverage is partial."
+  ],
+  "supplier_network": [
+    "Connessione al fornitore non riuscita. Controlla la rete e riprova.",
+    "Could not connect to the supplier. Check your network and retry."
+  ],
+  "supplier_timeout": [
+    "Il fornitore non ha risposto in tempo. Puoi riprovare.",
+    "The supplier did not respond in time. You can retry."
+  ],
+  "supplier_robots": [
+    "Il sito esclude questa pagina dalla scansione automatica.",
+    "The site excludes this page from automated scanning."
+  ],
+  "supplier_parse": [
+    "La struttura della pagina non è stata riconosciuta; i dati precedenti sono conservati.",
+    "The page structure was not recognized; previous records are preserved."
+  ],
+  "supplier_page_size": [
+    "La pagina supera il limite di dimensione previsto.",
+    "The page exceeds the allowed size."
+  ],
+  "supplier_internal": [
+    "Aggiornamento interrotto. I prodotti già acquisiti sono conservati.",
+    "Update interrupted. Acquired products are preserved."
+  ],
+  "supplier_private_address": [
+    "L’indirizzo di rete del fornitore non è pubblico.",
+    "The supplier network address is not public."
+  ],
+  "supplier_redirect_limit": [
+    "La pagina ha troppi reindirizzamenti.",
+    "The page has too many redirects."
+  ],
+  "supplier_encoding": [
+    "Il formato della risposta non è supportato.",
+    "The response format is unsupported."
+  ],
+  "supplier_request": [
+    "Richiesta di aggiornamento non valida.",
+    "Invalid update request."
+  ],
+  "supplier_query": [
+    "Ricerca nel catalogo non valida.",
+    "Invalid catalogue search."
+  ],
+  "supplier_product": [
+    "Scheda prodotto non valida.",
+    "Invalid product record."
+  ],
+  "supplier_url": [
+    "Collegamento al fornitore non consentito.",
+    "Supplier link is not allowed."
+  ],
+  "supplier_response": [
+    "Risposta del catalogo non valida.",
+    "Invalid catalogue response."
+  ],
+  "supplier_cache_version": [
+    "Il catalogo è stato creato da una versione più recente di Ricamo.",
+    "The catalogue was created by a newer Ricamo version."
+  ],
+  "generationStrands": [
+    "Numero di fili",
+    "Strands per stitch"
+  ],
+  "generationStrandsHelp": [
+    "Quanti capi usi per ogni punto. Per esempio, 2 capi di una matassina divisibile a 6 capi. Serve anche per stimare i metri necessari.",
+    "How many strands you use for each stitch. For example, 2 strands from a divisible 6-strand skein. This also affects estimated thread length."
+  ],
+  "generationDesiredSizeHelp": [
+    "Scegli la larghezza che vuoi ricamare. L'altezza segue le proporzioni dell'immagine; il tessuto determina il numero di punti. Non viene stimata la dimensione reale dell'oggetto fotografato.",
+    "Choose your desired embroidery width. Height follows the image proportions; the fabric determines the stitch grid. The actual size of the photographed object is not inferred."
+  ],
+  "generationLiveQueued": [
+    "Aggiorno l'anteprima…",
+    "Updating preview…"
+  ],
+  "generationUpdateNow": [
+    "Aggiorna ora",
+    "Update now"
+  ],
+  "generationSymbols": [
+    "Simboli dello schema",
+    "Chart symbols"
+  ],
+  "symbolMode_letters": [
+    "Solo lettere",
+    "Letters only"
+  ],
+  "symbolMode_alphanumeric": [
+    "Lettere e numeri",
+    "Letters and numbers"
+  ],
+  "symbolMode_special": [
+    "Simboli grafici",
+    "Special symbols"
+  ],
+  "generationAdvancedAlpha": [
+    "Trasparenza avanzata",
+    "Advanced transparency"
+  ],
+  "generationCatalogueLimit": [
+    "Sono disponibili i primi 6000 prodotti con dati colore. Raffina o aggiorna i cataloghi nelle impostazioni per controllare la copertura.",
+    "The first 6000 thread products were loaded. Review or update catalogues in Settings to check coverage."
+  ],
+  "generationSupplierColoursHelp": [
+    "I tipi di filo restano separati per marca e famiglia. Le tavolozze usano solo colori digitali con una fonte dichiarata; un prodotto senza dati colore non viene inventato.",
+    "Thread types remain separate by brand and family. Palettes use only digital colours with a declared source; products without colour data are not assigned invented colours."
+  ],
+  "generationMaterialsReview": [
+    "Fili, tessuto e quantità",
+    "Threads, fabric and quantities"
+  ],
+  "fabricDensity": [
+    "Densità del tessuto",
+    "Fabric density"
+  ],
+  "fabricThreadsCm": [
+    "fili/cm",
+    "threads/cm"
+  ],
+  "fabricStitchesCm": [
+    "punti/cm",
+    "stitches/cm"
+  ],
+  "fabricDensityCustom": [
+    "Inserisci la tua densità",
+    "Enter your own density"
+  ],
+  "fabricFindColour": [
+    "Cerca un colore o un codice",
+    "Find a colour or code"
+  ],
+  "fabricFindColourHelp": [
+    "Nome del colore, marca o codice",
+    "Colour name, brand or code"
+  ],
+  "fabricChooseColour": [
+    "Colore del tessuto",
+    "Fabric colour"
+  ],
+  "fabricOwnColour": [
+    "Il mio tessuto / colore da verificare",
+    "My own fabric / colour to check"
+  ],
+  "fabricEffectiveDensity": [
+    "Un centimetro contiene {x} punti in larghezza e {y} in altezza.",
+    "One centimetre contains {x} stitches across and {y} stitches down."
+  ],
+  "fabricSwatchApproximate": [
+    "Colore digitale indicativo",
+    "Indicative digital colour"
+  ],
+  "fabricSwatchFromName": [
+    "Colore indicativo ricavato dal nome, da verificare",
+    "Indicative colour inferred from the name; verify physically"
+  ],
+  "fabricSwatchUnknown": [
+    "Campione colore non disponibile",
+    "Colour swatch unavailable"
+  ],
+  "fabricSearching": [
+    "Cerco nel catalogo salvato…",
+    "Searching the saved catalogue…"
+  ],
+  "fabricManualGeometry": [
+    "Personalizza tessuto e trama",
+    "Customise fabric and weave"
+  ],
+  "fabricColourCode": [
+    "Codice colore",
+    "Colour code"
+  ],
+  "fabricColourName": [
+    "Nome del colore",
+    "Colour name"
+  ],
+  "fabricDensityMeaning": [
+    "La densità indica",
+    "Density measures"
+  ],
+  "fabricDensityX": [
+    "Densità orizzontale per cm",
+    "Horizontal density per cm"
+  ],
+  "fabricDensityY": [
+    "Densità verticale per cm",
+    "Vertical density per cm"
+  ],
+  "fabricOverX": [
+    "Fili del tessuto coperti in larghezza",
+    "Fabric threads spanned across"
+  ],
+  "fabricOverY": [
+    "Fili del tessuto coperti in altezza",
+    "Fabric threads spanned down"
+  ],
+  "fabricManualClearsProduct": [
+    "Modificare la trama scollega il prodotto scelto: verifica che il tessuto reale corrisponda alle nuove misure.",
+    "Changing the weave unlinks the selected product: check that the actual fabric matches the new measurements."
+  ],
+  "generationThreadType": [
+    "Tipo di filo",
+    "Thread type"
+  ],
+  "generationOriginalPalette": [
+    "tavolozza originale",
+    "original palette"
+  ],
+  "procurementTitle": [
+    "Materiali, scorte e acquisti",
+    "Materials, stock and purchases"
+  ],
+  "procurementInventoryHelp": [
+    "Confronto con le scorte registrate. Le riserve di altri progetti restano protette.",
+    "Comparison with recorded stock. Other projects’ reservations remain protected."
+  ],
+  "procurementRefresh": [
+    "Aggiorna prodotti locali",
+    "Refresh local products"
+  ],
+  "procurementLookingUp": [
+    "Cerco prodotti nei cataloghi salvati sul computer…",
+    "Looking up products in the catalogues saved on this computer…"
+  ],
+  "procurementEmpty": [
+    "Aggiungi punti o una lista di materiali per calcolare il necessario.",
+    "Add stitches or a material list to calculate requirements."
+  ],
+  "procurementRequired": [
+    "Necessario",
+    "Required"
+  ],
+  "procurementAvailable": [
+    "Disponibile per questo lavoro",
+    "Available for this work"
+  ],
+  "procurementShortage": [
+    "Mancante",
+    "Shortage"
+  ],
+  "procurementUntracked": [
+    "Materiale non registrato: verifica le tue scorte.",
+    "Material is not recorded: check your stock."
+  ],
+  "procurementStock": [
+    "Fisico: {physical} · riservato qui: {own} · ad altri: {other}",
+    "Physical: {physical} · reserved here: {own} · elsewhere: {other}"
+  ],
+  "procurementKnownStock": [
+    "Quantità già nota: {quantity} {unit}",
+    "Already known: {quantity} {unit}"
+  ],
+  "procurementRemaining": [
+    "Ancora necessario: {quantity} {unit}",
+    "Still required: {quantity} {unit}"
+  ],
+  "procurementCounted": [
+    "Pezzi contati nello schema",
+    "Pieces counted in the chart"
+  ],
+  "procurementDeclared": [
+    "Quantità dichiarata nello schema",
+    "Quantity declared in the pattern"
+  ],
+  "procurementGeometry": [
+    "Lunghezza calcolata con i margini di lavorazione",
+    "Length calculated with working allowances"
+  ],
+  "procurementBuy": [
+    "Vedi su {supplier}",
+    "View at {supplier}"
+  ],
+  "procurementPackages": [
+    "Schema intero: {required} {unit} · da acquistare: {missing}",
+    "Whole chart: {required} {unit} · to purchase: {missing}"
+  ],
+  "procurementPackageUnknown": [
+    "Contenuto della confezione da verificare; nessuna conversione presunta.",
+    "Package content needs verification; no conversion is assumed."
+  ],
+  "procurementAllowances": [
+    "Come sono calcolati i metri di filo",
+    "How thread metres are calculated"
+  ],
+  "procurementFormula": [
+    "La lunghezza usa la dimensione fisica dei punti, il loro percorso e il Numero di fili scelto. Spostamenti, scarto e inizio/fine sono margini di lavorazione dichiarati, non consumo già avvenuto. Per fissare una perla si usa il maggiore tra diagonale del punto e diametro dichiarato, più lo spostamento di ritorno.",
+    "Length uses physical stitch size, stitch paths and the selected number of strands. Travel, waste and start/finish lengths are declared working allowances, not recorded consumption. Bead fastening uses the greater of cell diagonal and declared bead diameter, plus return travel."
+  ],
+  "procurementSettings": [
+    "Scarto: {waste}% · spostamento croce: {travel} × passo X+Y · {start} cm per inizio/fine ogni {batch} punti.",
+    "Waste: {waste}% · cross travel: {travel} × X+Y pitch · {start} cm start/finish per {batch} stitches."
+  ],
+  "procurementPackHelp": [
+    "Le matassine si arrotondano per eccesso usando lunghezza e filamenti separabili dichiarati. Un filo metallico non divisibile non viene moltiplicato per i capi decorativi. Le perle si contano in pezzi; il peso non ne determina il numero.",
+    "Skeins round up using declared length and separable filaments. Non-divisible metallic thread is not multiplied by decorative plies. Beads are counted in pieces; weight does not determine their count."
+  ],
+  "procurementApply": [
+    "Aggiorna il necessario del progetto",
+    "Update project material needs"
+  ],
+  "procurementFabricSize": [
+    "Ricamo: {width} × {height} cm · tessuto da tagliare: {cutWidth} × {cutHeight} cm",
+    "Embroidery: {width} × {height} cm · fabric to cut: {cutWidth} × {cutHeight} cm"
+  ],
+  "procurementMargins": [
+    "Margini in cm — sinistra {left}, destra {right}, alto {top}, basso {bottom}. Zero significa che non è incluso un margine di finitura.",
+    "Margins in cm — left {left}, right {right}, top {top}, bottom {bottom}. Zero means no finishing allowance is included."
+  ],
+  "procurementFabricUnknown": [
+    "Definisci dimensioni e densità del tessuto per calcolare le lunghezze. I valori sconosciuti restano da verificare.",
+    "Set fabric dimensions and density to calculate lengths. Unknown values still need verification."
+  ],
+  "procurementFabricSelected": [
+    "Pezzo scelto",
+    "Selected piece"
+  ],
+  "procurementFabricFits": [
+    "la superficie disponibile è sufficiente",
+    "available area fits"
+  ],
+  "procurementFabricTooSmall": [
+    "la superficie disponibile non è sufficiente",
+    "available area does not fit"
+  ],
+  "procurementFabricCheck": [
+    "verifica manuale delle dimensioni necessaria",
+    "manual size check needed"
+  ],
+  "procurementFabricNoLot": [
+    "Nessun pezzo di tessuto scelto: la presenza di un tessuto in inventario non garantisce che sia abbastanza grande.",
+    "No fabric piece selected: having this fabric in inventory does not guarantee that a piece is large enough."
+  ],
+  "procurement_fastening_unknown": [
+    "Perla {code}: scegli anche il filo di fissaggio per completare il necessario.",
+    "Bead {code}: also select its fastening thread to complete the requirements."
+  ],
+  "procurement_empty": [
+    "Non ci sono ancora materiali da aggiungere al necessario.",
+    "There are no material requirements to add yet."
+  ],
+  "procurement_unit_conflict": [
+    "Lo stesso materiale usa unità diverse: verifica la conversione prima di unire le quantità.",
+    "This material uses different units: verify the conversion before combining quantities."
+  ],
+  "procurementBall": [
+    "gomitoli",
+    "balls"
+  ],
+  "procurementCone": [
+    "coni",
+    "cones"
+  ],
+  "procurementMaterialType": [
+    "Tipo",
+    "Type"
+  ],
+  "procurementColorCode": [
+    "Codice colore",
+    "Colour code"
+  ],
+  "procurement_lookup_failed": [
+    "Impossibile leggere i prodotti salvati. Aggiorna la lista e riprova.",
+    "Could not read saved products. Refresh the list and try again."
+  ],
+  "supplier_desktop_only": [
+    "Gli aggiornamenti sono disponibili nell’app installata. Qui puoi usare i prodotti inclusi nell’app.",
+    "Updates are available in the installed app. Bundled products are available here."
+  ],
+  "procurementRevisionBeads": [
+    "{count} perline",
+    "{count} beads"
+  ],
+  "procurementRevisionAttachments": [
+    "{count} fissaggi di perline",
+    "{count} bead attachments"
+  ],
+  "readingCellCm": [
+    "Dimensione della cella sul foglio (cm)",
+    "Cell size on paper (cm)"
+  ],
+  "readingCellCmHelp": [
+    "Aumenta per leggere meglio i simboli: verranno usati più fogli A4. Non cambia le dimensioni del ricamo.",
+    "Increase for easier-to-read symbols: more A4 sheets will be used. This does not change the embroidery size."
+  ],
+  "printBatchProgress": [
+    "{stage} · pagina {page} di {total} · blocco {batch} di {batches} (pagine {firstPage}–{lastPage})",
+    "{stage} · page {page} of {total} · batch {batch} of {batches} (pages {firstPage}–{lastPage})"
+  ],
+  "printStage_preparing": [
+    "Preparazione",
+    "Preparing"
+  ],
+  "printStage_printing": [
+    "Invio alla stampa",
+    "Sending to print"
+  ],
+  "printStage_submitted": [
+    "Blocco inviato",
+    "Batch submitted"
+  ],
+  "printInterrupted": [
+    "Stampa interrotta. Pagine già inviate: {submitted}. Puoi riprendere il documento precedente senza reinviare questi blocchi.",
+    "Printing interrupted. Pages already submitted: {submitted}. You can resume the previous document without resending these batches."
+  ],
+  "resumePrintPrevious": [
+    "Riprendi il documento precedente dalla pagina {page}",
+    "Resume previous document from page {page}"
+  ],
+  "cellClickHelp": [
+    "Clicca una cella per scegliere filo o perlina. Trascina per spostare la vista; Invio apre la cella selezionata.",
+    "Click a cell to choose a thread or bead. Drag to pan; Enter opens the selected cell."
+  ],
+  "fabricDensityMatched": [
+    "Densità selezionata",
+    "Selected density"
+  ],
+  "fabricDensityUnmeasured": [
+    "Densità da misurare prima di generare",
+    "Measure density before generating"
+  ],
+  "materialTechniqueUnknown": [
+    "Verifica spessore e idoneità di questo filato al tessuto e al ricamo scelti. Non viene selezionato automaticamente dalla foto.",
+    "Check that this yarn’s thickness and intended technique suit your fabric and embroidery. It is not selected automatically from the photo."
+  ],
+  "operationInProgress": [
+    "Attendi il completamento dell’operazione in corso prima di cambiare pagina.",
+    "Wait for the current operation to finish before changing page."
+  ],
+  "materialArticleCode": [
+    "Codice articolo o nome",
+    "Article code or name"
+  ],
+  "materialArticleSearch": [
+    "Cerca ago, telaio, forbici…",
+    "Search needles, hoops, scissors…"
+  ],
+  "supplier_cache_unavailable": [
+    "Il catalogo locale non è leggibile. Puoi usare i prodotti inclusi nell’app; gli aggiornamenti sono disabilitati e il file originale è conservato.",
+    "The local catalogue cannot be read. Bundled products are available; updates are disabled and the original file is preserved."
+  ],
+  "fabricExtraMargin": [
+    "Tessuto extra per lato (cm)",
+    "Extra fabric on each side (cm)"
+  ],
+  "fabricExtraMarginHelp": [
+    "Per telaio e finitura: si aggiunge al taglio del tessuto senza cambiare la dimensione del ricamo. Imposta 0 per non aggiungere margine.",
+    "For hooping and finishing: added to the fabric cut without changing the embroidery size. Set 0 for no extra margin."
+  ],
+  "fabricDifferentMargins": [
+    "Margini diversi sui quattro lati",
+    "Different margins on the four sides"
+  ],
+  "procurement_suitability_unknown": [
+    "{code}: spessore e idoneità al ricamo da verificare. Controlla le quantità geometriche con una prova sul tessuto scelto.",
+    "{code}: thickness and embroidery suitability are unverified. Check geometric quantities with a sample on your chosen fabric."
+  ],
+  "patternEffects": [
+    "Effetti da rivedere",
+    "Review material effects"
+  ],
+  "effectHeuristicHelp": [
+    "Proposte locali basate sulla luminosità e sul colore dello schema. Non riconoscono pelo, gioielli o altri oggetti. Controlla le posizioni: lo schema cambia solo quando premi Applica.",
+    "Local suggestions based on chart brightness and colour. They do not recognise fur, jewellery or other objects. Review the positions: the chart changes only when you press Apply."
+  ],
+  "effectMode": [
+    "Tipo di effetto",
+    "Effect type"
+  ],
+  "effectMode_beads": [
+    "Perline sui punti luminosi isolati",
+    "Beads on isolated highlights"
+  ],
+  "effectMode_metallic": [
+    "Filo metallizzato sui punti luminosi",
+    "Metallic thread on highlights"
+  ],
+  "effectMode_wool": [
+    "Lana da ricamo nelle zone poco sature",
+    "Embroidery wool in low-chroma areas"
+  ],
+  "effectSoftHelp": [
+    "Cerca zone poco sature con luminosità uniforme. Seleziona una lana esplicitamente adatta al ricamo e rivedi ogni proposta.",
+    "Finds low-chroma areas with similar neighbouring brightness. Select wool explicitly suitable for embroidery and review each suggestion."
+  ],
+  "effectHighlightHelp": [
+    "Cerca punti chiari più luminosi dei vicini. I fondi bianchi uniformi non vengono proposti come riflessi.",
+    "Finds isolated bright cells that stand out from their neighbours. Uniform white backgrounds are excluded."
+  ],
+  "effectBrightness": [
+    "Luminosità minima",
+    "Minimum brightness"
+  ],
+  "effectChroma": [
+    "Variazione cromatica massima",
+    "Maximum colour variation"
+  ],
+  "effectMaximum": [
+    "Limite delle posizioni proposte",
+    "Maximum suggested positions"
+  ],
+  "effectGap": [
+    "Spazio libero tra le perline",
+    "Clear gap between beads"
+  ],
+  "effectChooseAttachment": [
+    "Scegli il filo di fissaggio",
+    "Choose a fastening thread"
+  ],
+  "effectCalculating": [
+    "Controllo delle posizioni…",
+    "Checking positions…"
+  ],
+  "effectChooseProduct": [
+    "Scegli un prodotto dal catalogo locale.",
+    "Choose a product from the local catalogue."
+  ],
+  "effectWrongProduct": [
+    "Il prodotto non corrisponde al tipo di effetto scelto.",
+    "This product does not match the selected effect type."
+  ],
+  "effectMetallicRequired": [
+    "Scegli un prodotto dichiarato come filo metallizzato da ricamo.",
+    "Choose a product identified as metallic embroidery thread."
+  ],
+  "effectWoolRequired": [
+    "Serve una lana con idoneità al ricamo dichiarata nei dati del prodotto.",
+    "The wool must have explicit embroidery suitability in its product facts."
+  ],
+  "effectBeadSizeRequired": [
+    "La dimensione della perlina non è nota: assegnala manualmente a una cella dopo aver verificato lo spazio.",
+    "The bead size is unknown: use manual cell assignment after checking its fit."
+  ],
+  "effectFabricRequired": [
+    "Imposta una densità valida del tessuto per controllare lo spazio tra le perline.",
+    "Set a valid fabric density to check bead spacing."
+  ],
+  "effectExistingSizeRequired": [
+    "Lo schema contiene perline di dimensione sconosciuta. Verifica le dimensioni prima delle proposte automatiche.",
+    "The chart contains beads of unknown size. Verify their dimensions before using automatic placement suggestions."
+  ],
+  "effectExistingLimit": [
+    "Lo schema contiene oltre 10.000 perline già assegnate. Usa l'assegnazione manuale per questo schema.",
+    "The chart already contains more than 10,000 beads. Use manual assignment for this chart."
+  ],
+  "effectCandidateCounts": [
+    "{selected} selezionate su {count} proposte · {eligible} posizioni corrispondono ai criteri di colore",
+    "{selected} selected from {count} suggestions · {eligible} positions match the colour criteria"
+  ],
+  "effectSpacing": [
+    "Diametro dichiarato {diameter} mm · spazio libero {gap} mm. Le proposte evitano le perline già presenti e i bordi dello schema.",
+    "Declared diameter {diameter} mm · clear gap {gap} mm. Suggestions avoid existing beads and the chart edges."
+  ],
+  "effectSearchBound": [
+    "Ricerca limitata per mantenere reattiva l'app. Sono mostrate solo posizioni già controllate.",
+    "The search was bounded to keep the app responsive. Only positions already checked are shown."
+  ],
+  "effectAttachmentRequired": [
+    "Per applicare le perline proposte, scegli esplicitamente un filo di fissaggio.",
+    "Choose a fastening thread explicitly before applying suggested beads."
+  ],
+  "effectSelectAll": [
+    "Seleziona tutte le proposte",
+    "Select all suggestions"
+  ],
+  "effectSelectNone": [
+    "Deseleziona tutte",
+    "Clear selection"
+  ],
+  "effectPreviewHelp": [
+    "Clicca una proposta per includerla o escluderla. Con la tastiera: frecce per spostarti, Spazio o Invio per alternare. Le coordinate offrono anche caselle di selezione.",
+    "Click a suggestion to include or exclude it. Keyboard: arrows move between suggestions; Space or Enter toggles one. The coordinate list also provides checkboxes."
+  ],
+  "effectPreview": [
+    "Anteprima delle proposte: frecce per navigare, Spazio per alternare",
+    "Suggestion preview: arrows to navigate, Space to toggle"
+  ],
+  "effectFocused": [
+    "Colonna {x}, riga {y}: {state}",
+    "Column {x}, row {y}: {state}"
+  ],
+  "effectIncluded": [
+    "selezionata",
+    "selected"
+  ],
+  "effectExcluded": [
+    "esclusa",
+    "excluded"
+  ],
+  "effectCoordinates": [
+    "Rivedi le coordinate",
+    "Review coordinates"
+  ],
+  "effectInclude": [
+    "Includi",
+    "Include"
+  ],
+  "effectCandidateAt": [
+    "Includi colonna {x}, riga {y}",
+    "Include column {x}, row {y}"
+  ],
+  "effectApply": [
+    "Applica a {count} posizioni",
+    "Apply to {count} positions"
+  ],
+  "effectEmbroideryRequired": [
+    "Verifica l'idoneità al ricamo prima di usare questo filato nelle proposte automatiche.",
+    "Verify embroidery suitability before using this yarn in automatic suggestions."
+  ],
+  "printResumeHelp": [
+    "La ripresa usa il documento precedente e salta i lotti già confermati nella finestra di stampa. Non rileva le pagine uscite dalla stampante ed è disponibile finché lo schema rimane aperto.",
+    "Resume uses the previous document and skips batches already confirmed in the print dialog. It cannot detect pages physically printed and remains available while this chart stays open."
+  ],
+  "supplier_challenge": [
+    "Il sito richiede una verifica umana. La pagina non viene trattata come acquisita.",
+    "The site requires human verification. The page is not marked as acquired."
+  ],
+  "supplier_product_unmapped": [
+    "Scheda prodotto non riconosciuta: dati da verificare.",
+    "Product record not recognized: its data needs verification."
+  ],
+  "supplier_product_json": [
+    "La scheda prodotto non è leggibile; i dati precedenti sono conservati.",
+    "The product record could not be read; previous data is preserved."
+  ],
+  "materialMulticolour": [
+    "Multicolore: il campione è una media digitale indicativa. Escluso dalla scelta automatica dei colori della foto.",
+    "Multicolour: this swatch is an indicative digital average. Excluded from automatic photo colour matching."
   ]
 }
