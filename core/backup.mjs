@@ -1,3 +1,4 @@
+import { APP_VERSION } from './version.mjs';
 import { validateApplicationState } from './application.mjs';
 import { FileError, BACKUP_LIMIT, digestBytes, bytesToBase64, base64ToBytes, detectFile } from './files.mjs';
 
@@ -7,7 +8,7 @@ export async function createBackup(state, assets) {
   const payload = JSON.stringify(content);
   const bytes = new TextEncoder().encode(payload);
   if (bytes.length > BACKUP_LIMIT) throw new FileError('backup_too_large');
-  const envelope = JSON.stringify({ format: 'ricamo-backup', version: 1, appVersion: '0.1.0', createdAt: new Date().toISOString(), sha256: await digestBytes(bytes), payload });
+  const envelope = JSON.stringify({ format: 'ricamo-backup', version: 1, appVersion: APP_VERSION, createdAt: new Date().toISOString(), sha256: await digestBytes(bytes), payload });
   if (new TextEncoder().encode(envelope).length > BACKUP_LIMIT) throw new FileError('backup_too_large');
   return envelope;
 }
