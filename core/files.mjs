@@ -1,3 +1,5 @@
+import { inspectImage } from './image-metadata.mjs';
+
 export const FILE_LIMIT = 25 * 1024 * 1024;
 export const BACKUP_LIMIT = 256 * 1024 * 1024;
 
@@ -11,10 +13,12 @@ export function detectFile(bytes) {
   if (!(bytes instanceof Uint8Array) || !bytes.length || bytes.length > FILE_LIMIT) throw new FileError('file_too_large');
   const start = [...bytes.slice(0, 16)];
   const ascii = String.fromCharCode(...start);
-  if (start.slice(0, 8).join(',') === '137,80,78,71,13,10,26,10') return 'image/png';
-  if (start[0] === 255 && start[1] === 216 && start[2] === 255) return 'image/jpeg';
-  if (ascii.startsWith('RIFF') && ascii.slice(8, 12) === 'WEBP') return 'image/webp';
-  if (/^GIF8[79]a/.test(ascii)) return 'image/gif';
+  let mime;
+  if (start.slice(0, 8).join(',') === '137,80,78,71,13,10,26,10') mime = 'image/png';
+  else if (start[0] === 255 && start[1] === 216 && start[2] === 255) mime = 'image/jpeg';
+  else if (ascii.startsWith('RIFF') && ascii.slice(8, 12) === 'WEBP') mime = 'image/webp';
+  else if (/^GIF8[79]a/.test(ascii)) mime = 'image/gif';
+  if (mime) { try { inspectImage(bytes, mime); } catch (error) { throw new FileError(error.code || 'invalid_image'); } return mime; }
   if (ascii.startsWith('%PDF-')) return 'application/pdf';
   throw new FileError('invalid_file_type');
 }
@@ -34,7 +38,8 @@ export function bytesToBase64(bytes) {
   return btoa(binary);
 }
 export function base64ToBytes(value) {
-  if (typeof value !== 'string' || value.length > Math.ceil(FILE_LIMIT / 3) * 4 || !/^[A-Za-z0-9+/]*={0,2}$/.test(value)) throw new FileError('invalid_file_data');
-  if (typeof Buffer !== 'undefined') return new Uint8Array(Buffer.from(value, 'base64'));
-  return Uint8Array.from(atob(value), char => char.charCodeAt(0));
+  if (typeof value !== 'string' || !value.length || value.length % 4 || value.length > Math.ceil(FILE_LIMIT / 3) * 4 || !/^[A-Za-z0-9+/]*={0,2}$/.test(value)) throw new FileError('invalid_file_data');
+  const bytes = typeof Buffer !== 'undefined' ? new Uint8Array(Buffer.from(value, 'base64')) : Uint8Array.from(atob(value), char => char.charCodeAt(0));
+  if (bytesToBase64(bytes) !== value) throw new FileError('invalid_file_data');
+  return bytes;
 }
