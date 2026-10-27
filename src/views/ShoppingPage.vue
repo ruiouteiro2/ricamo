@@ -57,7 +57,7 @@ const formFields = computed(() => {
   return [
     { key: 'materialId', label: t('material'), type: 'select', required: true, wide: true, options: row ? materialOptions.value.filter(option => option.value === row.materialId) : materialOptions.value },
     { key: 'quantity', type: 'number', required: true, help: t('purchaseQuantityHelp') },
-    { key: 'status', type: 'select', required: true, options: statuses.map(value => ({ value, label: statusText(value) })) },
+    { key: 'status', type: 'select', required: true, options: statuses.map(value => ({ value, label: () => statusText(value) })) },
     { key: 'supplierId', label: t('supplier'), type: 'select', options: supplierOptions.value },
     { key: 'priority', type: 'select', required: true, options: ['low', 'normal', 'high'] },
     { key: 'unitPriceMajor', label: t('unitPrice'), type: 'number', help: t('unitPriceHelp') },
