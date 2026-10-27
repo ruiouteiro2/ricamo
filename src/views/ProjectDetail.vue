@@ -33,7 +33,7 @@ function editProject() {
   const current = project.value;
   form.value = {title:t('edit'),wide:true,fields:[...projectFields(project.value.currency),
     {key:'useLatestRevision',label:t('useLatestRevision'),type:'checkbox',wide:true,when:draft=>Boolean(draft.patternId)},
-    {key:'acceptRevisionChange',label:t('acceptRevisionChange'),type:'checkbox',wide:true,when:draft=>Boolean(current.completed.length && (draft.patternId!==current.patternId || draft.useLatestRevision))}],
+    {key:'acceptRevisionChange',label:t('acceptRevisionChange'),type:'checkbox',wide:true,when:draft=>Boolean((current.completed.length || current.manualPercent || current.referenceData?.annotations?.length || current.referenceData?.bookmarks?.length) && (draft.patternId!==current.patternId || draft.useLatestRevision))}],
   initial:{...current,status:closed.value?'idea':current.status,budgetDisplay:current.budget===null?'':current.budget/100,useLatestRevision:false,acceptRevisionChange:false},submit:async draft=>{
     const payload=projectPayload(draft);
     if (payload.patternId !== current.patternId || payload.useLatestRevision) payload.revisionId=state.value.patterns.find(row=>row.id===payload.patternId)?.currentRevisionId || null;
