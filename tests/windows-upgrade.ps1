@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-  [ValidateSet('Inspect','AdoptLegacy','PrepareNext','SeedOld','Upgrade','VerifyNew','Uninstall')][string]$Action = 'Inspect',
+  [ValidateSet('Inspect','AdoptLegacy','PrepareNext','SeedOld','Upgrade','VerifyNew','Reinstall','Uninstall')][string]$Action = 'Inspect',
   [string]$RepoRoot,
   [string]$InstallDirectory,
   [string]$DataDirectory,
@@ -140,6 +140,19 @@ switch ($Action) {
     InvokeRunner 'record-upgrade' @{registry=$registration;shortcuts=@(Shortcuts);installerExitCode=[int]$process.ExitCode}
   }
   'VerifyNew' { $registration=Registration $config.targetVersion; InvokeRunner 'verify-new' @{registry=$registration} }
+  'Reinstall' {
+    $registration=Registration $config.targetVersion; InvokeRunner 'check-uninstall' @{registry=$registration}
+    NoRicamoProcesses; NoReparse $config.installer
+    if ((Get-FileHash -Algorithm SHA256 -LiteralPath $config.installer).Hash.ToLowerInvariant() -ne $record.installerSha256) { throw 'Installer hash changed.' }
+    $previousLinks=@(Shortcuts)
+    $process=Start-Process -FilePath $config.installer -ArgumentList @('/S','--keep-shortcuts','--no-desktop-shortcut',('/D='+$config.installDir)) -Wait -PassThru
+    if ($process.ExitCode -ne 0) { throw "Reinstaller failed: $($process.ExitCode)" }
+    NoRicamoProcesses
+    $registration=Registration $config.targetVersion; InvokeRunner 'check-uninstall' @{registry=$registration}
+    $currentLinks=@(Shortcuts)
+    foreach ($link in $previousLinks) { if (!@($currentLinks | Where-Object { SamePath $_.path $link.path }).Count) { throw 'Reinstall lost an existing shortcut.' } }
+    @{version=$config.targetVersion;installerExitCode=0;installerSha256=$record.installerSha256;asarSha256=$record.targetAsarSha256;stateAndOriginalBytesUnchanged=$true;shortcuts=$currentLinks;verifiedAt=[DateTime]::UtcNow.ToString('o')} | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $config.runDir 'reinstall.json') -Encoding UTF8
+  }
   'Uninstall' {
     if (!$AllowUninstall) { throw 'Uninstall is an explicit optional phase; -AllowUninstall is required.' }
     $registration=Registration $config.targetVersion; InvokeRunner 'check-uninstall' @{registry=$registration}
