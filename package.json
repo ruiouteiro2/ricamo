@@ -1,6 +1,6 @@
 {
   "name": "ricamo",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Offline embroidery studio, inventory and project companion",
   "author": "RuiOuteiro2",
   "license": "MIT",
@@ -15,7 +15,7 @@
     "test:e2e": "node tests/run-browser.mjs",
     "package:win": "npm run build && electron-builder --win nsis --x64 --publish never && npm run release:audit",
     "package:dir": "npm run build && electron-builder --dir --publish never",
-    "test:desktop": "npm run build && npm run test:desktop:smoke && npm run test:desktop:documents && npm run test:desktop:drafts && npm run test:desktop:projects && npm run test:desktop:export-cancel && npm run test:desktop:kits && npm run test:desktop:planning && npm run test:desktop:example && npm run test:desktop:data && npm run test:desktop:work && npm run test:desktop:work-empty && npm run test:desktop:materials && npm run test:desktop:attachments && npm run test:desktop:library && npm run test:desktop:stock-count && npm run test:desktop:library-details && npm run test:desktop:support && npm run test:desktop:owner-documents && npm run test:desktop:pdf-motifs && npm run test:desktop:design-size && npm run test:desktop:reference-batch && npm run test:desktop:generator-options && npm run test:desktop:catalogue-references && npm run test:desktop:label-options && npm run test:desktop:background-center && npm run test:desktop:fabric-geometry && npm run test:desktop:thread-catalogues && npm run test:desktop:revision-impact",
+    "test:desktop": "npm run build && npm run test:desktop:smoke && npm run test:desktop:documents && npm run test:desktop:drafts && npm run test:desktop:projects && npm run test:desktop:export-cancel && npm run test:desktop:kits && npm run test:desktop:planning && npm run test:desktop:example && npm run test:desktop:data && npm run test:desktop:work && npm run test:desktop:work-empty && npm run test:desktop:materials && npm run test:desktop:attachments && npm run test:desktop:library && npm run test:desktop:stock-count && npm run test:desktop:library-details && npm run test:desktop:support && npm run test:desktop:owner-documents && npm run test:desktop:pdf-motifs && npm run test:desktop:design-size && npm run test:desktop:reference-batch && npm run test:desktop:generator-options && npm run test:desktop:catalogue-references && npm run test:desktop:label-options && npm run test:desktop:background-center && npm run test:desktop:fabric-geometry && npm run test:desktop:thread-catalogues && npm run test:desktop:revision-impact && npm run test:desktop:live-generation && npm run test:desktop:procurement && npm run test:desktop:cell-materials && npm run test:desktop:pattern-effects && npm run test:desktop:print-batches",
     "test:desktop:smoke": "node tests/desktop-smoke.mjs",
     "test:desktop:documents": "node tests/desktop-documents.mjs",
     "test:desktop:drafts": "node tests/desktop-drafts.mjs",
@@ -49,7 +49,12 @@
     "test:desktop:fabric-geometry": "node tests/desktop-fabric-geometry.mjs",
     "test:desktop:thread-catalogues": "node tests/desktop-thread-catalogues.mjs",
     "test:desktop:revision-impact": "node tests/desktop-revision-impact.mjs",
-    "test:desktop:ui": "node tests/desktop-ui-polish.mjs"
+    "test:desktop:ui": "node tests/desktop-ui-polish.mjs",
+    "test:desktop:live-generation": "node tests/desktop-live-generation.mjs",
+    "test:desktop:procurement": "node tests/desktop-procurement.mjs",
+    "test:desktop:cell-materials": "node tests/desktop-cell-materials.mjs",
+    "test:desktop:pattern-effects": "node tests/desktop-pattern-effects.mjs",
+    "test:desktop:print-batches": "node tests/desktop-print-batches.mjs"
   },
   "dependencies": {
     "@lucide/vue": "1.62.0",
@@ -80,6 +85,7 @@
       "desktop/**",
       "core/**",
       "data/**",
+      "src/engine/dmc.json",
       "LICENSE",
       "THIRD-PARTY-NOTICES.md",
       "package.json",
@@ -114,6 +120,6 @@
       "displayLanguageSelector": true,
       "artifactName": "Ricamo-${version}-Windows-x64-Setup.${ext}"
     },
-    "copyright": "Copyright \u00a9 2026 RuiOuteiro2"
+    "copyright": "Copyright © 2026 RuiOuteiro2"
   }
 }
