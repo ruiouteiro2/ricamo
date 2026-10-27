@@ -2122,5 +2122,89 @@
   "storagePermission": [
     "La cartella dei dati non è scrivibile. Controlla i permessi o scegli una destinazione accessibile, poi riprova.",
     "The data folder cannot be written. Check its permissions or choose an accessible destination, then try again."
+  ],
+  "draftPending": [
+    "Modifiche da salvare",
+    "Changes pending"
+  ],
+  "draftSaved": [
+    "Bozza salvata",
+    "Draft saved"
+  ],
+  "draftPendingHelp": [
+    "Le modifiche vengono salvate come bozza. La revisione definitiva rimane invariata finché non scegli Nuova revisione.",
+    "Changes are being saved as a draft. The saved revision stays unchanged until you choose New revision."
+  ],
+  "draftSavedHelp": [
+    "Bozza salvata su questo computer alle {time}. Crea una nuova revisione quando vuoi usarla nei progetti.",
+    "Draft saved on this computer at {time}. Create a new revision when you want to use it in projects."
+  ],
+  "draftSaveFailed": [
+    "Non è stato possibile registrare questa modifica. Tieni aperto l’editor e riprova. Le revisioni già salvate rimangono intatte.",
+    "This change could not be written. Keep the editor open and retry. Previously saved revisions remain intact."
+  ],
+  "draftRecovery": [
+    "Riprendi una bozza",
+    "Recover a draft"
+  ],
+  "draftRecoveryHelp": [
+    "C’è una bozza di «{name}», salvata il {time}. Puoi riprenderla, consultare la revisione salvata o eliminare la bozza.",
+    "A draft of “{name}” was saved on {time}. Resume it, inspect the saved revision, or discard the draft."
+  ],
+  "draftBaseLabel": [
+    "Revisione di partenza: {name}",
+    "Starting revision: {name}"
+  ],
+  "draftOldBase": [
+    "Questa bozza parte da una revisione precedente. Salvarla creerà una nuova revisione con il suo contenuto; le altre revisioni e i progetti non verranno modificati.",
+    "This draft starts from an earlier revision. Saving it creates a new revision with its contents; other revisions and projects stay unchanged."
+  ],
+  "draftOpenSaved": [
+    "Apri la revisione salvata",
+    "Open saved revision"
+  ],
+  "draftDiscard": [
+    "Elimina bozza",
+    "Discard draft"
+  ],
+  "draftResume": [
+    "Riprendi bozza",
+    "Resume draft"
+  ],
+  "draftResumeToEdit": [
+    "Una bozza recuperabile è ancora conservata. Riprendila o eliminala prima di modificare questa revisione.",
+    "A recoverable draft is still stored. Resume or discard it before editing this revision."
+  ],
+  "draftLeaveTitle": [
+    "Prima di uscire dall’editor",
+    "Before leaving the editor"
+  ],
+  "draftLeaveHelp": [
+    "Conserva le modifiche come bozza per riprenderle in seguito, oppure eliminale. Le revisioni salvate rimangono disponibili.",
+    "Keep these changes as a draft to resume later, or discard them. Saved revisions remain available."
+  ],
+  "draftStay": [
+    "Resta nell’editor",
+    "Stay in editor"
+  ],
+  "draftSaveLeave": [
+    "Salva bozza ed esci",
+    "Save draft and leave"
+  ],
+  "draftCloseFailed": [
+    "Bozza non salvata prima della chiusura",
+    "Draft could not be saved before closing"
+  ],
+  "draftDiscardClose": [
+    "Elimina modifiche e chiudi",
+    "Discard changes and close"
+  ],
+  "draftRetryClose": [
+    "Riprova e chiudi",
+    "Retry and close"
+  ],
+  "draftNativeSavedOnly": [
+    "Il file Ricamo contiene la revisione salvata selezionata. Per includere la bozza, salvala prima come nuova revisione. Il backup completo conserva anche le bozze.",
+    "The Ricamo file contains the selected saved revision. Save the draft as a new revision to include it. Complete backups also preserve drafts."
   ]
 }
