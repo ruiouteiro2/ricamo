@@ -1,0 +1,7 @@
+@media print{
+  .sidebar,.topbar,.page-actions,.toolbar,.button,.icon-button,.tabs,.toast{display:none!important}
+  .workspace{margin:0!important;width:100%!important}.page{padding:0!important;max-width:none!important}
+  body{background:white!important;color:black!important}.panel{border:0!important;box-shadow:none!important}
+  .table-wrap{overflow:visible!important}thead{display:table-header-group}tr{break-inside:avoid}
+  h1{font-size:24pt!important}.badge{background:none!important;border:1px solid #999}
+}
