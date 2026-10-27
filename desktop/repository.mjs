@@ -1,3 +1,4 @@
+import { preparePatternAssetCommand } from '../core/pattern-asset.mjs';
 import { createProjectPackage, projectExportManifest, projectImportAssets, projectImportCommand, importedProjectId } from '../core/project-package.mjs';
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync, existsSync } from 'node:fs';
@@ -68,6 +69,13 @@ export class Repository {
     const payload = { id, name: safeDisplayName(name), mime, size: bytes.length, digest };
     const next = this.execute({ type: 'attachment.add', payload, operationId }, expectedRevision, { id, data: bytes });
     return { state: next, asset: next.attachments.find(item => item.id === id), duplicate: false };
+  }
+  createPatternWithAsset({ name, data, pattern, operationId }, expectedRevision) {
+    const bytes = new Uint8Array(boundedBytes(data));
+    const metadata = { name: safeDisplayName(name), mime: detectFile(bytes), size: bytes.length, digest: createHash('sha256').update(bytes).digest('hex') };
+    const prepared = preparePatternAssetCommand(this.load(), metadata, pattern, operationId);
+    const state = this.execute(prepared.command, expectedRevision, prepared.duplicateAsset ? null : { id: prepared.assetId, data: bytes });
+    return { state, asset: state.attachments.find(row => row.id === prepared.assetId), patternId: prepared.patternId, duplicateAsset: prepared.duplicateAsset };
   }
   getAsset(id) {
     if (typeof id !== 'string' || !/^[a-zA-Z0-9_.:-]{1,128}$/.test(id)) throw new DomainError('invalid_id');
