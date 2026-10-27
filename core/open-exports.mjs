@@ -1,3 +1,4 @@
+import { documentMetadataIndex } from './owner-documents.mjs';
 import { assert, add } from './shared.mjs';
 import { csvText, exportInventory } from './csv.mjs';
 import { projectProgress } from './projects.mjs';
@@ -7,18 +8,19 @@ export const OPEN_DATASETS = Object.freeze(['inventory', 'movements', 'purchases
 export const OPEN_FORMATS = Object.freeze(['csv', 'tsv', 'json']);
 const pick = (row, keys) => Object.fromEntries(keys.map(key => [key, row[key] ?? null]));
 const movementKeys = ['id','date','kind','materialId','lotId','quantity','unit','before','after','observedQuantity','projectId','reason','confidence','cost','currency','operationId','purchaseId','kitOpeningId','reversesId','destinationLotId','fromLocationId','toLocationId'];
-const purchaseKeys = ['id','materialId','quantity','unit','received','status','projectIds','supplierId','unitPrice','currency','priority','notes','expectedDate','source','createdAt','updatedAt'];
+const purchaseKeys = ['id','materialId','quantity','unit','received','status','projectIds','supplierId','unitPrice','currency','priority','notes','expectedDate','source','createdAt','updatedAt','attachments'];
 const projectKeys = ['id','name','technique','status','recipient','dueDate','completedAt','notes','patternId','revisionId','budget','currency'];
 const identityKeys = ['materialName','brand','range','code'];
 const columns = {
   movements: [...movementKeys.filter(key => key !== 'cost'), ...identityKeys, 'lotCode', 'costHundredths'],
-  purchases: [...purchaseKeys.filter(key => key !== 'unitPrice'), ...identityKeys, 'supplierName', 'unitPriceHundredths', 'receipts'],
+  purchases: [...purchaseKeys.filter(key => key !== 'unitPrice'), ...identityKeys, 'supplierName', 'unitPriceHundredths', 'receipts','attachmentMetadata'],
   projects: [...projectKeys.filter(key => key !== 'budget'), 'progressMode','progressPercent','completedPrimitives','totalPrimitives','fullCompleted','fullTotal','halfCompleted','halfTotal','backstitchCompleted','backstitchTotal','recordedSessions','recordedMinutes','budgetHundredths','knownConsumedCostHundredthsByCurrency','consumedMovementsWithoutCost','reservations','unallocatedKitCosts'],
 };
 
 /** Read-only projections. Missing historical confidence is never inferred from today's lot. */
 export function openDataRows(state, dataset) {
   assert(OPEN_DATASETS.includes(dataset) && dataset !== 'inventory', 'invalid_choice');
+  const metadata = documentMetadataIndex(state);
   const materials = new Map(state.materials.map(row => [row.id, row]));
   const lots = new Map(state.lots.map(row => [row.id, row]));
   const suppliers = new Map(state.suppliers.map(row => [row.id, row]));
@@ -30,8 +32,8 @@ export function openDataRows(state, dataset) {
   });
   if (dataset === 'purchases') return state.purchases.map(row => {
     const value = pick(row, purchaseKeys); delete value.unitPrice;
-    return { ...value, ...identity(row.materialId), supplierName: suppliers.get(row.supplierId)?.name ?? '', unitPriceHundredths: row.unitPrice,
-      receipts: state.receipts.filter(receipt => receipt.purchaseId === row.id).map(receipt => { const { cost, ...value } = receipt; return { ...value, costHundredths: cost }; }) };
+    return { ...value, ...identity(row.materialId), supplierName: suppliers.get(row.supplierId)?.name ?? '', unitPriceHundredths: row.unitPrice, attachments: row.attachments || [], attachmentMetadata: metadata(row.attachments || []),
+      receipts: state.receipts.filter(receipt => receipt.purchaseId === row.id).map(receipt => { const { cost, ...value } = receipt; return { ...value, attachments: receipt.attachments || [], attachmentMetadata: metadata(receipt.attachments || []), costHundredths: cost }; }) };
   });
   const reversed = new Set(state.movements.filter(row => row.reversesId).map(row => row.reversesId));
   return state.projects.map(project => {
@@ -59,7 +61,7 @@ export function exportOpenData(state, dataset, { format = 'csv', language = 'it'
     ? { materials: state.materials, lots: state.lots, locations: state.locations, suppliers: state.suppliers }
     : openDataRows(state, dataset);
   if (format === 'json') return JSON.stringify({ format: 'ricamo-open-data', version: 1, dataset, createdAt, language,
-    moneyScale: 100, notesIncluded: true, attachmentsIncluded: false, data }, null, 2);
+    moneyScale: 100, notesIncluded: true, attachmentsIncluded: false, attachmentBytesIncluded: false, attachmentMetadata: dataset === 'inventory' ? documentMetadataIndex(state)([...state.materials,...state.locations].flatMap(row => row.attachments || [])) : undefined, data }, null, 2);
   const headers = [...columns[dataset], '__ricamo_escape'];
   const value = input => input && typeof input === 'object' ? JSON.stringify(input) : typeof input === 'number' ? String(input).replace('.', language === 'it' ? ',' : '.') : input;
   return csvText(headers, data.map(row => headers.map(key => key === '__ricamo_escape' ? 'apostrophe-v1' : value(row[key]))), delimiter);
