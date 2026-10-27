@@ -1,5 +1,5 @@
 /** Print complete PDF pages, independently of the visible editor/reader viewport. */
-export const PRINT_DOCUMENT_LIMITS = Object.freeze({ bytes: 64 * 1024 * 1024, pages: 200, pixels: 128_000_000, edge: 6000, minimumDpi: 96, preferredDpi: 144 });
+export const PRINT_DOCUMENT_LIMITS = Object.freeze({ bytes: 64 * 1024 * 1024, pages: 200, documentPages:500, pixels: 128_000_000, edge: 6000, minimumDpi: 96, preferredDpi: 144 });
 const LIMITS = PRINT_DOCUMENT_LIMITS;
 const failure = code => Object.assign(new Error(code), { code });
 let printing = false;
@@ -30,6 +30,23 @@ export function documentPrintPlan(pages) {
   }));
 }
 
+/** Large documents retain page order through bounded native print jobs. */
+export function documentPrintBatches(pages){
+  if(!Array.isArray(pages)||!pages.length||pages.length>LIMITS.documentPages)throw failure('print_document_limit');
+  const batches=[];let start=0,current=[],plan=[];
+  for(const page of pages){
+    let candidate;
+    try{candidate=documentPrintPlan([...current,page]);}
+    catch(error){
+      if(error.code!=='print_document_limit'||!current.length)throw error;
+      batches.push({start,plan});start+=current.length;current=[];
+      candidate=documentPrintPlan([page]);
+    }
+    current.push(page);plan=candidate;
+  }
+  if(current.length)batches.push({start,plan});return batches;
+}
+
 /** Apply grayscale to pixels so preview, PDF bytes and native print agree. */
 export function grayscaleCanvas(canvas) {
   const context = canvas.getContext('2d'), pixels = context.getImageData(0, 0, canvas.width, canvas.height);
@@ -40,13 +57,15 @@ export function grayscaleCanvas(canvas) {
   context.putImageData(pixels, 0, 0);
 }
 
-export async function printPdfDocument(data, { onProgress, signal, monochrome = false } = {}) {
+export async function printPdfDocument(data, { onProgress, signal, monochrome = false,startPage=1 } = {}) {
   if (printing) throw failure('print_document_busy');
   if (!(data instanceof Uint8Array) || !data.length || data.length > LIMITS.bytes) throw failure('print_document_limit');
+  if(!Number.isInteger(startPage)||startPage<1||startPage>LIMITS.documentPages)throw failure('print_document_invalid');
   if (signal?.aborted) return false;
   printing = true;
   let loadingTask, renderTask, surface, styles;
   const urls = [];
+  const clearSurface=()=>{document.body.classList.remove('printing-document');surface?.remove();styles?.remove();surface=null;styles=null;for(const url of urls.splice(0))URL.revokeObjectURL(url);};
   const cancel = () => { renderTask?.cancel(); loadingTask?.destroy().catch(() => {}); };
   signal?.addEventListener('abort', cancel, { once: true });
   try {
@@ -61,21 +80,25 @@ export async function printPdfDocument(data, { onProgress, signal, monochrome = 
       enableXfa: false, disableAutoFetch: true, disableRange: true, disableStream: true,
       maxImageSize: 40_000_000, canvasMaxAreaInBytes: 32_000_000, enableHWA: false, verbosity: 0 });
     const pdf = await loadingTask.promise;
-    if (pdf.numPages > LIMITS.pages) throw failure('print_document_limit');
+    if (pdf.numPages > LIMITS.documentPages) throw failure('print_document_limit');
+    if(startPage>pdf.numPages)throw failure('print_document_invalid');
     const dimensions = [];
     for (let number = 1; number <= pdf.numPages; number++) {
       if (signal?.aborted) return false;
       const page = await pdf.getPage(number);
       dimensions.push(page.getViewport({ scale: 1 }));
     }
-    const plan = documentPrintPlan(dimensions);
+    const batches=documentPrintBatches(dimensions.slice(startPage-1));
+    for(const [batchIndex,batch]of batches.entries()){
+    const {plan}=batch,start=batch.start+startPage-1;
+    const progress={total:pdf.numPages,batch:batchIndex+1,batches:batches.length,firstPage:start+1,lastPage:start+plan.length};
     surface = document.createElement('div'); surface.id = 'ricamo-print-document'; surface.setAttribute('aria-hidden', 'true');
     styles = document.createElement('style');
     styles.textContent = plan.map((row,index) => `@page ricamo-document-${index}{size:${row.widthMm}mm ${row.heightMm}mm;margin:0}`).join('\n');
     document.head.append(styles); document.body.append(surface);
     for (const [index, row] of plan.entries()) {
       if (signal?.aborted) return false;
-      const page = await pdf.getPage(index + 1), canvas = document.createElement('canvas');
+      const page = await pdf.getPage(start + index + 1), canvas = document.createElement('canvas');
       canvas.width = row.canvasWidth; canvas.height = row.canvasHeight;
       try {
         renderTask = page.render({ canvas, viewport: page.getViewport({ scale: row.scale }), intent: 'print', annotationMode: AnnotationMode.ENABLE });
@@ -90,7 +113,7 @@ export async function printPdfDocument(data, { onProgress, signal, monochrome = 
         sheet.style.page = `ricamo-document-${index}`;
         sheet.style.width = `${row.widthMm}mm`; sheet.style.height = `${row.heightMm}mm`;
         sheet.append(image); surface.append(sheet); await image.decode();
-        onProgress?.({ page: index + 1, total: plan.length });
+        onProgress?.({...progress,page:start+index+1,stage:'preparing'});
       } finally { canvas.width = 0; canvas.height = 0; page.cleanup(); }
     }
     if (signal?.aborted) return false;
@@ -98,16 +121,19 @@ export async function printPdfDocument(data, { onProgress, signal, monochrome = 
     await document.fonts.ready;
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     if (signal?.aborted) return false;
-    return await storage.print();
+    onProgress?.({...progress,page:start+plan.length,stage:'printing'});
+    const accepted=await storage.print();clearSurface();
+    if(accepted===false)return false;
+    onProgress?.({...progress,page:start+plan.length,stage:'submitted'});
+    }
+    return true;
   } catch (error) {
     if (signal?.aborted || error?.code === 'print_cancelled') return false;
     if (error?.code) throw error;
     throw failure('print_document_invalid');
   } finally {
     signal?.removeEventListener('abort', cancel);
-    document.body.classList.remove('printing-document');
-    surface?.remove(); styles?.remove();
-    for (const url of urls) URL.revokeObjectURL(url);
+    clearSurface();
     try { await loadingTask?.destroy(); } catch { /* Preserve the print result after releasing the surface. */ } finally { printing = false; }
   }
 }
