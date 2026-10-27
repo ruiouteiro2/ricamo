@@ -10,7 +10,7 @@ import { attachmentJourney } from './attachment-journey.mjs';
 const root=fileURLToPath(new URL('../',import.meta.url));mkdirSync(join(root,'.runtime'),{recursive:true});const data=mkdtempSync(join(root,'.runtime','attachments-native-')),path=join(data,'ricamo.sqlite');
 const env={...process.env,RICAMO_DATA_DIR:data};delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_OPTIONS;
 const executable=process.env.RICAMO_EXECUTABLE||join(root,'node_modules/electron/dist',process.platform==='win32'?'electron.exe':'electron');
-let app=await electron.launch({executablePath:resolve(executable),args:process.env.RICAMO_EXECUTABLE?[]:[root],env,timeout:40000});const page=await app.firstWindow();page.setDefaultTimeout(12000);const checks=[],errors=[],remote=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/^https?:/.test(r.url()))remote.push(r.url());});
+let app=await electron.launch({ chromiumSandbox: true,executablePath:resolve(executable),args:process.env.RICAMO_EXECUTABLE?[]:[root],env,timeout:40000});const page=await app.firstWindow();page.setDefaultTimeout(12000);const checks=[],errors=[],remote=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/^https?:/.test(r.url()))remote.push(r.url());});
 const load=async()=>{const r=await page.evaluate(()=>window.ricamo.load());assert.equal(r.ok,true);return r.value;};
 const sql=statement=>{const db=new DatabaseSync(path);try{db.exec(statement);}finally{db.close();}};
 try{
