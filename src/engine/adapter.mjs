@@ -1,3 +1,4 @@
+import {SYMBOL_MODES,symbolsForMode} from '../../core/pattern-symbols.mjs';
 import {normalizePatternFabric} from '../../core/pattern-fabric.mjs';
 import {catalogueReference} from '../../core/thread-catalogues.mjs';
 import {normalizeBackground} from '../../core/generation-background.mjs';
@@ -30,6 +31,7 @@ export function validateSettings(input) {
   if(!Array.isArray(protectedRegions)||protectedRegions.length>20)fail('engine.protectedRegions');
   for(const r of protectedRegions)if(!r||!finite(r.x,0,settings.width-1,true)||!finite(r.y,0,settings.height-1,true)||!finite(r.width,1,settings.width,true)||!finite(r.height,1,settings.height,true)||r.x+r.width>settings.width||r.y+r.height>settings.height)fail('engine.protectedRegions');
   const options = {};
+  if(input.symbolMode!==undefined){if(!SYMBOL_MODES.includes(input.symbolMode))fail('pattern.symbolMode');options.symbolMode=input.symbolMode;}
   if(input.fabric!==undefined)options.fabric=normalizePatternFabric(input.fabric);
   if(input.background!==undefined)options.background=normalizeBackground(input.background);
   for(const key of ['fixedColors','excludedColors'])if(input[key]!==undefined){
@@ -136,7 +138,8 @@ export function generate({ rgba, settings: input, palette = dmcPalette, source =
   let result;
   try { result = convert(prepared, settings, effectivePalette, {...conversionOptions(settings,effectivePalette),...(restriction.fixedIndices.length?{fixedIndices:restriction.fixedIndices}:{})}); }
   catch (error) { throw new PatternError('engine.generationFailed', { cause: error instanceof PatternError ? error.code : 'quantizer' }); }
-  const colors = result.colors.map((color, index) => ({ ...color, brand: color.brand ?? palette.brand, symbol: SYMBOLS[index], strands: settings.strands, ...(palette.catalogue?{catalogueRef:structuredClone(palette.catalogue)}:{}) }));
+  const symbols=settings.symbolMode?symbolsForMode(settings.symbolMode,result.colors.length):SYMBOLS;
+  const colors = result.colors.map((color, index) => ({ ...color, brand: color.brand ?? palette.brand, symbol: symbols[index], strands: settings.strands, ...(palette.catalogue?{catalogueRef:structuredClone(palette.catalogue)}:{}) }));
   const revision = createBlank(settings.width, settings.height, colors, metadata);
   revision.cells = result.cells;
   revision.settings = settings;
