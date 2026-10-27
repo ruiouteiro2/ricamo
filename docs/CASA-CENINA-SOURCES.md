@@ -112,3 +112,58 @@ The actual chart is not present on these product pages. The preset contains no c
 - Focused check: `node --test --test-isolation=none tests/retailer-catalogue.test.mjs`. Tests check identity/URL uniqueness, exclusions, coverage reconciliation, immutable search data, physical size equivalence, range-aware matching, explicit code aliases, unknown quantities and the corrected Nightingale pack counts.
 - Source retrieval is read-only. Promotion is a normal source change reviewed and committed by the parent task; it does not import into a personal database. Rollback is removal/reversion of these new catalogue files and their callers, with no inventory migration.
 - Refresh by observing actual category/product links, retaining source/date evidence, validating exclusions and counts, and updating this digest. Do not manufacture a product URL from a code, substitute a discontinued colour, or present a previously indexed page as current stock.
+
+## Dynamic public catalogue acquisition (0.6)
+
+The desktop now keeps a separate, disposable SQLite supplier cache. Projects and inventory retain compact product snapshots; refreshing a catalogue never rewrites saved material identities or quantities. Search, brand/range facets and exact identity lookup work offline. Only an explicit Update/Resume action starts networking. The browser preview can search bundled facts but cannot run the desktop scan.
+
+The scanner follows public Italian product/category links and sitemaps without a material-keyword filter. It reads `robots.txt`, throttles requests, pins validated public DNS addresses, requires valid HTTPS, bounds redirects/page size/frontier/runtime, and sends no authentication or cookies. It stops on blocking/rate-limit responses, preserves last-good records, and resumes persisted checkpoints. CAPTCHA, malformed product metadata and unsupported product pages do not count as successful acquisition. Patchwork, felt and Grigoletto fabrics are excluded after classification; private/account/cart/legal/blog and asset routes are outside discovery. Buttons, ribbons, tools, preparation/finishing supplies, physical kits and reference-product metadata are supported. No chart geometry or product photographs are redistributed.
+
+The explicit developer runner uses curl:
+
+```sh
+node desktop/supplier-scan.mjs --database /tmp/ricamo-catalogues.sqlite --report /tmp/ricamo-scan.json --supplier tessiland --max-pages 5000
+```
+
+`--capture-dir` optionally retains bounded compressed public responses outside Git for factual replay/audit. These are developer artifacts, not app/user data or distributed assets. The production app uses the bounded Node HTTPS transport, the same parser and the same cache contract. A newer cache schema, unreadable cache or malformed stored JSON falls back to bundled read-only facts; the unavailable cache is not reset. Equal-date canonical corrections replace stale seed variants, while newer live page facts take precedence over the bundle.
+
+### Interim scan evidence
+
+On 2026-10-27, the initial expanded Tessiland curl pass read **995 pages**, all HTTP 200, between **17:57:00 and 18:14:02 UTC**. Its captured replay produced **5,502 product variants**: 3,060 threads, 1,863 embellishments, 145 fabrics/supports, 346 tools, 62 finishing supplies, 14 preparation supplies, three stabilizers and nine storage items. Source URLs, timestamps and input digests are retained in `data/supplier-catalogue.json`.
+
+This is **an interim snapshot, not full-site completion**. The old discovery filter selected 990 of the sitemap's 2,119 unique URLs (4,048 entries including duplicates); those filtered-out URLs are now being traversed by the full public scan. The replay records 801 material pages, 151 excluded pages, 42 navigation/category responses (including robots), and two unsupported pages. Their URLs remain in coverage metadata. The final full-frontier snapshot will replace these interim counts. A previous narrower pass must not be described as a scan of every public product.
+
+Casa Cenina's actual curl requests returned HTTP 403. That scan remains blocked; no control was bypassed. Its full brand/range catalogue and unavailable fabric categories are not claimed complete. Public indexed listings supplement the previous 1,359 records with **444 Anchor**, **400 Profilo** and **36 DMC Light Effects** exact observed destination links in `data/casa-supplier-supplement.json`:
+
+- Anchor Mouliné: https://www.casacenina.it/fili-e-filati/anchor/anchor-mouline/
+- Profilo 6 Mouliné: https://www.casacenina.it/fili-e-filati/profilo/profilo-6-mouline/
+- DMC Light Effects: https://www.casacenina.com/threads-yarns/dmc/dmc-light-effect/
+
+Anchor and Profilo listings explicitly state 8 metres and six separable strands. Light Effects' corresponding facts are independently supported by DMC: https://www.dmc.com/FR/fr/products/mouline-light-effect . These physical facts apply to those verified families, not every thread. Profilo retains unknown RGB. Light Effects uses independently sourced photographic approximations described below; no ordinary cotton colour is substituted for an effect thread.
+
+The interim data includes 1,055 ordinary wool/yarn variants, all marked `verify-technique`. **No verified embroidery-wool coverage is claimed**. The Prym ribbon-threading needle was corrected to a tool, fibre matching is word-bounded, and descriptions that merely propose other embroidery threads as decoration do not establish embroidery suitability for the underlying yarn. A final title/category and source-fact audit accompanies the full replay.
+
+### Independent Anchor colour evidence
+
+`data/anchor-stranded-palette.json` contains 444 solid Anchor Stranded Cotton shades, sampled from the manufacturer's chart mirrored by a retailer:
+
+- Current manufacturer chart: https://www.wolle-roedel.com/files/datenblaetter/Farbkarte_Anchor_Sticktwist.pdf
+- SHA-256: `c558668ed5cfa52b523683c3fbee298167235c4fe366788335a8cf738b580916`.
+- Older manufacturer chart/index: https://www.vbs-hobby.com/media/oart_0/oart_a/oart_7701/75333_314039-_I05.pdf
+- SHA-256: `ed82fee8d4821c564deb5f572ea748dcecc45e42e1c7d3dfb40fcc1cd18d7759`.
+- Family naming and 8 m/six-separable-strand facts: https://anchorcrafts.com/fr/products/anchor-stranded-cotton-mouline-4 .
+
+The original manufacturer download endpoint had an invalid/expired certificate; validation was not bypassed. `desktop/supplier-anchor-palette.mjs` uses the already-installed PDF.js/canvas libraries, pinned PDF hashes, printed code positions and median interior swatch pixels. Three rendered chart pages were visually checked. These are **approximate digital PDF colours**, not calibrated measurements of thread. Variegated/multicolour chart columns are excluded.
+
+Codes remain strings. The current five-digit codes were cross-checked against printed chart indices. Only the explicit 444-shade old/new index and observed retailer code mapping establishes Anchor aliases such as `46`, `046` and `00046`; this does not create numeric normalization for other brands/ranges. Anchor RGB is independent of DMC. DMC Mouliné's pre-existing MakeBead approximation retains its own attribution/provenance. Product snapshots never infer an unknown colour or package size from another family.
+
+### Light Effects photographic approximations
+
+`data/dmc-light-effects-swatches.json` records 36 code-specific photographic swatches exposed by the official DMC product page:
+
+- Product: https://www.dmc.com/GB/en-GB/products/mouline-stranded-thread/mouline-light-effect
+- Public product metadata: https://www.dmc.com/GB/en-GB/api/quilt/products/mouline-light-effect/product_data
+
+Each record retains its exact observed DMC image URL, SHA-256, original dimensions, source code and derivation method. The RGB is the arithmetic mean of encoded-sRGB pixels in the central 80% of the image, excluding nonopaque pixels. All 36 image/code pairs were visually audited in a temporary contact sheet. Images are not redistributed. This bounded manufacturer evidence lookup is separate from the retailers' public HTML/sitemap scan.
+
+These are photographic display approximations, **not manufacturer-declared or measured physical RGB**. Metallic reflections, pearlescence, fluorescence and glow cannot be reproduced by a flat colour. E130 and E135 visibly contain multiple colours; `colorVariation: multicolour` keeps them out of automatic photo colour matching while retaining their explicitly labelled average for manual display/effect selection. A numerical broad-variation flag describes lighting/pixel dispersion and is not treated as proof of variegation.
