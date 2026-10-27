@@ -1,6 +1,7 @@
+import {cellKind} from './pattern-materials.mjs';
 import { assert, quantity, integer, oneOf, date, find } from './shared.mjs';
 
-export const FORECAST_KINDS = Object.freeze(['full', 'half', 'backstitch']);
+export const FORECAST_KINDS = Object.freeze(['full', 'half', 'backstitch', 'bead']);
 const fields = ['method', 'weeklyHours', 'extraMinutes', 'manualSeconds', 'manualRemaining'];
 
 function values(value, kind) {
@@ -70,11 +71,11 @@ export function projectForecast(state, projectId, { asOf } = {}) {
   if (!structured && settings.method === 'measured') return result;
 
   // A manual percentage never supplies primitive counts. Blank manual counts remain unknown.
-  const remaining = structured ? { full: 0, half: 0, backstitch: 0 } : { ...settings.manualRemaining };
+  const remaining = structured ? { full: 0, half: 0, backstitch: 0, bead: 0 } : { ...settings.manualRemaining };
   if (structured) {
     const completed = new Set(project.completed);
     revision.cells.forEach((color, index) => {
-      if (color >= 0 && !completed.has(`c:${index}`)) remaining.full++;
+      if (color >= 0 && !completed.has(`c:${index}`)) remaining[cellKind(revision.colors[color])]++;
     });
     for (const half of revision.halfStitches ?? []) if (!completed.has(`h:${half.id}`)) remaining.half++;
     for (const back of revision.backstitches ?? []) if (!completed.has(`b:${back.id}`)) remaining.backstitch++;
