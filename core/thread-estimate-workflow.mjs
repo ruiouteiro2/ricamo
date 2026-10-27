@@ -4,15 +4,26 @@ import { saveMaterial } from './inventory.mjs';
 import { saveNeed, projectRevision, confirmedConsumption } from './projects.mjs';
 import { convertQuantity } from './fabric.mjs';
 import { estimateThreads, estimateForMaterial, threadEstimateConfiguration, archivePatternNeeds } from './estimates.mjs';
+import {supplierIdentity} from './supplier-products.mjs';
 import { componentIdentity } from './thread-recipes.mjs';
 
-export function resolveThreadMaterial(state,color) {
-  let material=color.itemId?state.materials.find(row=>row.id===color.itemId):null;
-  const seen=new Set();while(material?.mergedInto){assert(!seen.has(material.id),'invalid_merge');seen.add(material.id);material=state.materials.find(row=>row.id===material.mergedInto);}
-  if(material && !material.archived){assert(material.category==='thread','thread_material_required');return material;}
-  const matches=state.materials.filter(row=>!row.archived && row.category==='thread' && componentIdentity(row)===componentIdentity(color));
-  assert(matches.length<=1,'thread_material_ambiguous');return matches[0]??null;
+const supplierProductId=value=>value.product?.id??value.properties?.product?.id;
+const commercialIdentity=value=>value.brand&&value.code?supplierIdentity({...value,range:value.range||((value.catalogueRef?.name==='DMC · MakeBead'&&value.brand==='DMC')?'Mouliné':'')}):null;
+/** One ephemeral index per calculation; commands may safely mutate inventory afterwards. */
+export function createPatternMaterialResolver(state){
+  const byId=new Map(state.materials.map(row=>[row.id,row])),exact=new Map(),commercial=new Map(),products=new Map();
+  const append=(map,key,row)=>{if(!map.has(key))map.set(key,[]);map.get(key).push(row);};
+  for(const material of state.materials)if(!material.archived){append(exact,`${material.category}:${componentIdentity(material)}`,material);const key=commercialIdentity(material);if(key!==null)append(commercial,`${material.category}:${key}`,material);const product=supplierProductId(material);if(product)append(products,`${material.category}:${product}`,material);}
+  return(color,category=color.materialKind==='bead'?'embellishment':'thread')=>{
+    let material=color.itemId?byId.get(color.itemId):null;const seen=new Set();
+    while(material?.mergedInto){assert(!seen.has(material.id),'invalid_merge');seen.add(material.id);material=byId.get(material.mergedInto);}
+    if(material&&!material.archived){assert(material.category===category,'thread_material_required');return material;}
+    const target=commercialIdentity(color),product=supplierProductId(color),matches=[...new Set([...(exact.get(`${category}:${componentIdentity(color)}`)??[]),...(target===null?[]:commercial.get(`${category}:${target}`)??[]),...(product?products.get(`${category}:${product}`)??[]:[])])].filter(row=>{const other=supplierProductId(row);return !(product||other)||(target!==null&&commercialIdentity(row)!==null)||Boolean(product&&product===other);});
+    assert(matches.length<=1,'thread_material_ambiguous');return matches[0]??null;
+  };
 }
+export function resolvePatternMaterial(state,color,category){return createPatternMaterialResolver(state)(color,category);}
+export const resolveThreadMaterial=(state,color)=>resolvePatternMaterial(state,color,'thread');
 export function projectThreadContext(state,project,configuration=project.settings.thread??{}) {
   const revision=projectRevision(state,project);assert(revision,'structured_pattern_required');
   const selected=project.fabricLotId?find(state,'lots',project.fabricLotId):null,planned=project.settings.fabric??{};
@@ -22,17 +33,17 @@ export function projectThreadContext(state,project,configuration=project.setting
   return {revision,fabric,configuration:threadEstimateConfiguration(configuration)};
 }
 export function previewProjectThreadNeeds(state,project,configuration=project.settings.thread??{}) {
-  const context=projectThreadContext(state,project,configuration),estimates=estimateThreads(context.revision,{...context.configuration,...context.fabric}),grouped=new Map();
+  const context=projectThreadContext(state,project,configuration),estimates=estimateThreads(context.revision,{...context.configuration,...context.fabric}),grouped=new Map(),resolveMaterial=createPatternMaterialResolver(state);
   for(const estimate of estimates)for(const component of estimate.components){
     if(component.filamentMetres<=0)continue;
-    const material=resolveThreadMaterial(state,component.color),key=material?`id:${material.id}`:componentIdentity(component.color);
+    const material=resolveMaterial(component.color,'thread'),key=material?`id:${material.id}`:componentIdentity(component.color);
     if(!grouped.has(key))grouped.set(key,{key,color:component.color,material,filamentMetres:0,byType:{full:0,half:0,back:0},paletteSources:[]});
-    const row=grouped.get(key);row.filamentMetres+=component.filamentMetres;for(const type of ['full','half','back'])row.byType[type]+=component.byType[type];
+    const row=grouped.get(key);row.filamentMetres+=component.filamentMetres;for(const [type,amount] of Object.entries(component.byType))row.byType[type]=(row.byType[type]??0)+amount;
     row.paletteSources.push({index:estimate.index,code:estimate.color.code,symbol:estimate.color.symbol??'',blend:Boolean(estimate.color.blend),filamentMetres:component.filamentMetres,strandConfiguration:estimate.assumptions.strandConfiguration});
   }
   const rows=[...grouped.values()].map(row=>{row.filamentMetres=quantity(row.filamentMetres);return {...row,unit:row.material?.unit??'strand-m',quantity:row.material?estimateForMaterial(row,row.material):row.filamentMetres,
     manual:row.material?state.needs.some(need=>need.projectId===project.id && need.materialId===row.material.id && need.source==='manual'):false,manualQuantity:row.material?state.needs.find(need=>need.projectId===project.id && need.materialId===row.material.id && need.source==='manual')?.quantity:null};});
-  return {...context,rows,method:'ricamo-geometric-v2'};
+  return {...context,rows,method:estimates.some(row=>row.method==='ricamo-geometric-v3')?'ricamo-geometric-v3':'ricamo-geometric-v2',fasteningUnknown:estimates.filter(row=>row.fasteningUnknown).map(row=>row.index)};
 }
 function actualFilamentMetres(value,material) {
   const direct=convertQuantity(value,material.unit,'strand-m',material);if(direct!==null)return direct;
@@ -53,11 +64,11 @@ export function applyProjectThreadEstimate(state,payload,context) {
   let configuration=threadEstimateConfiguration(payload.configuration??project.settings.thread??{}),calibration;
   if(payload.calibration){assert(payload.calibration.confirmedComplete===true,'calibration_confirmation_required');calibration=threadCalibrationCandidate(state,project,payload.calibration.materialId,configuration);configuration={...configuration,calibrationFactor:calibration.factor};}
   const preview=previewProjectThreadNeeds(state,project,configuration);
-  archivePatternNeeds(state,project,context);
+  archivePatternNeeds(state,project,context,'reestimated',need=>state.materials.find(material=>material.id===need.materialId)?.category==='thread');
   project.settings.thread=configuration;
   for(const row of preview.rows){
     let material=row.material;
-    if(!material){const id=context.id();saveMaterial(state,{id,name:row.color.name||row.color.code,category:'thread',brand:row.color.brand||'',range:row.color.range||'',code:row.color.code,color:row.color.hex,unit:'strand-m'},context);material=find(state,'materials',id);}
+    if(!material){const id=context.id();saveMaterial(state,{id,name:row.color.name||row.color.code,category:'thread',brand:row.color.brand||'',range:row.color.range||'',code:row.color.code,color:row.color.hex,unit:'strand-m',properties:row.color.product?{product:structuredClone(row.color.product)}:{}},context);material=find(state,'materials',id);}
     const previous=state.needs.find(need=>need.projectId===project.id && need.materialId===material.id);if(previous?.source==='manual')continue;
     saveNeed(state,{projectId:project.id,materialId:material.id,quantity:estimateForMaterial(row,material),confidence:'estimated',source:'pattern'},context);
     const need=state.needs.find(need=>need.projectId===project.id && need.materialId===material.id);
@@ -73,7 +84,7 @@ export function validateThreadEstimateState(state) {
   for(const project of state.projects){
     if(project.settings.thread!==undefined)threadEstimateConfiguration(project.settings.thread);
     const receipt=project.settings.threadEstimate;
-    if(receipt){assert(receipt.method==='ricamo-geometric-v2','thread_estimate_version');assert(receipt.revisionId===project.revisionId,'thread_estimate_stale');threadEstimateConfiguration(receipt.configuration);}
+    if(receipt){assert(['ricamo-geometric-v2','ricamo-geometric-v3'].includes(receipt.method),'thread_estimate_version');assert(receipt.revisionId===project.revisionId,'thread_estimate_stale');threadEstimateConfiguration(receipt.configuration);}
     validateThreadEstimateHistory(project.settings.threadEstimateHistory,{state});
   }
   return state;
