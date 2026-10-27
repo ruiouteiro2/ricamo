@@ -2206,5 +2206,17 @@
   "draftNativeSavedOnly": [
     "Il file Ricamo contiene la revisione salvata selezionata. Per includere la bozza, salvala prima come nuova revisione. Il backup completo conserva anche le bozze.",
     "The Ricamo file contains the selected saved revision. Save the draft as a new revision to include it. Complete backups also preserve drafts."
+  ],
+  "invalid_image": [
+    "Immagine incompleta o non valida. Esportala di nuovo come PNG, JPEG, WebP o GIF.",
+    "The image is incomplete or invalid. Export it again as PNG, JPEG, WebP or GIF."
+  ],
+  "image_dimensions_too_large": [
+    "Riduci l’immagine a non più di 40 milioni di pixel e 20.000 pixel per lato prima di importarla.",
+    "Reduce the image to at most 40 million pixels and 20,000 pixels per side before importing it."
+  ],
+  "image_animation_too_large": [
+    "L’animazione supera 200 fotogrammi o 100 milioni di pixel complessivi. Esporta un singolo fotogramma.",
+    "The animation exceeds 200 frames or 100 million total frame pixels. Export a single frame."
   ]
 }
