@@ -1,56 +1,1210 @@
 {
-  "skipContent": ["Vai al contenuto", "Skip to content"],
-  "reopenProject": ["Riapri progetto", "Reopen project"],
-  "useLatestRevision": ["Usa l’ultima revisione dello schema", "Use the latest pattern revision"],
-  "acceptRevisionChange": ["Confermo il cambio: il progresso precedente rimane nello storico e la nuova revisione riparte da zero.", "I confirm the change: previous progress remains in history and the new revision starts at zero."],
-  "unfinishedTasks": ["Passaggi ancora da completare", "Steps still to complete"],
-  "photos": ["Fotografie", "Photographs"],
-  "addPhoto": ["Aggiungi una fotografia", "Add a photograph"],
-  "photoHelp": ["Conserva immagini del lavoro e delle finiture. Gli originali vengono copiati nel tuo archivio locale.", "Keep photographs of your work and finishing. Originals are copied into your local library."],
-  "manualProgressHelp": ["Senza una griglia strutturata, puoi registrare una percentuale manuale. Non viene presentata come un conteggio esatto di punti.", "Without a structured grid, you can record a manual percentage. It is not presented as an exact stitch count."],
-  "estimateMaterials": ["Stima materiali", "Estimate materials"],
-  "estimateHelp": ["Le stime dipendono da tessuto, filamenti e tecnica. Non aggiungono scorte né riserve. Le nuove referenze vengono create nel catalogo in metri di filamento; i fabbisogni manuali restano invariati.", "Estimates depend on fabric, strands and technique. They add no stock or reservations. New references enter the catalogue in strand-metres; manual requirements are preserved."],
-  "countX": ["Contatura orizzontale per pollice", "Horizontal count per inch"],
-  "countY": ["Contatura verticale per pollice", "Vertical count per inch"],
-  "countMeaning": ["La contatura indica", "Count means"],
-  "stitchesPerInch": ["Punti per pollice", "Stitches per inch"],
-  "threadsPerInch": ["Fili del tessuto per pollice", "Fabric threads per inch"],
-  "overX": ["Fili attraversati in orizzontale", "Fabric threads crossed horizontally"],
-  "overY": ["Fili attraversati in verticale", "Fabric threads crossed vertically"],
-  "left": ["Margine sinistro", "Left margin"],
-  "right": ["Margine destro", "Right margin"],
-  "top": ["Margine superiore", "Top margin"],
-  "bottom": ["Margine inferiore", "Bottom margin"],
-  "designSize": ["Dimensione del disegno", "Design size"],
-  "cutSize": ["Taglio con margini", "Cut including margins"],
-  "fabricFits": ["Le dimensioni del pezzo consentono questo taglio.", "The piece dimensions fit this cut."],
-  "fabricDoesNotFit": ["Il pezzo è troppo piccolo in almeno una direzione, anche considerando la rotazione.", "The piece is too small in at least one direction, even allowing rotation."],
-  "fabricUnknown": ["Servono misure o una verifica manuale per confermare l’adeguatezza.", "Measurements or manual verification are needed to confirm the fit."],
-  "fabricPlanningHelp": ["Collega uno schema per calcolare le dimensioni. Puoi comunque assegnare e descrivere un tessuto manualmente.", "Link a pattern to calculate dimensions. You can still assign and describe fabric manually."],
-  "chooseFile": ["Scegli un file", "Choose a file"],
-  "encoding": ["Codifica del testo", "Text encoding"],
-  "columnMapping": ["Associa le colonne", "Map the columns"],
-  "csvLocationsHelp": ["Le posizioni nuove verranno create alla conferma. Disattiva “Salta i duplicati” solo per aggiungere nuovi lotti reali a referenze esistenti.", "New storage locations will be created on confirmation. Turn off “Skip duplicates” only to add real new lots to existing references."],
-  "repeatImportWarning": ["Questo file è già stato importato. Importarlo di nuovo può duplicare il materiale fisico.", "This file has already been imported. Importing it again may duplicate physical stock."],
-  "allowRepeatImport": ["Ho verificato i dati e voglio aggiungere queste nuove quantità reali.", "I have reviewed the data and want to add these real new quantities."],
-  "invalidRows": ["righe da correggere", "rows to correct"],
-  "skipped": ["Ignorato", "Skipped"],
-  "newLot": ["Nuovo lotto", "New lot"],
-  "columns": ["Numero di colonne", "Column count"],
-  "files": ["File allegati", "Attached files"],
-  "automaticBackupHelp": ["Durante l’uso desktop viene creata una copia locale ogni 30 minuti, conservando le ultime sette. Le copie prima di un ripristino vengono conservate separatamente.", "During desktop use a local backup is made every 30 minutes, retaining the latest seven. Backups made before restoration are preserved separately."],
-  "browserPreviewHelp": ["Questa è l’anteprima browser: i dati sono salvati in questo browser. Il programma desktop usa un archivio SQLite separato. Usa una copia di sicurezza per trasferire i dati.", "This is the browser preview: data is stored in this browser. The desktop application uses a separate SQLite library. Use a backup to transfer data."],
-  "custom": ["Personalizzato", "Custom"],
-  "mm": ["mm", "mm"],
-  "kg": ["kg", "kg"],
-  "m2": ["m²", "m²"],
-  "strand-m": ["m di filamento", "strand-metres"],
-  "skein": ["matassine", "skeins"],
-  "spool": ["bobine", "spools"],
-  "pack": ["confezioni", "packs"],
-  "correction": ["Correzione", "Correction"],
-  "opening": ["Quantità iniziale", "Opening quantity"],
-  "cut_piece": ["Pezzo risultante dal taglio", "Piece from cut"],
-  "cut_source": ["Pezzo originale tagliato", "Original piece cut"],
-  "kit_open": ["Apertura kit", "Kit opened"]
+  "skipContent": [
+    "Vai al contenuto",
+    "Skip to content"
+  ],
+  "reopenProject": [
+    "Riapri progetto",
+    "Reopen project"
+  ],
+  "useLatestRevision": [
+    "Usa l’ultima revisione dello schema",
+    "Use the latest pattern revision"
+  ],
+  "acceptRevisionChange": [
+    "Confermo il cambio: il progresso precedente rimane nello storico e la nuova revisione riparte da zero.",
+    "I confirm the change: previous progress remains in history and the new revision starts at zero."
+  ],
+  "unfinishedTasks": [
+    "Passaggi ancora da completare",
+    "Steps still to complete"
+  ],
+  "photos": [
+    "Fotografie",
+    "Photographs"
+  ],
+  "addPhoto": [
+    "Aggiungi una fotografia",
+    "Add a photograph"
+  ],
+  "photoHelp": [
+    "Conserva immagini del lavoro e delle finiture. Gli originali vengono copiati nel tuo archivio locale.",
+    "Keep photographs of your work and finishing. Originals are copied into your local library."
+  ],
+  "manualProgressHelp": [
+    "Senza una griglia strutturata, puoi registrare una percentuale manuale. Non viene presentata come un conteggio esatto di punti.",
+    "Without a structured grid, you can record a manual percentage. It is not presented as an exact stitch count."
+  ],
+  "estimateMaterials": [
+    "Stima materiali",
+    "Estimate materials"
+  ],
+  "estimateHelp": [
+    "Le stime dipendono da tessuto, filamenti e tecnica. Non aggiungono scorte né riserve. Le nuove referenze vengono create nel catalogo in metri di filamento; i fabbisogni manuali restano invariati.",
+    "Estimates depend on fabric, strands and technique. They add no stock or reservations. New references enter the catalogue in strand-metres; manual requirements are preserved."
+  ],
+  "countX": [
+    "Contatura orizzontale per pollice",
+    "Horizontal count per inch"
+  ],
+  "countY": [
+    "Contatura verticale per pollice",
+    "Vertical count per inch"
+  ],
+  "countMeaning": [
+    "La contatura indica",
+    "Count means"
+  ],
+  "stitchesPerInch": [
+    "Punti per pollice",
+    "Stitches per inch"
+  ],
+  "threadsPerInch": [
+    "Fili del tessuto per pollice",
+    "Fabric threads per inch"
+  ],
+  "overX": [
+    "Fili attraversati in orizzontale",
+    "Fabric threads crossed horizontally"
+  ],
+  "overY": [
+    "Fili attraversati in verticale",
+    "Fabric threads crossed vertically"
+  ],
+  "left": [
+    "Margine sinistro",
+    "Left margin"
+  ],
+  "right": [
+    "Margine destro",
+    "Right margin"
+  ],
+  "top": [
+    "Margine superiore",
+    "Top margin"
+  ],
+  "bottom": [
+    "Margine inferiore",
+    "Bottom margin"
+  ],
+  "designSize": [
+    "Dimensione del disegno",
+    "Design size"
+  ],
+  "cutSize": [
+    "Taglio con margini",
+    "Cut including margins"
+  ],
+  "fabricFits": [
+    "Le dimensioni del pezzo consentono questo taglio.",
+    "The piece dimensions fit this cut."
+  ],
+  "fabricDoesNotFit": [
+    "Il pezzo è troppo piccolo in almeno una direzione, anche considerando la rotazione.",
+    "The piece is too small in at least one direction, even allowing rotation."
+  ],
+  "fabricUnknown": [
+    "Servono misure o una verifica manuale per confermare l’adeguatezza.",
+    "Measurements or manual verification are needed to confirm the fit."
+  ],
+  "fabricPlanningHelp": [
+    "Collega uno schema per calcolare le dimensioni. Puoi comunque assegnare e descrivere un tessuto manualmente.",
+    "Link a pattern to calculate dimensions. You can still assign and describe fabric manually."
+  ],
+  "chooseFile": [
+    "Scegli un file",
+    "Choose a file"
+  ],
+  "encoding": [
+    "Codifica del testo",
+    "Text encoding"
+  ],
+  "columnMapping": [
+    "Associa le colonne",
+    "Map the columns"
+  ],
+  "csvLocationsHelp": [
+    "Le posizioni nuove verranno create alla conferma. Disattiva “Salta i duplicati” solo per aggiungere nuovi lotti reali a referenze esistenti.",
+    "New storage locations will be created on confirmation. Turn off “Skip duplicates” only to add real new lots to existing references."
+  ],
+  "repeatImportWarning": [
+    "Questo file è già stato importato. Importarlo di nuovo può duplicare il materiale fisico.",
+    "This file has already been imported. Importing it again may duplicate physical stock."
+  ],
+  "allowRepeatImport": [
+    "Ho verificato i dati e voglio aggiungere queste nuove quantità reali.",
+    "I have reviewed the data and want to add these real new quantities."
+  ],
+  "invalidRows": [
+    "righe da correggere",
+    "rows to correct"
+  ],
+  "skipped": [
+    "Ignorato",
+    "Skipped"
+  ],
+  "newLot": [
+    "Nuovo lotto",
+    "New lot"
+  ],
+  "columns": [
+    "Numero di colonne",
+    "Column count"
+  ],
+  "files": [
+    "File allegati",
+    "Attached files"
+  ],
+  "automaticBackupHelp": [
+    "Durante l’uso desktop viene creata una copia locale ogni 30 minuti, conservando le ultime sette. Le copie prima di un ripristino vengono conservate separatamente.",
+    "During desktop use a local backup is made every 30 minutes, retaining the latest seven. Backups made before restoration are preserved separately."
+  ],
+  "browserPreviewHelp": [
+    "Questa è l’anteprima browser: i dati sono salvati in questo browser. Il programma desktop usa un archivio SQLite separato. Usa una copia di sicurezza per trasferire i dati.",
+    "This is the browser preview: data is stored in this browser. The desktop application uses a separate SQLite library. Use a backup to transfer data."
+  ],
+  "custom": [
+    "Personalizzato",
+    "Custom"
+  ],
+  "mm": [
+    "mm",
+    "mm"
+  ],
+  "kg": [
+    "kg",
+    "kg"
+  ],
+  "m2": [
+    "m²",
+    "m²"
+  ],
+  "strand-m": [
+    "m di filamento",
+    "strand-metres"
+  ],
+  "skein": [
+    "matassine",
+    "skeins"
+  ],
+  "spool": [
+    "bobine",
+    "spools"
+  ],
+  "pack": [
+    "confezioni",
+    "packs"
+  ],
+  "correction": [
+    "Correzione",
+    "Correction"
+  ],
+  "opening": [
+    "Quantità iniziale",
+    "Opening quantity"
+  ],
+  "cut_piece": [
+    "Pezzo risultante dal taglio",
+    "Piece from cut"
+  ],
+  "cut_source": [
+    "Pezzo originale tagliato",
+    "Original piece cut"
+  ],
+  "kit_open": [
+    "Apertura kit",
+    "Kit opened"
+  ],
+  "editMaterial": [
+    "Modifica materiale",
+    "Edit material"
+  ],
+  "materialNameExample": [
+    "Per esempio: Mouliné rosso, lino naturale…",
+    "For example: red embroidery floss, natural linen…"
+  ],
+  "unitLockedHelp": [
+    "L’unità è legata ai lotti esistenti. Crea una nuova voce per un’unità diversa.",
+    "The unit is linked to existing lots. Create a new item for a different unit."
+  ],
+  "unitHelp": [
+    "Scegli come misuri il materiale: filo completo, filamenti, peso o confezioni non sono intercambiabili senza una conversione.",
+    "Choose how you measure the material: whole thread, strands, weight and packages need explicit conversions."
+  ],
+  "codeHelp": [
+    "I codici restano testo: 001 e B5200 vengono conservati esattamente.",
+    "Codes remain text: 001 and B5200 are preserved exactly."
+  ],
+  "duplicateMaterialHelp": [
+    "Potrebbe essere lo stesso prodotto. Puoi annullare e aggiungere un lotto alla voce esistente, oppure mantenere una voce distinta.",
+    "This may be the same product. You can cancel and add a lot to the existing item, or keep a separate entry."
+  ],
+  "packageSizeHelp": [
+    "Quantità nell’unità selezionata per una confezione. Lascia vuoto se non è nota; non viene assunto un valore standard.",
+    "Quantity in the selected unit per package. Leave blank when unknown; no standard value is assumed."
+  ],
+  "threadType": [
+    "Tipo di filo",
+    "Thread type"
+  ],
+  "strandsHelp": [
+    "Numero di filamenti nel filo completo, solo se conosciuto. Serve per convertire metri di filo e di filamento.",
+    "Number of strands in a whole thread, only when known. Used to convert whole-thread and individual-strand metres."
+  ],
+  "divisible": [
+    "Filo divisibile",
+    "Divisible thread"
+  ],
+  "threadSize": [
+    "Spessore / misura",
+    "Thickness / size"
+  ],
+  "fabricType": [
+    "Tipo di tessuto",
+    "Fabric type"
+  ],
+  "countStitches": [
+    "Punti per pollice",
+    "Stitches per inch"
+  ],
+  "countThreads": [
+    "Fili del tessuto per pollice",
+    "Fabric threads per inch"
+  ],
+  "countHorizontal": [
+    "Contatura orizzontale / pollice",
+    "Horizontal count / inch"
+  ],
+  "countVertical": [
+    "Contatura verticale / pollice",
+    "Vertical count / inch"
+  ],
+  "composition": [
+    "Composizione",
+    "Composition"
+  ],
+  "careInstructions": [
+    "Istruzioni e cura del materiale",
+    "Material instructions and care"
+  ],
+  "tagsHelp": [
+    "Separa le etichette con una virgola.",
+    "Separate tags with a comma."
+  ],
+  "reusable": [
+    "Materiale riutilizzabile",
+    "Reusable material"
+  ],
+  "lotCostHelp": [
+    "Costo totale pagato per questo lotto o questa entrata, non prezzo unitario.",
+    "Total amount paid for this lot or receipt, not the unit price."
+  ],
+  "fabricWidthCm": [
+    "Larghezza del pezzo (cm)",
+    "Piece width (cm)"
+  ],
+  "fabricHeightCm": [
+    "Altezza del pezzo (cm)",
+    "Piece height (cm)"
+  ],
+  "inventoryDataTools": [
+    "Importa / esporta dati",
+    "Import / export data"
+  ],
+  "belowMinimum": [
+    "sotto la scorta minima",
+    "below minimum stock"
+  ],
+  "unknownOrConflicted": [
+    "quantità incerte o riserve da risolvere",
+    "unknown quantities or reservation conflicts"
+  ],
+  "occupiedLocations": [
+    "posizioni con materiale",
+    "locations holding material"
+  ],
+  "allCategories": [
+    "Tutte le categorie",
+    "All categories"
+  ],
+  "allLocations": [
+    "Tutte le posizioni",
+    "All locations"
+  ],
+  "knownAtLeast": [
+    "Quantità nota:",
+    "Known quantity:"
+  ],
+  "plusUnknown": [
+    "Altre quantità da verificare",
+    "Additional quantities unknown"
+  ],
+  "page": [
+    "Pagina",
+    "Page"
+  ],
+  "previousPage": [
+    "Pagina precedente",
+    "Previous page"
+  ],
+  "nextPage": [
+    "Pagina successiva",
+    "Next page"
+  ],
+  "copySuffix": [
+    "(copia)",
+    "(copy)"
+  ],
+  "acquiredAt": [
+    "Data di acquisto",
+    "Acquisition date"
+  ],
+  "irregularFabric": [
+    "Pezzo irregolare",
+    "Irregular piece"
+  ],
+  "editLot": [
+    "Modifica lotto",
+    "Edit lot"
+  ],
+  "lotEditHelp": [
+    "Per cambiare una quantità usa il conteggio fisico; per spostarla usa un movimento. Il cambio di stato può creare conflitti con le riserve.",
+    "Use a physical count to change quantity, or a movement to transfer it. Changing status may create reservation conflicts."
+  ],
+  "stockMovementHelp": [
+    "Registra un’operazione fisica reale. Consumi e perdite riducono le scorte; spostare non le consuma. Se la quantità è sconosciuta, misurala prima con un conteggio.",
+    "Record a real physical operation. Consumption and losses reduce stock; transfers do not consume it. If quantity is unknown, measure it with a count first."
+  ],
+  "movementQuantityHelp": [
+    "Per un conteggio inserisci il totale osservato. Per uno spostamento lascia vuoto per trasferire tutto il lotto. Negli altri casi inserisci la quantità dell’operazione.",
+    "For a count, enter the observed total. For a transfer, leave blank to move the entire lot. Otherwise enter the operation quantity."
+  ],
+  "archiveMaterialHelp": [
+    "L’archivio conserva lotti, movimenti e collegamenti ai progetti. Archiviare non consuma né libera materiale.",
+    "Archiving preserves lots, movements and project links. It neither consumes nor releases material."
+  ],
+  "archivedMaterialHelp": [
+    "Questo materiale è archiviato. Ripristinalo per aggiungere nuove scorte o riserve.",
+    "This material is archived. Restore it to add new stock or reservations."
+  ],
+  "reverseMovement": [
+    "Correggi movimento",
+    "Reverse movement"
+  ],
+  "reverseMovementHelp": [
+    "Questa correzione ripristina la quantità del movimento selezionato, conservandone lo storico. Non ricrea riserve già liberate. Indica il motivo.",
+    "This correction restores the selected movement quantity and preserves its history. It does not recreate released reservations. Give a reason."
+  ],
+  "reservationConflictHelp": [
+    "Controlla la quantità fisica e modifica le riserve dei progetti interessati. Nessuna riserva viene cancellata automaticamente.",
+    "Check physical stock and adjust the affected project reservations. No reservation is removed automatically."
+  ],
+  "eligibleHelpShort": [
+    "quantità nota e utilizzabile",
+    "known usable stock"
+  ],
+  "activeReservations": [
+    "riserve attive",
+    "active reservations"
+  ],
+  "quantityHelpShort": [
+    "libero da riserve",
+    "free of reservations"
+  ],
+  "noLots": [
+    "Non hai ancora registrato scorte.",
+    "No holdings recorded yet."
+  ],
+  "noLotsHelp": [
+    "Il prodotto è nel catalogo. Aggiungi un lotto per registrare ciò che possiedi e dove si trova.",
+    "The product is in your catalogue. Add a lot to record what you own and where it is."
+  ],
+  "cutFrom": [
+    "Origine:",
+    "Source:"
+  ],
+  "cutFabric": [
+    "Taglia tessuto",
+    "Cut fabric"
+  ],
+  "openKit": [
+    "Apri e verifica kit",
+    "Open and verify kit"
+  ],
+  "details": [
+    "Dettagli",
+    "Details"
+  ],
+  "photosAndFiles": [
+    "Foto e documenti",
+    "Photos and files"
+  ],
+  "addAttachment": [
+    "Aggiungi foto o PDF",
+    "Add photo or PDF"
+  ],
+  "fileUnavailable": [
+    "File non disponibile",
+    "File unavailable"
+  ],
+  "cutHelp": [
+    "Simula un taglio rettangolare. Solo la conferma sostituisce il pezzo originale con la parte tagliata e i ritagli rimanenti. Le misure sono in centimetri.",
+    "Preview a rectangular cut. Only confirmation replaces the original piece with the cut piece and remaining scraps. Dimensions are in centimetres."
+  ],
+  "offsetX": [
+    "Distanza dal bordo sinistro (cm)",
+    "Distance from left edge (cm)"
+  ],
+  "offsetY": [
+    "Distanza dal bordo superiore (cm)",
+    "Distance from top edge (cm)"
+  ],
+  "cutProjectHelp": [
+    "Se il pezzo è già riservato, scegli il progetto proprietario. La riserva verrà trasferita al pezzo tagliato.",
+    "If the piece is already reserved, choose its project. The reservation will move to the cut piece."
+  ],
+  "cutFits": [
+    "Il taglio entra nel pezzo.",
+    "The cut fits in the piece."
+  ],
+  "cutDoesNotFit": [
+    "Il taglio supera i bordi del pezzo.",
+    "The cut extends beyond the piece."
+  ],
+  "cutSourceSize": [
+    "Pezzo originale:",
+    "Original piece:"
+  ],
+  "cutPreview": [
+    "Anteprima del taglio sul pezzo originale",
+    "Cut preview on the original piece"
+  ],
+  "remainingFabricArea": [
+    "Area dei ritagli rimanenti",
+    "Remaining scrap area"
+  ],
+  "confirmPhysicalCut": [
+    "Conferma taglio effettuato",
+    "Confirm physical cut"
+  ],
+  "kitOpenHelp": [
+    "Verifica i componenti di un kit fisico prima di aggiungerli. Una unità del kit verrà aperta e sostituita dai lotti dei componenti. Il costo originale rimane collegato all’apertura senza essere duplicato.",
+    "Verify the contents of one physical kit before adding them. One kit unit will be opened and replaced by component lots. Its original cost remains linked to the opening without duplication."
+  ],
+  "component": [
+    "Componente",
+    "Component"
+  ],
+  "chooseMaterial": [
+    "Scegli un materiale del catalogo",
+    "Choose a catalogue material"
+  ],
+  "addComponent": [
+    "Aggiungi componente",
+    "Add component"
+  ],
+  "confirmKitOpening": [
+    "Conferma apertura e contenuto",
+    "Confirm opening and contents"
+  ],
+  "materialNotFound": [
+    "Materiale non trovato",
+    "Material not found"
+  ],
+  "kit_component": [
+    "Componente del kit",
+    "Kit component"
+  ],
+  "purchase_receipt": [
+    "Acquisto ricevuto",
+    "Purchase receipt"
+  ],
+  "purchase_receive": [
+    "Acquisto ricevuto",
+    "Purchase receipt"
+  ],
+  "unit_m": [
+    "m di filo completo",
+    "m of whole thread"
+  ],
+  "unit_strand-m": [
+    "m di filamento singolo",
+    "m of individual strand"
+  ],
+  "unit_cm": [
+    "cm",
+    "cm"
+  ],
+  "unit_mm": [
+    "mm",
+    "mm"
+  ],
+  "unit_g": [
+    "g",
+    "g"
+  ],
+  "unit_kg": [
+    "kg",
+    "kg"
+  ],
+  "unit_piece": [
+    "pezzi",
+    "pieces"
+  ],
+  "unit_skein": [
+    "matassine",
+    "skeins"
+  ],
+  "unit_spool": [
+    "rocchetti",
+    "spools"
+  ],
+  "unit_pack": [
+    "confezioni",
+    "packages"
+  ],
+  "unit_m2": [
+    "m²",
+    "m²"
+  ],
+  "unit_custom": [
+    "unità personalizzate",
+    "custom units"
+  ],
+  "thread_cotton": [
+    "Cotone mouliné",
+    "Stranded cotton"
+  ],
+  "thread_pearl": [
+    "Cotone perlé",
+    "Pearl cotton"
+  ],
+  "thread_silk": [
+    "Seta",
+    "Silk"
+  ],
+  "thread_wool": [
+    "Lana",
+    "Wool"
+  ],
+  "thread_rayon": [
+    "Rayon / viscosa",
+    "Rayon / viscose"
+  ],
+  "thread_polyester": [
+    "Poliestere",
+    "Polyester"
+  ],
+  "thread_metallic": [
+    "Metallico",
+    "Metallic"
+  ],
+  "thread_variegated": [
+    "Matizzato",
+    "Variegated"
+  ],
+  "thread_ribbon": [
+    "Nastro",
+    "Ribbon"
+  ],
+  "thread_other": [
+    "Altro",
+    "Other"
+  ],
+  "fabric_aida": [
+    "Aida",
+    "Aida"
+  ],
+  "fabric_linen": [
+    "Lino",
+    "Linen"
+  ],
+  "fabric_evenweave": [
+    "Evenweave",
+    "Evenweave"
+  ],
+  "fabric_canvas": [
+    "Tela",
+    "Canvas"
+  ],
+  "fabric_felt": [
+    "Feltro",
+    "Felt"
+  ],
+  "fabric_soluble": [
+    "Base solubile",
+    "Soluble canvas"
+  ],
+  "fabric_garment": [
+    "Capo da ricamare",
+    "Garment"
+  ],
+  "fabric_other": [
+    "Altro",
+    "Other"
+  ],
+  "transformed": [
+    "Trasformato / tagliato",
+    "Transformed / cut"
+  ],
+  "mergeMaterial": [
+    "Unisci duplicati",
+    "Merge duplicates"
+  ],
+  "mergeInto": [
+    "Mantieni questa voce",
+    "Keep this item"
+  ],
+  "mergeMaterialHelp": [
+    "I lotti e i collegamenti verranno trasferiti alla voce scelta. Questa voce sarà archiviata e il suo storico rimarrà consultabile. Sono elencati solo materiali con unità e conversioni compatibili.",
+    "Lots and links will move to the selected item. This item will be archived and its history preserved. Only materials with compatible units and conversions are listed."
+  ],
+  "rememberFilters": [
+    "Salva questi filtri",
+    "Remember these filters"
+  ],
+  "copyLabel": [
+    "copia",
+    "copy"
+  ],
+  "searchPatterns": [
+    "Nome, note o etichette…",
+    "Name, notes or tags…"
+  ],
+  "importPattern": [
+    "Importa schema",
+    "Import pattern"
+  ],
+  "initialRevision": [
+    "Prima revisione",
+    "First revision"
+  ],
+  "keepRatio": [
+    "Mantieni le proporzioni",
+    "Keep aspect ratio"
+  ],
+  "fabricCount": [
+    "Densità effettiva (punti per pollice)",
+    "Effective density (stitches per inch)"
+  ],
+  "imageAdjustments": [
+    "Ritaglio e regolazioni dell’immagine",
+    "Crop and image adjustments"
+  ],
+  "crop_x": [
+    "Ritaglio da sinistra (%)",
+    "Crop from left (%)"
+  ],
+  "crop_y": [
+    "Ritaglio dall’alto (%)",
+    "Crop from top (%)"
+  ],
+  "crop_width": [
+    "Larghezza del ritaglio (%)",
+    "Crop width (%)"
+  ],
+  "crop_height": [
+    "Altezza del ritaglio (%)",
+    "Crop height (%)"
+  ],
+  "brightness": [
+    "Luminosità",
+    "Brightness"
+  ],
+  "contrast": [
+    "Contrasto",
+    "Contrast"
+  ],
+  "removeRegions": [
+    "Semplifica aree fino a questo numero di punti",
+    "Simplify regions up to this many stitches"
+  ],
+  "removeRegionsHelp": [
+    "Zero conserva tutti i dettagli. Controlla l’anteprima: anche un dettaglio intenzionale può essere piccolo.",
+    "Zero keeps every detail. Review the preview: intentional details can be small too."
+  ],
+  "rotate": [
+    "Ruota 90°",
+    "Rotate 90°"
+  ],
+  "flipHorizontal": [
+    "Rifletti orizzontalmente",
+    "Flip horizontally"
+  ],
+  "flipVertical": [
+    "Rifletti verticalmente",
+    "Flip vertically"
+  ],
+  "sourcePreview": [
+    "Immagine preparata",
+    "Prepared image"
+  ],
+  "generatePreviewHelp": [
+    "Genera un’anteprima per controllare colori e dettagli prima di salvare.",
+    "Generate a preview to review colours and details before saving."
+  ],
+  "stalePreview": [
+    "Hai modificato i parametri. Genera di nuovo prima di salvare.",
+    "Settings have changed. Generate again before saving."
+  ],
+  "nativeImportHelp": [
+    "Verrà creata una nuova voce nella biblioteca. Scorte e progressi non verranno importati.",
+    "A new library entry will be created. Stock and progress will not be imported."
+  ],
+  "inventoryPaletteEmpty": [
+    "Non ci sono fili utilizzabili con un colore di visualizzazione. Aggiungili all’inventario o scegli la tavolozza DMC.",
+    "There are no eligible threads with a display colour. Add them to inventory or choose the DMC palette."
+  ],
+  "patternCrop": [
+    "Il ritaglio deve rimanere all’interno dell’immagine. Controlla posizione, larghezza e altezza.",
+    "The crop must remain inside the image. Check its position, width and height."
+  ],
+  "generationFailed": [
+    "Non è stato possibile generare lo schema. L’ultima anteprima valida è stata conservata; controlla i parametri e riprova.",
+    "The pattern could not be generated. The last valid preview was preserved; check settings and try again."
+  ],
+  "generationTimeout": [
+    "La generazione ha superato due minuti ed è stata fermata. Riduci dimensioni o colori e riprova.",
+    "Generation exceeded two minutes and was stopped. Reduce the size or colour count and try again."
+  ],
+  "progressDoesNotConsume": [
+    "Segna il lavoro svolto. Il progresso non modifica le scorte né conferma consumi di filo.",
+    "Mark your finished work. Progress does not change stock or confirm thread consumption."
+  ],
+  "editorHelp": [
+    "Disegna sulla griglia e conserva ogni versione. I progetti già iniziati mantengono la loro revisione.",
+    "Draw on the grid and keep each version. Existing projects retain their pinned revision."
+  ],
+  "reopenToProgress": [
+    "Questo progetto è concluso o archiviato. Riaprilo prima di modificare il progresso.",
+    "This project is completed or archived. Reopen it before changing progress."
+  ],
+  "saveReference": [
+    "Salva una copia del riferimento",
+    "Save a reference copy"
+  ],
+  "pdfReferenceHelp": [
+    "Questo PDF è un riferimento. Se l’anteprima non è disponibile, salva una copia e leggila nel tuo lettore PDF.",
+    "This PDF is a reference. If preview is unavailable, save a copy and read it in your PDF reader."
+  ],
+  "fullCrosses": [
+    "punti croce interi",
+    "full crosses"
+  ],
+  "completedPrimitives": [
+    "punti o segmenti completati",
+    "completed stitches or segments"
+  ],
+  "drawingTools": [
+    "Strumenti dello schema",
+    "Pattern tools"
+  ],
+  "select": [
+    "Seleziona regione",
+    "Select region"
+  ],
+  "monochrome": [
+    "Bianco e nero",
+    "Black and white"
+  ],
+  "canvasKeyboardHelp": [
+    "Frecce: sposta il cursore. Alt e trascinamento: sposta la vista. In modalità lavoro, Spazio segna il punto.",
+    "Arrows move the cursor. Alt-drag pans the view. In work mode, Space marks the stitch."
+  ],
+  "coordinate": [
+    "Colonna, riga",
+    "Column, row"
+  ],
+  "emptyCell": [
+    "Tessuto senza punto",
+    "Empty fabric"
+  ],
+  "selection": [
+    "Selezione",
+    "Selection"
+  ],
+  "copySelection": [
+    "Copia selezione",
+    "Copy selection"
+  ],
+  "pasteAtCursor": [
+    "Incolla al cursore",
+    "Paste at cursor"
+  ],
+  "selectionCopied": [
+    "Selezione copiata. Scegli il punto di inserimento e incolla.",
+    "Selection copied. Choose an insertion point and paste."
+  ],
+  "transformedSelectionHelp": [
+    "Selezione trasformata negli appunti. Scegli il punto di inserimento e incolla; l’originale è conservato.",
+    "Transformed selection copied. Choose an insertion point and paste; the original is preserved."
+  ],
+  "crossingSegmentsHelp": [
+    "I segmenti che attraversano il bordo della selezione non sono stati copiati. Amplia la selezione per includerli interamente.",
+    "Segments crossing the selection boundary were not copied. Enlarge the selection to include them fully."
+  ],
+  "resizeGrid": [
+    "Dimensioni e margini",
+    "Grid size and margins"
+  ],
+  "cropImpact": [
+    "Questa modifica rimuove {count} punti o segmenti. Puoi annullarla finché lavori su questa revisione.",
+    "This change removes {count} stitches or segments. You can undo it while working on this revision."
+  ],
+  "confirmCrop": [
+    "Conferma rimozione e ridimensiona",
+    "Confirm removal and resize"
+  ],
+  "bookmarks": [
+    "Punti di ripresa",
+    "Bookmarks"
+  ],
+  "bookmark": [
+    "Punto di ripresa",
+    "Bookmark"
+  ],
+  "bookmarkNote": [
+    "Nota per questa posizione",
+    "Note for this position"
+  ],
+  "addColor": [
+    "Aggiungi colore",
+    "Add colour"
+  ],
+  "addColorHelp": [
+    "Aggiungi un colore per iniziare a disegnare.",
+    "Add a colour to start drawing."
+  ],
+  "highlightColor": [
+    "Evidenzia colore selezionato",
+    "Highlight selected colour"
+  ],
+  "editColor": [
+    "Simbolo e sostituzione",
+    "Symbol and replacement"
+  ],
+  "revisionPinnedHelp": [
+    "Salvare crea una nuova revisione. I progetti esistenti conservano il disegno e il progresso precedenti finché non scegli di cambiarli.",
+    "Saving creates a new revision. Existing projects keep their previous design and progress until you choose to change them."
+  ],
+  "revisionName": [
+    "Nome della revisione",
+    "Revision name"
+  ],
+  "searchColors": [
+    "Cerca codice o nome DMC…",
+    "Search DMC code or name…"
+  ],
+  "customColor": [
+    "Colore personale",
+    "Custom colour"
+  ],
+  "paletteLimit": [
+    "Una revisione può contenere al massimo 80 colori. Rimuovi un colore inutilizzato prima di aggiungerne un altro.",
+    "A revision can contain up to 80 colours. Remove an unused colour before adding another."
+  ],
+  "paletteEditHelp": [
+    "Cambiare simbolo non cambia il materiale. Sostituire un colore modifica i punti interi, i mezzi punti e i segmenti che lo usano.",
+    "Changing a symbol does not change the material. Replacing a colour changes the full crosses, half stitches and segments using it."
+  ],
+  "symbol": [
+    "Simbolo",
+    "Symbol"
+  ],
+  "saveSymbol": [
+    "Salva simbolo",
+    "Save symbol"
+  ],
+  "replaceWith": [
+    "Sostituisci con",
+    "Replace with"
+  ],
+  "replaceColor": [
+    "Sostituisci colore",
+    "Replace colour"
+  ],
+  "removeColorHelp": [
+    "Puoi rimuovere solo un colore non utilizzato. Sostituisci prima i punti che lo usano.",
+    "Only an unused colour can be removed. Replace the stitches using it first."
+  ],
+  "confirmProgress": [
+    "Conferma la regione",
+    "Confirm region"
+  ],
+  "progressImpact": [
+    "La selezione contiene {count} punti o segmenti. Quelli già nello stato scelto non verranno contati due volte.",
+    "The selection contains {count} stitches or segments. Those already in the chosen state will not be counted twice."
+  ],
+  "noStitchesSelected": [
+    "La selezione non contiene punti del colore evidenziato.",
+    "The selection contains no stitches of the highlighted colour."
+  ],
+  "includeProgress": [
+    "Includi progresso",
+    "Include progress"
+  ],
+  "exportScaleHelp": [
+    "Il PDF è uno schema ingrandito per la lettura, con pagine sovrapposte e coordinate. Non è un disegno a grandezza reale. Puoi salvarlo senza stampante.",
+    "The PDF is an enlarged reading chart with overlapping pages and coordinates. It is not an actual-size transfer drawing. You can save it without a printer."
+  ],
+  "saveBeforeProject": [
+    "Salva prima la nuova revisione per usarla in un progetto.",
+    "Save the new revision before using it in a project."
+  ],
+  "moveToCursor": [
+    "Sposta al cursore",
+    "Move to cursor"
+  ],
+  "material": [
+    "Materiale",
+    "Material"
+  ],
+  "actions": [
+    "Azioni",
+    "Actions"
+  ],
+  "editPurchase": [
+    "Modifica acquisto",
+    "Edit purchase"
+  ],
+  "purchaseRows": [
+    "voci di acquisto",
+    "purchase entries"
+  ],
+  "materialsInSelectedProjects": [
+    "materiali nei progetti selezionati",
+    "materials in selected projects"
+  ],
+  "localContacts": [
+    "contatti conservati qui",
+    "contacts kept locally"
+  ],
+  "shoppingSections": [
+    "Sezioni degli acquisti",
+    "Shopping sections"
+  ],
+  "searchShopping": [
+    "Cerca materiale, codice o fornitore…",
+    "Search material, code or supplier…"
+  ],
+  "allActiveProjects": [
+    "Tutti i progetti attivi",
+    "All active projects"
+  ],
+  "openPurchases": [
+    "Acquisti da completare",
+    "Open purchases"
+  ],
+  "allPriorities": [
+    "Tutte le priorità",
+    "All priorities"
+  ],
+  "unitPrice": [
+    "Prezzo per unità",
+    "Price per unit"
+  ],
+  "unitPriceHelp": [
+    "Prezzo nella valuta indicata, per una unità di inventario. Lascia vuoto se sconosciuto.",
+    "Price in the selected currency per one inventory unit. Leave blank if unknown."
+  ],
+  "purchaseQuantityHelp": [
+    "Usa l’unità indicata accanto al materiale. Una confezione contiene la quantità definita nella sua scheda.",
+    "Use the unit shown beside the material. A purchase package contains the quantity defined in its material record."
+  ],
+  "purchaseFormHelp": [
+    "Un acquisto pianificato non modifica le scorte. Registra l’arrivo quando ricevi il materiale.",
+    "A planned purchase does not change stock. Record delivery when the material arrives."
+  ],
+  "purchaseMultipleProjects": [
+    "Questo acquisto riunisce più progetti. Le loro associazioni vengono conservate durante la modifica.",
+    "This purchase groups several projects. Their associations are preserved when editing."
+  ],
+  "expectedDelivery": [
+    "Arrivo previsto",
+    "Expected delivery"
+  ],
+  "receivedQuantity": [
+    "Quantità arrivata",
+    "Quantity delivered"
+  ],
+  "receiveRemaining": [
+    "Puoi ricevere fino a {quantity} {unit}. Le consegne precedenti restano registrate.",
+    "You can receive up to {quantity} {unit}. Previous deliveries stay recorded."
+  ],
+  "deliveryCost": [
+    "Costo di questa consegna",
+    "Cost of this delivery"
+  ],
+  "deliveryCostHelp": [
+    "Importo totale in {currency}. Se lasci vuoto, viene usato il prezzo dell’ordine, quando noto.",
+    "Total in {currency}. Leave blank to use the order price when known."
+  ],
+  "estimatedTotal": [
+    "Totale stimato",
+    "Estimated total"
+  ],
+  "estimatedTotalsByCurrency": [
+    "Importi stimati della lista visualizzata",
+    "Estimated amounts for the displayed list"
+  ],
+  "unpricedRows": [
+    "{count} voci non hanno un prezzo e non sono incluse nei totali.",
+    "{count} entries have no price and are excluded from totals."
+  ],
+  "editNamedPurchase": [
+    "Modifica acquisto: {name}",
+    "Edit purchase: {name}"
+  ],
+  "generateShopping": [
+    "Aggiorna lista dalle mancanze",
+    "Update list from shortages"
+  ],
+  "availableForProjects": [
+    "Utilizzabile per questi progetti",
+    "Usable for these projects"
+  ],
+  "toOrder": [
+    "Ancora da ordinare",
+    "Still to order"
+  ],
+  "packageRoundingHelp": [
+    "L’acquisto verrà arrotondato alla confezione.",
+    "The purchase will be rounded up to a package."
+  ],
+  "noRequirements": [
+    "Nessun fabbisogno da confrontare.",
+    "No requirements to compare."
+  ],
+  "noRequirementsHelp": [
+    "Aggiungi i materiali necessari a un progetto. Qui potrai confrontarli con le scorte e le riserve.",
+    "Add material requirements to a project. You can compare them with stock and reservations here."
+  ],
+  "newSupplier": [
+    "Aggiungi fornitore",
+    "Add supplier"
+  ],
+  "editSupplier": [
+    "Modifica fornitore",
+    "Edit supplier"
+  ],
+  "supplierContact": [
+    "Contatto",
+    "Contact"
+  ],
+  "supplierWebsite": [
+    "Sito web (riferimento)",
+    "Website (reference)"
+  ],
+  "supplierLocalHelp": [
+    "Nome, contatti e note restano sul computer. Non vengono inviati messaggi né consultati prezzi online.",
+    "Names, contacts and notes stay on this computer. No messages are sent and no online prices are fetched."
+  ],
+  "noSuppliers": [
+    "I tuoi fornitori, a portata di mano.",
+    "Keep your suppliers close at hand."
+  ],
+  "editNamedSupplier": [
+    "Modifica fornitore: {name}",
+    "Edit supplier: {name}"
+  ],
+  "editLocation": [
+    "Modifica posizione",
+    "Edit location"
+  ],
+  "storageLabel": [
+    "Etichetta della posizione",
+    "Storage label"
+  ],
+  "labelPrintHelp": [
+    "Stampa al 100%, senza adattare alla pagina. Puoi salvare un PDF dal dialogo di stampa del sistema, se disponibile.",
+    "Print at 100%, without fitting to page. You can save a PDF from the system print dialog when available."
+  ],
+  "labelWidth": [
+    "Larghezza etichetta (mm)",
+    "Label width (mm)"
+  ],
+  "labelHeight": [
+    "Altezza minima etichetta (mm)",
+    "Minimum label height (mm)"
+  ],
+  "labelSizeHelp": [
+    "Larghezza da 30 a 180 mm; altezza minima da 20 a 250 mm. Il testo lungo può aumentare l’altezza: verifica l’anteprima.",
+    "Width from 30 to 180 mm; minimum height from 20 to 250 mm. Long text may increase the height: check the preview."
+  ],
+  "storagePlaces": [
+    "posizioni e contenitori",
+    "locations and containers"
+  ],
+  "storedLots": [
+    "Lotti collocati",
+    "Stored lots"
+  ],
+  "knownLocations": [
+    "con una posizione registrata",
+    "with a recorded location"
+  ],
+  "unassignedStorage": [
+    "Senza posizione",
+    "Unassigned"
+  ],
+  "lotsWithoutLocation": [
+    "lotti da sistemare",
+    "lots to organise"
+  ],
+  "materialsWithStock": [
+    "materiali con scorte o quantità da verificare",
+    "materials with stock or an unknown quantity"
+  ],
+  "searchLocations": [
+    "Cerca stanza, contenitore o nota…",
+    "Search room, container or note…"
+  ],
+  "editNamedLocation": [
+    "Modifica posizione: {name}",
+    "Edit location: {name}"
+  ],
+  "printNamedLocation": [
+    "Stampa etichetta: {name}",
+    "Print label: {name}"
+  ],
+  "addInside": [
+    "Aggiungi all’interno",
+    "Add inside"
+  ],
+  "storageContents": [
+    "Contenuto della posizione",
+    "Storage contents"
+  ],
+  "storageMoveHelp": [
+    "Apri un materiale per spostare un lotto. Un trasferimento cambia la posizione, non il totale posseduto.",
+    "Open a material to move a lot. A transfer changes its location, not the total you own."
+  ],
+  "includeChildLocations": [
+    "Includi contenitori interni",
+    "Include nested containers"
+  ],
+  "viewMaterial": [
+    "Apri materiale",
+    "Open material"
+  ],
+  "emptyLocationContents": [
+    "Nessun materiale in questa vista.",
+    "No materials in this view."
+  ],
+  "emptyLocationContentsHelp": [
+    "Assegna qui un lotto dalla scheda del materiale, oppure controlla i filtri.",
+    "Assign a lot here from its material record, or check the filters."
+  ],
+  "selectStorageHelp": [
+    "Seleziona una posizione per vedere i materiali e i lotti che contiene. I conteggi nella lista riguardano la singola posizione.",
+    "Select a location to see its materials and lots. Counts in the list refer to each individual location."
+  ],
+  "locationFormHelp": [
+    "Puoi creare una gerarchia: stanza, armadio, scatola, scomparto. Spostare un contenitore nella gerarchia conserva i suoi materiali.",
+    "You can create a hierarchy: room, cupboard, box, compartment. Moving a container within the hierarchy keeps its materials."
+  ],
+  "allProjects": [
+    "Tutti i progetti",
+    "All projects"
+  ]
 }
