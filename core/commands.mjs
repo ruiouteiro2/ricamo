@@ -64,7 +64,7 @@ export function applyCommand(state, command, context = {}) {
     assert(previous.signature === signature, 'idempotency_conflict', { operationId });
     return structuredClone(state);
   }
-  const handler = handlers[command.type] ?? context.handlers?.[command.type];
+  const handler = Object.hasOwn(handlers, command.type) ? handlers[command.type] : context.handlers && Object.hasOwn(context.handlers, command.type) ? context.handlers[command.type] : null;
   assert(typeof handler === 'function', 'unknown_command', { type: command.type });
   const now = typeof context.now === 'function' ? context.now() : context.now ?? new Date().toISOString();
   assert(Number.isFinite(Date.parse(now)), 'invalid_date');
