@@ -2,35 +2,41 @@
 
 ## Mission and authority
 
-2026-10-27, 08:53–14:53 UTC: build and verify an offline Windows embroidery application from the supplied master prompt. Italian and English, integrated Stitch Studio engine, inventory, project planning and execution, backups, PDF, Windows installer. User authorizes implementation and GitHub pushes, one changed file per commit and immediate push. No unrelated project changes, cloud service deployment or production data access.
+The requested six-hour work window is 2026-10-27 08:53–14:53 UTC. Build an offline Windows embroidery application from Rui's master prompt, reuse the actual Stitch Studio engine, and verify inventory, planning, execution, recovery and distribution. Rui authorizes implementation and GitHub pushes, with exactly one changed file per commit and an immediate push. Root serializes repository writes and Git; authorized agents prepare isolated drafts only.
 
-Initial revision: a6daa26, main, clean. Runtime: WSL Linux with Node 24.22.1 and Windows Node 24.22.1. Host is Windows 10 Home x64 build19045; Windows Sandbox is unavailable. Windows11 clean-machine acceptance remains unavailable, separate from local installed-product testing.
+Repository: main at https://github.com/ruiouteiro2/ricamo.git; author RuiOuteiro2. Host: Windows 10 Home x64 build 19045 with WSL; Node 24.22.1 on both systems. Windows Sandbox is unavailable. Tests in a clean Windows 11 environment remain unavailable and are not replaced by local-host evidence.
 
-## Decisions
+## Current evidence — approximately 10:40 UTC
 
-- Electron 45 (bundled Chromium/Node) avoids an external WebView runtime download. Vue 3 for a new interface. SQLite via bundled Node for transactional local persistence. CPU-only generation in a worker from the original TypeScript engine.
-- Original engine: MIT, Rui 2026; DMC RGB compilation: MakeBead CC BY 4.0, approximate colours. Existing consumption assumptions are not inventory conversions. Original limit is 400×400 / 72 colours; any extension must have its own tests.
-- New task-oriented visual system: warm paper surfaces, deep ink text, restrained aubergine actions, readable tables, progressive forms. No old CSS or interface components copied.
-- Use vt-deliver and vt-design, followed by vt-verify/app testing. The installed engineering-loop entrypoint lacks its required reference resources; no claim of its full orchestration protocol. Independent bounded planning/review may use agents, authorized by the master prompt. Root serializes repository writes and all commits/pushes.
-- Data starts empty. Example content, if provided, stays explicitly separate.
+The mission is ongoing. Source integration is ahead of the last packaged Windows artifact; later features require package revalidation.
 
-## Ordered work and evidence
+- Actual Windows x64 offline NSIS installer built and installed into a test path containing spaces and an accent. Installed and unpacked executables created material code 001 with quantity 1.5, closed and reopened the SQLite data correctly. Renderer HTTP requests: zero in those journeys. This does not prove a clean PC, a separate accented Windows profile or blocked operating-system networking.
+- Actual Windows packaged runtime imported/rendered a two-page PDF, retained page 2 annotations/view, exported a PDF, generated 7,500 cells with 622 transparent empty cells, wrote local/external backups, and retained the local backup with an actionable failure when the external directory was unavailable. Native destination selection was automated; storage, renderer, worker and file writes were real.
+- Actual Electron Linux window-close test requested closure 29 ms after a note edit. The pending draft was flushed; reopening recovered it while the published revision remained unchanged. An acknowledged draft also survived immediate process exit. Windows draft-close verification is still pending on a newer package.
+- Browser inventory journeys passed custom categories/fields, locale switching without losing user text, atomic batch editing, rapid entry with explicit duplicates/unknowns, saved filters, and real PDF labels. Ten integrated tool journeys passed loans, returns, loss reconciliation and the home reminder; nine fabric journeys passed region reservations, overlap rejection, physical cuts, waste/cost conservation, guarded reversal and persisted readback.
+- 157 Node tests passed after the project-package integration, covering domain invariants, real engine/worker, SQLite, backups, PDF references, image preflight, drafts, tools and date/unknown-quantity cases. The full count is expected to change as new slices are integrated; inspect current test output for the latest run.
+- A reproduced image-import bug retained an orphan attachment after cancellation. The new regression failed before the fix and passed after original-image persistence was deferred until Save. PNG/JPEG/GIF/WebP containers and dimensions are bounded before browser decoding; this is preflight, not a claim that every malformed compressed payload is detected.
+- Independent security review reproduced seven issues: arbitrary local-file renderer access, restore-preview race, future-schema writes, malformed restored shapes, dangling attachments, scalar buffer allocation and inherited command dispatch. Repairs have maintained regressions. Actual Electron file sentinels and wrong-frame IPC tests passed; no blanket security claim.
+- First representative production Electron Linux performance baseline: 5,000 materials/lots, 20,000 movements, 50 projects, 51 managed assets and small/500×500 patterns. Startup 3.33 s; inventory first navigation 248 ms and warm navigation 116–133 ms. Project list 2.0–2.5 s is being profiled and repaired. These are preliminary observations on this host, not final Windows performance certification.
 
-As of approximately09:37 UTC, first integrated implementation is running; the six-hour mission continues.
+## Implemented areas
 
-1. Real Electron45 startup verified on Linux with SQLite and sandboxed renderer; production assets served through restricted `ricamo://app` protocol. Windows installer configured; build/runtime verification next.
-2. Catalogue, lots, explicit stock movements, reservations, location hierarchy, suppliers, partial purchase receipt, geometric fabric cutting and kit opening implemented. Browser journeys verified quantities, conservation, persistent leading-zero codes, unknown quantities, material merges, filters and real PDF storage labels.
-3. Projects, checklists, manual and structured progress, sessions/timer, project requirements, editable geometric thread estimates, immutable scheme revisions, drawing/full/half/backstitch tools, real worker generation and PDF/PNG/native scheme export implemented. Browser verified blank-to-project-to-progress-to-PDF and image generation; progress does not consume inventory.
-4. IT/EN switching, local help, CSV preview/mapping/duplicates, managed attachments, complete backups and previewed restore implemented. Browser verified imported code001,1.5m and monetary amounts, backup cancel/restore and corrupt rejection. Modal language access, live status labels and original project currency labels repaired after independent review; rerender check pending on latest build.
-5. Seventy Node tests pass: domain, engine and worker, SQLite transactions/reopen/idempotency, backup, CSV, estimates and eight security regression cases. Latest500×500/80-colour generation approximately1.03s; RSS154→209MiB is endpoint memory, not peak or Windows evidence. Synthetic domain5000materials/20000movements/50projects validation and commands measured separately; final complete-app benchmark pending.
-6. Independent review reproduced and repairs cover arbitrary local-file renderer access, restore-preview token race, future database writes, malformed restore shapes, dangling attachments, scalar buffer allocation and inherited command dispatch. Actual Electron sentinel fetch/XHR/iframe now blocked; wrong-frame IPC rejected. No claim beyond tested boundaries.
+Catalogue/physical-lot separation; explicit stock movements, transfers, reservations and reversals; custom categories; batch/rapid entry; named filters; location hierarchy; suppliers/partial purchases; fabric measurements, regions, cutting and remnants; kit decomposition; project status/checklists/sessions/progress; immutable revisions and durable drafts; full/half/backstitch editing; real worker generation; PDF/PNG/native pattern export; PDF/image references with annotations; local help/search; CSV preview/round-trip; complete backup/restore and configurable local/second-folder retention.
 
-Current next slices: actual Windows build/install/restart/offline paths; bundled PDF reference reader/annotations; editor draft recovery; advanced inventory tools/customfields/batch workflows; remaining master-prompt traceability and acceptance coverage. Further requirements remain open and must not be represented as complete.
+Tool loans/maintenance, conservative unknown-stock purchasing, local calendar-date handling and project packages are being integrated into the main source. Recipe-based thread mixtures/calibration, project finishing/forecasts/reports, generator preferences/motifs and final requirement traceability have isolated specialist drafts or active work. They are not all verified in the final installed package yet.
 
-## Evidence limits
+## Architecture and boundaries
 
-No installed Windows package or clean Windows11 environment has yet been verified. Preliminary UI journeys passed in Chromium and actual Electron Linux; final integrated regression and distribution gates remain open. No digital signature or universal absence-of-bugs claim. PDF reference annotations and draft recovery are still being implemented.
+Electron 45 bundles Chromium/Node; Vue 3 provides a new interface; SQLite WAL transactions store domain state and managed attachment BLOBs. The renderer has no Node access, uses a narrow preload API and restricted ricamo://app assets, and cannot navigate externally. CPU generation reuses the supplied TypeScript engine in a worker; the old interface was not copied. MakeBead's DMC RGB data is approximate and attributed.
 
-## Continuation
+Data starts empty. Synthetic test data stays in ignored runtime/scratch directories. No production data, external messaging or cloud deployment is involved. Full backups include working drafts; single-pattern exports use a saved revision. Project transfers exclude physical stock and require explicit catalogue decisions. Unknown measurements remain distinct from zero.
 
-Inspect current Git state and this record. Read the user's full master prompt at its supplied Downloads path and source at its supplied Stitch Studio path when needed. Scratch execution briefs are in /tmp/ricamo-mission. Publish each source change through an individually reviewed one-file commit, followed immediately by push.
+## Verification plan and remaining limits
+
+Continue whole-product repair/convergence with a reconciled requirements ledger, real UI journeys, authoritative persistence readback, Windows package rebuild/update/uninstall tests, offline boundaries, keyboard/scale checks and measured representative workloads. The clean Windows 11/other-PC/runtime-absence scenarios require an environment that is not currently available. No code-signing certificate is configured.
+
+The installed vt-app-test entrypoint was read in full, but its required support references (including safe-browser-and-mutation, coverage-and-execution, test-state-integrity, performance-and-efficiency and defect-convergence) are absent. Work uses the available guidance and the user's authorization; it does not claim full library protocol conformance. The engineering-loop entrypoint has the same missing-support limitation. Scoped vt-deliver/design/verify guidance and actual evidence remain applicable.
+
+## Resume
+
+Recheck current Git status, source changes, publication sessions and the goal clock before consequential work. Master prompt: C:\Users\Rui\Downloads\RICAMO_CODEX_MASTER_PROMPT.md. Original engine remains untouched in the supplied Documents/Stitch Studio folder. Scratch briefs and evidence live under /tmp/ricamo-mission; installed/native test records are under ignored .runtime. Each source/config/document change must still be committed alone and pushed before the next commit.
