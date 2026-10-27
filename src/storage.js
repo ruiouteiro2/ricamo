@@ -1,3 +1,6 @@
+import { captureAssetBatch, prepareEntityAssetCommand } from '../core/entity-assets.mjs';
+import { createExampleStudio } from '../core/example-studio.mjs';
+import { exampleMode, exampleLanguage, browserDatabaseName, openBrowserExample, finishBrowserExample } from './example-mode.mjs';
 import { preparePatternAssetCommand } from '../core/pattern-asset.mjs';
 import { createProjectPackage, inspectProjectPackage, previewProjectImport, projectExportManifest, projectImportAssets, projectImportCommand, importedProjectId } from '../core/project-package.mjs';
 import { createState, executeCommand } from '../core/application.mjs';
@@ -10,10 +13,10 @@ let database;
 async function db() {
   if (database) return database;
   database = new Promise((resolve, reject) => {
-    const opening = indexedDB.open('ricamo-studio', 1);
+    const opening = indexedDB.open(browserDatabaseName, 1);
     opening.onupgradeneeded = () => {
       const store = opening.result.createObjectStore('state');
-      store.put(createState(), 'current');
+      store.put(exampleMode ? createExampleStudio(exampleLanguage) : createState(), 'current');
       opening.result.createObjectStore('assets', { keyPath: 'id' });
       opening.result.createObjectStore('recovery');
     };
@@ -45,9 +48,10 @@ function writeCommand(state, transaction, command, revision) {
 }
 let pendingRestore, pendingProject, pendingProjectTimer;
 const browser = {
+  openExample: language => openBrowserExample(language),
   async load() { return request((await db()).transaction('state').objectStore('state').get('current')); },
   command(command, revision) {
-    if (['attachment.add','project.package.import','pattern.createWithAsset'].includes(command.type)) throw failure('unauthorized_command');
+    if (['attachment.add','project.package.import','pattern.createWithAsset','entity.saveWithAssets'].includes(command.type)) throw failure('unauthorized_command');
     return mutate((state, tx) => writeCommand(state, tx, command, revision));
   },
   async importAsset({ name, data, operationId }, revision) {
@@ -69,6 +73,17 @@ const browser = {
       const next = writeCommand(state, tx, prepared.command, revision);
       if (next.revision !== state.revision && !prepared.duplicateAsset) tx.objectStore('assets').add({ id: prepared.assetId, data: bytes });
       return { state: next, asset: next.attachments.find(row => row.id === prepared.assetId), patternId: prepared.patternId, duplicateAsset: prepared.duplicateAsset };
+    });
+  },
+  async saveEntityWithAssets({ files, owner, operationId }, revision) {
+    const captured = captureAssetBatch(files), capturedOwner = structuredClone(owner);
+    const metadata = await Promise.all(captured.map(async ({ data, ...asset }) => ({ ...asset, digest: await digestBytes(data) })));
+    const bytesByDigest = new Map(metadata.map((asset, index) => [asset.digest, captured[index].data]));
+    return mutate((state, tx) => {
+      const prepared = prepareEntityAssetCommand(state, metadata, capturedOwner, operationId);
+      const next = writeCommand(state, tx, prepared.command, revision);
+      if (next.revision !== state.revision) for (const asset of prepared.fresh) tx.objectStore('assets').add({ id: asset.id, data: bytesByDigest.get(asset.digest) });
+      return { state: next, ownerId: prepared.ownerId, assetIds: prepared.assets.map(asset => asset.id) };
     });
   },
   async getAsset(id) {
@@ -154,9 +169,14 @@ async importProject(token, decisions, revision) {
   async print() { window.print(); return true; },
 };
 
+function wrapBridge(bridge) {
+  return Object.fromEntries(Object.keys(bridge).filter(method => method !== 'onCloseRequest').map(method => [method, async (...args) => {
+    const result = await bridge[method](...args);
+    if (!result.ok) throw Object.assign(new Error(result.error.code), result.error);
+    return result.value;
+  }]));
+}
 export const desktop = Boolean(window.ricamo);
-export const storage = desktop ? Object.fromEntries(Object.keys(window.ricamo).filter(method => method !== 'onCloseRequest').map(method => [method, async (...args) => {
-  const result = await window.ricamo[method](...args);
-  if (!result.ok) throw Object.assign(new Error(result.error.code), result.error);
-  return result.value;
-}])) : browser;
+export const storage = desktop ? wrapBridge(window.ricamo) : browser;
+export const windowControls = desktop ? storage : window.ricamoExample ? wrapBridge(window.ricamoExample) : exampleMode ? { finishClose: async () => finishBrowserExample() } : null;
+export const onCloseRequest = window.ricamo?.onCloseRequest || window.ricamoExample?.onCloseRequest;
