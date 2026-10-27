@@ -1,3 +1,5 @@
+import {normalizeProjectSettings} from './thread-estimate-history.mjs';
+import { validateSessionWorkAssignment, validateSessionWork } from './session-work.mjs';
 import { add, subtract, assert, quantity, text, oneOf, integer, currency, date, stringList, jsonObject, find, optionalRef, recordId, put, activeProject, audit } from './shared.mjs';
 
 export const PROJECT_STATUSES = ['idea', 'preparing', 'ready', 'active', 'paused', 'finishing', 'completed', 'archived'];
@@ -32,13 +34,14 @@ export function saveProject(state, p, ctx) {
     status, dueDate: date(source.dueDate, 'dueDate'), completedAt: date(source.completedAt, 'completedAt'),
     patternId, revisionId, fabricLotId: optionalRef(state, 'lots', source.fabricLotId),
     budget: integer(source.budget, 'budget', { nullable: true }), currency: currency(source.currency ?? state.settings.currency),
-    settings: jsonObject(source.settings), tags: stringList(source.tags), attachments: stringList(source.attachments, 'attachments'),
+    settings: normalizeProjectSettings(source.settings,{state}), tags: stringList(source.tags), attachments: stringList(source.attachments, 'attachments'),
     completed: designChanged ? [] : (existing?.completed ?? []),
     manualPercent: designChanged ? 0 : (existing?.manualPercent ?? 0),
     view: existing?.view ?? {}, progressHistory: existing?.progressHistory ?? [],
     ...(!designChanged && existing?.referenceData ? { referenceData: existing.referenceData } : {}),
     createdAt: existing?.createdAt ?? ctx.now, updatedAt: ctx.now,
   };
+  if (!existing && project.settings.thread === undefined && state.settings.preferences?.threadEstimates) project.settings.thread = structuredClone(state.settings.preferences.threadEstimates);
   if (designChanged) {
     project.progressHistory.push({ patternId: existing.patternId, revisionId: existing.revisionId, completed: [...existing.completed], manualPercent: existing.manualPercent, savedAt: ctx.now, ...(existing.referenceData ? { referenceData: existing.referenceData } : {}) });
   }
@@ -49,7 +52,9 @@ export function saveProject(state, p, ctx) {
 
 export function duplicateProject(state, p, ctx) {
   const source = find(state, 'projects', p.id), newId = ctx.id();
-  saveProject(state, { ...source, id: newId, name: p.name ?? source.name, status: 'idea', dueDate: '', completedAt: '' }, ctx);
+  const settings = structuredClone(source.settings);
+  delete settings.threadEstimate; delete settings.threadEstimateHistory; delete settings.finishing;
+  saveProject(state, { ...source, settings, id: newId, name: p.name ?? source.name, status: 'idea', dueDate: '', completedAt: '' }, ctx);
   for (const need of state.needs.filter(n => n.projectId === source.id)) state.needs.push({ ...structuredClone(need), id: ctx.id(), projectId: newId, createdAt: ctx.now, updatedAt: ctx.now });
   for (const task of state.tasks.filter(t => t.projectId === source.id)) state.tasks.push({ ...structuredClone(task), id: ctx.id(), projectId: newId, done: false, createdAt: ctx.now, updatedAt: ctx.now });
   audit(state, ctx, 'project', newId, 'duplicated', { sourceId: source.id });
@@ -107,7 +112,7 @@ export function saveTask(state, p, ctx) {
   });
 }
 
-export function saveSession(state, p, ctx) {
+export function saveSession(state, p, ctx, { restoreHistorical = false } = {}) {
   const existing = p.id ? state.sessions.find(s => s.id === p.id) : null;
   const projectId = p.projectId ?? existing?.projectId;
   find(state, 'projects', projectId);
@@ -115,12 +120,15 @@ export function saveSession(state, p, ctx) {
   const source = { ...existing, ...p };
   const durationMinutes = quantity(source.durationMinutes, { field: 'durationMinutes' });
   assert(durationMinutes <= 1440, 'session_too_long');
-  put(state, 'sessions', {
+  const session = {
     id: recordId(state, 'sessions', p, ctx), projectId,
-    date: date(source.date ?? ctx.now, 'date'), durationMinutes,
+    date: date(source.date ?? ctx.now, 'date'), durationMinutes, ...(source.work !== undefined && source.work !== null ? { work: structuredClone(source.work) } : {}),
     notes: text(source.notes, 'notes', { max: 10000 }), source: oneOf(source.source ?? 'manual', ['manual', 'timer'], 'source'),
     attachments: stringList(source.attachments, 'attachments'), createdAt: existing?.createdAt ?? ctx.now, updatedAt: ctx.now,
-  });
+  };
+  if (restoreHistorical) validateSessionWork(state, session);
+  else validateSessionWorkAssignment(state, session, existing);
+  put(state, 'sessions', session);
 }
 
 export function validProgressKeys(revision) {
@@ -160,9 +168,23 @@ export function saveProjectView(state, p, ctx) {
 export function projectProgress(state, projectId) {
   const project = find(state, 'projects', projectId), revision = projectRevision(state, project);
   if (!revision) return { mode: 'manual', percent: project.manualPercent, completed: null, total: null };
-  const valid = validProgressKeys(revision), completed = project.completed.filter(key => valid.has(key));
-  return { mode: 'structured', percent: valid.size ? completed.length / valid.size * 100 : 0, completed: completed.length, total: valid.size,
-    cross: { completed: completed.filter(k => k.startsWith('c:')).length, total: revision.cells.filter(c => c >= 0).length },
-    half: { completed: completed.filter(k => k.startsWith('h:')).length, total: revision.halfStitches?.length ?? 0 },
-    backstitch: { completed: completed.filter(k => k.startsWith('b:')).length, total: revision.backstitches?.length ?? 0 } };
+  // Count geometry without allocating one string and Set entry per full cross.
+  // Domain mutation/restore validation still uses validProgressKeys independently.
+  let crossTotal = 0;
+  for (const color of revision.cells) if (color >= 0) crossTotal++;
+  const halfKeys = new Set((revision.halfStitches ?? []).map(row => `h:${row.id}`));
+  const backKeys = new Set((revision.backstitches ?? []).map(row => `b:${row.id}`));
+  const completed = project.completed.filter(key => {
+    if (typeof key !== 'string') return false;
+    if (key.startsWith('h:')) return halfKeys.has(key);
+    if (key.startsWith('b:')) return backKeys.has(key);
+    if (!/^c:(0|[1-9][0-9]*)$/.test(key)) return false;
+    const index = Number(key.slice(2));
+    return index < revision.cells.length && revision.cells[index] >= 0;
+  });
+  const total = crossTotal + halfKeys.size + backKeys.size;
+  return { mode: 'structured', percent: total ? completed.length / total * 100 : 0, completed: completed.length, total,
+    cross: { completed: completed.filter(key => key.startsWith('c:')).length, total: crossTotal },
+    half: { completed: completed.filter(key => key.startsWith('h:')).length, total: revision.halfStitches?.length ?? 0 },
+    backstitch: { completed: completed.filter(key => key.startsWith('b:')).length, total: revision.backstitches?.length ?? 0 } };
 }
