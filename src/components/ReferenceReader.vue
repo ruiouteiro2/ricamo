@@ -1,17 +1,19 @@
 <script setup>
 import { computed, shallowRef, ref, reactive, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
-import { ChevronLeft, ChevronRight, RotateCw, Maximize, Move, Highlighter, Square, Minus, Type, Undo2, Redo2, BookmarkPlus, Download, Trash2, Pencil, X } from '@lucide/vue';
+import { ChevronLeft, ChevronRight, RotateCw, Maximize, Move, Highlighter, Square, Minus, Type, Undo2, Redo2, BookmarkPlus, Download, Printer, Trash2, Pencil, X } from '@lucide/vue';
 import { getDocument, GlobalWorkerOptions, AnnotationMode, PasswordResponses } from 'pdfjs-dist/build/pdf.mjs';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { embedPdfFont, pdfText } from '../pdf-font.mjs';
 import { jsPDF } from 'jspdf';
 import AppDialog from './AppDialog.vue';
 import FormField from './FormField.vue';
+import RangeSlider from './RangeSlider.vue';
 import { state, dispatch, notify } from '../state';
 import { storage } from '../storage';
 import { t, language, errorText } from '../i18n';
 import { createReferenceData, originalPoint } from '../../core/references.mjs';
 import { detectFile } from '../../core/files.mjs';
+import { printPdfDocument, documentPrintPlan, grayscaleCanvas, PRINT_DOCUMENT_LIMITS } from '../print-document.mjs';
 import { drawReferenceAnnotations, appendReferenceNotes } from '../reference-render.mjs';
 
 GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
@@ -27,6 +29,8 @@ const view = reactive({ page: 1, zoom: 1, rotation: 0, scrollX: 0, scrollY: 0 })
 const totalPages = ref(1), goPage = ref(1), tool = ref('pan'), color = ref('#f5c842'), loading = ref(false), rendering = ref(false), error = ref(''), saveError = ref(''), saving = ref(false);
 const baseCanvas = ref(), overlay = ref(), stage = ref(), pageSize = reactive({ width: 600, height: 800 }), selectedId = ref(null), preview = shallowRef(null);
 const dialog = ref(''), annotationDraft = reactive({}), bookmarkLabel = ref(''), password = ref(''), passwordWrong = ref(false), exporting = ref(false), exportProgress = ref(0), exportAll = ref(false), exportLanguage = ref(language.value);
+const printIncludeAnnotations=ref(true), printPaper=ref('original'), printMonochrome=ref(false), printPreview=ref(), printPreviewBusy=ref(false), printPreviewError=ref('');
+let printAbort, printPreviewVersion=0, printPreviewTask;
 const history = shallowRef([]), future = shallowRef([]), imageBitmap = shallowRef(null), pdfDocument = shallowRef(null);
 const pageAnnotations = computed(() => (data.value?.annotations ?? []).filter(mark => mark.page === view.page));
 const bookmarks = computed(() => data.value?.bookmarks ?? []);
@@ -72,7 +76,7 @@ async function load() {
       if (version !== sourceVersion) { image.close(); return; }
       imageBitmap.value = image; totalPages.value = 1;
     }
-    view.page = Math.min(view.page, totalPages.value); goPage.value = view.page; sourceReady.value = true; dialog.value = '';
+    view.page = Math.min(view.page, totalPages.value); goPage.value = view.page; sourceReady.value = true; printPaper.value=isPdf.value?'original':'a4'; dialog.value = '';
     await nextTick(); await queueRender(true);
     if (data.value.pageCount !== totalPages.value) await dispatch('reference.save', payload({ pageCount: totalPages.value, view: { ...view } }));
   } catch (caught) { if (version === sourceVersion) { error.value = readableError(caught); sourceReady.value = false; dialog.value = ''; } }
@@ -221,18 +225,84 @@ async function exportAnnotated() {
   }catch(caught){if(cancelExport)return;error.value=caught.code?.startsWith('pdf_')?errorText(caught):caught.code==='reference_export_limit'?t('referenceExportLimit'):t('referenceExportFailed');}
   finally{exporting.value=false;}
 }
-function stopExport() { cancelExport=true;exportRenderTask?.cancel(); }
+function openPrintDialog(){if(totalPages.value>PRINT_DOCUMENT_LIMITS.pages)exportAll.value=false;dialog.value='print';}
+function printPlacement(width,height){
+  const original=isPdf.value&&printPaper.value==='original',landscape=width>height;
+  const base=printPaper.value==='letter'?[215.9,279.4]:[210,297];
+  const paperWidth=original?width*25.4/72:base[landscape?1:0],paperHeight=original?height*25.4/72:base[landscape?0:1],margin=original?0:12;
+  const ratio=Math.min((paperWidth-margin*2)/width,(paperHeight-margin*2)/height);
+  return{paperWidth,paperHeight,x:(paperWidth-width*ratio)/2,y:(paperHeight-height*ratio)/2,width:width*ratio,height:height*ratio};
+}
+async function renderPrintSource(pageNumber,previewOnly=false){
+  let page,width,height;
+  const rotation=view.rotation;
+  if(pdfDocument.value){page=await pdfDocument.value.getPage(pageNumber);const viewport=page.getViewport({scale:1,rotation:page.rotate+rotation});width=viewport.width;height=viewport.height;}
+  else{width=rotation%180?imageBitmap.value.height:imageBitmap.value.width;height=rotation%180?imageBitmap.value.width:imageBitmap.value.height;}
+  const canvas=document.createElement('canvas'),scale=Math.min(2,(previewOnly?1000:2600)/Math.max(width,height));canvas.width=Math.max(1,Math.ceil(width*scale));canvas.height=Math.max(1,Math.ceil(height*scale));
+  try{
+    if(page){const task=page.render({canvas,viewport:page.getViewport({scale,rotation:page.rotate+rotation}),annotationMode:AnnotationMode.ENABLE,intent:'print'});if(previewOnly)printPreviewTask=task;else exportRenderTask=task;await task.promise;}
+    else drawImage(canvas,rotation);
+    if(printIncludeAnnotations.value)drawReferenceAnnotations(canvas,data.value.annotations.filter(mark=>mark.page===pageNumber),{rotation,clear:false});
+    if(printMonochrome.value)grayscaleCanvas(canvas);
+    return{canvas,placement:printPlacement(width,height)};
+  }catch(caught){canvas.width=canvas.height=0;throw caught;}
+  finally{page?.cleanup();if(!previewOnly)exportRenderTask=null;}
+}
+async function refreshPrintPreview(){
+  const version=++printPreviewVersion;printPreviewTask?.cancel();printPreviewError.value='';
+  if(dialog.value!=='print'||!sourceReady.value){printPreviewBusy.value=false;return;}
+  printPreviewBusy.value=true;
+  try{
+    await nextTick();const source=await renderPrintSource(exportAll.value?1:view.page,true);
+    try{if(version!==printPreviewVersion||!printPreview.value)return;const target=printPreview.value,p=source.placement,scale=900/Math.max(p.paperWidth,p.paperHeight);target.width=Math.ceil(p.paperWidth*scale);target.height=Math.ceil(p.paperHeight*scale);const context=target.getContext('2d');context.fillStyle='#fff';context.fillRect(0,0,target.width,target.height);context.drawImage(source.canvas,p.x*scale,p.y*scale,p.width*scale,p.height*scale);}
+    finally{source.canvas.width=source.canvas.height=0;}
+  }catch(caught){if(version===printPreviewVersion&&caught.name!=='RenderingCancelledException')printPreviewError.value=errorText(caught);}
+  finally{if(version===printPreviewVersion)printPreviewBusy.value=false;}
+}
+watch([dialog,exportAll,printIncludeAnnotations,printPaper,printMonochrome],refreshPrintPreview);
+async function printReference(){
+  if(!sourceReady.value||exporting.value)return;
+  exporting.value=true;cancelExport=false;printAbort=new AbortController();exportProgress.value=0;error.value='';dialog.value='';
+  try{
+    const pages=exportAll.value?Array.from({length:totalPages.value},(_,i)=>i+1):[view.page];
+    if(pages.length>PRINT_DOCUMENT_LIMITS.pages)throw Object.assign(Error(),{code:'print_document_limit'});
+    const dimensions=[];
+    for(const pageNumber of pages){
+      if(cancelExport)return;
+      let width,height;
+      if(pdfDocument.value){const page=await pdfDocument.value.getPage(pageNumber),viewport=page.getViewport({scale:1,rotation:page.rotate+view.rotation});width=viewport.width;height=viewport.height;}
+      else{width=view.rotation%180?imageBitmap.value.height:imageBitmap.value.width;height=view.rotation%180?imageBitmap.value.width:imageBitmap.value.height;}
+      const p=printPlacement(width,height);dimensions.push({width:p.paperWidth*72/25.4,height:p.paperHeight*72/25.4});
+    }
+    documentPrintPlan(dimensions);
+    let output;
+    for(const [index,pageNumber] of pages.entries()){
+      if(cancelExport)return;
+      const {canvas,placement:p}=await renderPrintSource(pageNumber);
+      try{const orientation=p.paperWidth>p.paperHeight?'landscape':'portrait',format=[p.paperWidth,p.paperHeight];if(!output)output=await embedPdfFont(new jsPDF({orientation,unit:'mm',format,compress:true}));else output.addPage(format,orientation);output.addImage(canvas.toDataURL('image/png'),'PNG',p.x,p.y,p.width,p.height);}
+      finally{canvas.width=canvas.height=0;}
+      exportProgress.value=index+1;
+    }
+    if(cancelExport)return;
+    if(printIncludeAnnotations.value)await appendReferenceNotes(output,data.value.annotations.filter(mark=>pages.includes(mark.page)),{locale:language.value,maxPages:PRINT_DOCUMENT_LIMITS.pages});
+    if(cancelExport)return;
+    const result=await printPdfDocument(new Uint8Array(output.output('arraybuffer')),{signal:printAbort.signal,monochrome:printMonochrome.value,onProgress:({page})=>{exportProgress.value=page;}});
+    if(result===false&&!cancelExport)openPrintDialog();
+  }catch(caught){if(!cancelExport)error.value=errorText(caught.code==='reference_export_limit'?{code:'print_document_limit'}:caught);}
+  finally{exporting.value=false;printAbort=null;}
+}
+function stopExport() { cancelExport=true;exportRenderTask?.cancel();printAbort?.abort(); }
 function beforeNavigate(event) { if (saving.value || exporting.value || dialog.value === 'annotation') { event.preventDefault(); saveError.value = t('referenceFinishEditing'); } else if(sourceReady.value && attachment.value) { clearTimeout(viewTimer); dispatch('reference.save',payload({view:{...view}})).catch(caught=>notify(errorText(caught))); } }
 function beforeUnload(event) { if (saving.value || exporting.value || dialog.value === 'annotation') { event.preventDefault(); event.returnValue = ''; } }
 onMounted(async()=>{mounted=true;window.addEventListener('ricamo:before-navigate',beforeNavigate);window.addEventListener('beforeunload',beforeUnload);await load();resizeObserver=new ResizeObserver(()=>{if(sourceReady.value)queueRender(true)});if(stage.value)resizeObserver.observe(stage.value);});
-onBeforeUnmount(()=>{mounted=false;sourceVersion++;stopExport();clearTimeout(viewTimer);resizeObserver?.disconnect();window.removeEventListener('ricamo:before-navigate',beforeNavigate);window.removeEventListener('beforeunload',beforeUnload);disposeSource();});
+onBeforeUnmount(()=>{mounted=false;sourceVersion++;printPreviewVersion++;printPreviewTask?.cancel();stopExport();clearTimeout(viewTimer);resizeObserver?.disconnect();window.removeEventListener('ricamo:before-navigate',beforeNavigate);window.removeEventListener('beforeunload',beforeUnload);disposeSource();});
 </script>
 
 <template>
   <div class="stack">
     <p class="notice">{{ t('referenceAnnotationHelp') }}</p>
     <p v-if="error" class="notice error" role="alert">{{ error }}</p><p v-if="saveError" class="notice error" role="alert">{{ saveError }}</p>
-    <div class="toolbar"><button class="button" @click="downloadOriginal"><Download :size="16" />{{ t('saveReference') }}</button><button class="button" :disabled="!sourceReady || exporting" @click="dialog='export'">{{ t('referenceExport') }}</button><button v-if="error" class="button" @click="load">{{ t('retry') }}</button><span v-if="saving" role="status" class="muted">{{ t('saving') }}</span></div>
+    <div class="toolbar"><button class="button" @click="downloadOriginal"><Download :size="16" />{{ t('saveReference') }}</button><button class="button" :disabled="!sourceReady || exporting" @click="dialog='export'">{{ t('referenceExport') }}</button><button class="button" :disabled="!sourceReady || exporting" @click="openPrintDialog"><Printer :size="16" />{{ t('print') }}</button><button v-if="error" class="button" @click="load">{{ t('retry') }}</button><span v-if="saving" role="status" class="muted">{{ t('saving') }}</span></div>
     <p v-if="loading" class="notice" role="status">{{ t('referenceLoading') }}</p>
     <div v-if="exporting" class="notice" role="status"><span>{{ t('referenceExporting',{page:exportProgress}) }}</span><button class="button small" @click="stopExport">{{ t('cancel') }}</button></div>
     <template v-if="sourceReady">
@@ -243,9 +313,10 @@ onBeforeUnmount(()=>{mounted=false;sourceVersion++;stopExport();clearTimeout(vie
         <p class="cell-subtitle">{{ t('referenceCanvasHelp') }}</p>
       </div><aside class="stack"><section class="panel"><div class="panel-heading"><h2>{{ t('referenceAnnotations') }}</h2><span class="badge">{{ pageAnnotations.length }}</span></div><div class="panel-body"><p v-if="!pageAnnotations.length" class="muted">{{ t('referenceNoAnnotations') }}</p><article v-for="mark in pageAnnotations" :key="mark.id" style="margin-bottom:18px"><strong>{{ t(`referenceTool_${mark.type}`) }}</strong><p style="font-size:.8rem;white-space:pre-wrap;overflow-wrap:anywhere">{{ mark.text || t('referenceRegion') }}</p><div class="actions"><button class="button small" :disabled="contentLocked || saving || exporting" @click="editAnnotation(mark)"><Pencil :size="14" />{{ t('edit') }}</button><button class="icon-button" :disabled="contentLocked || saving || exporting" :aria-label="`${t('remove')}: ${mark.text || t('referenceRegion')}`" @click="deleteAnnotation(mark)"><Trash2 :size="15" /></button></div></article></div></section><section class="panel"><div class="panel-heading"><h2>{{ t('bookmarks') }}</h2></div><div class="panel-body"><p v-if="!bookmarks.length" class="muted">{{ t('referenceNoBookmarks') }}</p><div v-for="mark in bookmarks" :key="mark.id" class="inline-row"><button class="button text" :disabled="exporting" @click="gotoBookmark(mark)">{{ mark.page }} · {{ mark.label }}</button><button class="icon-button" :disabled="contentLocked || saving" :aria-label="`${t('remove')}: ${mark.label}`" @click="deleteBookmark(mark.id)"><X :size="14" /></button></div></div></section></aside></div>
     </template>
-    <AppDialog v-if="dialog==='annotation'" :title="t('referenceEditNote')" :busy="saving" @close="dialog=''"><p v-if="saveError" role="alert" class="notice error">{{ saveError }}</p><div class="form-grid"><FormField :label="t('notes')" wide :required="annotationDraft.type==='text'" v-slot="{id}"><textarea :id="id" v-model="annotationDraft.text" maxlength="2000" autofocus /></FormField><FormField :label="t('color')" v-slot="{id}"><input :id="id" v-model="annotationDraft.color" type="color" /></FormField><FormField :label="t('referenceOpacity')" v-slot="{id}"><input :id="id" v-model.number="annotationDraft.opacity" type="range" min="0.1" max="1" step="0.05" /></FormField></div><template #footer><button class="button" :disabled="saving" @click="dialog=''">{{ t('cancel') }}</button><button class="button primary" :disabled="saving || (annotationDraft.type==='text'&&!annotationDraft.text?.trim())" @click="saveAnnotation">{{ t('save') }}</button></template></AppDialog>
+    <AppDialog v-if="dialog==='annotation'" :title="t('referenceEditNote')" :busy="saving" @close="dialog=''"><p v-if="saveError" role="alert" class="notice error">{{ saveError }}</p><div class="form-grid"><FormField :label="t('notes')" wide :required="annotationDraft.type==='text'" v-slot="{id}"><textarea :id="id" v-model="annotationDraft.text" maxlength="2000" autofocus /></FormField><FormField :label="t('color')" v-slot="{id}"><input :id="id" v-model="annotationDraft.color" type="color" /></FormField><FormField :label="t('referenceOpacity')" v-slot="{id}"><RangeSlider :id="id" v-model="annotationDraft.opacity" :min="0.1" :max="1" :step="0.05" /></FormField></div><template #footer><button class="button" :disabled="saving" @click="dialog=''">{{ t('cancel') }}</button><button class="button primary" :disabled="saving || (annotationDraft.type==='text'&&!annotationDraft.text?.trim())" @click="saveAnnotation">{{ t('save') }}</button></template></AppDialog>
     <AppDialog v-if="dialog==='bookmark'" :title="t('referenceAddBookmark')" :busy="saving" @close="dialog=''"><p v-if="saveError" role="alert" class="notice error">{{ saveError }}</p><FormField :label="t('name')" required v-slot="{id}"><input :id="id" v-model="bookmarkLabel" maxlength="300" autofocus /></FormField><template #footer><button class="button" @click="dialog=''">{{ t('cancel') }}</button><button class="button primary" :disabled="saving||!bookmarkLabel.trim()" @click="saveBookmark">{{ t('save') }}</button></template></AppDialog>
     <AppDialog v-if="dialog==='password'" :title="t('referencePassword')" @close="cancelPassword"><p class="notice">{{ t(passwordWrong?'referenceWrongPassword':'referencePasswordHelp') }}</p><FormField :label="t('referencePassword')" v-slot="{id}"><input :id="id" v-model="password" type="password" autocomplete="off" @keydown.enter="sendPassword" autofocus /></FormField><template #footer><button class="button" @click="cancelPassword">{{ t('cancel') }}</button><button class="button primary" :disabled="!password" @click="sendPassword">{{ t('confirm') }}</button></template></AppDialog>
+    <AppDialog v-if="dialog==='print'" :title="t('referencePrintTitle')" wide @close="dialog=''"><p class="notice">{{ t('referencePrintHelp') }}</p><div class="form-grid"><FormField :label="t('printPaper')" v-slot="{id}"><select :id="id" v-model="printPaper"><option v-if="isPdf" value="original">{{ t('printOriginalPaper') }}</option><option value="a4">A4</option><option value="letter">Letter</option></select></FormField><FormField :label="t('printAppearance')" v-slot="{id}"><select :id="id" v-model="printMonochrome"><option :value="false">{{ t('printOriginalColors') }}</option><option :value="true">{{ t('printGrayscale') }}</option></select></FormField></div><label class="checkbox-label"><input v-model="exportAll" type="checkbox" :disabled="totalPages>PRINT_DOCUMENT_LIMITS.pages" />{{ t('referenceAllPages',{count:totalPages}) }}</label><label class="checkbox-label"><input v-model="printIncludeAnnotations" type="checkbox" />{{ t('referencePrintAnnotations') }}</label><p class="muted">{{ t('referencePrintPreview',{page:exportAll?1:view.page}) }}</p><p v-if="printPreviewError" class="notice error" role="alert">{{ printPreviewError }}</p><p v-if="printPreviewBusy" role="status">{{ t('referenceLoading') }}</p><div class="editor-stage" style="height:320px;padding:12px" :aria-busy="printPreviewBusy"><canvas ref="printPreview" role="img" :aria-label="t('referencePrintPreview',{page:exportAll?1:view.page})" style="height:100%;max-width:100%;width:auto;object-fit:contain;image-rendering:auto;display:block;margin:auto" /></div><template #footer><button class="button" @click="dialog=''">{{ t('cancel') }}</button><button class="button primary" :disabled="printPreviewBusy || Boolean(printPreviewError)" @click="printReference"><Printer :size="16" />{{ t('print') }}</button></template></AppDialog>
     <AppDialog v-if="dialog==='export'" :title="t('referenceExport')" @close="dialog=''"><p class="notice">{{ t('referenceExportHelp') }}</p><label class="checkbox-label"><input v-model="exportAll" type="checkbox" :disabled="totalPages>300" />{{ t('referenceAllPages',{count:totalPages}) }}</label><FormField :label="t('language')" v-slot="{id}"><select :id="id" v-model="exportLanguage"><option value="it">Italiano</option><option value="en">English</option></select></FormField><template #footer><button class="button" @click="dialog=''">{{ t('cancel') }}</button><button class="button primary" @click="exportAnnotated">{{ t('export') }}</button></template></AppDialog>
   </div>
 </template>
