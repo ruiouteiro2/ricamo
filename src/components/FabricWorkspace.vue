@@ -4,6 +4,9 @@ import { Scissors, Ruler, RotateCcw, LockKeyhole, Pencil, ArrowLeft } from '@luc
 import { state, dispatch, notify } from '../state';
 import { t, number, date, money, errorText } from '../i18n';
 import { activeFabricRegions, previewFabricCut, fabricProjectFit, fabricCutDependencies, toCentimetres } from '../../core/fabric-planning.mjs';
+import {fabricSize} from '../../core/fabric.mjs';
+import {projectFabricConfig} from '../../core/design-size.mjs';
+import DesignSizeSummary from './DesignSizeSummary.vue';
 import AppDialog from './AppDialog.vue';
 import FormField from './FormField.vue';
 const props = defineProps({ lotId: { type: String, required: true }, projectId: String });
@@ -29,6 +32,7 @@ const design = computed(() => {
   return pattern?.kind === 'structured' ? pattern.revisions.find(r => r.id === project.revisionId) : null;
 });
 const fit = computed(() => lot.value && design.value ? fabricProjectFit(lot.value, design.value, selectedProject.value.settings.fabric) : null);
+const fullGridSize=computed(()=>{if(!design.value||!lot.value)return null;try{return fabricSize({...projectFabricConfig(selectedProject.value,lot.value),width:design.value.width,height:design.value.height})}catch{return null}});
 const simulation = computed(() => {
   if (!lot.value || !draft.width || !draft.height) return null;
   try { return { ...previewFabricCut(lot.value, { ...draft, discardRemnants: [] }), error: null }; }
@@ -128,7 +132,7 @@ function releaseCutReservation(cut) { const reservation = cutReservation(cut); i
         <p v-if="!available" class="notice warning">{{ t('fabric_piece_unavailable') }}</p>
         <div v-if="available" class="form-grid">
           <FormField :label="t('project')" wide v-slot="{id}"><select :id="id" v-model="draft.projectId" :disabled="!!selectedRegionId"><option value="">{{ t('none') }}</option><option v-for="project in projects" :key="project.id" :value="project.id">{{ project.name }}</option></select></FormField>
-          <template v-if="fit"><div class="wide"><p class="notice" :class="fit.fits===true?'success':'warning'">{{ t(fit.fits===true?'fabricFits':fit.fits===false?'fabricDoesNotFit':'fabricUnknown') }}<template v-if="fit.cutWidthCm"> · {{ number(fit.cutWidthCm) }} × {{ number(fit.cutHeightCm) }} cm <span v-if="fit.rotated">({{ t('fabricRotated') }})</span></template></p><p class="field-help">{{ t('fabricCountHelp') }}</p><button v-if="fit.cutWidthCm" class="button small" @click="useDesign"><Ruler :size="14" />{{ t('fabricUseDesign') }}</button></div></template>
+          <div v-if="design" class="wide"><DesignSizeSummary :revision="design" :grid="fullGridSize"/></div><template v-if="fit"><div class="wide"><p class="notice" :class="fit.fits===true?'success':'warning'">{{ t(fit.fits===true?'fabricFits':fit.fits===false?'fabricDoesNotFit':'fabricUnknown') }}<template v-if="fit.cutWidthCm"> · {{ number(fit.cutWidthCm) }} × {{ number(fit.cutHeightCm) }} cm <span v-if="fit.rotated">({{ t('fabricRotated') }})</span></template></p><p class="field-help">{{ t('fabricCountHelp') }}</p><button v-if="fit.cutWidthCm" class="button small" @click="useDesign"><Ruler :size="14" />{{ t('fabricUseDesign') }}</button></div></template>
           <FormField :label="t('fabricInputUnit')" v-slot="{id}"><select :id="id" :value="draft.unit" @change="changeUnit"><option v-for="unit in units" :key="unit" :value="unit">{{ unit==='in'?t('fabricInches'):unit }}</option></select></FormField>
           <FormField :label="t('fabricWidth')" required v-slot="{id}"><input :id="id" v-model="draft.width" inputmode="decimal" /></FormField>
           <FormField :label="t('fabricHeight')" required v-slot="{id}"><input :id="id" v-model="draft.height" inputmode="decimal" /></FormField>
