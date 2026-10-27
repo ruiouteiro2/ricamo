@@ -8,7 +8,7 @@ export function drawPattern(canvas, revision, options = {}) {
   if (canvas.width !== width) canvas.width = width;
   if (canvas.height !== height) canvas.height = height;
   const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, width, height); ctx.fillStyle = '#fffefa'; ctx.fillRect(0, 0, width, height);
+  ctx.clearRect(0, 0, width, height); ctx.fillStyle = options.monochrome?'#fff':'#fffefa'; ctx.fillRect(0, 0, width, height);
   const completed = options.completed instanceof Set ? options.completed : new Set(options.completed ?? []);
   const left = Math.max(0, Math.floor(offsetX / cell)), top = Math.max(0, Math.floor(offsetY / cell));
   const right = Math.min(revision.width, Math.ceil((offsetX + width) / cell)), bottom = Math.min(revision.height, Math.ceil((offsetY + height) / cell));
@@ -20,29 +20,29 @@ export function drawPattern(canvas, revision, options = {}) {
     const color = revision.colors[colorIndex], px = x * cell - offsetX, py = y * cell - offsetY;
     ctx.globalAlpha = opacity(colorIndex); ctx.fillStyle = options.monochrome ? '#fff' : color.hex; ctx.fillRect(px, py, cell, cell);
     if (options.symbols && cell >= 7) {
-      ctx.fillStyle = options.monochrome || (color.rgb[0] * .2126 + color.rgb[1] * .7152 + color.rgb[2] * .0722 > 145) ? '#17151a' : '#fff';
-      ctx.fillText(color.symbol ?? String(colorIndex + 1), px + cell / 2, py + cell / 2);
+      ctx.fillStyle = options.monochrome || (color.rgb[0] * .2126 + color.rgb[1] * .7152 + color.rgb[2] * .0722 > 145) ? (options.monochrome?'#171717':'#17151a') : '#fff';
+      ctx.fillText(color.symbol ?? String(colorIndex + 1), px + cell / 2, py + cell / 2, cell * .86);
     }
     if (completed.has(`c:${index}`)) {
       ctx.globalAlpha = .7; ctx.fillStyle = '#fff'; ctx.fillRect(px, py, cell, cell);
-      ctx.globalAlpha = 1; ctx.strokeStyle = '#225945'; ctx.lineWidth = Math.max(1, cell / 12); ctx.beginPath(); ctx.moveTo(px + cell * .18, py + cell * .52); ctx.lineTo(px + cell * .4, py + cell * .74); ctx.lineTo(px + cell * .83, py + cell * .23); ctx.stroke();
+      ctx.globalAlpha = 1; ctx.strokeStyle = options.monochrome?'#222222':'#225945'; ctx.lineWidth = Math.max(1, cell / 12); ctx.beginPath(); ctx.moveTo(px + cell * .18, py + cell * .52); ctx.lineTo(px + cell * .4, py + cell * .74); ctx.lineTo(px + cell * .83, py + cell * .23); ctx.stroke();
     }
   }
   ctx.globalAlpha = 1;
   if (options.grid && cell >= 4) {
-    for (let x = left; x <= right; x++) { ctx.strokeStyle = x % 10 ? '#2a25322b' : '#2a25328c'; ctx.lineWidth = x % 10 ? .5 : 1; ctx.beginPath(); ctx.moveTo(x * cell - offsetX, 0); ctx.lineTo(x * cell - offsetX, height); ctx.stroke(); }
-    for (let y = top; y <= bottom; y++) { ctx.strokeStyle = y % 10 ? '#2a25322b' : '#2a25328c'; ctx.lineWidth = y % 10 ? .5 : 1; ctx.beginPath(); ctx.moveTo(0, y * cell - offsetY); ctx.lineTo(width, y * cell - offsetY); ctx.stroke(); }
+    for (let x = left; x <= right; x++) { ctx.strokeStyle = options.monochrome?(x%10?'#2a2a2a2b':'#2a2a2a8c'):(x % 10 ? '#2a25322b' : '#2a25328c'); ctx.lineWidth = x % 10 ? .5 : 1; ctx.beginPath(); ctx.moveTo(x * cell - offsetX, 0); ctx.lineTo(x * cell - offsetX, height); ctx.stroke(); }
+    for (let y = top; y <= bottom; y++) { ctx.strokeStyle = options.monochrome?(y%10?'#2a2a2a2b':'#2a2a2a8c'):(y % 10 ? '#2a25322b' : '#2a25328c'); ctx.lineWidth = y % 10 ? .5 : 1; ctx.beginPath(); ctx.moveTo(0, y * cell - offsetY); ctx.lineTo(width, y * cell - offsetY); ctx.stroke(); }
   }
   for (const h of revision.halfStitches ?? []) {
     if (h.x < left || h.x >= right || h.y < top || h.y >= bottom) continue;
-    ctx.globalAlpha = opacity(h.color); ctx.strokeStyle = completed.has(`h:${h.id}`) ? '#225945' : options.monochrome ? '#17151a' : revision.colors[h.color].hex;
+    ctx.globalAlpha = opacity(h.color); ctx.strokeStyle = completed.has(`h:${h.id}`) ? (options.monochrome?'#222222':'#225945') : options.monochrome ? '#171717' : revision.colors[h.color].hex;
     ctx.lineWidth = Math.max(1.5, cell * .16); ctx.beginPath();
     const x = h.x * cell - offsetX, y = h.y * cell - offsetY;
     ctx.moveTo(x + cell * .12, y + cell * (h.direction === '/' ? .88 : .12)); ctx.lineTo(x + cell * .88, y + cell * (h.direction === '/' ? .12 : .88)); ctx.stroke();
   }
   for (const b of revision.backstitches ?? []) {
     if (Math.max(b.x1, b.x2) * cell < offsetX || Math.min(b.x1, b.x2) * cell > offsetX + width || Math.max(b.y1, b.y2) * cell < offsetY || Math.min(b.y1, b.y2) * cell > offsetY + height) continue;
-    ctx.globalAlpha = opacity(b.color); ctx.strokeStyle = completed.has(`b:${b.id}`) ? '#225945' : options.monochrome ? '#17151a' : revision.colors[b.color].hex;
+    ctx.globalAlpha = opacity(b.color); ctx.strokeStyle = completed.has(`b:${b.id}`) ? (options.monochrome?'#222222':'#225945') : options.monochrome ? '#171717' : revision.colors[b.color].hex;
     ctx.lineWidth = Math.max(1.2, cell * .12); ctx.beginPath(); ctx.moveTo(b.x1 * cell - offsetX, b.y1 * cell - offsetY); ctx.lineTo(b.x2 * cell - offsetX, b.y2 * cell - offsetY); ctx.stroke();
   }
   ctx.globalAlpha = 1;
