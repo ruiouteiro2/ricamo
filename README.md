@@ -4,7 +4,7 @@ An offline Windows embroidery studio for materials, projects and stitch patterns
 
 Ricamo keeps catalogue identities separate from physical lots, reservations and stock movements. Progress never consumes material automatically. The application includes a drawing editor, the integrated Stitch Studio image-generation engine, PDF references, local backups and project planning.
 
-The current verified delivery candidate is 0.4.0. [STATUS.md](docs/STATUS.md) records tested behavior and remaining verification; it is not a claim that every acceptance requirement is complete.
+The latest interface patch is 0.4.1 (custom dropdown panels, chevrons, motion and corrected page gutters). The broad functional baseline below is 0.4.0; see STATUS for the patch-specific verification. [STATUS.md](docs/STATUS.md) records tested behavior and remaining verification; it is not a claim that every acceptance requirement is complete.
 
 The 0.4 source adds local versioned thread catalogues and reviewed substitutions, border-connected background removal, coordinate/centre navigation in the drawing editor, measured fabric-defect geometry and an explicit project revision-impact review. These functions retain the separation between planning, progress and confirmed physical stock changes.
 
@@ -12,7 +12,7 @@ The 0.4.0 Windows installer passed the content audit, 28 native journeys, update
 
 ## Install and transfer
 
-Use `release/Ricamo-0.4.0-Windows-x64-Setup.exe`. Copy that single installer to the target Windows x64 PC, run it, choose the installation folder and open Ricamo from the Start menu. The installer bundles the application runtime; Node.js is only needed to build from source. This local build is unsigned.
+Use `release/0.4.1/Ricamo-0.4.1-Windows-x64-Setup.exe`. Copy that single installer to the target Windows x64 PC, run it, choose the installation folder and open Ricamo from the Start menu. The installer bundles the application runtime; Node.js is only needed to build from source. This local build is unsigned.
 
 Use **Settings → Create a backup** before moving computers. Transfer that backup and restore it from Settings on the destination. A project package shares selected work and does not transfer physical stock. Clean Windows 11/offline-OS testing and a second PC remain unverified; see STATUS.
 
