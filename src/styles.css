@@ -11,3 +11,5 @@
 .sr-only:focus{position:fixed;top:12px;left:12px;width:auto;height:auto;clip:auto;clip-path:none;z-index:1000;padding:12px 18px;background:var(--surface);color:var(--ink)}
 
 .sidebar-bottom .muted{color:#686068}
+
+.transparency-surface{background:repeating-conic-gradient(var(--line) 0% 25%,var(--surface) 0% 50%) 0 0/16px 16px}
