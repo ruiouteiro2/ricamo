@@ -9,6 +9,6 @@ export function threadEstimateConfiguration(value={}) {
     assert(Number.isFinite(number)&&number>=min&&number<=max,'thread_estimate_configuration',{field:key});
     if(['strands','backStrands','batchSize'].includes(key))integer(number,key,{min,max});result[key]=number;
   }
-  if(value.colorStrands){assert(value.colorStrands && typeof value.colorStrands==='object' && !Array.isArray(value.colorStrands),'thread_estimate_configuration');for(const [index,strands] of Object.entries(value.colorStrands)){assert(/^(?:[0-9]|[1-7][0-9])$/.test(index),'thread_estimate_configuration');integer(strands,'strands',{min:1,max:12});}result.colorStrands={...value.colorStrands};}
+  if(value.colorStrands){assert(value.colorStrands && typeof value.colorStrands==='object' && !Array.isArray(value.colorStrands),'thread_estimate_configuration');for(const [index,strands] of Object.entries(value.colorStrands)){assert(/^(?:0|[1-9][0-9]{0,2})$/.test(index)&&Number(index)<500,'thread_estimate_configuration');integer(strands,'strands',{min:1,max:12});}result.colorStrands={...value.colorStrands};}
   return result;
 }
