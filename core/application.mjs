@@ -4,9 +4,11 @@ import { saveMaterial, addLot, saveLocation } from './inventory.mjs';
 import { saveNeed, projectRevision } from './projects.mjs';
 import { estimateThreads, estimateForMaterial } from './estimates.mjs';
 import { validateRevision } from './pattern.mjs';
+import { referenceHandlers, validateReferenceData } from './references.mjs';
 
 export { createState };
 const handlers = {
+  ...referenceHandlers,
   'project.estimate': (state, p, ctx) => {
     const project = find(state, 'projects', p.projectId);
     assert(!['completed', 'archived'].includes(project.status), 'project_closed');
@@ -126,6 +128,15 @@ export function validateApplicationState(state) {
     if (pattern.kind === 'structured') assert(pattern.revisions.some(row => row.id === pattern.currentRevisionId), 'invalid_current_revision');
     if (pattern.sourceAttachmentId) assert(seenAttachments.has(pattern.sourceAttachmentId), 'missing_attachment');
     if (pattern.kind === 'reference') assert(Boolean(pattern.sourceAttachmentId), 'pattern_content_required');
+    if (pattern.referenceData) {
+      assert(pattern.kind === 'reference', 'reference_pattern_required');
+      validateReferenceData(pattern.referenceData, { attachmentId: pattern.sourceAttachmentId });
+    }
+  }
+  for (const project of state.projects) if (project.referenceData) {
+    const pattern = state.patterns.find(row => row.id === project.patternId);
+    assert(pattern?.kind === 'reference', 'reference_pattern_required');
+    validateReferenceData(project.referenceData, { attachmentId: pattern.sourceAttachmentId });
   }
   return state;
 }
