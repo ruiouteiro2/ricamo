@@ -54,6 +54,7 @@ export function duplicateProject(state, p, ctx) {
   const source = find(state, 'projects', p.id), newId = ctx.id();
   const settings = structuredClone(source.settings);
   delete settings.threadEstimate; delete settings.threadEstimateHistory; delete settings.finishing;
+  if (settings.forecast?.manualRemaining) settings.forecast.manualRemaining = { full: null, half: null, backstitch: null };
   saveProject(state, { ...source, settings, id: newId, name: p.name ?? source.name, status: 'idea', dueDate: '', completedAt: '' }, ctx);
   for (const need of state.needs.filter(n => n.projectId === source.id)) state.needs.push({ ...structuredClone(need), id: ctx.id(), projectId: newId, createdAt: ctx.now, updatedAt: ctx.now });
   for (const task of state.tasks.filter(t => t.projectId === source.id)) state.tasks.push({ ...structuredClone(task), id: ctx.id(), projectId: newId, done: false, createdAt: ctx.now, updatedAt: ctx.now });
@@ -92,8 +93,9 @@ export function saveNeed(state, p, ctx) {
 export function confirmedConsumption(state, projectId, materialId) {
   const lotIds = new Set(state.lots.filter(l => l.materialId === materialId).map(l => l.id));
   const movements = state.movements.filter(m => m.projectId === projectId && (m.materialId === materialId || lotIds.has(m.lotId)));
-  const consumptionIds = new Set(movements.filter(m => m.kind === 'consume').map(m => m.id));
-  return Math.max(0, subtract(add(...movements.filter(m => m.kind === 'consume').map(m => m.quantity)), add(...movements.filter(m => m.kind === 'correction' && consumptionIds.has(m.reversesId)).map(m => m.quantity))));
+  // Opening a kit for a project fulfils its kit-unit need; components remain physical stock.
+  const consumptionIds = new Set(movements.filter(m => ['consume', 'kit_open'].includes(m.kind)).map(m => m.id));
+  return Math.max(0, subtract(add(...movements.filter(m => ['consume', 'kit_open'].includes(m.kind)).map(m => m.quantity)), add(...movements.filter(m => m.kind === 'correction' && consumptionIds.has(m.reversesId)).map(m => m.quantity))));
 }
 
 export function saveTask(state, p, ctx) {
