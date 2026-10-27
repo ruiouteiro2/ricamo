@@ -11,7 +11,7 @@ const formId = useId();
 async function save() {
   if (busy.value) return;
   busy.value = true; error.value = '';
-  try { await props.submit(JSON.parse(JSON.stringify(draft))); emit('saved'); }
+  try { const result = await props.submit(JSON.parse(JSON.stringify(draft))); if (result !== false) emit('saved'); }
   catch (caught) { error.value = errorText(caught); }
   finally { busy.value = false; }
 }
