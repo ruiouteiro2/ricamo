@@ -1,4 +1,20 @@
-# Ricamo 0.4.0 delivery evidence
+# Ricamo delivery evidence
+
+## Interface patch 0.4.1 — 2026-10-27
+
+Rui requested corrected content padding, customised dropdown menus, chevrons and consistent motion. Locations and Shopping now use the existing responsive page container. Shared picker panels use the app palette, rounded surfaces and selected/hover states, with preserved native keyboard/validation semantics. Navigation, pagination, transfers and disclosures use Lucide chevrons; drawing tools and keyboard direction keys retain their meaning. Routes, menus, search, dialog entrance/backdrops, disclosures, notifications and interactive states have bounded transitions. Reduced motion covers pseudo-elements too; forced colours preserve option focus/selection outlines.
+
+Installer: `release/0.4.1/Ricamo-0.4.1-Windows-x64-Setup.exe` (148,008,829 bytes), SHA-256 `d595d09c3db41aa166d11dfdf9e2233944f5c4bf99d7676f1d60446e4f6c1a6e`. It is built separately from the earlier 0.4.0 distribution so an open user window is not replaced. The exact content audit passed; manifest and checksums are in `release/Ricamo-0.4.1-release-manifest.json` and `release/Ricamo-0.4.1-SHA256SUMS.txt`.
+
+Verification: production build and **438/438 existing tests passed**. Five native Windows journeys passed on this exact 0.4.1 executable: UI polish, desktop persistence smoke/reopen, draft recovery/navigation, material descriptors and planning. The suite record is `.runtime/ui-041-suite.json`; detailed UI screenshots/results are `.runtime/ui-polish-qQYJ0P`. It covers pointer selection, keyboard Home/End/Enter, Escape cancellation, a picker above a modal, saved parent/child locations, four widths (1440/1024/800/560 CSS pixels), disclosure controls and reduced motion. The test caught an initially missed picker-icon reduced-motion override; the correction passed. Development runs also corrected test-launch path quoting and two test locator names. Current native evidence records an enabled OS renderer sandbox, no page errors and no HTTP requests.
+
+The 0.4.1 installer lifecycle, broad 28-journey suite, performance benchmark, clean-machine and physical-printer checks were not repeated for this UI patch. Their 0.4.0 results below remain historical, not a claim of repeat verification. No data migration or dependency upgrade is included. The application remains unsigned. Design and source review were performed by the implementing agent for this patch; there was no independent patch review.
+
+The updated preview is opened separately with `.runtime/user-ui-preview-data`; prior preview profiles are preserved and are not silently merged or replaced. Its launch record is `.runtime/user-ui-preview-launch.json`.
+
+See ARCHITECTURE for shared control/motion ownership and README for installation. Personal data and generated test/build files remain excluded from Git. The requested one-file-per-commit, immediate-push policy continues.
+
+## Previous 0.4.0 baseline
 
 ## Scope and identity
 
