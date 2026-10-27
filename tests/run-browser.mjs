@@ -27,7 +27,7 @@ async function stop(child, graceful = false) {
 }
 
 /** Each script gets fresh browser storage and the same owned production preview. */
-export async function runBrowserTests({ root = projectRoot, scripts = ['tests/browser-inventory.mjs', 'tests/browser-tools.mjs'], buildFrontend = true, signal, onReady = () => {} } = {}) {
+export async function runBrowserTests({ root = projectRoot, scripts = ['tests/browser-inventory.mjs', 'tests/browser-tools.mjs', 'tests/browser-example.mjs', 'tests/browser-attachments.mjs'], buildFrontend = true, signal, onReady = () => {} } = {}) {
   let child, server;
   const check = () => { if (signal?.aborted) throw signal.reason ?? new Error('Browser tests interrupted.'); };
   const abort = () => { void stop(child).catch(() => {}); };
