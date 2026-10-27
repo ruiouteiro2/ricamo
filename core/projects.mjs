@@ -49,6 +49,7 @@ export function saveProject(state, p, ctx) {
     ...(source.catalogueReferences !== undefined ? { catalogueReferences: structuredClone(source.catalogueReferences) } : {}),
     createdAt: existing?.createdAt ?? ctx.now, updatedAt: ctx.now,
   };
+  if(!existing && project.settings.fabric===undefined){const fabric=pattern?.library?.design?.fabric??pattern?.revisions?.find(row=>row.id===revisionId)?.settings?.fabric;if(fabric)project.settings.fabric=structuredClone(fabric);}
   if (!existing && project.settings.thread === undefined && state.settings.preferences?.threadEstimates) project.settings.thread = structuredClone(state.settings.preferences.threadEstimates);
   if (designChanged) {
     if (p.revisionReview?.carryProgress) {
