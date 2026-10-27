@@ -1,6 +1,9 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('ricamo', Object.freeze({
+  exportProject: (id, options) => ipcRenderer.invoke('ricamo:export-project', id, options),
+  inspectProject: text => ipcRenderer.invoke('ricamo:inspect-project', text),
+  importProject: (token, decisions, revision) => ipcRenderer.invoke('ricamo:import-project', token, decisions, revision),
   load: () => ipcRenderer.invoke('ricamo:load'),
   command: (command, revision) => ipcRenderer.invoke('ricamo:command', command, revision),
   importAsset: (asset, revision) => ipcRenderer.invoke('ricamo:import-asset', asset, revision),
