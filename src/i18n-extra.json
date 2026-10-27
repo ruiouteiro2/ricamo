@@ -5366,5 +5366,409 @@
   "pdf_label_dimensions": [
     "Scegli A4 o Letter e un’etichetta larga 30–180 mm e alta 20–250 mm.",
     "Choose A4 or Letter and a label 30–180 mm wide and 20–250 mm high."
+  ],
+  "editorCenterView": [
+    "Vai al centro",
+    "Centre view"
+  ],
+  "editorCenterGuide": [
+    "Mostra il centro",
+    "Show centre guide"
+  ],
+  "editorCenterHelp": [
+    "Centro geometrico: {x}, {y} celle dal bordo superiore sinistro. La guida non aggiunge punti e non viene esportata.",
+    "Geometric centre: {x}, {y} cells from the top-left edge. The guide does not add stitches and is not exported."
+  ],
+  "generationBackgroundRemove": [
+    "Rimuovi il fondo collegato ai bordi",
+    "Remove border background"
+  ],
+  "generationRemovalTolerance": [
+    "Tolleranza del colore di fondo",
+    "Background colour tolerance"
+  ],
+  "generationRemovalHelp": [
+    "Rimuove i colori simili al colore scelto solo se collegati a un bordo. Le zone bianche racchiuse dal motivo restano. Aumenta la tolleranza per includere le sfumature e controlla sempre l’anteprima; non è un ritaglio semantico automatico.",
+    "Removes colours similar to the selected colour only when connected to an image edge. Whites enclosed by the motif remain. Increase tolerance to include shades and review the preview; this is not automatic semantic cutout."
+  ],
+  "editorCoordinateRange": [
+    "Inserisci una colonna intera da 1 a {columns} e una riga intera da 1 a {rows}.",
+    "Enter a whole column from 1 to {columns} and a whole row from 1 to {rows}."
+  ],
+  "fabricMeasuredGeometry": [
+    "Geometria misurata",
+    "Measured geometry"
+  ],
+  "fabricGeometryHelp": [
+    "Misure manuali in cm, fino a 6 decimali. Massimo 16 aree inutilizzabili e 24 vertici per poligono semplice. Un contorno sostituisce il rettangolo esterno; non viene dedotto da fotografie.",
+    "Manual measurements in cm, up to 6 decimals. At most 16 unavailable areas and 24 vertices per simple polygon. An outline replaces the outer rectangle; it is not inferred from photographs."
+  ],
+  "fabricInheritedGeometry": [
+    "Le forme originali sono conservate e ritagliate sul bordo di questa pezza. Le coordinate elencate sono locali e possono essere negative per forme ereditate; le nuove forme devono stare entro la pezza.",
+    "Original shapes are preserved and clipped to this piece. Listed coordinates are local and may be negative for inherited shapes; new shapes must be inside this piece."
+  ],
+  "fabricShapeRole": [
+    "Uso della forma",
+    "Shape purpose"
+  ],
+  "fabricUnavailableShape": [
+    "Area inutilizzabile",
+    "Unavailable area"
+  ],
+  "fabricOutlineShape": [
+    "Contorno della pezza",
+    "Piece outline"
+  ],
+  "fabricShapeType": [
+    "Tipo di forma",
+    "Shape type"
+  ],
+  "fabricRectangleShape": [
+    "Rettangolo",
+    "Rectangle"
+  ],
+  "fabricPolygonShape": [
+    "Poligono semplice",
+    "Simple polygon"
+  ],
+  "fabricShape_x": [
+    "Forma X",
+    "Shape X"
+  ],
+  "fabricShape_y": [
+    "Forma Y",
+    "Shape Y"
+  ],
+  "fabricShape_width": [
+    "Larghezza forma",
+    "Shape width"
+  ],
+  "fabricShape_height": [
+    "Altezza forma",
+    "Shape height"
+  ],
+  "fabricPolygonCoordinates": [
+    "Vertici X Y in cm",
+    "Vertices X Y in cm"
+  ],
+  "fabricPolygonHelp": [
+    "Un vertice per riga, X e Y separati da uno spazio. Da 3 a 24 vertici in ordine attorno al bordo; non ripetere il primo. Nessun incrocio o bordo fuori dalla pezza.",
+    "One vertex per line, X and Y separated by a space. Enter 3–24 vertices in boundary order; do not repeat the first. No crossings or points outside the piece."
+  ],
+  "fabricAddMeasuredShape": [
+    "Aggiungi forma misurata",
+    "Add measured shape"
+  ],
+  "fabricMappingComplete": [
+    "Ho misurato tutte le aree inutilizzabili; per una pezza irregolare ho registrato anche il contorno.",
+    "I have measured all unavailable areas; for an irregular piece I have also recorded its outline."
+  ],
+  "fabricUsableArea": [
+    "Area utile misurata",
+    "Measured usable area"
+  ],
+  "fabricUnreservedArea": [
+    "Area utile non prenotata",
+    "Unreserved usable area"
+  ],
+  "fabricAreaHelp": [
+    "I difetti sovrapposti sono sottratti una sola volta. I margini e le prenotazioni di regione sono esclusi dall’area disponibile; le quantità fisiche non cambiano. La ricerca di posizione è limitata a 256 candidati e non è un ottimizzatore di taglio.",
+    "Overlapping defects are deducted once. Margins and reserved regions are excluded from available area; physical quantities do not change. Placement search is limited to 256 candidates and is not a cutting optimizer."
+  ],
+  "fabricGeometryUnknown": [
+    "Area sconosciuta: contorno o limitazioni non completamente misurati. Gli ostacoli registrati restano vincolanti.",
+    "Area unknown: outline or limitations are not fully measured. Recorded obstacles still apply."
+  ],
+  "fabricGeometryDiagram": [
+    "Mappa delle aree misurate inutilizzabili e delle prenotazioni",
+    "Map of measured unavailable areas and reservations"
+  ],
+  "fabricGeometryPdf": [
+    "PDF della geometria misurata",
+    "Measured geometry PDF"
+  ],
+  "fabric_geometry_invalid": [
+    "Geometria non valida. Verifica dimensioni, vertici, limite di forme e precisione di 6 decimali.",
+    "Invalid geometry. Check dimensions, vertices, shape limits and six-decimal precision."
+  ],
+  "fabric_geometry_bounds": [
+    "La geometria supera il bordo della pezza o del suo riferimento originale.",
+    "Geometry is outside the piece or its original measured frame."
+  ],
+  "fabric_geometry_self_intersection": [
+    "I bordi del poligono si incrociano o si toccano. Inserisci un contorno semplice.",
+    "Polygon edges cross or touch. Enter a simple outline."
+  ],
+  "fabric_geometry_collision": [
+    "Il rettangolo attraversa un difetto misurato o esce dal contorno della pezza. Cambia posizione o dimensioni.",
+    "The rectangle intersects a measured defect or leaves the piece outline. Change its position or size."
+  ],
+  "fabric_geometry_place_manually": [
+    "Nessuna posizione confermata nella ricerca limitata. Verifica una posizione manualmente.",
+    "No position confirmed within the bounded search. Check a position manually."
+  ],
+  "fabricOutlineCutManual": [
+    "Il contorno misurato permette di calcolare area e prenotazioni. Il taglio automatico di pezze irregolari richiede ancora una procedura manuale.",
+    "The measured outline supports area calculations and reservations. Automatic cutting of irregular pieces still requires a manual workflow."
+  ],
+  "fabricGeometryLegend": [
+    "Rosso: difetti; viola: prenotazioni; tratteggio sottile: margini utili; tratteggio scuro: rettangolo richiesto. Diagramma non in scala fisica.",
+    "Red: defects; purple: reservations; fine dashes: usable margins; dark dashes: requested rectangle. Diagram is not at physical scale."
+  ],
+  "threadCatalogues": [
+    "Cataloghi locali dei fili",
+    "Local thread catalogues"
+  ],
+  "threadCatalogueManage": [
+    "Gestisci cataloghi",
+    "Manage catalogues"
+  ],
+  "threadCatalogueHelp": [
+    "Versioni immutabili con origine e licenza dichiarate. I campioni digitali sono approssimativi. Importare non crea materiali o scorte. Il backup completo conserva i cataloghi; i pacchetti condividono solo i riferimenti commerciali usati e la loro attribuzione.",
+    "Immutable versions with declared source and licence. Digital swatches are approximate. Import creates no materials or stock. Full backups retain catalogues; project packages share only used commercial references and their attribution."
+  ],
+  "threadCatalogueLimits": [
+    "JSON locale: 5 MiB, 6000 colori per versione, 20 versioni e 20000 colori importati totali. Per correggere dati importa una nuova versione.",
+    "Local JSON: 5 MiB, 6000 colours per version, 20 versions and 20000 imported colours in total. Import a new version to correct data."
+  ],
+  "threadCatalogueVersion": [
+    "Versione del catalogo",
+    "Catalogue version"
+  ],
+  "threadCatalogueImport": [
+    "Importa catalogo JSON",
+    "Import catalogue JSON"
+  ],
+  "threadCatalogueSource": [
+    "Origine dichiarata",
+    "Declared source"
+  ],
+  "threadCatalogueLicense": [
+    "Licenza / condizioni dichiarate",
+    "Declared licence / conditions"
+  ],
+  "threadCatalogueConfirm": [
+    "Confermo origine e condizioni, e il mio diritto di usare questi dati localmente.",
+    "I confirm the source and conditions and my right to use this data locally."
+  ],
+  "threadCatalogueTemplate": [
+    "Modello JSON personale",
+    "Personal JSON template"
+  ],
+  "threadCatalogueStore": [
+    "Conserva questa versione",
+    "Store this version"
+  ],
+  "thread_catalogue_invalid": [
+    "Catalogo non valido. Usa il modello JSON e conserva i codici come testo.",
+    "Invalid catalogue. Use the JSON template and keep codes as strings."
+  ],
+  "thread_catalogue_duplicate_color": [
+    "Marca, gamma e codice devono identificare un solo colore nella versione.",
+    "Brand, range and code must identify a single colour in each version."
+  ],
+  "thread_catalogue_confirmation": [
+    "Conferma origine, condizioni e uso locale prima di importare.",
+    "Confirm source, conditions and local use before importing."
+  ],
+  "thread_catalogue_immutable": [
+    "Questo nome e versione esistono già e non possono essere sovrascritti. Usa una nuova versione per dati diversi.",
+    "This name and version already exist and cannot be overwritten. Use a new version for different data."
+  ],
+  "thread_catalogue_limit": [
+    "Raggiunto il limite di versioni o colori locali. Nessun dato è stato importato.",
+    "The local version or colour limit was reached. No data was imported."
+  ],
+  "thread_catalogue_integrity": [
+    "Il contenuto del catalogo non corrisponde alla sua impronta.",
+    "The catalogue contents do not match its fingerprint."
+  ],
+  "thread_catalogue_missing": [
+    "La versione scelta non è disponibile. Seleziona un catalogo locale.",
+    "The selected version is unavailable. Select a local catalogue."
+  ],
+  "threadSubstitutions": [
+    "Confronta sostituzioni",
+    "Compare substitutions"
+  ],
+  "threadSubstitutionHelp": [
+    "ΔE76 confronta campioni RGB approssimativi, non equivalenze fisiche o qualità del filo. Controlla materiale e unità. La conferma cambia solo il colore del bozza: salva una nuova revisione e rivedi esplicitamente progetto e stima. Progresso, consumo e riserve restano invariati.",
+    "ΔE76 compares approximate RGB swatches, not physical equivalence or thread quality. Check the material and units. Confirmation changes only the draft colour: publish a new revision and explicitly review the project and estimate. Progress, consumption and reservations stay unchanged."
+  ],
+  "threadSubstitutionLimit": [
+    "Primi 40 risultati per distanza; affina la ricerca per gli altri",
+    "First 40 results by distance; refine the search for others"
+  ],
+  "threadSubstitutionMetres": [
+    "Metri di filamento disponibili",
+    "Available filament metres"
+  ],
+  "threadSameIdentity": [
+    "Stessa identità commerciale",
+    "Same commercial identity"
+  ],
+  "threadDifferentIdentity": [
+    "Identità commerciale diversa",
+    "Different commercial identity"
+  ],
+  "threadSubstitutionConfirm": [
+    "Ho confrontato colore, materiale e quantità; confermo la sostituzione nel solo bozza.",
+    "I compared colour, material and quantities; confirm substitution in the draft only."
+  ],
+  "threadSubstitutionApply": [
+    "Applica al bozza",
+    "Apply to draft"
+  ],
+  "thread_substitution_single": [
+    "Questa scelta richiede un filo singolo. Modifica separatamente i componenti delle miscele.",
+    "This selection requires a single thread. Edit blend components separately."
+  ],
+  "thread_substitution_confirmation": [
+    "Conferma il confronto prima di applicare la sostituzione.",
+    "Confirm the comparison before applying the substitution."
+  ],
+  "threadChooseSubstitute": [
+    "Scegli questo filo",
+    "Choose this thread"
+  ],
+  "threadChosenSubstitute": [
+    "Filo scelto",
+    "Chosen thread"
+  ],
+  "threadSourceUnbound": [
+    "Nessun materiale locale univoco: scorte e unità originali non sono determinate.",
+    "No unique local material: original stock and units are undetermined."
+  ],
+  "threadSearchColors": [
+    "Cerca marca, gamma, codice o nome",
+    "Search brand, range, code or name"
+  ],
+  "thread_substitution_apply": [
+    "Impossibile modificare questa bozza. Chiudi il confronto e controlla gli avvisi nell’editor.",
+    "This draft could not be changed. Close the comparison and check the editor warnings."
+  ],
+  "threadCatalogueColorLimit": [
+    "Primi 60 risultati; cerca marca, gamma, codice o nome per trovare altri colori.",
+    "First 60 matches; search brand, range, code or name to find other colours."
+  ],
+  "packageCatalogueProjectionHelp": [
+    "Per i cataloghi versionati vengono condivisi solo i riferimenti della paletta e delle ricette. Catalogo completo e opzioni di generazione basate sugli indici sono esclusi: per riprodurre la generazione servono catalogo e impostazioni originali. Il backup completo conserva entrambi.",
+    "Versioned catalogues share only palette and recipe references. The complete catalogue and generation index options are omitted: reproducing generation requires the original catalogue and settings. Full backups retain both."
+  ],
+  "threadSubstitutionConversionUnknown": [
+    "Sconosciuto / non convertibile",
+    "Unknown / not convertible"
+  ],
+  "revisionImpactTitle": [
+    "Verifica il cambio di revisione",
+    "Review revision change"
+  ],
+  "revisionImpactHelp": [
+    "Questa anteprima non modifica i dati. Conferma solo dopo aver confrontato il progetto attuale con lo schema scelto.",
+    "This preview does not change data. Confirm after comparing the current project with the selected design."
+  ],
+  "revisionCurrent": [
+    "Attuale",
+    "Current"
+  ],
+  "revisionTarget": [
+    "Dopo il cambio",
+    "After change"
+  ],
+  "revisionCounts": [
+    "{full} croci · {half} mezzi punti · {back} segmenti",
+    "{full} full · {half} half · {back} segments"
+  ],
+  "revisionPrintHelp": [
+    "Dimensioni geometriche con la densità e i margini del progetto. Carta corrente: {paper}. Il numero di pagine dipende dalle opzioni del prossimo PDF, non ancora definite. Rigenera i documenti: quelli già esportati non cambiano.",
+    "Geometric dimensions use the project density and margins. Current paper: {paper}. Page count depends on the next PDF options, which are not yet defined. Regenerate documents; existing exports do not change."
+  ],
+  "revisionProgressTitle": [
+    "Progresso e contesto di lavoro",
+    "Progress and work context"
+  ],
+  "revisionProgressHelp": [
+    "{completed} punti fatti saranno conservati nello storico. Corrispondenze univoche: {matched}; senza corrispondenza: {unmatched}. Per impostazione iniziale il nuovo progresso è vuoto. I {markers} marcatori restano legati alle revisioni originali; vista e cursore ripartono nel nuovo contesto.",
+    "{completed} completed stitches will remain in history. Unique matches: {matched}; unmatched: {unmatched}. New progress starts empty by default. Historical markers: {markers}. They retain their original revision context; view and cursor start anew."
+  ],
+  "revisionManualHelp": [
+    "Percentuale manuale precedente: {percent}%. Annotazioni/segnalibri di riferimento: {annotations}. Restano nello storico e non diventano punti fatti nella nuova revisione.",
+    "Previous manual percentage: {percent}%. Reference annotations/bookmarks: {annotations}. They remain in history and do not become completed stitches in the new revision."
+  ],
+  "revisionCarry": [
+    "Trasferisci solo i punti con corrispondenza dimostrata",
+    "Carry only stitches with proven correspondence"
+  ],
+  "revisionCarryHelp": [
+    "Solo nello stesso schema e tessuto: stessa posizione, tipo, direzione, riferimento/ricetta e numero di filamenti. Nessuna traslazione dedotta; duplicati ambigui esclusi. Colori anonimi esclusi.",
+    "Only within the same pattern and fabric: identical position, type, direction, reference/recipe and strand count. No inferred translation; ambiguous duplicates are excluded. Anonymous colours are excluded."
+  ],
+  "revisionMaterialTitle": [
+    "Materiali, necessità e impegni",
+    "Materials, needs and commitments"
+  ],
+  "revisionNeedsHelp": [
+    "Necessità derivate da archiviare: {removed}. Altre necessità conservate: {retained}. Riserve: {reservations}; regioni di tessuto: {regions}. Le riserve, i consumi e le scorte restano invariati: verifica gli impegni dopo il cambio.",
+    "Derived needs to archive: {removed}. Other needs retained: {retained}. Reservations: {reservations}; fabric regions: {regions}. Reservations, consumption and stock stay unchanged; review commitments after switching."
+  ],
+  "revisionEstimateHelp": [
+    "Le stime ricalcolate riguardano i fili, non gli altri materiali, e sono un confronto, non nuove necessità salvate. Zero nelle necessità dopo il cambio può significare che una stima vecchia è stata rimossa, non che il nuovo lavoro non richieda materiale. Nessun ordine o consumo viene creato.",
+    "Recalculated estimates concern thread, not other materials, and are a comparison, not new saved needs. Zero in saved needs after switching can mean an old estimate was removed, not that the new work needs no material. No purchase or consumption is created."
+  ],
+  "revisionEstimateUnknown": [
+    "Stime non disponibili dove mancano densità, identità univoca o conversione. Il valore sconosciuto resta distinto da zero; le quantità senza conversione possono avere comunque metri di filamento noti.",
+    "Estimates are unavailable where density, unique identity or conversion is missing. Unknown remains distinct from zero; quantities without a unit conversion may still have known filament metres."
+  ],
+  "revisionUse": [
+    "Punti: prima → dopo",
+    "Stitches: before → after"
+  ],
+  "revisionSuggested": [
+    "Stima del filo: prima → dopo",
+    "Thread estimate: before → after"
+  ],
+  "revisionSavedNeeds": [
+    "Necessità salvate: prima → dopo",
+    "Saved needs: before → after"
+  ],
+  "revisionUnmapped": [
+    "Identità locale da verificare",
+    "Local identity needs review"
+  ],
+  "revisionArchivedNeed": [
+    "Stima precedente archiviata",
+    "Previous estimate archived"
+  ],
+  "revisionEstimateArchived": [
+    "La ricevuta della stima/calibrazione precedente resta nello storico. Le impostazioni specifiche dei colori non vengono applicate per indice alla nuova tavolozza.",
+    "The previous estimate/calibration receipt remains in history. Colour-specific settings are not applied by index to the new palette."
+  ],
+  "revisionForecastReview": [
+    "Le ipotesi di previsione manuale restano impostate: verifica tempi e conteggi rimanenti per il nuovo lavoro.",
+    "Manual forecast assumptions remain configured; review rates and remaining counts for the new work."
+  ],
+  "revisionRefresh": [
+    "Aggiorna il confronto",
+    "Refresh comparison"
+  ],
+  "revisionApply": [
+    "Conferma il cambio di revisione",
+    "Confirm revision change"
+  ],
+  "revision_review_stale": [
+    "Il progetto o la biblioteca sono cambiati. Aggiorna il confronto prima di confermare.",
+    "The project or library changed. Refresh the comparison before confirming."
+  ],
+  "revision_review_invalid": [
+    "Conferma della revisione non valida. Riapri il confronto.",
+    "Invalid revision confirmation. Reopen the comparison."
+  ],
+  "revision_review_unchanged": [
+    "Il progetto usa già questa revisione. Torna al modulo e ricontrolla.",
+    "The project already uses this revision. Return to the form and review it."
+  ],
+  "revision_progress_unavailable": [
+    "Non ci sono punti con corrispondenza dimostrata da trasferire.",
+    "There are no stitches with proven correspondence to carry."
   ]
 }
