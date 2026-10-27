@@ -3,7 +3,10 @@ import { reactive, ref, computed, useId } from 'vue';
 import { AlertTriangle } from '@lucide/vue';
 import AppDialog from './AppDialog.vue';
 import FormField from './FormField.vue';
-import { state, dispatch, categories, units, locate, importAsset } from '../state';
+import MaterialDescriptors from './MaterialDescriptors.vue';
+import { normalizeDescriptorProperties } from '../../core/material-descriptors.mjs';
+import StagedAttachments from './StagedAttachments.vue';
+import { state, categories, units, locate, saveEntityWithAssets } from '../state';
 import { t, errorText } from '../i18n';
 import { inventoryCategories, materialCustomFields } from '../inventory-categories.mjs';
 import { quantity } from '../../core/shared.mjs';
@@ -13,7 +16,7 @@ const emit = defineEmits(['close', 'saved']);
 const formId = useId(), operationId = crypto.randomUUID(), materialId = props.material?.id || crypto.randomUUID();
 const draft = reactive({ name: '', category: 'thread', brand: '', range: '', code: '', unit: 'm', color: '#8b6477', tagsText: '', notes: '', minimum: '', packageSize: '', strands: '', divisible: false, reusable: false, favorite: false, properties: {}, attachments: [], ...JSON.parse(JSON.stringify(props.material || {})) });
 draft.tagsText = (props.material?.tags || []).join(', ');
-const stock = reactive({ enabled: !props.material, quantity: '', confidence: 'exact', status: 'usable', locationId: '', lotCode: '', cost: '', currency: state.value.settings.currency, supplierId: '', widthCm: '', heightCm: '' });
+const stock = reactive({ enabled: !props.material, quantity: '', confidence: 'exact', status: 'usable', locationId: '', lotCode: '', cost: '', currency: state.value.settings.currency, supplierId: '', widthCm: '', heightCm: '', properties: {} });
 const busy = ref(false), error = ref(''), photoFiles = ref([]);
 const isEdit = computed(() => Boolean(props.material));
 const categoryOptions = inventoryCategories;
@@ -32,7 +35,6 @@ function chooseCategory() {
     else if (draft.category === 'thread') draft.unit = 'm';
   }
 }
-function selectPhotos(event) { photoFiles.value = [...event.target.files]; }
 function optionalNumber(value, field) { return quantity(value, { nullable: true, field }); }
 function price(value) {
   if (value === '' || value === null) return null;
@@ -44,26 +46,18 @@ async function save() {
   if (busy.value) return;
   busy.value = true; error.value = '';
   try {
-    const properties = JSON.parse(JSON.stringify(draft.properties));
+    const properties = normalizeDescriptorProperties(JSON.parse(JSON.stringify(draft.properties)));
     properties.custom = Object.fromEntries(Object.entries(properties.custom || {}).map(([key,value]) => [key,String(value ?? '')]));
     for (const key of ['countX', 'countY']) if (key in properties) properties[key] = optionalNumber(properties[key], key);
     const payload = { ...JSON.parse(JSON.stringify(draft)), id: materialId, tags: draft.tagsText.split(',').map(tag => tag.trim()).filter(Boolean), minimum: optionalNumber(draft.minimum, 'minimum'), packageSize: optionalNumber(draft.packageSize, 'packageSize'), strands: optionalNumber(draft.strands, 'strands'), properties };
     delete payload.tagsText;
     let lot = null;
     if (!isEdit.value && stock.enabled) {
-      lot = { quantity: optionalNumber(stock.quantity, 'quantity'), confidence: stock.confidence, status: stock.status, locationId: stock.locationId || null, lotCode: stock.lotCode, cost: price(stock.cost), currency: stock.currency.toUpperCase(), supplierId: stock.supplierId || null, properties: {} };
-      if (draft.category === 'fabric') lot.properties = { widthCm: optionalNumber(stock.widthCm, 'widthCm'), heightCm: optionalNumber(stock.heightCm, 'heightCm'), irregular: false, countX: properties.countX ?? null, countY: properties.countY ?? null, countMeaning: properties.countMeaning || 'stitches' };
+      lot = { quantity: optionalNumber(stock.quantity, 'quantity'), confidence: stock.confidence, status: stock.status, locationId: stock.locationId || null, lotCode: stock.lotCode, cost: price(stock.cost), currency: stock.currency.toUpperCase(), supplierId: stock.supplierId || null, properties: normalizeDescriptorProperties(JSON.parse(JSON.stringify(stock.properties)), 'lot') };
+      if (draft.category === 'fabric') lot.properties = { ...lot.properties, widthCm: optionalNumber(stock.widthCm, 'widthCm'), heightCm: optionalNumber(stock.heightCm, 'heightCm'), irregular: false, countX: properties.countX ?? null, countY: properties.countY ?? null, countMeaning: properties.countMeaning || 'stitches' };
     }
-    // Import after numeric validation. On a later save failure the imported attachment
-    // stays available and is not imported a second time by the next attempt.
-    for (const file of photoFiles.value) {
-      const asset = await importAsset(file);
-      if (!draft.attachments.includes(asset.id)) draft.attachments.push(asset.id);
-    }
-    photoFiles.value = [];
-    payload.attachments = [...draft.attachments];
-    if (isEdit.value) await dispatch('material.save', payload, operationId);
-    else await dispatch('material.createWithLot', { material: payload, lot }, operationId);
+    if (isEdit.value) await saveEntityWithAssets('material.save', payload, photoFiles.value, operationId);
+    else await saveEntityWithAssets('material.createWithLot', { material: payload, lot }, photoFiles.value, operationId);
     emit('saved', payload.id);
   } catch (caught) { error.value = errorText(caught); }
   finally { busy.value = false; }
@@ -100,6 +94,7 @@ async function save() {
       <section v-if="customFields.length" class="form-section"><h3>{{ t('customFields') }}</h3><div class="form-grid"><FormField v-for="field in customFields" :key="field" :label="field" v-slot="{id}"><input :id="id" v-model="draft.properties.custom[field]" maxlength="1000" /></FormField></div><p class="field-help">{{ t('customValuesHelp') }}</p></section>
       <details>
         <summary>{{ t('advanced') }}</summary>
+        <section class="form-section"><h3>{{ t('materialCategoryDetails') }}</h3><p class="muted">{{ t('materialDescriptorHelp') }}</p><MaterialDescriptors :properties="draft.properties" :category="draft.category" /></section>
         <div class="form-grid">
           <FormField :label="t('minimum')" v-slot="{ id }"><input :id="id" v-model="draft.minimum" inputmode="decimal" /></FormField>
           <FormField :label="t('packageSize')" :help="t('packageSizeHelp')" v-slot="{ id, describedby }"><input :id="id" v-model="draft.packageSize" inputmode="decimal" :aria-describedby="describedby" /></FormField>
@@ -115,13 +110,14 @@ async function save() {
             <FormField :label="t('countHorizontal')" v-slot="{ id }"><input :id="id" v-model="draft.properties.countX" inputmode="decimal" /></FormField>
             <FormField :label="t('countVertical')" v-slot="{ id }"><input :id="id" v-model="draft.properties.countY" inputmode="decimal" /></FormField>
           </template>
+          <FormField :label="t('description')" wide v-slot="{id}"><textarea :id="id" v-model="draft.description" maxlength="10000" /></FormField>
           <FormField :label="t('composition')" v-slot="{ id }"><input :id="id" v-model="draft.properties.composition" maxlength="300" /></FormField>
           <FormField :label="t('tags')" :help="t('tagsHelp')" v-slot="{ id, describedby }"><input :id="id" v-model="draft.tagsText" :aria-describedby="describedby" /></FormField>
           <FormField :label="t('careInstructions')" wide v-slot="{ id }"><textarea :id="id" v-model="draft.properties.care" maxlength="5000" /></FormField>
           <FormField :label="t('notes')" wide v-slot="{ id }"><textarea :id="id" v-model="draft.notes" maxlength="20000" /></FormField>
           <FormField :label="t('favorite')" v-slot="{ id }"><input :id="id" v-model="draft.favorite" type="checkbox" /></FormField>
           <FormField :label="t('reusable')" v-slot="{ id }"><input :id="id" v-model="draft.reusable" type="checkbox" :disabled="draft.category === 'tool'" /></FormField>
-          <FormField :label="t('photos')" :help="t('photoHelp')" wide v-slot="{ id, describedby }"><input :id="id" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple :aria-describedby="describedby" @change="selectPhotos" /><span v-if="photoFiles.length" class="field-help">{{ photoFiles.map(file => file.name).join(', ') }}</span></FormField>
+          <StagedAttachments v-model="photoFiles" :disabled="busy"/>
           <template v-if="!isEdit && stock.enabled">
             <FormField :label="t('cost')" :help="t('lotCostHelp')" v-slot="{ id, describedby }"><input :id="id" v-model="stock.cost" inputmode="decimal" :aria-describedby="describedby" /></FormField>
             <FormField :label="t('currency')" v-slot="{ id }"><input :id="id" v-model="stock.currency" maxlength="3" pattern="[A-Za-z]{3}" /></FormField>
@@ -129,6 +125,7 @@ async function save() {
             <FormField :label="t('status')" v-slot="{ id }"><select :id="id" v-model="stock.status"><option v-for="status in ['usable','blocked','damaged','unverified']" :key="status" :value="status">{{ t(status) }}</option></select></FormField>
           </template>
         </div>
+        <section v-if="!isEdit && stock.enabled" class="form-section"><h3>{{ t('lotCategoryDetails') }}</h3><MaterialDescriptors :properties="stock.properties" :category="draft.category" scope="lot" /></section>
       </details>
     </form>
     <template #footer><button type="button" class="button" :disabled="busy" @click="emit('close')">{{ t('cancel') }}</button><button class="button primary" type="submit" :form="formId" :disabled="busy">{{ busy ? t('saving') : t('save') }}</button></template>
