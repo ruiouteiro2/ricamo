@@ -1,4 +1,7 @@
 <script setup>
+import InventoryLabels from '../components/InventoryLabels.vue';
+import AttachmentEditorDialog from '../components/AttachmentEditorDialog.vue';
+import AttachmentList from '../components/AttachmentList.vue';
 import { computed, ref } from 'vue';
 import { Archive, Boxes, ChevronRight, FolderOpen, MapPin, Package, Pencil, Plus, Search, Printer, ArrowLeft } from '@lucide/vue';
 import PageHeader from '../components/PageHeader.vue';
@@ -9,6 +12,7 @@ import { state, dispatch, navigate, normalize, locate, notify, statusText } from
 import { storage } from '../storage';
 import { t, number, errorText } from '../i18n';
 
+const documentsId=ref(null),pdfLabels=ref(false);
 const search = ref(''), contentSearch = ref(''), selectedId = ref(''), includeChildren = ref(true);
 const form = ref(null), labelMode = ref(null), labelWidth = ref(90), labelHeight = ref(50), busy = ref(false), error = ref('');
 const materialById = computed(() => new Map(state.value.materials.map(material => [material.id, material])));
@@ -69,7 +73,7 @@ async function printLabel() {
   <template v-if="labelMode">
     <PageHeader class="label-preview-heading" :eyebrow="t('locations')" :title="t('storageLabel')" :description="t('labelPrintHelp')">
       <button class="button" @click="labelMode = null"><ArrowLeft :size="16" />{{ t('back') }}</button>
-      <button class="button primary" :disabled="busy || !labelDimensionsValid" @click="printLabel"><Printer :size="16" />{{ t('print') }}</button>
+      <button class="button" :disabled="busy || !labelDimensionsValid" @click="pdfLabels=true">{{t('downloadLabels')}}</button><button class="button primary" :disabled="busy || !labelDimensionsValid" @click="printLabel"><Printer :size="16" />{{ t('print') }}</button>
     </PageHeader>
     <p v-if="error" class="notice error" role="alert">{{ error }}</p>
     <div class="toolbar">
@@ -103,6 +107,7 @@ async function printLabel() {
         </tr>
       </tbody></table></div><EmptyState v-else compact :title="t('noResults')" /></div>
       <section v-if="selectedId" class="panel" :aria-label="t('storageContents')"><div class="panel-heading"><div><h2>{{ selected?.name || t('unassignedStorage') }}</h2><span v-if="selected" class="cell-subtitle">{{ locate(selected.id) }}</span></div><button v-if="selected" class="button small" @click="openForm(selected)"><Pencil :size="15" />{{ t('edit') }}</button></div>
+        <div v-if="selected" class="panel-body"><div class="panel-heading"><h3>{{ t('locationDocuments') }}</h3><button class="button" @click="documentsId=selected.id">{{ t('addLocationDocument') }}</button></div><AttachmentList :ids="selected.attachments||[]"/><p class="field-help">{{ t('documentExportPolicy') }}</p><p v-if="!selected.attachments?.length" class="field-help">{{ t('noDocuments') }}</p></div>
         <div class="panel-body"><p v-if="selected?.notes">{{ selected.notes }}</p><p class="field-help">{{ t('storageMoveHelp') }}</p><div class="toolbar"><div class="toolbar-search"><Search :size="17" /><input v-model="contentSearch" :aria-label="t('searchMaterials')" :placeholder="t('searchMaterials')" /></div><label v-if="selected" class="checkbox-label"><input v-model="includeChildren" type="checkbox" />{{ t('includeChildLocations') }}</label></div></div>
         <div v-if="contents.length" class="table-wrap"><table><caption class="sr-only">{{ t('storageContents') }}</caption><thead><tr><th>{{ t('material') }}</th><th>{{ t('lotCode') }}</th><th>{{ t('quantity') }}</th><th>{{ t('location') }}</th><th>{{ t('status') }}</th><th><span class="sr-only">{{ t('actions') }}</span></th></tr></thead><tbody>
           <tr v-for="lot in contents" :key="lot.id"><td><button class="cell-title" @click="navigate('material', lot.materialId)">{{ materialById.get(lot.materialId)?.name || t('unknown') }}</button><span class="cell-subtitle mono">{{ [materialById.get(lot.materialId)?.brand, materialById.get(lot.materialId)?.code].filter(Boolean).join(' · ') }}</span></td><td>{{ lot.lotCode || '—' }}</td><td>{{ number(lot.quantity, 6) }}<span class="cell-subtitle">{{ t(lot.unit) }} · {{ t(lot.confidence) }}</span></td><td>{{ lot.locationId ? locate(lot.locationId) : t('unassignedStorage') }}</td><td><span class="badge" :class="{ warning: lot.status !== 'usable' }">{{ statusText(lot.status) }}</span></td><td><button class="button small" @click="navigate('material', lot.materialId)">{{ t('viewMaterial') }}<ChevronRight :size="15" /></button></td></tr>
@@ -112,6 +117,8 @@ async function printLabel() {
     </div>
     <EntityForm v-if="form" :key="form.key" :title="t(form.title)" :fields="formFields" :initial="form.initial" :submit="submitForm" :help="t('locationFormHelp')" @close="form = null" @saved="saved" />
   </template>
+<InventoryLabels v-if="pdfLabels&&labelMode" :location-ids="[labelMode.id]" :initial-width="Number(labelWidth)" :initial-height="Number(labelHeight)" @close="pdfLabels=false"/>
+<AttachmentEditorDialog v-if="documentsId" type="location.attach" :owner-id="documentsId" :attachment-ids="locationById.get(documentsId)?.attachments||[]" :title="t('locationDocuments')" accept="image/png,image/jpeg,image/webp,image/gif,application/pdf" @close="documentsId=null" @saved="documentsId=null;notify()"/>
 </template>
 
 <style scoped>
