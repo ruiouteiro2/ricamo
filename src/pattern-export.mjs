@@ -73,7 +73,9 @@ export async function patternPdf(revision, { title = '', locale = 'it', paper = 
   doc.text(facts, margin, gridY + 2, { lineHeightFactor: 5 / (10 * 25.4 / 72) });
   const imageY = gridY + facts.length * 5 + 5;
   doc.setFontSize(8);
-  const remarks = [t.approximation, t.scale, completed.length ? t.completed : t.noProgress, 'Colour data: craft-color-codes / MakeBead, CC BY 4.0.'].flatMap(line => doc.splitTextToSize(line, usableWidth));
+  const colourSources=color=>[color.product?.rgbSource,...(color.blend?.components??[]).flatMap(colourSources),...(color.blend?.backComponents??[]).flatMap(colourSources),...(color.attachmentThread?colourSources(color.attachmentThread):[])];
+  const usesMakeBead=/makebead|craft-color-codes/i.test(JSON.stringify([revision.provenance?.palette?.source,revision.provenance?.palette?.catalogue?.source,revision.colors.flatMap(colourSources)]));
+  const remarks = [t.approximation, t.scale, completed.length ? t.completed : t.noProgress,...(usesMakeBead?['DMC digital colours: MakeBead craft-color-codes, CC BY 4.0 (adapted). https://creativecommons.org/licenses/by/4.0/']:[])].flatMap(line => doc.splitTextToSize(line, usableWidth));
   const remarksY = pageHeight - margin - 10 - (remarks.length - 1) * 4;
   const coverCell = Math.min(700 / revision.width, 700 / revision.height), cover = drawPattern(document.createElement('canvas'), revision, { cellSize: coverCell, width: revision.width * coverCell, height: revision.height * coverCell, fabric,completed });
   if(monochrome){const ctx=cover.getContext('2d'),pixels=ctx.getImageData(0,0,cover.width,cover.height);for(let i=0;i<pixels.data.length;i+=4){const gray=Math.round(.2126*pixels.data[i]+.7152*pixels.data[i+1]+.0722*pixels.data[i+2]);pixels.data[i]=pixels.data[i+1]=pixels.data[i+2]=gray;}ctx.putImageData(pixels,0,0);}
