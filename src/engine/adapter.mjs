@@ -1,3 +1,4 @@
+import {supplierSwatch,normalizeSupplierProduct} from '../../core/supplier-products.mjs';
 import {SYMBOL_MODES,symbolsForMode} from '../../core/pattern-symbols.mjs';
 import {normalizePatternFabric} from '../../core/pattern-fabric.mjs';
 import {catalogueReference} from '../../core/thread-catalogues.mjs';
@@ -72,12 +73,14 @@ export function inventoryPalette(items, lots, { itemIds, includeUnknown = true }
   }
   for (const item of itemList) {
     if (item.archived || (item.category !== undefined && item.category !== 'thread') || (selection && !selection.has(item.id)) || !heldIds.has(item.id)) continue;
+    const known=supplierSwatch(item.properties?.product??item);
+    if(known.colorVariation==='multicolour'||item.properties?.product?.suitability==='verify-technique')continue;
     const hex = item.hex ?? item.color ?? item.attributes?.hex ?? item.attributes?.color;
     if (typeof hex !== 'string' || !/^#[0-9a-f]{6}$/i.test(hex)) continue;
     const code = item.code ?? item.reference ?? '';
     if (typeof code !== 'string') continue;
     colors.push({ brand: item.brand ?? '', range: item.range ?? '', itemId: item.id, code, name: item.name ?? code,
-      hex, rgb: [1, 3, 5].map(i => Number.parseInt(hex.slice(i, i + 2), 16)) });
+      hex, rgb: [1, 3, 5].map(i => Number.parseInt(hex.slice(i, i + 2), 16)),...(item.properties?.product&&(!item.properties.product.hex||item.properties.product.hex.toLowerCase()===hex.toLowerCase())?{product:normalizeSupplierProduct(item.properties.product)}:{}) });
   }
   if (!colors.length) fail('engine.inventoryPaletteEmpty');
   return validatePalette({ brand: 'Inventory', source: 'user-inventory', approximate: true, colors });
