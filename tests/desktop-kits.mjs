@@ -24,7 +24,7 @@ let repository=new Repository(join(data,'ricamo.sqlite'));
 repository.restore({state,assets:[]},0);repository.close();
 const env={...process.env,RICAMO_DATA_DIR:data};delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_OPTIONS;
 const packaged=Boolean(process.env.RICAMO_EXECUTABLE),executable=resolve(process.env.RICAMO_EXECUTABLE||join(root,'node_modules/electron/dist',process.platform==='win32'?'electron.exe':'electron'));
-const app=await _electron.launch({executablePath:executable,args:[...(process.env.RICAMO_TEST_NO_SANDBOX==='1'?['--no-sandbox']:[]),...(packaged?[]:[root])],env,timeout:40000});
+const app=await _electron.launch({ chromiumSandbox: true,executablePath:executable,args:[...(packaged?[]:[root])],env,timeout:40000});
 const errors=[],requests=[];let page,result={data,executable,checks:[]};
 const read=async()=>{const response=await page.evaluate(()=>window.ricamo.load());assert.equal(response.ok,true);return response.value};
 try{
