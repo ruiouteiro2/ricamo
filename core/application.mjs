@@ -1,3 +1,5 @@
+import { kitWorkflowHandlers, validateKitWorkflows } from './kit-workflows.mjs';
+import { createPatternWithAsset } from './pattern-asset.mjs';
 import { motifHandlers, validateEditorMotifs } from './editor-inserts.mjs';
 import { projectInsightHandlers, validateProjectInsights } from './project-insights.mjs';
 import { importProjectPackage } from './project-package.mjs';
@@ -14,6 +16,8 @@ import { toolActivityHandlers, validateToolActivity } from './tool-activity.mjs'
 
 export { createState };
 const handlers = {
+  ...kitWorkflowHandlers,
+  'pattern.createWithAsset': (state, payload, context) => createPatternWithAsset(state, payload, context, { saveAttachment: handlers['attachment.add'], savePattern: handlers['pattern.save'] }),
   ...motifHandlers,
   ...projectInsightHandlers,
   'project.package.import': importProjectPackage,
@@ -103,6 +107,7 @@ export function executeCommand(state, command, context = {}) {
 
 export function validateApplicationState(state) {
   validateState(state);
+  validateKitWorkflows(state);
   validateInventoryWorkflowState(state);
   validateFabricPlanning(state);
   validateToolActivity(state);
