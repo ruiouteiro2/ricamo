@@ -7,9 +7,11 @@ import { validateRevision } from './pattern.mjs';
 import { referenceHandlers, validateReferenceData } from './references.mjs';
 import { inventoryWorkflowHandlers, validateInventoryWorkflowState } from './inventory-workflows.mjs';
 import { fabricPlanningHandlers, validateFabricPlanning } from './fabric-planning.mjs';
+import { draftHandlers, validatePatternDraft } from './drafts.mjs';
 
 export { createState };
 const handlers = {
+  ...draftHandlers,
   ...inventoryWorkflowHandlers,
   ...fabricPlanningHandlers,
   ...referenceHandlers,
@@ -58,11 +60,14 @@ const handlers = {
       const revision = structuredClone(p.revision);
       revision.id = revision.id ? identifier(revision.id) : ctx.id();
       assert(!pattern.revisions.some(row => row.id === revision.id), 'duplicate_revision');
-      revision.parentId = pattern.currentRevisionId ?? null;
+      const editorBase = existing ? revision.provenance?.editorBaseRevisionId : null;
+      if (editorBase) assert(pattern.revisions.some(row => row.id === editorBase), 'draft_base_not_found');
+      revision.parentId = editorBase || pattern.currentRevisionId || null;
       revision.createdAt = ctx.now;
       validateRevision(revision);
       pattern.revisions = [...pattern.revisions, revision];
       pattern.currentRevisionId = revision.id;
+      if (p.clearDraft === true) delete pattern.draft;
     }
     assert(kind === 'reference' ? Boolean(pattern.sourceAttachmentId) : pattern.revisions.length > 0, 'pattern_content_required');
     put(state, 'patterns', pattern);
@@ -141,6 +146,7 @@ export function validateApplicationState(state) {
       assert(pattern.kind === 'reference', 'reference_pattern_required');
       validateReferenceData(pattern.referenceData, { attachmentId: pattern.sourceAttachmentId });
     }
+    if (pattern.draft) validatePatternDraft(pattern.draft, { pattern });
   }
   for (const project of state.projects) if (project.referenceData) {
     const pattern = state.patterns.find(row => row.id === project.patternId);
