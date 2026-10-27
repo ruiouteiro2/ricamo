@@ -79,7 +79,7 @@ onBeforeUnmount(()=>clearTimeout(timer));
   <FormField :label="t('effectMode')" v-slot="{id}"><select :id="id" v-model="mode" :disabled="busy"><option v-for="value in EFFECT_MODES" :key="value" :value="value">{{t(`effectMode_${value}`)}}</option></select></FormField>
   <p class="field-help">{{t(mode==='wool'?'effectSoftHelp':'effectHighlightHelp')}}</p>
   <MaterialProductPicker v-if="picker" :key="mode" :category="mode==='beads'?'embellishment':'thread'" @select="chooseProduct"/>
-  <div v-else class="panel"><div class="panel-body"><p><span class="swatch" :style="{background:chosen?.hex}"/> {{chosen?.brand}} {{chosen?.range}} {{chosen?.code}} · {{chosen?.name}}</p><p v-if="chosen?.displayColorUnknown" class="field-help">{{t('materialColorUnavailable')}}</p><button class="button small" :disabled="busy" @click="picker=true">{{t('changeMaterial')}}</button></div></div>
+  <div v-else class="panel"><div class="panel-body"><p><span class="swatch" :style="{background:chosen?.hex}"/> {{chosen?.brand}} {{chosen?.range}} {{chosen?.code}} · {{chosen?.name}}</p><p v-if="chosen?.product?.colorVariation==='multicolour'" class="field-help">{{t('materialMulticolour')}}</p><p v-if="chosen?.displayColorUnknown" class="field-help">{{t('materialColorUnavailable')}}</p><button class="button small" :disabled="busy" @click="picker=true">{{t('changeMaterial')}}</button></div></div>
   <template v-if="chosen&&!picker">
    <div class="form-grid">
     <FormField :label="t(mode==='wool'?'effectChroma':'effectBrightness')" v-slot="{id}"><RangeSlider :id="id" v-model="threshold" :min="mode==='wool'?0:70" :max="mode==='wool'?35:100" :step="1" unit="%" :disabled="busy"/></FormField>
