@@ -5,6 +5,7 @@ import AppDialog from './AppDialog.vue';
 import FormField from './FormField.vue';
 import { state, dispatch, categories, units, locate, importAsset } from '../state';
 import { t, errorText } from '../i18n';
+import { inventoryCategories, materialCustomFields } from '../inventory-categories.mjs';
 import { quantity } from '../../core/shared.mjs';
 
 const props = defineProps({ material: Object });
@@ -15,7 +16,9 @@ draft.tagsText = (props.material?.tags || []).join(', ');
 const stock = reactive({ enabled: !props.material, quantity: '', confidence: 'exact', status: 'usable', locationId: '', lotCode: '', cost: '', currency: state.value.settings.currency, supplierId: '', widthCm: '', heightCm: '' });
 const busy = ref(false), error = ref(''), photoFiles = ref([]);
 const isEdit = computed(() => Boolean(props.material));
-const categoryOptions = computed(() => [...categories.map(value => ({ value, label: t(value) })), ...state.value.categories.map(row => ({ value: row.id, label: row.name }))]);
+const categoryOptions = inventoryCategories;
+draft.properties.custom ||= {};
+const customFields = computed(() => materialCustomFields(draft));
 const unitLocked = computed(() => props.material && state.value.lots.some(lot => lot.materialId === props.material.id));
 const similar = computed(() => {
   if (!draft.code.trim() && !draft.name.trim()) return [];
@@ -42,13 +45,14 @@ async function save() {
   busy.value = true; error.value = '';
   try {
     const properties = JSON.parse(JSON.stringify(draft.properties));
+    properties.custom = Object.fromEntries(Object.entries(properties.custom || {}).map(([key,value]) => [key,String(value ?? '')]));
     for (const key of ['countX', 'countY']) if (key in properties) properties[key] = optionalNumber(properties[key], key);
     const payload = { ...JSON.parse(JSON.stringify(draft)), id: materialId, tags: draft.tagsText.split(',').map(tag => tag.trim()).filter(Boolean), minimum: optionalNumber(draft.minimum, 'minimum'), packageSize: optionalNumber(draft.packageSize, 'packageSize'), strands: optionalNumber(draft.strands, 'strands'), properties };
     delete payload.tagsText;
     let lot = null;
     if (!isEdit.value && stock.enabled) {
       lot = { quantity: optionalNumber(stock.quantity, 'quantity'), confidence: stock.confidence, status: stock.status, locationId: stock.locationId || null, lotCode: stock.lotCode, cost: price(stock.cost), currency: stock.currency.toUpperCase(), supplierId: stock.supplierId || null, properties: {} };
-      if (draft.category === 'fabric') lot.properties = { widthCm: optionalNumber(stock.widthCm, 'widthCm'), heightCm: optionalNumber(stock.heightCm, 'heightCm'), irregular: false };
+      if (draft.category === 'fabric') lot.properties = { widthCm: optionalNumber(stock.widthCm, 'widthCm'), heightCm: optionalNumber(stock.heightCm, 'heightCm'), irregular: false, countX: properties.countX ?? null, countY: properties.countY ?? null, countMeaning: properties.countMeaning || 'stitches' };
     }
     // Import after numeric validation. On a later save failure the imported attachment
     // stays available and is not imported a second time by the next attempt.
@@ -93,6 +97,7 @@ async function save() {
           </template>
         </div>
       </section>
+      <section v-if="customFields.length" class="form-section"><h3>{{ t('customFields') }}</h3><div class="form-grid"><FormField v-for="field in customFields" :key="field" :label="field" v-slot="{id}"><input :id="id" v-model="draft.properties.custom[field]" maxlength="1000" /></FormField></div><p class="field-help">{{ t('customValuesHelp') }}</p></section>
       <details>
         <summary>{{ t('advanced') }}</summary>
         <div class="form-grid">
