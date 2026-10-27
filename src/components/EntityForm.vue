@@ -5,7 +5,7 @@ import FormField from './FormField.vue';
 import { t, errorText } from '../i18n';
 const props = defineProps({ title: String, fields: Array, initial: Object, submit: Function, wide: Boolean, help: String, confirmLabel: String });
 const emit = defineEmits(['close', 'saved']);
-const draft = reactive(structuredClone(props.initial || {}));
+const draft = reactive(JSON.parse(JSON.stringify(props.initial || {})));
 const busy = ref(false), error = ref('');
 async function save() {
   if (busy.value) return;
