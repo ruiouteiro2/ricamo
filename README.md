@@ -4,15 +4,11 @@ An offline Windows embroidery studio for materials, projects and stitch patterns
 
 Ricamo keeps catalogue identities separate from physical lots, reservations and stock movements. Progress never consumes material automatically. The application includes a drawing editor, the integrated Stitch Studio image-generation engine, PDF references, local backups and project planning.
 
-The current release is 0.5.0: fabric selection and dimensions in centimetres, verified Casa Cenina product links, image generation with up to 500 colours, clearer detail protection, custom sliders, chart previews and printing. Imported commercial PDF/image charts retain their original symbols and files. [STATUS.md](docs/STATUS.md) records verification and limits; [catalogue sources](docs/CASA-CENINA-SOURCES.md) records the verified, partial shop snapshot.
-
-The 0.4 source adds local versioned thread catalogues and reviewed substitutions, border-connected background removal, coordinate/centre navigation in the drawing editor, measured fabric-defect geometry and an explicit project revision-impact review. These functions retain the separation between planning, progress and confirmed physical stock changes.
-
-The 0.4.0 Windows installer passed the content audit, 28 native journeys, update/reinstall/uninstall and persistence checks on Windows 10 x64. The integrated domain suite passed 438 tests. See [STATUS](docs/STATUS.md) for hashes, measured performance and remaining environment limitations. The earlier 0.3 installer remains isolated because its content audit found extra files/cache.
+The current release is 0.6.0: live image previews, centimetre-based fabric dimensions and cut margins, automatic colour lookup by brand/type/code, local supplier catalogues, inventory-aware material quantities, editable bead cells and reviewed material-effect suggestions. Colour/symbol and monochrome charts export to tiled A4 PDFs with purchase links and resumable print batches. Imported commercial PDF/image charts retain their original files. [STATUS.md](docs/STATUS.md) records verification and limitations; [supplier catalogue sources](docs/CASA-CENINA-SOURCES.md) documents measured coverage, approximate colours and unavailable source pages.
 
 ## Install and transfer
 
-Use `release/0.5.0/Ricamo-0.5.0-Windows-x64-Setup.exe`. Copy that single installer to the target Windows x64 PC, run it, choose the installation folder and open Ricamo from the Start menu. The installer bundles the application runtime; Node.js is only needed to build from source. This local build is unsigned.
+Use `release/0.6.0/Ricamo-0.6.0-Windows-x64-Setup.exe`. Copy that single installer to the target Windows x64 PC, run it, choose the installation folder and open Ricamo from the Start menu. The installer bundles the application runtime; Node.js is only needed to build from source. This local build is unsigned.
 
 Use **Settings → Create a backup** before moving computers. Transfer that backup and restore it from Settings on the destination. A project package shares selected work and does not transfer physical stock. Clean Windows 11/offline-OS testing and a second PC remain unverified; see STATUS.
 
