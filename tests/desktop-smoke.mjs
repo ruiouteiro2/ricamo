@@ -43,7 +43,8 @@ try {
   await page.locator('.page-header').getByRole('button', { name: 'Add material', exact: true }).click();
   const dialog = page.getByRole('dialog');
   await dialog.getByLabel('Name', { exact: false }).first().fill('Desktop persistence test');
-  await dialog.getByLabel('Code', { exact: false }).first().fill('001');
+  await dialog.locator('summary').filter({ hasText: 'Enter or edit brand, type and code' }).click();
+  await dialog.locator('details[open]').getByLabel('Colour code / thread number', { exact: true }).fill('001');
   await dialog.getByLabel('Quantity', { exact: false }).first().fill('1,5');
   await dialog.getByRole('button', { name: 'Save', exact: true }).click();
   await expect(dialog).toHaveCount(0);
