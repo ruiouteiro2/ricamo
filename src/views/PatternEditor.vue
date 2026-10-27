@@ -274,7 +274,9 @@ async function exportPattern() {
     const fileName = pattern.value.name.replace(/[<>:"/\\|?*]/g, '-').slice(0, 100), revision = structuredClone(exportForm.kind === 'native' ? persisted.value : draft.value);
     const options = { title: pattern.value.name, locale: exportForm.locale, paper: exportForm.paper, monochrome: exportForm.monochrome, completed: exportForm.progress && progressMode.value ? [...completed.value] : [], notes: revisionNotes.value, thread: project.value?.settings?.thread ?? {} };
     const data = exportForm.kind === 'pdf' ? await patternPdf(revision, options) : exportForm.kind === 'png' ? await patternPng(revision, { ...options, symbols: true }) : JSON.stringify({ format: 'ricamo-pattern', version: 1, name: pattern.value.name, revision }, null, 2);
-    await storage.saveFile({ name: `${fileName}.${exportForm.kind === 'native' ? 'ricamopattern' : exportForm.kind}`, data }); dialog.value = ''; notify();
+    const saved = await storage.saveFile({ name: `${fileName}.${exportForm.kind === 'native' ? 'ricamopattern' : exportForm.kind}`, data });
+    if (saved === false) return;
+    dialog.value = ''; notify();
   } catch (caught) { error.value = errorText(caught); } finally { working.value = false; }
 }
 async function createProject() { if (dirty.value) { error.value = t('saveBeforeProject'); return; } try { const id = crypto.randomUUID(); await dispatch('project.save', { id, name: pattern.value.name, patternId: pattern.value.id, revisionId: persisted.value?.id, status: 'preparing' }); navigate('project', id); } catch (caught) { error.value = errorText(caught); } }
