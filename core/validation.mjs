@@ -1,3 +1,4 @@
+import {validateSupplierMaterial} from './supplier-products.mjs';
 import { assert, assertSafeJson, identifier, quantity, integer, text, oneOf, currency, add } from './shared.mjs';
 import { UNITS, LOT_STATUSES } from './inventory.mjs';
 import { PROJECT_STATUSES, validProgressKeys } from './projects.mjs';
@@ -73,6 +74,7 @@ export function validateState(state, { validatePattern } = {}) {
 
   for (const material of state.materials) {
     requiredText(material, ['name', 'category', 'brand', 'range', 'code', 'description', 'notes', 'color']);
+    validateSupplierMaterial(material);
     strings(material.tags, 'tags'); object(material.properties, 'properties');
     for (const field of ['divisible', 'reusable', 'favorite', 'archived']) assert(typeof material[field] === 'boolean', 'invalid_boolean', { field });
     text(material.name, 'name', { required: true, max: 300 });
