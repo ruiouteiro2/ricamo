@@ -1,8 +1,9 @@
+import {validateSupplierMaterial} from './supplier-products.mjs';
 import { add, subtract, assert, quantity, text, identifier, oneOf, integer, currency, date, stringList, jsonObject, find, optionalRef, recordId, put, movement, totalReserved, activeProject, audit } from './shared.mjs';
 import { fabricHeldPieces } from './fabric-state.mjs';
 import { toolHeldQuantity } from './tool-state.mjs';
 
-export const UNITS = ['m', 'cm', 'mm', 'g', 'kg', 'piece', 'skein', 'spool', 'pack', 'm2', 'strand-m', 'custom'];
+export const UNITS = ['m', 'cm', 'mm', 'g', 'kg', 'piece', 'skein', 'spool', 'ball', 'cone', 'pack', 'm2', 'strand-m', 'custom'];
 export const LOT_STATUSES = ['usable', 'blocked', 'damaged', 'unverified', 'transformed'];
 
 export function saveMaterial(state, p, ctx) {
@@ -26,6 +27,7 @@ export function saveMaterial(state, p, ctx) {
     properties: jsonObject(source.properties), attachments: stringList(source.attachments, 'attachments'),
     createdAt: existing?.createdAt ?? ctx.now, updatedAt: ctx.now,
   };
+  const product=validateSupplierMaterial(material);if(product)material.properties.product=product;
   assert(!material.color || /^#[0-9a-f]{6}$/i.test(material.color), 'invalid_color');
   put(state, 'materials', material);
   audit(state, ctx, 'material', id, existing ? 'updated' : 'created');
