@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('ricamo', Object.freeze({
   importProject: (token, decisions, revision) => ipcRenderer.invoke('ricamo:import-project', token, decisions, revision),
   load: () => ipcRenderer.invoke('ricamo:load'),
   command: (command, revision) => ipcRenderer.invoke('ricamo:command', command, revision),
+  createPatternWithAsset: (request, revision) => ipcRenderer.invoke('ricamo:create-pattern-with-asset', request, revision),
   importAsset: (asset, revision) => ipcRenderer.invoke('ricamo:import-asset', asset, revision),
   getAsset: id => ipcRenderer.invoke('ricamo:get-asset', id),
   saveFile: file => ipcRenderer.invoke('ricamo:save-file', file),
