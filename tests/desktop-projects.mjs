@@ -24,12 +24,14 @@ let packageText;
 try {
   command(source, 'material.createWithLot', { material: { id: 'fabric', name: 'Linen 28', category: 'fabric', unit: 'piece' }, lot: { id: 'source-piece', quantity: 1, properties: { widthCm: 30, heightCm: 40, countX: 28, countY: 28, countMeaning: 'threads' } } });
   command(source, 'project.save', { id: 'work', fabricLotId: 'source-piece', recipient: 'PRIVATE_RECIPIENT', settings: { fabric: { overX: 2, overY: 2 } } });
+  command(source, 'project.work.marker.save', { projectId:'work',patternId:'p',revisionId:'r1',marker:{id:'old-marker',kind:'parked',x:0,y:0,color:0,stitchKind:'full',note:'PRIVATE_MARKER'} });
   command(source, 'session.save', { projectId: 'work', date: '2026-10-26', durationMinutes: 5, work: { kind: 'full', count: 1, patternId: 'p', revisionId: 'r1' }, notes: 'PRIVATE_SESSION' });
   command(source, 'pattern.save', { id: 'p', revision: { ...revision, id: 'r2', name: 'Second revision' } });
   command(source, 'project.save', { id: 'work', revisionId: 'r2', acceptRevisionChange: true });
   command(source, 'project.progress', { projectId: 'work', completed: ['c:1'] });
+  command(source, 'project.work.marker.save', { projectId:'work',patternId:'p',revisionId:'r2',marker:{id:'current-marker',kind:'bookmark',x:0,y:0,color:null,stitchKind:null,note:'PRIVATE_MARKER'} });
   command(source, 'task.save', { projectId: 'work', title: 'Check colour card', notes: 'PRIVATE_TASK' });
-  packageText = await source.exportProject('work', { includeSessions: true, attachmentIds: [asset.id] });
+  packageText = await source.exportProject('work', { includeSessions: true, includeMarkers: true, attachmentIds: [asset.id] });
 } finally { source.close(); }
 const input = join(data, 'Shared blend.ricamoproject'); writeFileSync(input, packageText);
 const destination = new Repository(join(data, 'ricamo.sqlite'));
@@ -65,6 +67,7 @@ try {
   let state = await load(), project = state.projects[0], pattern = state.patterns.find(row => row.id === project.patternId);
   assert.equal(project.status, 'preparing'); assert.equal(project.fabricLotId, null);
   assert.deepEqual(project.completed, ['c:1']); assert.equal(project.progressHistory.length, 0);
+  assert.equal(project.view.markers.length,2);assert.equal(project.view.markers[0].color,0);assert.notEqual(project.view.markers[0].revisionId,project.revisionId);assert.equal(project.view.markers[1].revisionId,project.revisionId);
   assert.equal(pattern.revisions.length, 2); assert.equal(state.sessions[0].work.count, 1);
   assert.notEqual(state.sessions[0].work.revisionId, project.revisionId);
   assert.equal(pattern.revisions.find(row => row.id === project.revisionId).colors[0].blend.components[0].itemId, 'local');
@@ -102,11 +105,13 @@ try {
   const reexport = join(data, 'Re-export.ricamoproject'); await targetFile(reexport);
   await page.getByRole('button', { name: en('exportProjectPackage'), exact: true }).click();
   await dialog().getByRole('checkbox', { name: en('package_includeSessions'), exact: true }).check();
+  await dialog().getByRole('checkbox', { name: en('package_includeMarkers'), exact: true }).check();
   await dialog().getByRole('checkbox', { name: 'original.png', exact: true }).check();
   await dialog().getByRole('button', { name: en('downloadProjectPackage'), exact: true }).click();
   await expect.poll(() => existsSync(reexport)).toBe(true);
   const again = await inspectProjectPackage(readFileSync(reexport, 'utf8'));
   assert.equal(again.state.projects[0].settings.transferFabric.widthCm, 30);
+  assert.equal(again.state.projects[0].view.markers.length,2);assert.ok(again.state.projects[0].view.markers.every(row=>!row.note));
   assert.equal(again.state.sessions[0].work.count, 1); assert.equal(again.assets.length, 1);
   await dialog().getByRole('button', { name: 'Cancel', exact: true }).click();
   await page.screenshot({ path: join(data, 'project-documents.png'), fullPage: true });
@@ -121,7 +126,7 @@ try {
   const preferences = await app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].webContents.getLastWebPreferences());
   assert.equal(preferences.sandbox, true); assert.equal(preferences.contextIsolation, true); assert.equal(preferences.nodeIntegration, false);
   assert.deepEqual(errors, []); assert.deepEqual(externalRequests, []);
-  const result = { platform: process.platform, executable, data, projectId: project.id, checks: ['real UI reviewed import', 'no stock creation or overwrite', 'blend/provenance/historical session remapping', 'imported fabric reference', 'Unicode project report', 'actual-size recipe legend', 'UI selective re-export', 'SQLite and original bytes after restart'], reportBytes: readFileSync(reportPath).length, physicalPdfBytes: readFileSync(physicalPath).length, nativeDestinationSelectionAutomated: true, errors, externalRequests };
+  const result = { platform: process.platform, executable, data, projectId: project.id, checks: ['real UI reviewed import', 'no stock creation or overwrite', 'blend/provenance/historical session remapping', 'imported fabric reference', 'Unicode project report', 'actual-size recipe legend', 'scoped marker consent, privacy and historical revision remapping', 'UI selective re-export', 'SQLite and original bytes after restart'], reportBytes: readFileSync(reportPath).length, physicalPdfBytes: readFileSync(physicalPath).length, nativeDestinationSelectionAutomated: true, errors, externalRequests };
   writeFileSync(join(data, 'result.json'), JSON.stringify(result, null, 2)); console.log(JSON.stringify(result));
 } catch (error) {
   await page.screenshot({ path: join(data, 'failure.png'), fullPage: true }).catch(() => {});
