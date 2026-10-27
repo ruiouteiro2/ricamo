@@ -94,17 +94,55 @@ export function openKit(state, p, ctx) {
   audit(state, ctx, 'kit', kitLot.id, 'opened', { componentLotIds });
 }
 
-export function convertQuantity(value, from, to, material) {
+const packageUnits = ['skein','spool','pack','ball','cone'];
+const lengthUnits = {mm:.001,cm:.01,m:1};
+const positiveNumber = value => typeof value === 'number' && Number.isFinite(value) && value > 0;
+const supplierProduct = material => material?.product ?? material?.properties?.product;
+/** Physical separability is distinct from the number of filaments used in a stitch. */
+function separableFilaments(material) {
+  const pack=supplierProduct(material)?.pack;
+  if(pack){
+    if(pack.divisible===false)return 1;
+    if(pack.divisible===true && Number.isInteger(pack.strands) && pack.strands>0)return pack.strands;
+    return null;
+  }
+  // Legacy `material.strands` is an explicitly entered filament conversion, not inferred from a brand.
+  return positiveNumber(material?.strands)?material.strands:null;
+}
+function measurementFactor(unit,material,dimension) {
+  const product=supplierProduct(material),pack=product?.pack;
+  if(dimension==='thread'){
+    if(unit==='strand-m')return 1;
+    const filaments=separableFilaments(material);
+    if(lengthUnits[unit])return filaments===null?null:lengthUnits[unit]*filaments;
+    if(['g','kg'].includes(unit)&&positiveNumber(pack?.weightG)&&positiveNumber(pack?.lengthM)&&filaments!==null)return (unit==='kg'?1000:1)*pack.lengthM*filaments/pack.weightG;
+    if(pack?.unit===unit && positiveNumber(pack.lengthM) && filaments!==null)return pack.lengthM*filaments;
+  }else{
+    if(unit==='piece')return 1;
+    if(pack?.unit===unit && Number.isInteger(pack.pieces) && pack.pieces>0)return pack.pieces;
+  }
+  if(packageUnits.includes(unit) && material?.unit!==unit && positiveNumber(material?.packageSize)){
+    const base=measurementFactor(material.unit,{...material,packageSize:null},dimension);
+    return base===null?null:base*material.packageSize;
+  }
+  return null;
+}
+/** Exact declared package content; decorative plies and approximate bead counts are not conversion facts. */
+export function productPackageCapacity(product,measurementUnit) {
+  if(!product?.pack?.unit || !['strand-m','piece'].includes(measurementUnit))return null;
+  return measurementFactor(product.pack.unit,{unit:product.pack.unit,product},measurementUnit==='strand-m'?'thread':'piece');
+}
+export function convertQuantity(value, from, to, material={}) {
   const amount = quantity(value, { nullable: true });
   if (amount === null) return null;
   if (from === to) return amount;
-  const length = { mm: 0.001, cm: 0.01, m: 1 };
   const weight = { g: 1, kg: 1000 };
-  if (length[from] && length[to]) return quantity(amount * length[from] / length[to]);
+  if (lengthUnits[from] && lengthUnits[to]) return quantity(amount * lengthUnits[from] / lengthUnits[to]);
   if (weight[from] && weight[to]) return quantity(amount * weight[from] / weight[to]);
-  if (from === 'm' && to === 'strand-m' && material.strands) return quantity(amount * material.strands);
-  if (from === 'strand-m' && to === 'm' && material.strands) return quantity(amount / material.strands);
-  const packs = ['skein', 'spool', 'pack'];
-  if (packs.includes(from) && to === material.unit && material.packageSize && from !== material.unit) return quantity(amount * material.packageSize);
+  for(const dimension of ['thread','piece']){
+    const source=measurementFactor(from,material,dimension),target=measurementFactor(to,material,dimension);
+    if(source!==null&&target!==null)return quantity(amount*source/target);
+  }
+  if (packageUnits.includes(from) && to === material.unit && material.packageSize && from !== material.unit) return quantity(amount * material.packageSize);
   return null;
 }
