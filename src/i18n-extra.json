@@ -2712,8 +2712,8 @@
     "I want to create another project copy"
   ],
   "packageResetProgress": [
-    "Riparti da zero: azzera progresso, passaggi completati, annotazioni del progetto, sessioni e storico",
-    "Start from zero: reset progress, completed tasks, project annotations, sessions and history"
+    "Inizia un nuovo lavoro: azzera avanzamento, sessioni, attività completate e marcatori",
+    "Start new work: reset progress, sessions, completed tasks and markers"
   ],
   "packageImportStatus": [
     "Il nuovo progetto sarà in preparazione. Il progresso trasferito viene conservato salvo scelta di ripartire da zero.",
@@ -4130,5 +4130,585 @@
   "forecastPrimitiveKind": [
     "Tipo di punto",
     "Stitch type"
+  ],
+  "openExportFormat": [
+    "Formato di esportazione",
+    "Export format"
+  ],
+  "openExportInventory": [
+    "Esporta inventario",
+    "Export inventory"
+  ],
+  "openExportPreparing": [
+    "Preparazione del file…",
+    "Preparing the file…"
+  ],
+  "openExportHelp": [
+    "CSV e TSV hanno intestazioni stabili; gli importi Hundredths sono centesimi della valuta indicata. JSON conserva tipi, valori sconosciuti e dettagli. Sono inclusi nomi e note registrati; i file allegati richiedono un backup completo.",
+    "CSV and TSV use stable headers; Hundredths amounts are hundredths of the stated currency. JSON preserves types, unknown values and details. Recorded names and notes are included; attachment files require a full backup."
+  ],
+  "openExampleStudio": [
+    "Prova l’atelier di esempio",
+    "Try the example studio"
+  ],
+  "exampleStudio": [
+    "Atelier di esempio",
+    "Example studio"
+  ],
+  "returnToMyStudio": [
+    "Torna al mio atelier",
+    "Return to my studio"
+  ],
+  "exampleIsolationHelp": [
+    "Questi sono dati di prova separati dalla tua biblioteca. Puoi modificarli; le modifiche rimangono nell’esempio e non entrano nelle copie di sicurezza del tuo atelier.",
+    "These are practice data kept separately from your library. You can edit them; changes stay in this example and are excluded from your studio’s backups."
+  ],
+  "firstStudioTitle": [
+    "Comincia con ciò che hai",
+    "Start with what you have"
+  ],
+  "firstStudioIntro": [
+    "Non devi catalogare tutto prima di cominciare. Bastano un materiale e un piccolo progetto.",
+    "You do not need to catalogue everything before starting. One material and a small project are enough."
+  ],
+  "firstStudioMaterial": [
+    "Aggiungi un materiale e il lotto che possiedi. Se non conosci la quantità, lasciala sconosciuta invece di inserire zero.",
+    "Add a material and the lot you own. If you do not know the quantity, leave it unknown instead of entering zero."
+  ],
+  "firstStudioProject": [
+    "Crea un progetto e collega uno schema o un riferimento. Le riserve tengono da parte il materiale senza consumarlo.",
+    "Create a project and link a pattern or reference. Reservations set material aside without consuming it."
+  ],
+  "firstStudioProgress": [
+    "Segna i punti e le sessioni mentre lavori. Registra il materiale realmente usato come consumo separato.",
+    "Mark stitches and record sessions while working. Record material actually used as separate consumption."
+  ],
+  "firstStudioExampleHelp": [
+    "L’esempio è facoltativo e si apre in un atelier separato. La tua biblioteca rimane invariata.",
+    "The optional example opens in a separate studio. Your library stays unchanged."
+  ],
+  "exampleTryTitle": [
+    "Prova questi passaggi",
+    "Try these steps"
+  ],
+  "exampleKnownLesson": [
+    "Nel cotone rosso confronta quantità fisica, riserva e consumo. La riserva non deve essere sottratta due volte.",
+    "For the red cotton, compare physical stock, reservation and consumption. A reservation must not be subtracted twice."
+  ],
+  "exampleUnknownLesson": [
+    "Il cotone verde ha una quantità stimata; quello oro ha una quantità sconosciuta. Sconosciuto non significa esaurito.",
+    "The green cotton has an estimated quantity; the gold cotton has an unknown quantity. Unknown does not mean out of stock."
+  ],
+  "exampleProgressLesson": [
+    "Apri il progetto e segna altri punti completati. La scorta fisica rimane invariata finché non registri un consumo.",
+    "Open the project and mark more stitches complete. Physical stock stays unchanged until you record consumption."
+  ],
+  "examplePatternLesson": [
+    "Il piccolo fiore è uno schema originale modificabile. Prova la matita, salva una revisione o chiudi per conservare una bozza.",
+    "The small flower is an original editable pattern. Try the pencil, save a revision or close to retain a draft."
+  ],
+  "exampleReviewStock": [
+    "Confronta scorta e riserva",
+    "Compare stock and reservation"
+  ],
+  "exampleReviewUnknown": [
+    "Apri la quantità sconosciuta",
+    "Open the unknown quantity"
+  ],
+  "exampleOpenProject": [
+    "Apri il progetto di prova",
+    "Open the practice project"
+  ],
+  "exampleEditPattern": [
+    "Modifica il fiore",
+    "Edit the flower"
+  ],
+  "helpSources": [
+    "Fonti",
+    "Sources"
+  ],
+  "workRemainingTitle": [
+    "Lavoro restante per colore",
+    "Remaining work by colour"
+  ],
+  "workRemainingCount": [
+    "{count} elementi restanti",
+    "{count} primitives remaining"
+  ],
+  "workCountHelp": [
+    "Ogni cella mostra completati / totale per tipo. Le aree vuote sono escluse. I filtri cambiano solo i punti da marcare, mai il totale del progetto.",
+    "Each cell shows completed / total for its type. Empty areas are excluded. Filters change marking targets, never the project total."
+  ],
+  "workMarkers": [
+    "Continua il lavoro",
+    "Continue your work"
+  ],
+  "workAddBookmark": [
+    "Segna dove continuare",
+    "Add continuation marker"
+  ],
+  "workParkThread": [
+    "Annota un filo parcheggiato",
+    "Record parked thread"
+  ],
+  "workBookmark": [
+    "Da continuare",
+    "Continuation"
+  ],
+  "workParked": [
+    "Filo parcheggiato",
+    "Parked thread"
+  ],
+  "workMarkerHelp": [
+    "Riferimenti della revisione {revision}. Non completano punti e non consumano né riservano materiali.",
+    "References for revision {revision}. They do not complete stitches or consume/reserve materials."
+  ],
+  "workNoCurrentMarkers": [
+    "Nessun riferimento per questa revisione.",
+    "No references for this revision yet."
+  ],
+  "workEditMarker": [
+    "Modifica riferimento di lavoro",
+    "Edit work reference"
+  ],
+  "workAssignMarker": [
+    "Associa alla revisione attuale",
+    "Assign to current revision"
+  ],
+  "workAssociationHelp": [
+    "Questo riferimento precedente non ha una revisione certa. Controlla posizione e filo prima di associarlo a {revision}.",
+    "This older reference has no confirmed revision. Review its position and thread before assigning it to {revision}."
+  ],
+  "workConfirmAssociation": [
+    "Confermo queste coordinate per {revision}.",
+    "I confirm these coordinates for {revision}."
+  ],
+  "workColumn": [
+    "Colonna",
+    "Column"
+  ],
+  "workRow": [
+    "Riga",
+    "Row"
+  ],
+  "workCoordinateLimit": [
+    "Da 1 a {maximum}.",
+    "From 1 to {maximum}."
+  ],
+  "workGotoCoordinate": [
+    "Vai alle coordinate",
+    "Go to coordinates"
+  ],
+  "workThreadReference": [
+    "Riferimento del filo / simbolo",
+    "Thread / symbol reference"
+  ],
+  "workParkedColorHelp": [
+    "Il colore è obbligatorio per un filo parcheggiato. Le miscele mantengono la loro ricetta nella legenda.",
+    "A colour is required for a parked thread. Blends retain their recipe in the palette."
+  ],
+  "workStitchContext": [
+    "Tipo di punto di riferimento",
+    "Reference stitch type"
+  ],
+  "workMarkerNote": [
+    "Nota del riferimento",
+    "Reference note"
+  ],
+  "workGotoMarker": [
+    "Vai al riferimento",
+    "Go to reference"
+  ],
+  "workOtherMarkers": [
+    "Altre revisioni o riferimenti da associare ({count})",
+    "Other revisions or unassigned references ({count})"
+  ],
+  "workOtherMarkerHelp": [
+    "Queste coordinate non vengono usate sulla revisione attuale. Puoi leggere o eliminare i riferimenti; quelli senza revisione richiedono una conferma esplicita.",
+    "These coordinates are not used on the current revision. You can read or delete references; unassigned ones require explicit confirmation."
+  ],
+  "workUnassignedMarker": [
+    "Revisione non assegnata",
+    "Unassigned revision"
+  ],
+  "workTargetType": [
+    "Tipo di punto da marcare",
+    "Stitch type to mark"
+  ],
+  "workKeyboardHelp": [
+    "Frecce: sposta il cursore. Spazio: marca il tipo e colore scelti. B: riferimento di continuazione. P: filo parcheggiato. Ctrl+Z: annulla. Ctrl+S: salva posizione.",
+    "Arrows: move cursor. Space: mark the selected type and colour. B: continuation marker. P: parked thread. Ctrl+Z: undo. Ctrl+S: save position."
+  ],
+  "workFindReference": [
+    "Cerca marca, codice, nome o simbolo",
+    "Find brand, code, name or symbol"
+  ],
+  "workPaletteCountHelp": [
+    "Numeri: restanti / totale del colore, per tutti i tipi.",
+    "Numbers: remaining / colour total, across all stitch types."
+  ],
+  "workRemainingOfTotal": [
+    "{remaining} restanti su {total}",
+    "{remaining} remaining out of {total}"
+  ],
+  "workPositionPending": [
+    "Salvataggio della posizione e del contesto…",
+    "Saving position and context…"
+  ],
+  "workPositionFailed": [
+    "Posizione non ancora salvata",
+    "Position not saved yet"
+  ],
+  "workPositionFailureHelp": [
+    "L’ultima posizione non è stata salvata. Riprova o esci senza questa posizione. Punti e riferimenti già salvati restano conservati.",
+    "The latest position has not been saved. Retry or leave without this position. Previously saved stitches and references remain stored."
+  ],
+  "workLeaveWithoutPosition": [
+    "Esci senza l’ultima posizione",
+    "Leave without latest position"
+  ],
+  "invalid_work_view": [
+    "Il contesto di lavoro contiene dati non validi.",
+    "Work context contains invalid data."
+  ],
+  "invalid_work_marker": [
+    "Il riferimento di lavoro contiene dati non validi.",
+    "Work reference contains invalid data."
+  ],
+  "work_unsupported_version": [
+    "Versione del contesto di lavoro non supportata.",
+    "Unsupported work-context version."
+  ],
+  "work_marker_limit": [
+    "Puoi conservare fino a 200 riferimenti per progetto. Elimina quelli non più necessari.",
+    "You can keep up to 200 references per project. Remove those no longer needed."
+  ],
+  "work_revision_required": [
+    "Serve una revisione di schema strutturato.",
+    "A structured pattern revision is required."
+  ],
+  "work_parked_color_required": [
+    "Scegli il colore del filo parcheggiato.",
+    "Choose the parked thread colour."
+  ],
+  "work_marker_association_required": [
+    "Conferma esplicitamente le coordinate per questa revisione.",
+    "Explicitly confirm the coordinates for this revision."
+  ],
+  "work_marker_other_revision": [
+    "Questo riferimento appartiene a un’altra revisione. Le coordinate non sono state applicate.",
+    "This reference belongs to another revision. Its coordinates were not applied."
+  ],
+  "work_marker_not_found": [
+    "Il riferimento non è più disponibile.",
+    "The reference is no longer available."
+  ],
+  "work_view_command_required": [
+    "Aggiorna il contesto tramite i controlli di lavoro correnti.",
+    "Update context through the current work controls."
+  ],
+  "materialCategoryDetails": [
+    "Proprietà della categoria",
+    "Category details"
+  ],
+  "lotCategoryDetails": [
+    "Dettagli di questa scorta",
+    "Details of this physical stock"
+  ],
+  "materialDescriptorHelp": [
+    "Campi facoltativi. Le descrizioni non cambiano quantità, disponibilità o conversioni.",
+    "Optional fields. Descriptions do not change quantities, availability or conversions."
+  ],
+  "descriptor_variant": [
+    "Variante",
+    "Variant"
+  ],
+  "descriptor_catalogueStatus": [
+    "Stato nel catalogo",
+    "Catalogue status"
+  ],
+  "descriptor_replacementSuggestion": [
+    "Sostituzione suggerita da te",
+    "Your suggested replacement"
+  ],
+  "descriptor_replacementSource": [
+    "Fonte della sostituzione",
+    "Replacement source"
+  ],
+  "descriptor_packagingType": [
+    "Tipo di confezione",
+    "Packaging type"
+  ],
+  "descriptor_sizeSystem": [
+    "Sistema di misura dello spessore",
+    "Thread size system"
+  ],
+  "descriptor_colourEffect": [
+    "Effetto del colore",
+    "Colour effect"
+  ],
+  "descriptor_texture": [
+    "Trama e consistenza",
+    "Texture"
+  ],
+  "descriptor_treatment": [
+    "Trattamento dichiarato",
+    "Declared treatment"
+  ],
+  "descriptor_toolType": [
+    "Tipo di strumento o ago",
+    "Tool or needle type"
+  ],
+  "descriptor_toolSize": [
+    "Misura dello strumento o ago",
+    "Tool or needle size"
+  ],
+  "descriptor_usableArea": [
+    "Area utile dichiarata",
+    "Declared usable area"
+  ],
+  "descriptor_size": [
+    "Dimensione dichiarata",
+    "Declared size"
+  ],
+  "descriptor_shape": [
+    "Forma",
+    "Shape"
+  ],
+  "descriptor_finish": [
+    "Finitura del materiale",
+    "Material finish"
+  ],
+  "descriptor_removalMethod": [
+    "Metodo di rimozione indicato",
+    "Specified removal method"
+  ],
+  "descriptor_author": [
+    "Autore",
+    "Author"
+  ],
+  "descriptor_publisher": [
+    "Editore",
+    "Publisher"
+  ],
+  "descriptor_isbn": [
+    "ISBN",
+    "ISBN"
+  ],
+  "descriptor_edition": [
+    "Edizione",
+    "Edition"
+  ],
+  "descriptor_pageCount": [
+    "Numero di pagine",
+    "Page count"
+  ],
+  "descriptor_relevantPages": [
+    "Pagine utili",
+    "Relevant pages"
+  ],
+  "descriptor_techniques": [
+    "Tecniche trattate",
+    "Covered techniques"
+  ],
+  "descriptor_packageCondition": [
+    "Stato della confezione annotato",
+    "Recorded package condition"
+  ],
+  "descriptor_washingState": [
+    "Lavaggio o pre-restringimento",
+    "Washing or pre-shrinking"
+  ],
+  "descriptor_expiryDate": [
+    "Scadenza indicata",
+    "Specified expiry date"
+  ],
+  "descriptor_personalReference": [
+    "Riferimento personale",
+    "Personal reference"
+  ],
+  "descriptorHelp_replacementSuggestion": [
+    "Annotazione personale: non stabilisce equivalenze e non sostituisce materiali nei progetti.",
+    "Your own note: it does not establish equivalence or replace project materials."
+  ],
+  "descriptorHelp_replacementSource": [
+    "Nome del catalogo, riferimento o URL conservato come testo. Non viene aperto automaticamente.",
+    "Catalogue name, reference or URL kept as text. It is not opened automatically."
+  ],
+  "descriptorHelp_usableArea": [
+    "Scrivi anche l’unità. È una descrizione, non una verifica geometrica.",
+    "Include the unit. This is a description, not a geometric fit check."
+  ],
+  "descriptorHelp_packageCondition": [
+    "Annotazione manuale della confezione; non calcola quante confezioni chiuse o parziali possiedi. Aggiornala quando cambia.",
+    "A manual packaging note; it does not calculate counts of sealed or partial packages. Update it when it changes."
+  ],
+  "descriptorOption_current": [
+    "In produzione",
+    "Current"
+  ],
+  "descriptorOption_discontinued": [
+    "Fuori produzione",
+    "Discontinued"
+  ],
+  "descriptorOption_skein": [
+    "Matassina",
+    "Skein"
+  ],
+  "descriptorOption_spool": [
+    "Rocchetto",
+    "Spool"
+  ],
+  "descriptorOption_bobbin": [
+    "Bobina",
+    "Bobbin"
+  ],
+  "descriptorOption_cone": [
+    "Cono",
+    "Cone"
+  ],
+  "descriptorOption_ball": [
+    "Gomitolo",
+    "Ball"
+  ],
+  "descriptorOption_loose": [
+    "Sfuso",
+    "Loose"
+  ],
+  "descriptorOption_pack": [
+    "Confezione",
+    "Pack"
+  ],
+  "descriptorOption_custom": [
+    "Altro formato",
+    "Custom format"
+  ],
+  "descriptorOption_sealed": [
+    "Chiusa",
+    "Sealed"
+  ],
+  "descriptorOption_opened": [
+    "Aperta",
+    "Opened"
+  ],
+  "descriptorOption_partial": [
+    "Parzialmente usata",
+    "Partly used"
+  ],
+  "descriptorOption_mixed": [
+    "Confezioni in stati diversi",
+    "Mixed package conditions"
+  ],
+  "descriptorOption_unwashed": [
+    "Non lavato",
+    "Unwashed"
+  ],
+  "descriptorOption_washed": [
+    "Lavato",
+    "Washed"
+  ],
+  "descriptorOption_preshrunk": [
+    "Pre-ristretto",
+    "Pre-shrunk"
+  ],
+  "materialProperties": [
+    "Proprietà del materiale (JSON)",
+    "Material properties (JSON)"
+  ],
+  "lotProperties": [
+    "Proprietà della scorta (JSON)",
+    "Stock properties (JSON)"
+  ],
+  "lotNotes": [
+    "Note della scorta",
+    "Stock notes"
+  ],
+  "csvShowExtraColumns": [
+    "Mostra altre colonne descrittive",
+    "Show additional descriptive columns"
+  ],
+  "csvDescriptorPrecedence": [
+    "Le colonne descrittive mappate prevalgono sugli stessi campi JSON. I dettagli della riga mostrano il risultato. I campi personalizzati vengono conservati.",
+    "Mapped descriptive columns take precedence over the same JSON fields. Expand a row’s details to review the result. Custom fields are preserved."
+  ],
+  "csvExistingMetadataPreserved": [
+    "Articolo già presente: vengono aggiunte solo le scorte; le descrizioni esistenti non vengono sostituite.",
+    "Existing catalogue item: only stock is added; existing descriptions are preserved."
+  ],
+  "csvMetadataConflict": [
+    "Descrizioni diverse per lo stesso articolo",
+    "Conflicting descriptions for the same item"
+  ],
+  "csvLotPropertiesWithoutStock": [
+    "Proprietà della scorta senza una scorta",
+    "Stock properties without a stock row"
+  ],
+  "error.descriptor_invalid": [
+    "Controlla il tipo, la lunghezza o il valore delle proprietà della categoria.",
+    "Check the type, length or value of the category details."
+  ],
+  "error.descriptor_version": [
+    "Questa versione delle proprietà non è supportata.",
+    "This version of category details is not supported."
+  ],
+  "error.descriptor_unknown_field": [
+    "Una proprietà della categoria non è riconosciuta.",
+    "A category detail is not recognised."
+  ],
+  "error.csv_metadata_conflict": [
+    "Le righe dello stesso articolo hanno descrizioni diverse. Correggi il file prima di importarlo.",
+    "Rows for the same catalogue item have conflicting descriptions. Correct the file before importing it."
+  ],
+  "descriptor_invalid": [
+    "Controlla il tipo, la lunghezza o il valore delle proprietà della categoria.",
+    "Check the type, length or value of the category details."
+  ],
+  "descriptor_version": [
+    "Questa versione delle proprietà non è supportata.",
+    "This version of category details is not supported."
+  ],
+  "descriptor_unknown_field": [
+    "Una proprietà della categoria non è riconosciuta.",
+    "A category detail is not recognised."
+  ],
+  "csv_metadata_conflict": [
+    "Le righe dello stesso articolo hanno descrizioni diverse. Correggi il file prima di importarlo.",
+    "Rows for the same catalogue item have conflicting descriptions. Correct the file before importing it."
+  ],
+  "description": [
+    "Descrizione",
+    "Description"
+  ],
+  "package_includeMarkers": [
+    "Includi segnalibri e fili parcheggiati",
+    "Include bookmarks and parked threads"
+  ],
+  "package_count_markers": [
+    "Segnalibri e fili parcheggiati",
+    "Bookmarks and parked threads"
+  ],
+  "packageMarkersHelp": [
+    "Include le revisioni necessarie ai marcatori. Le note seguono la scelta delle note private; la posizione della vista non viene trasferita.",
+    "Includes the revisions required by the markers. Notes follow the private-notes choice; the viewport position is not transferred."
+  ],
+  "packageMarkerOmissions": [
+    "{count} marcatori precedenti senza revisione associata saranno esclusi. Associali nella vista Lavoro prima di esportare.",
+    "{count} older markers without an assigned revision will be excluded. Assign them in Work before exporting."
+  ],
+  "stagedAttachmentsHelp": [
+    "I file vengono salvati solo insieme al registro. Fino a {count} file e {size} MiB per salvataggio.",
+    "Files are stored only when you save their record. Up to {count} files and {size} MiB per save."
+  ],
+  "removeStagedAttachment": [
+    "Rimuovi dalla selezione: {name}",
+    "Remove from selection: {name}"
+  ],
+  "asset_batch_limit": [
+    "Seleziona al massimo 20 file, per un totale di 100 MiB.",
+    "Select at most 20 files, totalling no more than 100 MiB."
+  ],
+  "invalid_asset_owner": [
+    "Questo tipo di registro non può ricevere allegati.",
+    "This record type cannot receive attachments."
   ]
 }
