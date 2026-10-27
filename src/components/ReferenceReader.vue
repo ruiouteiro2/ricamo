@@ -3,6 +3,7 @@ import { computed, shallowRef, ref, reactive, watch, nextTick, onMounted, onBefo
 import { ChevronLeft, ChevronRight, RotateCw, Maximize, Move, Highlighter, Square, Minus, Type, Undo2, Redo2, BookmarkPlus, Download, Trash2, Pencil, X } from '@lucide/vue';
 import { getDocument, GlobalWorkerOptions, AnnotationMode, PasswordResponses } from 'pdfjs-dist/build/pdf.mjs';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+import { embedPdfFont, pdfText } from '../pdf-font.mjs';
 import { jsPDF } from 'jspdf';
 import AppDialog from './AppDialog.vue';
 import FormField from './FormField.vue';
@@ -208,16 +209,16 @@ async function exportAnnotated() {
       else drawImage(canvas,0);
       drawReferenceAnnotations(canvas,exportMarks.filter(mark=>mark.page===pageNumber),{rotation:0,clear:false});
       const landscape=width>height, paperWidth=landscape?297:210,paperHeight=landscape?210:297,margin=12;
-      if(!pdfOut)pdfOut=new jsPDF({orientation:landscape?'landscape':'portrait',unit:'mm',format:'a4',compress:true});else pdfOut.addPage('a4',landscape?'landscape':'portrait');
+      if(!pdfOut)pdfOut=await embedPdfFont(new jsPDF({orientation:landscape?'landscape':'portrait',unit:'mm',format:'a4',compress:true}));else pdfOut.addPage('a4',landscape?'landscape':'portrait');
       const ratio=Math.min((paperWidth-margin*2)/canvas.width,(paperHeight-36)/canvas.height);
       pdfOut.addImage(canvas.toDataURL('image/jpeg',.92),'JPEG',(paperWidth-canvas.width*ratio)/2,16,canvas.width*ratio,canvas.height*ratio);
-      pdfOut.setFontSize(8);pdfOut.text(`${pattern.value.name.slice(0,80)} · ${pageNumber} / ${totalPages.value}`,margin,9);
+      pdfOut.setFontSize(8);pdfOut.text(pdfText(pdfOut,`${pattern.value.name.slice(0,80)} · ${pageNumber} / ${totalPages.value}`),margin,9);
       pdfOut.text(exportLanguage.value==='en'?'Reference with annotations — not an editable stitch chart.':'Riferimento con annotazioni — non è uno schema di punti modificabile.',margin,paperHeight-9);
       page?.cleanup();exportProgress.value=index+1;await new Promise(resolve=>setTimeout(resolve,0));
     }
-    if (!cancelExport) appendReferenceNotes(pdfOut, exportMarks.filter(mark=>pages.includes(mark.page)), {locale:exportLanguage.value});
+    if (!cancelExport) await appendReferenceNotes(pdfOut, exportMarks.filter(mark=>pages.includes(mark.page)), {locale:exportLanguage.value});
     if(!cancelExport)await storage.saveFile({name:`${pattern.value.name.replace(/[<>:"/\\|?*]/g,'-').slice(0,100)}-annotated.pdf`,data:new Uint8Array(pdfOut.output('arraybuffer'))});
-  }catch(caught){if(cancelExport)return;error.value=caught.code==='reference_export_limit'?t('referenceExportLimit'):t('referenceExportFailed');}
+  }catch(caught){if(cancelExport)return;error.value=caught.code?.startsWith('pdf_')?errorText(caught):caught.code==='reference_export_limit'?t('referenceExportLimit'):t('referenceExportFailed');}
   finally{exporting.value=false;}
 }
 function stopExport() { cancelExport=true;exportRenderTask?.cancel(); }
