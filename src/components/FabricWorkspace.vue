@@ -1,6 +1,6 @@
 <script setup>
 import { computed, reactive, ref, watch } from 'vue';
-import { Scissors, Ruler, RotateCcw, LockKeyhole, Pencil, ArrowLeft } from '@lucide/vue';
+import { Scissors, Ruler, RotateCcw, LockKeyhole, Pencil, ChevronLeft } from '@lucide/vue';
 import { state, dispatch, notify } from '../state';
 import { t, number, date, money, errorText } from '../i18n';
 import { activeFabricRegions, previewFabricCut, fabricProjectFit, fabricCutDependencies, toCentimetres } from '../../core/fabric-planning.mjs';
@@ -117,7 +117,7 @@ function releaseCutReservation(cut) { const reservation = cutReservation(cut); i
 
 <template>
   <AppDialog v-if="lot" :title="stageTitle" wide :busy="busy" @close="emit('close')">
-    <div class="split-heading"><div><strong>{{ material.name }} · {{ lotName(lot) }}</strong><p class="field-help">{{ number(lot.properties.widthCm) }} × {{ number(lot.properties.heightCm) }} cm · {{ t(lot.status) }}</p></div><button v-if="lot.sourceLotId && !stage" class="button text small" @click="focusedId=lot.sourceLotId"><ArrowLeft :size="14" />{{ t('fabricSourcePiece') }}</button></div>
+    <div class="split-heading"><div><strong>{{ material.name }} · {{ lotName(lot) }}</strong><p class="field-help">{{ number(lot.properties.widthCm) }} × {{ number(lot.properties.heightCm) }} cm · {{ t(lot.status) }}</p></div><button v-if="lot.sourceLotId && !stage" class="button text small" @click="focusedId=lot.sourceLotId"><ChevronLeft :size="14" />{{ t('fabricSourcePiece') }}</button></div>
     <p v-if="displayError" class="notice error" role="alert">{{ displayError }}</p>
     <template v-if="stage==='cut'">
       <p class="notice warning">{{ t('fabricConfirmHelp') }}</p>
