@@ -11,6 +11,13 @@ contextBridge.exposeInMainWorld('ricamo', Object.freeze({
   configureBackup: patch => ipcRenderer.invoke('ricamo:configure-backup', patch),
   chooseBackupFolder: remove => ipcRenderer.invoke('ricamo:choose-backup-folder', remove),
   runBackup: () => ipcRenderer.invoke('ricamo:run-backup'),
+  setCloseGuard: value => ipcRenderer.invoke('ricamo:set-close-guard', value),
+  finishClose: () => ipcRenderer.invoke('ricamo:finish-close'),
+  onCloseRequest: callback => {
+    const listener = () => callback();
+    ipcRenderer.on('ricamo:request-close', listener);
+    return () => ipcRenderer.removeListener('ricamo:request-close', listener);
+  },
   inspectRestore: text => ipcRenderer.invoke('ricamo:inspect-restore', text),
   restore: (token, revision) => ipcRenderer.invoke('ricamo:restore', token, revision),
   print: () => ipcRenderer.invoke('ricamo:print'),
