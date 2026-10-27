@@ -25,6 +25,7 @@ export function t(key, values = {}) {
 }
 // Only apply to developer-authored labels, never to user names, notes or values.
 export function localizeSystemText(value) {
+  if (typeof value === 'function') return value();
   if (typeof value !== 'string') return value;
   const pair = Object.values({ ...words, ...additional }).find(entry => entry.includes(value));
   return pair ? pair[language.value === 'en' ? 1 : 0] : value;
