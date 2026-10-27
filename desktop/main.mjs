@@ -14,6 +14,7 @@ protocol.registerSchemesAsPrivileged([{ scheme: 'ricamo', privileges: { standard
 if (process.env.RICAMO_DATA_DIR) app.setPath('userData', process.env.RICAMO_DATA_DIR);
 const lock = app.requestSingleInstanceLock();
 let window, repository, pendingRestore, backupManager;
+let closeGuard = false, closeAuthorized = false;
 if (!lock) app.quit();
 else {
   app.on('second-instance', () => { if (window?.isMinimized()) window.restore(); window?.focus(); });
@@ -47,6 +48,24 @@ async function start() {
   window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   window.webContents.on('will-navigate', event => event.preventDefault());
   window.webContents.on('will-attach-webview', event => event.preventDefault());
+  window.on('close', event => {
+    if (closeGuard && !closeAuthorized) { event.preventDefault(); window.webContents.send('ricamo:request-close'); }
+  });
+  window.webContents.on('will-prevent-unload', event => {
+    if (closeAuthorized) { event.preventDefault(); return; }
+    const english = repository.load().settings.language === 'en';
+    const response = dialog.showMessageBoxSync(window, { type: 'question',
+      buttons: english ? ['Keep working', 'Close without saving'] : ['Continua a lavorare', 'Chiudi senza salvare'],
+      defaultId: 0, cancelId: 0,
+      message: english ? 'There are changes or an operation still in progress.' : 'Ci sono modifiche o un’operazione ancora in corso.',
+      detail: english ? 'Closing now may discard work that has not finished saving.' : 'Chiudendo adesso potresti perdere il lavoro non ancora salvato.' });
+    if (response === 1) event.preventDefault();
+  });
+  handle('set-close-guard', value => {
+    if (typeof value !== 'boolean') throw Object.assign(new Error(), { code: 'invalid_payload' });
+    closeGuard = value; return true;
+  });
+  handle('finish-close', () => { closeAuthorized = true; closeGuard = false; setImmediate(() => window?.close()); return true; });
   handle('load', () => repository.load());
   handle('backup-status', () => backupManager.status());
   handle('configure-backup', patch => backupManager.configure(patch));
