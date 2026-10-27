@@ -1,3 +1,4 @@
+import {normalizePatternFabric} from '../../core/pattern-fabric.mjs';
 import {catalogueReference} from '../../core/thread-catalogues.mjs';
 import {normalizeBackground} from '../../core/generation-background.mjs';
 import {removeBorderBackground} from './background.mjs';
@@ -6,13 +7,13 @@ import { convert, dmcPalette, anchorPalette } from './stitch-engine.ts';
 import { createBlank, validateRevision, SYMBOLS, PatternError } from '../../core/pattern.mjs';
 
 export const ENGINE = Object.freeze({
-  name: 'Stitch Studio', version: '0.1.0+ricamo.2', adapterVersion: 2,
+  name: 'Stitch Studio', version: '0.1.0+ricamo.5', adapterVersion: 5,
   originalSha256: '7eb63a9d4c5915249b638fa6bd1ee35cff1e6f2e3982d8a6ca60b78279fe6052',
   algorithm: 'weighted-CIELAB-kmeans-CIE76', iterations: 8,
-  adaptations: ['500x500-limit', '80-color-detail-limit', 'input-validation', 'revision-model', 'bounded-inventory-preference', 'protected-cleanup-regions'],
+  adaptations: ['500x500-limit', '500-color-detail-limit', 'exact-detail-rgb', 'cached-farthest-seeding', 'full-palette-nearest-detail', 'input-validation', 'revision-model', 'bounded-inventory-preference', 'protected-cleanup-regions'],
 });
-export const DEFAULT_SETTINGS = Object.freeze({ width: 100, height: 100, count: 14, strands: 2, maxColors: 24, mode: 'balanced', region: 0, waste: 20 });
-export const CAPABILITIES = Object.freeze({ width: 500, height: 500, maxColors: 80, modes: { detail: 80, balanced: 40, simple: 16 }, alphaThreshold: 128,
+export const DEFAULT_SETTINGS = Object.freeze({ width: 300, height: 300, count: 14, strands: 2, maxColors: 500, mode: 'detail', region: 0, waste: 20 });
+export const CAPABILITIES = Object.freeze({ width: 500, height: 500, maxColors: 500, modes: { detail: 500, balanced: 40, simple: 16 }, alphaThreshold: 128,
   generation: ['full-cross'], editor: ['full-cross', 'half-stitch', 'backstitch'], dithering: false, cpu: true, cancellableByWorkerTermination: true });
 export { dmcPalette, anchorPalette };
 const fail = (code, details = {}) => { throw new PatternError(code, details); };
@@ -21,7 +22,7 @@ const finite = (n, min, max, integer = false) => typeof n === 'number' && Number
 export function validateSettings(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) fail('engine.settings');
   const settings = { ...DEFAULT_SETTINGS, ...input };
-  const ranges = { width: [1, 500, true], height: [1, 500, true], count: [6, 40], strands: [1, 6, true], maxColors: [1, 80, true], region: [0, 30, true], waste: [0, 100] };
+  const ranges = { width: [1, 500, true], height: [1, 500, true], count: [1, 200], strands: [1, 6, true], maxColors: [1, 500, true], region: [0, 30, true], waste: [0, 100] };
   for (const [field, range] of Object.entries(ranges)) if (!finite(settings[field], ...range)) fail('engine.settingRange', { field, min: range[0], max: range[1], integer: !!range[2] });
   if (!['detail', 'balanced', 'simple'].includes(settings.mode)) fail('engine.mode');
   // Keep only normalized settings; arbitrary caller fields do not enter provenance.
@@ -29,9 +30,10 @@ export function validateSettings(input) {
   if(!Array.isArray(protectedRegions)||protectedRegions.length>20)fail('engine.protectedRegions');
   for(const r of protectedRegions)if(!r||!finite(r.x,0,settings.width-1,true)||!finite(r.y,0,settings.height-1,true)||!finite(r.width,1,settings.width,true)||!finite(r.height,1,settings.height,true)||r.x+r.width>settings.width||r.y+r.height>settings.height)fail('engine.protectedRegions');
   const options = {};
+  if(input.fabric!==undefined)options.fabric=normalizePatternFabric(input.fabric);
   if(input.background!==undefined)options.background=normalizeBackground(input.background);
   for(const key of ['fixedColors','excludedColors'])if(input[key]!==undefined){
-    const indices=input[key];if(!Array.isArray(indices)||indices.length>(key==='fixedColors'?80:6000)||new Set(indices).size!==indices.length||indices.some(i=>!finite(i,0,5999,true)))fail('engine.colorConstraints');
+    const indices=input[key];if(!Array.isArray(indices)||indices.length>(key==='fixedColors'?500:6000)||new Set(indices).size!==indices.length||indices.some(i=>!finite(i,0,5999,true)))fail('engine.colorConstraints');
     if(indices.length)options[key]=[...indices];
   }
   return {...options,...Object.fromEntries([...Object.keys(ranges), 'mode'].map(key => [key, settings[key]])),...(protectedRegions.length?{protectedRegions:protectedRegions.map(({x,y,width,height})=>({x,y,width,height}))}:{})};
@@ -138,8 +140,9 @@ export function generate({ rgba, settings: input, palette = dmcPalette, source =
   const revision = createBlank(settings.width, settings.height, colors, metadata);
   revision.cells = result.cells;
   revision.settings = settings;
+  const directDetail=settings.mode==='detail'&&settings.maxColors>=effectivePalette.colors.length&&!restriction.fixedIndices.length;
   const advanced=settings.background||settings.fixedColors?.length||settings.excludedColors?.length;
-  revision.provenance = { ...ENGINE,...(advanced?{version:settings.background?.mode==='remove'?'0.1.0+ricamo.4':'0.1.0+ricamo.3',adapterVersion:settings.background?.mode==='remove'?4:3,adaptations:[...ENGINE.adaptations,'explicit-alpha-background','fixed-excluded-palette-indices',...(settings.background?.mode==='remove'?['border-connected-background-removal']:[])]}:{ }), parameters: structuredClone(settings), palette: { brand: palette.brand, source: palette.source, approximate: palette.approximate !== false, ...(palette.catalogue?{catalogue:structuredClone(palette.catalogue)}:{}),
+  revision.provenance = { ...ENGINE,algorithm:directDetail?'nearest-CIELAB-CIE76':ENGINE.algorithm,iterations:directDetail?0:ENGINE.iterations,...(advanced?{adaptations:[...ENGINE.adaptations,'explicit-alpha-background','fixed-excluded-palette-indices',...(settings.background?.mode==='remove'?['border-connected-background-removal']:[])]}:{ }), parameters: structuredClone(settings), palette: { brand: palette.brand, source: palette.source, approximate: palette.approximate !== false, ...(palette.catalogue?{catalogue:structuredClone(palette.catalogue)}:{}),
     colors: palette.colors.map(c => ({ brand: c.brand ?? palette.brand, range: c.range ?? '', code: c.code, hex: c.hex, rgb: [...c.rgb], ...(c.itemId ? { itemId: c.itemId } : {}) })) },
     preference: palette.preference??null, cleanup:{changedCells:result.cleanupChanged,protection:'keep-whole-four-connected-regions-touching-protected-output-grid-rectangles'}, source: source == null ? null : structuredClone(source), alphaPolicy: { emptyBelow: ['white','color'].includes(settings.background?.mode)?0:128, partialBackground: settings.background?.mode==='color'?settings.background.color:'#ffffff' }, effectiveColorLimit: restriction.limit };
   validateRevision(revision);
