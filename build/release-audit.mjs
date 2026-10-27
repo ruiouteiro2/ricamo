@@ -21,10 +21,10 @@ const files=entries.filter(path=>!statFile(asar,internal(path)).files);
 const packaged=JSON.parse(read('package.json'));
 assert.equal(packaged.name,manifest.name);assert.equal(packaged.version,manifest.version);assert.equal(packaged.main,manifest.main);
 for(const [name,version]of Object.entries(manifest.dependencies))assert.equal(packaged.dependencies[name],version);
-for(const path of files)assert.ok(['LICENSE','THIRD-PARTY-NOTICES.md','package.json'].includes(path)||['core/','desktop/','dist/','node_modules/'].some(prefix=>path.startsWith(prefix)),`Unexpected packaged file: ${path}`);
+for(const path of files)assert.ok(['LICENSE','THIRD-PARTY-NOTICES.md','package.json'].includes(path)||['core/','desktop/','dist/','data/','node_modules/'].some(prefix=>path.startsWith(prefix)),`Unexpected packaged file: ${path}`);
 
 const sources={};
-for(const folder of ['core','desktop','dist']){
+for(const folder of ['core','desktop','dist','data']){
   const expected={};
   function walk(directory){for(const entry of readdirSync(directory,{withFileTypes:true}).sort((a,b)=>a.name.localeCompare(b.name))){const path=join(directory,entry.name);if(entry.isDirectory())walk(path);else if(entry.isFile())expected[relative(join(root,folder),path).replaceAll('\\','/')]=digest(readFileSync(path));else throw Error('Unexpected source link: '+path)}}
   walk(join(root,folder));
