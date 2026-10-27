@@ -1,6 +1,6 @@
 # Ricamo — guida pratica
 
-Per Ricamo 0.2.0. I nomi dei comandi qui riportati corrispondono all’interfaccia italiana. Puoi scegliere **Italiano** dal selettore della lingua o da **Impostazioni → Lingua**. Le finestre native di Windows per file e stampanti possono usare la lingua del sistema. È disponibile anche la [guida in inglese](USER-GUIDE-EN.md).
+Per Ricamo 0.4.0. I nomi dei comandi qui riportati corrispondono all’interfaccia italiana. Puoi scegliere **Italiano** dal selettore della lingua o da **Impostazioni → Lingua**. Le finestre native di Windows per file e stampanti possono usare la lingua del sistema. È disponibile anche la [guida in inglese](USER-GUIDE-EN.md).
 
 ## Comincia con un lavoro piccolo
 
@@ -40,6 +40,20 @@ Apri il materiale e usa **Registra un movimento** per entrata, consumo confermat
 
 Un metro di filo completo e un metro di un singolo filamento sono quantità diverse. Lunghezza della confezione e numero di filamenti devono descrivere il prodotto reale. Ricamo non presume che ogni matassina contenga 8 m o che ogni filo abbia sei filamenti separabili. Consulta [Materiali e unità](MATERIALS.md).
 
+Per una conta parziale apri **Materiali → Inventario fisico** e filtra materiali, categoria o posizione. Compila solo i lotti contati: una **Quantità osservata** vuota lascia il lotto invariato; `0` registra uno zero reale. Controlla differenze e riserve per progetto. Scegli se mantenere la mancanza visibile oppure redistribuire le riserve, poi usa **Conferma conta e decisioni**. L’anteprima mostra anche gli eventuali fabbisogni minimi creati alla conferma; quelli già pianificati restano conservati.
+
+Durante l’importazione CSV, **Modelli CSV vuoti** scarica le intestazioni per fogli italiani o inglesi. Inserisci i tuoi dati e mantieni i codici come testo. Il modello italiano usa punto e virgola e decimali con virgola; quello inglese usa virgole e decimali con punto.
+
+Usa **Foto e documenti del luogo** per conservare una fotografia o un documento con una posizione. I file selezionati restano in attesa fino a Salva; annullare il modulo non li collega.
+
+## Cataloghi locali e sostituzioni dei fili
+
+In **Impostazioni → Cataloghi locali dei fili → Gestisci cataloghi**, usa **Modello JSON personale** per vedere il formato, poi **Importa catalogo JSON**. Controlla origine dichiarata, licenza/condizioni, versione e colori. Conferma il diritto di usare localmente i dati prima di **Conserva questa versione**. L’importazione non crea materiali d’inventario o lotti posseduti. Le versioni sono immutabili: per correggere dati importa una nuova versione. Limiti: 5 MiB per file JSON, 6000 colori per versione, 20 versioni importate e 20000 colori totali. Conserva i codici come testo.
+
+Scegli **Versione del catalogo** nella generazione con catalogo o in **Aggiungi colore**. Le revisioni conservano versione e attribuzione; importare un aggiornamento non le ricolora. **Preferisci i colori del mio inventario** mantiene il ricorso al DMC già disponibile. I campioni RGB forniti o importati sono approssimativi, non garantiscono equivalenze ufficiali.
+
+Nell’editor scegli un colore a filo singolo e apri **Confronta sostituzioni**. Controlla identità commerciale, distanza approssimativa ΔE76, quantità fisica/disponibile, riserve, unità e conversioni sconosciute. La somiglianza RGB non prova l’intercambiabilità di fibra, finitura o colore. La conferma cambia solo la voce della tavolozza nella bozza. Pubblica una revisione, verifica il cambio nel progetto e ricalcola separatamente il fabbisogno. Per le miscele resta l’editor delle ricette.
+
 ## Riserva, ricama e registra il consumo reale
 
 Nella scheda **Materiali** del progetto, **Aggiungi materiale necessario** registra la quantità prevista. Con **Riserva** scegli un lotto reale e la quantità totale da destinare a quel progetto. Zero libera la riserva.
@@ -51,6 +65,14 @@ Usa **Consumo confermato** solo per materiale realmente utilizzato. Segnare punt
 ## Tessuti e kit
 
 Per un tessuto indica le dimensioni reali della pezza e se la contatura esprime punti per pollice oppure fili del tessuto per pollice. Ricamare su due fili cambia la densità effettiva. In **Pezza, riserve e tagli**, usa **Simula e riserva** per verificare misure, orientamento, margini e regioni già impegnate. L’area non basta: un quadrato necessario di 31,4 × 31,4 cm non entra in una pezza di 30 × 40 cm.
+
+La calcolatrice e il rapporto mostrano separatamente **Griglia completa** ed **Estensione ricamata**. Quest’ultima segue punti interi, mezzi punti ed estremi del punto scritto; le celle vuote non la allargano. Continua a pianificare il taglio dalla griglia completa e dai quattro margini. Una contatura sconosciuta lascia sconosciuti i centimetri. Uno schema vuoto non ha estensione ricamata; un punto scritto verticale può avere larghezza geometrica zero, perché lo spessore del filo è escluso.
+
+In **Misure e condizioni → Geometria misurata**, inserisci rettangoli o poligoni semplici per le aree inutilizzabili, in centimetri; per una pezza irregolare registra anche il contorno. Inserisci i vertici in ordine lungo il bordo, una coppia X Y per riga. Sono ammessi 16 difetti e 24 vertici per poligono, con sei decimali. Incroci e nuove forme fuori dalla pezza vengono rifiutati. Conferma la mappatura completa solo dopo aver misurato tutte le limitazioni; le fotografie non vengono misurate automaticamente.
+
+L’area utile calcolata esclude margini e unione dei difetti, contando le sovrapposizioni una sola volta. L’area non prenotata esclude anche regioni o pezze interamente riservate. Note precedenti o contorni incompleti lasciano l’area sconosciuta; una pezza interamente inutilizzabile può avere area zero conosciuta. **PDF della geometria misurata** esporta misure e identità locale senza note descrittive private. Il diagramma non è un modello di taglio in scala fisica.
+
+Tagli e regioni riservate al taglio non possono attraversare un difetto registrato, il contorno o un margine inutilizzabile, nemmeno con conferma manuale. La ricerca limitata di posizioni può proporre un incastro verificato; l’assenza di proposte richiede una verifica manuale e non dimostra l’impossibilità di ogni posizione. I ritagli rettangolari conservano le forme originali e il loro riferimento geometrico. Il taglio fisico di contorni irregolari arbitrari resta manuale.
 
 Usa **Conferma taglio effettuato** solo dopo il taglio reale. Ricamo registra il pezzo ottenuto e i ritagli mantenendone l’origine; riservare una regione non taglia il tessuto. L’annullamento può essere rifiutato quando operazioni successive dipendono dai pezzi ottenuti.
 
@@ -64,9 +86,13 @@ Un kit fisico è diverso. Registra il **Contenuto dichiarato del kit**, poi usa 
 
 Usa **Aggiungi acquisto** per una voce manuale o un ordine. Ordinato non significa ricevuto. All’arrivo usa **Registra arrivo**, inserisci solo la quantità di quella consegna e scegli la destinazione. Puoi registrare più consegne parziali sullo stesso ordine. Prima del prossimo arrivo controlla ciò che resta in attesa. Costi in valute diverse restano separati: non viene applicato automaticamente un cambio.
 
+Usa **Fatture e ricevute** per i documenti dell’acquisto e **Documenti della ricezione** per una consegna specifica. Salva i file selezionati per collegarne le copie gestite. Allegare una fattura registra un documento; le quantità consegnate si registrano separatamente con **Registra arrivo**.
+
 ## Progetti, tempo e finiture
 
-Un progetto può usare una revisione salvata, un PDF/immagine di riferimento oppure nessuno schema strutturato. La revisione fissata non cambia quando nella biblioteca ne salvi una nuova. Usa **Modifica → Usa l’ultima revisione dello schema** solo se intendi cambiarla e leggi la conferma sul progresso che riparte da zero.
+Un progetto può usare una revisione salvata, un PDF/immagine di riferimento oppure nessuno schema strutturato. La revisione fissata non cambia quando nella biblioteca ne salvi una nuova. Usa **Modifica → Usa l’ultima revisione dello schema** solo se intendi cambiarla. **Verifica il cambio di revisione** confronta dimensioni della griglia e del ricamo, materiali, stime, fabbisogni salvati, riserve, consumi e progresso. I PDF già esportati non cambiano: rigenerali con le opzioni desiderate. La verifica non inventa il numero di pagine di un futuro PDF.
+
+Il progresso della nuova revisione riparte da zero per impostazione predefinita. **Trasferisci solo i punti con corrispondenza dimostrata** è una scelta esplicita: nello stesso schema e riferimento di tessuto/pianificazione devono coincidere coordinate, tipo/direzione, filo o ricetta identificati e filamenti. Non deduce traslazioni, non trasferisce riferimenti anonimi/ambigui e non converte percentuali manuali in punti. Il progresso precedente e le stime restano nello storico; i fabbisogni derivati vengono invalidati, quelli manuali e le riserve fisiche restano da verificare. Se la biblioteca cambia mentre la verifica è aperta, aggiornala prima di confermare.
 
 Organizza i passaggi in **Preparazione e finiture**. **Salva come modello**, **Applica modello** e **Gestisci modelli di checklist** permettono di riutilizzare liste. Puoi copiare e personalizzare i modelli inclusi. La sostituzione dei passaggi non completati richiede un’anteprima; quelli completati vengono mantenuti. Eliminare un modello non elimina i passaggi già applicati ai progetti.
 
@@ -95,9 +121,13 @@ Senza griglia strutturata usa **Progresso manuale (%)**. Le annotazioni su un PD
 
 ## Generare, modificare e conservare riferimenti
 
+Apri **Dettagli → Modifica dettagli dello schema** per indicare autore, tecnica, tema, origine, difficoltà personale e annotazioni sui diritti. Le **Collezioni** raggruppano gli schemi senza copiare i file; preferiti e filtri aiutano a ritrovarli. **Utilizzo nei progetti** distingue collegamenti attuali e revisioni storiche. Nel pacchetto condiviso viaggiano autore, tecnica, tema e diritti annotati; origine, difficoltà personale e collezioni richiedono la scelta di includere note private. Le annotazioni sui diritti non concedono una licenza.
+
 In **Schemi** scegli **Da un’immagine**, **Griglia vuota**, **Importa schema** o **Importa riferimento**. La generazione accetta PNG, JPEG, WebP e GIF entro i limiti di file e dimensioni; un’immagine animata non diventa uno schema animato.
 
 Ritaglia, ruota/rifletti e regola luminosità e contrasto prima di scegliere dimensioni e limite di colori. La griglia supporta fino a 500 × 500 celle e 80 colori; le modalità semplificata e bilanciata possono usarne meno. L’immagine originale resta distinta dal risultato modificabile.
+
+**Trattamento della trasparenza** permette celle vuote oppure composizione sul bianco/su un colore. La composizione rende punti anche le aree prima trasparenti. **Rimuovi il fondo collegato ai bordi** crea invece una maschera dei colori collegati al bordo dell’immagine attraverso pixel corrispondenti o trasparenti, usando quattro vicini. Scegli **Colore del fondo** e **Tolleranza del colore di fondo** (0–80 ΔE76 approssimativo). I bianchi completamente racchiusi da pixel mantenuti restano ricamati. È una maschera cromatica sulla griglia ridimensionata, non un riconoscimento semantico del soggetto. Controlla l’anteprima aggiornata dopo aver cambiato dimensioni; se tutto viene rimosso, la generazione segnala immagine vuota e non salva un nuovo risultato vuoto. Il file originale resta invariato. In **Colori fissati o esclusi**, cerca nella tavolozza e scegli i riferimenti da mantenere o escludere. Un colore fissato occupa un posto anche se nessun punto lo usa. Se cambia la tavolozza disponibile, controlla le restrizioni azzerate e sceglile di nuovo. Confronta le anteprime precedente e attuale: Salva conserva solo il risultato attuale.
 
 **Solo colori del mio inventario** limita la scelta ai colori dei fili posseduti e utilizzabili. **Preferisci i colori del mio inventario** consente una preferenza entro una distanza cromatica limitata, con ricorso al catalogo quando necessario. Entrambe possono considerare materiale riservato o non misurato: nessuna garantisce che la quantità sia sufficiente. Controllala nei materiali del progetto.
 
@@ -105,13 +135,25 @@ Verifica **Revisione dei dettagli**, piccole regioni e zone protette prima di sa
 
 L’editor offre punti croce, mezzi punti, punto scritto, selezione/copia/incolla, trasformazioni e **Motivi e testo**. Il testo usa l’alfabeto a punti supportato: non converte qualsiasi carattere tipografico. Un ridimensionamento che elimina punti mostra il suo effetto. **Salva nuova revisione** pubblica una revisione senza cambiare i progetti fissati a un’altra.
 
+**Colonna**, **Riga** e **Vai alle coordinate** funzionano anche nell’editor del disegno, con posizioni che iniziano da 1. **Vai al centro** porta al centro geometrico e attiva **Mostra il centro**; in una griglia pari il centro è tra le celle. Navigazione e guida non modificano punti o scorte.
+
+Quando salvi o modifichi un motivo personale, **Categoria del motivo** è facoltativa. Riutilizza lo stesso nome per raggruppare i motivi e filtra con **Categoria dei motivi personali**.
+
 Una bozza salvata automaticamente può essere ripresa con **Riprendi bozza** o eliminata esplicitamente. L’esportazione nativa usa la revisione salvata: pubblica la bozza desiderata prima di condividere quel file modificabile. PDF e PNG usano invece il contenuto attuale dell’editor.
 
 Un PDF o un’immagine importato come riferimento resta un documento. Sfoglia le pagine, usa **Evidenzia regione**, **Nota sul documento** e **Segna questa pagina**, poi **Esporta con annotazioni** se serve. **Salva una copia del riferimento** conserva l’originale. Le password dei PDF non vengono memorizzate. Evidenziare una regione non ne ricava punti modificabili o consumo di filo.
 
+**Importa riferimento** accetta una selezione controllata di massimo 20 PDF/immagini, 100 MiB totali e 25 MiB per file. Decidi esplicitamente come trattare i duplicati, poi conferma. Ogni originale/riferimento viene salvato atomicamente; interrompere conserva gli elementi completati. Il resoconto distingue salvati, falliti e da importare. Dopo la riapertura, riseleziona gli stessi originali mancanti per riprovare: il resoconto non conserva i loro byte.
+
+Nei dettagli dello schema o nella panoramica del progetto, usa **Libri e riviste collegati → Collega riferimento** per scegliere un titolo del catalogo e le **Pagine pertinenti**. Puoi collegare un titolo anche senza possederne una copia fisica. La sua scheda materiale mostra **Schemi e progetti collegati**. Sono collegamenti bibliografici locali: non creano scansioni, scorte o necessità. Il backup completo li conserva; i pacchetti di progetto li escludono sempre, anche includendo le note private.
+
 ## Esportare e stampare
 
+Per le etichette dei progetti apri **Etichetta del progetto** nell’area dei rapporti; non serve uno schema. Le etichette di materiali, lotti, ritagli e contenitori condividono dimensioni fisse e anteprima A4/Letter. Scegli larghezza 30–180 mm e altezza 20–250 mm. Testo completo e ID reali vengono conservati: se non entrano in modo leggibile, aumenta le dimensioni prima di esportare. Puoi salvare il PDF senza stampante e poi stampare in dimensione reale quando conta la geometria.
+
 **Esporta** nell’editor offre PDF di lettura, PNG e file nativo dello schema. Il PDF include legenda, mappa delle pagine e fasce di sovrapposizione; i punti ripetuti in queste fasce non aumentano il fabbisogno. È ingrandito per la lettura, non un trasferimento a grandezza reale.
+
+Per il PDF da lettura scegli **Orientamento** e **Margini (mm)**, oltre al formato A4/Letter. Sono ammessi margini di 5–40 mm. Questi controlli riguardano il diagramma da lettura; usa **PDF a grandezza reale** per un trasferimento fisico.
 
 Il **Rapporto PDF** del progetto richiede scelte esplicite per destinatario e note private. **PDF a grandezza reale** richiede contature X/Y e significato della contatura corretti. Comincia con **PDF di calibrazione**: stampa al 100%/Dimensioni effettive senza adattamento alla pagina, misura entrambi gli assi e usa **Calcola correzione di stampa** se necessario. Ricamo non può garantire la calibrazione della stampante. Puoi salvare un PDF anche senza stampante; apri il file nel tuo lettore PDF per stamparlo.
 
@@ -123,10 +165,33 @@ Annullare la scelta della destinazione annulla quell’esportazione: non signifi
 
 **Ripristina una copia** sostituisce la biblioteca attuale dopo un’anteprima; non fonde due inventari. Prima Ricamo conserva una copia dello stato precedente. Mantieni una copia separata e verificata prima di cambiare computer o versione dell’applicazione. I backup non sono cifrati: conservali e condividili tenendo conto del loro contenuto.
 
+Prima delle scritture grandi di backup/ripristino, l’applicazione desktop controlla lo spazio disponibile. Se il controllo o la scrittura fallisce, leggi l’errore, libera spazio e riprova (per una copia esportata puoi scegliere un’altra destinazione); un’operazione fallita non significa che la copia sia stata salvata.
+
 **Esporta progetto** e **Importa progetto** trasferiscono dati del progetto, revisioni supportate e allegati scelti. Controlla privacy e corrispondenze del catalogo. L’importazione non crea scorte fisiche, riserve o arrivi di acquisti. Una nuova copia da ricamare azzera il progresso trasferito e le quantità manuali restanti. Non equivale al ripristino dell’intera biblioteca.
 
+Un pacchetto di progetto non contiene la raccolta dei cataloghi importati o i loro ID locali. Per una revisione generata da un catalogo versionato, inclusa la versione DMC incorporata selezionata nell’interfaccia, conserva attribuzione e referenze presenti nella tavolozza/ricette esportate, ma omette restrizioni sui candidati e indici di preferenza originali. Il pacchetto dichiara che la rigenerazione esatta richiede catalogo e impostazioni originali. Le revisioni precedenti senza provenienza di una versione del catalogo e il ricorso esistente a inventario/DMC conservano il comportamento di esportazione precedente. Origine/licenza dichiarate viaggiano come attribuzione senza oscuramento: controllale prima di condividere. Il backup completo conserva tutta la raccolta locale.
+
 Le esportazioni CSV/TSV/JSON servono per consultazione e analisi. Non sono backup completi e includono nomi/note registrati. [Formati dei dati](DATA-FORMATS.md) descrive i limiti precisi.
+
+Per un rapporto di assistenza apri **Impostazioni → Diagnostica senza dati personali**. Controlla **Anteprima del file diagnostico** prima di esportare. Contiene versione, conteggi e risultato della verifica interna, senza nomi, note, codici, percorsi o allegati. Non viene inviato automaticamente.
 
 ## Installazione e limiti verificati
 
 La destinazione prevista è Windows x64 con installatore locale. I pacchetti di sviluppo non sono firmati: non attestano un editore verificato. Non disattivare le protezioni di Windows per installarli. Durante lo sviluppo sono stati verificati un’installazione locale su Windows 10 x64 build 19045 e alcuni percorsi nativi. Questo non certifica l’ultima build su un PC Windows 11 pulito, ogni stampante o ogni file importato. Consulta lo [stato dell’implementazione](STATUS.md) per l’identità del pacchetto verificato e i controlli ancora necessari.
+
+Il pacchetto Windows 0.4.0 ha superato la verifica dei contenuti, 28 percorsi nativi, aggiornamento, reinstallazione e disinstallazione con conservazione dei dati su Windows 10 x64. Sono passati 438 test integrati. [STATUS](STATUS.md) riporta hash, prestazioni misurate e limiti degli ambienti verificati. Il precedente installatore 0.3 resta isolato perché conteneva file e cache aggiuntivi.
+
+## Glossario breve italiano–inglese
+
+| Italiano | English | Significato in Ricamo |
+| --- | --- | --- |
+| Materiale / referenza | Material / reference | Identità del prodotto, distinta dalle scorte. |
+| Lotto | Lot | Quantità fisica con stato, posizione ed eventuale tintura. |
+| Riserva | Reservation | Quantità destinata a un progetto; non è un consumo. |
+| Consumo confermato | Confirmed consumption | Materiale realmente utilizzato e registrato esplicitamente. |
+| Pezza / ritaglio | Fabric piece / remnant | Tessuto originale o parte restante con la sua origine. |
+| Filamento | Strand / filament | Singolo componente separato; non sempre l’intero filo. |
+| Contatura | Fabric count | Punti o fili del tessuto per pollice, secondo il dato registrato. |
+| Bozza / revisione | Draft / revision | Lavoro recuperabile oppure schema pubblicato immutabile. |
+| Punto scritto | Backstitch | Segmenti espliciti, contati separatamente dai punti croce. |
+| Da verificare | Unknown | Valore non stabilito, distinto dallo zero numerico. |
