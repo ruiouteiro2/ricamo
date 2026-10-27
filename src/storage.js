@@ -101,7 +101,7 @@ const browser = {
 };
 
 export const desktop = Boolean(window.ricamo);
-export const storage = desktop ? Object.fromEntries(Object.keys(window.ricamo).map(method => [method, async (...args) => {
+export const storage = desktop ? Object.fromEntries(Object.keys(window.ricamo).filter(method => method !== 'onCloseRequest').map(method => [method, async (...args) => {
   const result = await window.ricamo[method](...args);
   if (!result.ok) throw Object.assign(new Error(result.error.code), result.error);
   return result.value;
