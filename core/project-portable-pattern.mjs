@@ -1,3 +1,5 @@
+import {normalizeSupplierProduct} from './supplier-products.mjs';
+import {SYMBOL_MODES} from './pattern-symbols.mjs';
 import {normalizePatternFabric} from './pattern-fabric.mjs';
 import {normalizeBackground} from './generation-background.mjs';
 import { catalogueReference, projectCataloguePalette, validateCatalogueProjection } from './thread-catalogues.mjs';
@@ -20,6 +22,7 @@ function settings(value) {
   object(value);
   const result = numeric(value, ['width', 'height', 'count', 'strands', 'maxColors', 'region', 'waste']);
   if(value.fabric!==undefined)result.fabric=normalizePatternFabric(value.fabric);
+  if(value.symbolMode!==undefined)result.symbolMode=oneOf(value.symbolMode,SYMBOL_MODES,'symbolMode');
   if (value.mode !== undefined) result.mode = oneOf(value.mode, ['detail', 'balanced', 'simple'], 'mode');
   if (value.protectedRegions !== undefined) {
     assert(Array.isArray(value.protectedRegions) && value.protectedRegions.length <= 20, 'project_package_settings');
@@ -87,16 +90,20 @@ function provenance(value, attachmentIds, revisionIds) {
 /** Whitelist mechanical metadata at every level; files and private notes stay opt-in. */
 export function portableRevision(revision, privateNotes, { attachmentIds = new Set(), revisionIds = new Set() } = {}) {
   validateRevision(revision);
-  const result = copy(revision, ['id', 'name', 'width', 'height', 'cells', 'createdAt']);
+  const result = copy(revision, ['id', 'name', 'width', 'height', 'cells', 'createdAt','formatVersion']);
   result.parentId = revisionIds.has(revision.parentId) ? revision.parentId : null;
   result.halfStitches = (revision.halfStitches ?? []).map(row => copy(row, ['id', 'x', 'y', 'color', 'direction']));
   result.backstitches = (revision.backstitches ?? []).map(row => copy(row, ['id', 'x1', 'y1', 'x2', 'y2', 'color']));
-  result.colors = revision.colors.map(color => {
-    const row = copy(color, ['brand', 'range', 'code', 'name', 'hex', 'rgb', 'symbol', 'strands', 'backStrands', 'itemId']);
+  const portableComponent=component=>({...copy(component,componentFields),...(component.product!==undefined?{product:normalizeSupplierProduct(component.product)}:{})});
+  const portableColor=color=>{
+    const row=copy(color,['brand','range','code','name','hex','rgb','symbol','strands','backStrands','itemId','materialKind','displayColorUnknown']);
     if(color.catalogueRef!==undefined)row.catalogueRef=catalogueReference(color.catalogueRef);
-    if (color.blend) row.blend = { version: 1, components: color.blend.components.map(component => copy(component, componentFields)), ...(color.blend.backComponents ? { backComponents: color.blend.backComponents.map(component => copy(component, componentFields)) } : {}) };
+    if(color.product!==undefined)row.product=normalizeSupplierProduct(color.product);
+    if(color.attachmentThread)row.attachmentThread=portableColor(color.attachmentThread);
+    if(color.blend)row.blend={version:1,components:color.blend.components.map(portableComponent),...(color.blend.backComponents?{backComponents:color.blend.backComponents.map(portableComponent)}:{})};
     return row;
-  });
+  };
+  result.colors=revision.colors.map(portableColor);
   if (revision.settings !== undefined) result.settings = settings(revision.settings);
   if (revision.provenance !== undefined) result.provenance = provenance(revision.provenance, attachmentIds, revisionIds);
   projectCataloguePalette(revision,result);
@@ -105,14 +112,14 @@ export function portableRevision(revision, privateNotes, { attachmentIds = new S
   return result;
 }
 export function colorMaterialIds(color) {
-  return [color.itemId, ...(color.blend?.components ?? []).map(row => row.itemId), ...(color.blend?.backComponents ?? []).map(row => row.itemId)].filter(Boolean);
+  return [color.itemId, ...(color.blend?.components ?? []).map(row => row.itemId), ...(color.blend?.backComponents ?? []).map(row => row.itemId),...(color.attachmentThread?colorMaterialIds(color.attachmentThread):[])].filter(Boolean);
 }
 export function remapPortableRevision(revision, { id, materialMap, attachmentMap, revisionMap }) {
   const result = portableRevision(revision, true, { attachmentIds: new Set(attachmentMap.keys()), revisionIds: new Set(revisionMap.keys()) });
   result.id = id;
   if (result.parentId) result.parentId = revisionMap.get(result.parentId);
   if (result.provenance?.editorBaseRevisionId) result.provenance.editorBaseRevisionId = revisionMap.get(result.provenance.editorBaseRevisionId);
-  const remap = color => { if (color.itemId) { assert(materialMap.has(color.itemId), 'broken_reference'); color.itemId = materialMap.get(color.itemId); } };
+  const remap = color => { if (color.itemId) { assert(materialMap.has(color.itemId), 'broken_reference'); color.itemId = materialMap.get(color.itemId); }if(color.attachmentThread){remap(color.attachmentThread);color.attachmentThread.blend?.components.forEach(remap);color.attachmentThread.blend?.backComponents?.forEach(remap);} };
   for (const color of result.colors) { remap(color); color.blend?.components.forEach(remap); color.blend?.backComponents?.forEach(remap); }
   const source = result.provenance?.source;
   if (source?.attachmentId) source.attachmentId = attachmentMap.get(source.attachmentId);
