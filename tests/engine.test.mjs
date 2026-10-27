@@ -43,8 +43,8 @@ test('RGBA shape, settings, empty images and empty palettes fail with stable cod
   throwsCode(() => validateSettings({ ...settings, mode: 'fake-dither' }), 'engine.mode');
 });
 
-test('source and adapter extension accepts 500 cells and 80 distinct colours', () => {
-  assert.equal(settingRules.width.max, 500); assert.equal(settingRules.height.max, 500); assert.equal(settingRules.maxColors.max, 80);
+test('source and adapter extension accepts 500 cells and preserves 80 distinct colours', () => {
+  assert.equal(settingRules.width.max, 500); assert.equal(settingRules.height.max, 500); assert.equal(settingRules.maxColors.max, 500);
   assert.equal(settingsErrors({ ...settings, width: 500, height: 500, maxColors: 80 }).length, 0);
   assert.ok(new Set(symbols).size >= 80); assert.ok(new Set(SYMBOLS).size >= 80);
   const eighty = Array.from({ length: 80 }, (_, i) => {
