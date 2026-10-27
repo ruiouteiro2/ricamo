@@ -25,7 +25,7 @@ command('purchase.receive',{purchaseId:'order',quantity:1.5});
 const before=repo.load();repo.close();
 const env={...process.env,RICAMO_DATA_DIR:data};delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_OPTIONS;
 const executable=resolve(process.env.RICAMO_EXECUTABLE||join(root,'node_modules/electron/dist',process.platform==='win32'?'electron.exe':'electron'));
-const app=await electron.launch({executablePath:executable,args:process.env.RICAMO_EXECUTABLE?[]:[root],env,timeout:40000});
+const app=await electron.launch({ chromiumSandbox: true,executablePath:executable,args:process.env.RICAMO_EXECUTABLE?[]:[root],env,timeout:40000});
 const page=await app.firstWindow(),errors=[],remote=[],checks=[];page.setDefaultTimeout(15000);
 page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(/^https?:/.test(request.url()))remote.push(request.url())});
 const labels={inventory:'Export inventory',movements:'Export · Movements',purchases:'Export · Shopping',projects:'Export · Projects'};
