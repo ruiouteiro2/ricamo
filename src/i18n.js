@@ -1,4 +1,5 @@
 import { ref } from 'vue';
+import additional from './i18n-extra.json';
 
 export const language = ref('it');
 const words = {
@@ -18,7 +19,7 @@ const words = {
 };
 
 export function t(key, values = {}) {
-  const entry = words[key];
+  const entry = additional[key] || words[key];
   const text = entry ? entry[language.value === 'en' ? 1 : 0] : key;
   return text.replace(/\{(\w+)\}/g, (_, name) => String(values[name] ?? ''));
 }
