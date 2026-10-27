@@ -1,4 +1,6 @@
-import { assert, quantity, integer, oneOf, identifier } from './shared.mjs';
+import { forecastSettings, validateForecastSettings } from './project-forecast.mjs';
+import { assert, quantity, integer, oneOf, identifier, text, date } from './shared.mjs';
+import { THREAD_ESTIMATE_DEFAULTS } from './thread-estimate-config.mjs';
 const sides = ['left', 'right', 'top', 'bottom'];
 const fabricNumbers = ['countX', 'countY', 'overX', 'overY'];
 const threadNumbers = ['strands', 'backStrands', 'waste', 'crossTravel', 'halfTravel', 'outlineReturn', 'batchSize', 'startFinishCm', 'calibrationFactor'];
@@ -17,10 +19,18 @@ export function portableThreadSettings(value) {
   if (value.colorStrands !== undefined) { object(value.colorStrands); result.colorStrands = Object.fromEntries(Object.entries(value.colorStrands).filter(([key]) => /^(?:[0-9]|[1-7][0-9])$/.test(key)).map(([key, strands]) => [key, integer(strands, 'strands', { min: 1, max: 100 })])); }
   return result;
 }
-export function portablePlanningSettings(settings) {
+export function portablePlanningSettings(settings, { includePrivateNotes = false, includeRecipient = false } = {}) {
   const result = {};
   if (settings.fabric !== undefined) result.fabric = portableFabricSettings(settings.fabric);
-  if (settings.thread !== undefined) result.thread = portableThreadSettings(settings.thread);
+  result.thread = portableThreadSettings(settings.thread ?? THREAD_ESTIMATE_DEFAULTS);
+  if (settings.forecast !== undefined) result.forecast = forecastSettings(settings.forecast);
+  if (settings.finishing !== undefined) {
+    const value = object(settings.finishing);
+    result.finishing = { finishedDate: date(value.finishedDate, 'finishedDate'), deliveredDate: date(value.deliveredDate, 'deliveredDate'),
+      description: includePrivateNotes ? text(value.description, 'description', { max: 10000 }) : '',
+      careInstructions: includePrivateNotes ? text(value.careInstructions, 'careInstructions', { max: 10000 }) : '',
+      recipientNotes: includePrivateNotes && includeRecipient ? text(value.recipientNotes, 'recipientNotes', { max: 10000 }) : '' };
+  }
   return result;
 }
 export function portableFabricPlan(value) {
@@ -34,6 +44,10 @@ export function portableFabricPlan(value) {
 function sameKeys(source, projection) { assert(Object.keys(object(source)).every(key => Object.hasOwn(projection, key)), 'project_package_privacy'); }
 /** Reject hidden free-form properties in incoming mechanical blocks too. */
 export function validatePortablePlanningSettings(settings) {
+  if (settings.forecast !== undefined) validateForecastSettings(settings.forecast);
+  const planning = portablePlanningSettings(settings, { includePrivateNotes: true, includeRecipient: true });
+  sameKeys(settings, { ...planning, ...(settings.transferFabric ? { transferFabric: settings.transferFabric } : {}) });
+  for (const key of ['forecast', 'finishing']) if (settings[key] !== undefined) sameKeys(settings[key], planning[key]);
   if (settings.fabric !== undefined) { const value = settings.fabric, projected = portableFabricSettings(value); sameKeys(value, projected); if (value.margins !== undefined) sameKeys(value.margins, projected.margins); }
   if (settings.thread !== undefined) { const value = settings.thread, projected = portableThreadSettings(value); sameKeys(value, projected); if (value.colorStrands !== undefined) sameKeys(value.colorStrands, projected.colorStrands); }
   if (settings.transferFabric !== undefined) { const value = settings.transferFabric, projected = portableFabricPlan(value); identifier(value.materialId); assert(value.requiresLocalSelection === true, 'project_package_stock'); sameKeys(value, { ...projected, materialId: value.materialId, requiresLocalSelection: true }); if (value.usableMargins !== undefined) sameKeys(value.usableMargins, projected.usableMargins); }
