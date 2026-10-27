@@ -10,6 +10,7 @@ import { state, dispatch, notify } from '../state';
 import { storage } from '../storage';
 import { t, language, errorText } from '../i18n';
 import { createReferenceData, originalPoint } from '../../core/references.mjs';
+import { detectFile } from '../../core/files.mjs';
 import { drawReferenceAnnotations, appendReferenceNotes } from '../reference-render.mjs';
 
 GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
@@ -51,6 +52,7 @@ async function load() {
     const original = new Uint8Array(await storage.getAsset(attachment.value.id));
     if (version !== sourceVersion) return;
     bytes.value = original;
+    if (detectFile(original) !== attachment.value.mime) throw Object.assign(new Error(), { code: 'invalid_file_type' });
     if (isPdf.value) {
       const assets = new URL('pdfjs/', document.baseURI).href;
       loadingTask = getDocument({ data: original.slice(), cMapUrl: `${assets}cmaps/`, cMapPacked: true,
