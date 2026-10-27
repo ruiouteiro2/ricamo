@@ -6,6 +6,8 @@ import { t, number, errorText } from '../i18n';
 import { materialOptions } from '../forms';
 import { shoppingNeeds } from '../../core/purchasing.mjs';
 import { fabricSize } from '../../core/fabric.mjs';
+import {projectFabricConfig} from '../../core/design-size.mjs';
+import DesignSizeSummary from './DesignSizeSummary.vue';
 import { fabricProjectFit } from '../../core/fabric-planning.mjs';
 import FabricWorkspace from './FabricWorkspace.vue';
 import ThreadEstimateSettings from './ThreadEstimateSettings.vue';
@@ -27,10 +29,9 @@ const revision = computed(() => pattern.value?.revisions.find(row => row.id === 
 const fabricLots = computed(() => state.value.lots.filter(row => material(row.materialId)?.category === 'fabric' && row.status === 'usable' && row.quantity > 0));
 const size = computed(() => {
   if (!revision.value) return null;
-  const piece = lot(props.project.fabricLotId), planned = props.project.settings.fabric || {};
-  const config = piece ? { ...planned, countX: piece.properties.countX, countY: piece.properties.countY, countMeaning: piece.properties.countMeaning } : planned;
+  const config = projectFabricConfig(props.project,lot(props.project.fabricLotId));
   if (!config.countX || !config.countY) return null;
-  try { return fabricSize({ width: revision.value.width, height: revision.value.height, ...config }); }
+  try { return fabricSize({ ...config, width: revision.value.width, height: revision.value.height }); }
   catch { return null; }
 });
 const fit = computed(() => {
@@ -79,7 +80,7 @@ function configureFabric() {
       <div class="panel-body"><p class="field-help">{{ t('aggregateHelp') }}</p><p v-if="revision" class="field-help" style="margin-top:8px">{{ t('estimateHelp') }}</p><button v-if="needs.length && !closed" class="button" style="margin-top:16px" :disabled="busy" @click="shopping"><ShoppingBag :size="16" />{{ t('shopping') }}</button></div>
     </section>
     <section class="panel"><div class="panel-heading"><h2>{{ t('reserved') }}</h2><button v-if="!closed" class="button small" @click="reserve()"><Plus :size="14" />{{ t('reserve') }}</button></div><div class="panel-body"><p v-if="!reservations.length" class="muted">{{ t('empty') }}</p><div v-for="row in reservations" :key="row.id" class="stat-row"><span>{{ material(row.materialId)?.name }}<small class="cell-subtitle">{{ lot(row.lotId)?.lotCode }} · {{ locate(lot(row.lotId)?.locationId) }}</small></span><span>{{ number(row.quantity) }} {{ t(row.unit) }} <button class="button text small" @click="release(row)">{{ t('release') }}</button></span></div></div></section>
-    <section class="panel"><div class="panel-heading"><h2>{{ t('fabric') }}</h2><div class="actions"><button v-if="project.fabricLotId" class="button small" @click="fabricWorkspace=true">{{ t('fabricWorkspace') }}</button><button class="button small" :disabled="closed" @click="configureFabric">{{ t('edit') }}</button></div></div><div class="panel-body"><template v-if="size"><div class="stat-row"><span>{{ t('designSize') }}</span><strong>{{ number(size.widthCm) }} × {{ number(size.heightCm) }} cm</strong></div><div class="stat-row"><span>{{ t('cutSize') }}</span><strong>{{ number(size.cutWidthCm) }} × {{ number(size.cutHeightCm) }} cm</strong></div><p v-if="fit" class="notice" :class="fit.fits?'success':'warning'"><AlertCircle :size="16" />{{ fit.fits===true?t('fabricFits'):fit.fits===false?t('fabricDoesNotFit'):t('fabricUnknown') }}</p></template><p v-else class="field-help">{{ t('fabricPlanningHelp') }}</p></div></section>
+    <section class="panel"><div class="panel-heading"><h2>{{ t('fabric') }}</h2><div class="actions"><button v-if="project.fabricLotId" class="button small" @click="fabricWorkspace=true">{{ t('fabricWorkspace') }}</button><button class="button small" :disabled="closed" @click="configureFabric">{{ t('edit') }}</button></div></div><div class="panel-body"><DesignSizeSummary v-if="revision" :revision="revision" :grid="size"/><template v-if="size"><div class="stat-row"><span>{{ t('cutSize') }}</span><strong>{{ number(size.cutWidthCm) }} × {{ number(size.cutHeightCm) }} cm</strong></div><p v-if="fit" class="notice" :class="fit.fits?'success':'warning'"><AlertCircle :size="16" />{{ fit.fits===true?t('fabricFits'):fit.fits===false?t('fabricDoesNotFit'):t('fabricUnknown') }}</p></template><p v-else class="field-help">{{ t('fabricPlanningHelp') }}</p></div></section>
     <section v-if="importedFabric" class="panel"><div class="panel-heading"><h2>{{ t('importedFabricReference') }}</h2></div><div class="panel-body"><p class="notice">{{ t('importedFabricReferenceHelp') }}</p><div class="stat-row"><span>{{ material(importedFabric.materialId)?.name }}</span><strong>{{ number(importedFabric.widthCm) }} × {{ number(importedFabric.heightCm) }} cm</strong></div><div class="stat-row"><span>{{ t('countX') }} / {{ t('countY') }}</span><strong>{{ number(importedFabric.countX) }} / {{ number(importedFabric.countY) }}</strong></div><p class="field-help">{{ t(importedFabric.countMeaning==='threads'?'threadsPerInch':'stitchesPerInch') }}</p><button v-if="!closed" class="button" :disabled="busy || !(importedFabric.countX>0 && importedFabric.countY>0)" @click="useImportedCounts">{{ t('useImportedFabricCounts') }}</button></div></section>
     <ThreadEstimateSettings v-if="threadSettings" :project="project" @close="threadSettings=false" />
     <FabricWorkspace v-if="fabricWorkspace && project.fabricLotId" :lot-id="project.fabricLotId" :project-id="project.id" @close="fabricWorkspace=false" />
