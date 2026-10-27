@@ -70,7 +70,8 @@ function applyCentimetres(axis){
     const geometry=fabricGridFromCm(dimensions,fabric.value);settings.width=geometry.width;settings.height=geometry.height;settings.count=geometry.effectiveX;settings.fabric=normalizePatternFabric(fabric.value);return true;
   }catch(caught){error.value=errorText(caught);return false;}
 }
-function resizeFrom(axis) {
+function resizeFrom(axis,value) {
+  settings[axis]=value;
   const ratio=validDimensions(),geometry=physical.value;
   if(keepRatio.value&&bitmap.value&&ratio&&geometry&&Number.isFinite(settings[axis])){
     let width=settings.width,height=settings.height;
@@ -245,7 +246,7 @@ onBeforeUnmount(() => { preview.dispose(); bitmap.value?.close(); sourceToken++;
       <template v-if="dialog !== 'native'">
         <div class="form-section"><div class="form-grid"><FormField :label="`${t('width')} (cm)`" v-slot="{id}"><input :id="id" v-model.number="dimensions.widthCm" type="number" min="0.01" step="0.01" @input="applyCentimetres('width')"/></FormField><FormField :label="`${t('height')} (cm)`" v-slot="{id}"><input :id="id" v-model.number="dimensions.heightCm" :readonly="keepRatio&&dialog==='image'" type="number" min="0.01" step="0.01" @input="applyCentimetres('height')"/></FormField></div><p v-if="physical" class="field-help">{{t('generationActualSize',{width:number(physical.widthCm,2),height:number(physical.heightCm,2),columns:settings.width,rows:settings.height})}}</p></div>
         <p v-if="dialog==='image'" class="field-help">{{t('generationDesiredSizeHelp')}}</p><FabricSelector v-model="fabric"/>
-        <details class="form-section"><summary>{{t('generationGridAdvanced')}}</summary><div class="form-grid"><FormField :label="`${t('width')} (${t('stitches')})`" v-slot="{id}"><input :id="id" v-model.number="settings.width" type="number" min="1" max="500" @change="resizeFrom('width')"/></FormField><FormField :label="`${t('height')} (${t('stitches')})`" v-slot="{id}"><input :id="id" v-model.number="settings.height" type="number" min="1" max="500" @change="resizeFrom('height')"/></FormField></div></details>
+        <details class="form-section"><summary>{{t('generationGridAdvanced')}}</summary><div class="form-grid"><FormField :label="`${t('width')} (${t('stitches')})`" v-slot="{id}"><input :id="id" :value="settings.width" type="number" min="1" max="500" @change="resizeFrom('width',$event.target.value===''?'':Number($event.target.value))"/></FormField><FormField :label="`${t('height')} (${t('stitches')})`" v-slot="{id}"><input :id="id" :value="settings.height" type="number" min="1" max="500" @change="resizeFrom('height',$event.target.value===''?'':Number($event.target.value))"/></FormField></div></details>
       </template>
       <template v-if="dialog === 'image'">
         <label class="checkbox-label"><input v-model="keepRatio" type="checkbox" @change="applyCentimetres('width')" />{{ t('keepRatio') }}</label>
