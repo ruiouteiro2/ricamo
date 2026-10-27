@@ -24,6 +24,7 @@ export function appendPatternLegend(doc, revision, { locale = 'it', totals, marg
       .map(component => `${component.strands} × ${identity(component)}`).join(' + ');
     const count = totals?.byColor[index];
     const rows = [identity(color)];
+    if(color.product?.colorVariation==='multicolour')rows.push(english?'Multicolour thread: the digital swatch is an indicative average.':'Filo multicolore: il campione digitale è una media indicativa.');
     if(isBead(color)){rows.push(`${english?'Beads / embellishments':'Perline / decorazioni'}: ${count?.bead??0}`);rows.push(color.attachmentThread?`${english?'Attachment thread':'Filo di fissaggio'}: ${color.attachmentThread.strands} × ${identity(color.attachmentThread)}`:(english?'Attachment thread not selected':'Filo di fissaggio da scegliere'));}
     else if (count) rows.push(`${english ? 'Full / half / back' : 'Croce / mezzo / scritto'}: ${count.full} / ${count.half} / ${count.backstitch}`);
     if (!isBead(color)&&color.blend) rows.push(`${full}: ${recipe('full')}`, `${back}: ${recipe('back')}`);
