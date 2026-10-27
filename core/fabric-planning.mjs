@@ -1,3 +1,4 @@
+import {validateFabricGeometry,fabricGeometryKnown,fabricRectangleClear,childFabricGeometry,fabricPlacement} from './fabric-geometry.mjs';
 import { add, subtract, assert, quantity, integer, text, identifier, oneOf, find, activeProject, optionalRef, totalReserved, movement, audit, stableStringify } from './shared.mjs';
 import { cutFabric, fabricSize } from './fabric.mjs';
 import { activeFabricRegions, fabricHeldPieces } from './fabric-state.mjs';
@@ -45,6 +46,8 @@ function ensurePlan(lot) { return lot.fabricPlan ??= { schemaVersion: 1, geometr
 export function previewFabricCut(lot, input) {
   const bounds = boundary(lot), requested = rectangle(input);
   assert(contains({ xCm: 0, yCm: 0, ...bounds }, requested), 'cut_outside_fabric');
+  assert(contains(bounds.usable,requested),'fabric_region_outside_usable');
+  assert(fabricRectangleClear(lot,requested),'fabric_geometry_collision');
   const { xCm: x, yCm: y, widthCm: w, heightCm: h } = requested;
   const rectangles = [
     { key: 'cut', role: 'cut', ...requested },
@@ -72,6 +75,7 @@ export function fabricProjectFit(lot, design, settings = {}) {
       const size = fabricSize({ width: rotated ? design.height : design.width, height: rotated ? design.width : design.height, countX: p.countX, countY: p.countY, countMeaning: p.countMeaning ?? 'stitches', overX: settings.overX ?? 1, overY: settings.overY ?? 1, margins: rotatedMargins });
       return { rotated, ...size, fits: size.cutWidthCm <= bounds.usable.widthCm && size.cutHeightCm <= bounds.usable.heightCm };
     });
+    if(p.geometry||activeFabricRegions(lot).length){for(const candidate of candidates)if(candidate.fits)candidate.position=fabricPlacement(lot,candidate.cutWidthCm,candidate.cutHeightCm,bounds.usable);const match=candidates.find(c=>c.position)??candidates.find(c=>c.fits)??candidates[0],known=fabricGeometryKnown(lot);return{...match,fits:known&&match.position?true:candidates.every(c=>!c.fits)?false:null,boundingFits:match.fits,reason:!known?'fabric_manual_geometry':match.position?null:'fabric_geometry_place_manually',candidates,usable:bounds.usable};}
     const match = candidates.find(c => c.fits) ?? candidates[0];
     const manual = p.irregular === true || Boolean(p.defects) || p.unusableBorder === true;
     return { ...match, fits: manual ? null : match.fits, boundingFits: match.fits, reason: manual ? 'fabric_manual_geometry' : match.fits ? null : 'dimensions_too_small', candidates, usable: bounds.usable };
@@ -92,6 +96,8 @@ export function saveFabricPlan(state, p, ctx) {
     washState: oneOf(p.washState ?? current.washState ?? 'unknown', ['unknown', 'unwashed', 'prewashed'], 'washState'),
   };
   assert(typeof properties.irregular === 'boolean', 'invalid_boolean');
+  if(p.geometry!==undefined){if(p.geometry===null)delete properties.geometry;else properties.geometry=clone(p.geometry);}
+  validateFabricGeometry(properties);
   boundary({ properties });
   lot.properties = properties; ensurePlan(lot); lot.updatedAt = ctx.now;
   audit(state, ctx, 'lot', lot.id, 'fabric_metadata');
@@ -104,8 +110,9 @@ export function reserveFabricRegion(state, p, ctx) {
   assert(existing || plan.regions.length < MAX_REGIONS, 'fabric_region_limit');
   const rect = rectangle(p);
   assert(contains(bounds.usable, rect), 'fabric_region_outside_usable');
+  assert(fabricRectangleClear(lot,rect),'fabric_geometry_collision');
   assert(!activeFabricRegions(lot).some(r => r.id !== existing?.id && rectanglesOverlap(r, rect)), 'fabric_region_overlap');
-  const manual = lot.properties.irregular === true || Boolean(lot.properties.defects) || lot.properties.unusableBorder === true;
+  const manual = !fabricGeometryKnown(lot);
   assert(!manual || p.manualConfirmed === true, 'fabric_manual_confirmation');
   const row = { id: existing?.id ?? identifier(ctx.id()), projectId: project.id, ...rect, rotated: p.rotated === true, status: 'active', manualConfirmed: p.manualConfirmed === true, notes: text(p.notes, 'notes', { max: 2000 }), createdAt: existing?.createdAt ?? ctx.now, updatedAt: ctx.now, operationId: ctx.operationId };
   if (existing) Object.assign(existing, row); else plan.regions.push(row);
@@ -128,8 +135,8 @@ export function cutPlannedFabric(state, p, ctx) {
   const projectId = selected?.projectId ?? optionalRef(state, 'projects', p.projectId);
   if (selected && p.projectId) assert(projectId === p.projectId, 'fabric_region_owner');
   if (projectId) activeProject(state, projectId);
-  assert(!lot.properties.irregular, 'manual_geometry');
-  assert(!lot.properties.defects && !lot.properties.unusableBorder || p.manualConfirmed === true, 'fabric_manual_confirmation');
+  assert(!lot.properties.irregular&&!lot.properties.geometry?.outline, 'manual_geometry');
+  assert(fabricGeometryKnown(lot) || p.manualConfirmed === true, 'fabric_manual_confirmation');
   const input = selected ? { ...selected, unit: 'cm', rotated: false, discardRemnants: p.discardRemnants } : p;
   const preview = previewFabricCut(lot, input), before = clone(lot);
   const project = projectId ? find(state, 'projects', projectId) : null;
@@ -142,6 +149,7 @@ export function cutPlannedFabric(state, p, ctx) {
   for (let i = 0; i < cut.pieceIds.length; i++) {
     const child = find(state, 'lots', cut.pieceIds[i]), rect = preview.rectangles[i];
     delete child.fabricPlan;
+    if(before.properties.geometry)child.properties.geometry=childFabricGeometry(before,rect);
     child.properties.usableMargins = { left: Math.max(0, subtract(preview.margins.left, rect.xCm)), right: Math.max(0, subtract(add(rect.xCm, rect.widthCm), subtract(preview.widthCm, preview.margins.right))), top: Math.max(0, subtract(preview.margins.top, rect.yCm)), bottom: Math.max(0, subtract(add(rect.yCm, rect.heightCm), subtract(preview.heightCm, preview.margins.bottom))) };
     // Remnants entirely inside unusable border remain real pieces, with an explicit warning.
     if (add(child.properties.usableMargins.left, child.properties.usableMargins.right) >= rect.widthCm || add(child.properties.usableMargins.top, child.properties.usableMargins.bottom) >= rect.heightCm) { child.properties.usableMargins = margins(); child.properties.unusableBorder = true; }
@@ -207,7 +215,7 @@ export function guardFabricCommand(state, command) {
   const p = command.payload ?? {}, type = command.type;
   const id = type === 'lot.save' ? p.id : type === 'stock.reverse' ? state.movements.find(m => m.id === p.movementId)?.lotId : p.lotId;
   const lot = state.lots.find(row => row.id === id);
-  if (type === 'fabric.cut' && lot?.fabricPlan) assert(false, 'fabric_use_planner');
+  if (type === 'fabric.cut' && (lot?.fabricPlan || lot?.properties.geometry || lot?.properties.unusableBorder || lot?.properties.defects || Object.values(lot?.properties.usableMargins??{}).some(value=>Number(value)>0))) assert(false, 'fabric_use_planner');
   if (lot && activeFabricRegions(lot).length) {
     if (['stock.move', 'stock.reverse', 'fabric.cut', 'lot.save'].includes(type) || type === 'reservation.set' && quantity(p.quantity) > 0) assert(false, 'fabric_regions_active');
   }
@@ -230,13 +238,13 @@ export function validateFabricPlanning(state) {
   const regionIds = new Set();
   for (const lot of state.lots) {
     if (state.materials.find(m => m.id === lot.materialId)?.category === 'fabric') {
-      const props = lot.properties;
+      const props = lot.properties; validateFabricGeometry(props);
       for (const key of ['widthCm', 'heightCm']) if (props[key] != null) assert(typeof props[key] === 'number' && cm(props[key], key, true) === props[key], 'invalid_precision');
       for (const key of ['countX', 'countY']) if (props[key] != null) assert(typeof props[key] === 'number' && quantity(props[key], { positive: true }) === props[key], 'invalid_precision');
       if (props.countMeaning !== undefined) oneOf(props.countMeaning, ['stitches', 'threads'], 'countMeaning');
       if (props.washState !== undefined) oneOf(props.washState, ['unknown', 'unwashed', 'prewashed'], 'washState');
-      if (props.irregular !== undefined) assert(typeof props.irregular === 'boolean', 'invalid_boolean');
-      if (props.usableMargins !== undefined) margins(props.usableMargins);
+      for(const key of ['irregular','unusableBorder'])if(props[key]!==undefined)assert(typeof props[key]==='boolean','invalid_boolean');
+      if(props.usableMargins!==undefined){margins(props.usableMargins);for(const key of ['left','right','top','bottom'])if(props.usableMargins[key]!==undefined)assert(typeof props.usableMargins[key]==='number'&&cm(props.usableMargins[key],key)===props.usableMargins[key],'invalid_precision');}
       text(props.defects, 'defects', { max: 4000 }); text(props.geometryNotes, 'geometryNotes', { max: 4000 });
     }
     if (!lot.fabricPlan) continue;
@@ -254,7 +262,7 @@ export function validateFabricPlanning(state) {
       assert(typeof region.rotated === 'boolean' && typeof region.manualConfirmed === 'boolean', 'invalid_boolean'); text(region.notes, 'notes', { max: 2000 });
       identifier(region.operationId);
       if (region.cutId) find(state, 'cuts', region.cutId);
-      if (region.status === 'active') { assert(!closed(project), 'project_closed'); assert(contains(bounds.usable, region), 'fabric_region_outside_usable'); assert(!lot.properties.irregular && !lot.properties.defects && !lot.properties.unusableBorder || region.manualConfirmed, 'fabric_manual_confirmation'); }
+      if (region.status === 'active') { assert(!closed(project), 'project_closed'); assert(contains(bounds.usable, region), 'fabric_region_outside_usable'); assert(fabricRectangleClear(lot,region),'fabric_geometry_collision'); assert(fabricGeometryKnown(lot) || region.manualConfirmed, 'fabric_manual_confirmation'); }
     }
     for (let i = 0; i < active.length; i++) for (let j = i + 1; j < active.length; j++) assert(!rectanglesOverlap(active[i], active[j]), 'fabric_region_overlap');
   }
@@ -263,6 +271,8 @@ export function validateFabricPlanning(state) {
     assert(p && p.sourceBefore?.properties && p.sourceAfter?.properties && Array.isArray(p.outputs) && Array.isArray(p.rectangles), 'fabric_invalid_receipt');
     assert(p.sourceBefore.unit === 'piece' && p.sourceBefore.status === 'usable' && p.sourceAfter.status === 'transformed' && p.sourceAfter.materialId === p.sourceBefore.materialId, 'fabric_invalid_receipt');
     find(state, 'materials', p.sourceBefore.materialId);
+    for(const snapshot of [p.sourceBefore,p.sourceAfter,...p.outputs])validateFabricGeometry(snapshot.properties);
+    assert(same(p.sourceBefore.properties.geometry??null,p.sourceAfter.properties.geometry??null),'fabric_invalid_receipt');
     assert(p.sourceAfter.cost === (p.sourceBefore.cost === null ? null : 0), 'fabric_cost_mismatch');
     assert(p.rectangles.length > 0 && p.rectangles[0].role === 'cut' && !p.rectangles[0].waste && p.rectangles.filter(r => r.role === 'cut').length === 1, 'fabric_invalid_receipt');
     for (const r of p.rectangles) {
@@ -279,6 +289,7 @@ export function validateFabricPlanning(state) {
     let outputCost = 0, unknownCost = false, wasteUnits = 0n;
     for (let i = 0; i < p.outputs.length; i++) {
       const out = p.outputs[i], r = p.rectangles[i];
+      assert(same(out.properties.geometry??null,childFabricGeometry(p.sourceBefore,r)??null),'fabric_invalid_receipt');
       assert(out.materialId === p.sourceBefore.materialId && out.unit === 'piece' && out.properties.cutRole === (r.waste ? 'waste' : r.role), 'fabric_invalid_receipt');
       assert(out.id === cut.pieceIds[i] && out.sourceLotId === cut.sourceLotId && out.cutId === cut.id, 'fabric_invalid_receipt');
       assert(out.properties.widthCm === r.widthCm && out.properties.heightCm === r.heightCm, 'fabric_invalid_receipt');
