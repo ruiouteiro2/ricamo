@@ -1,3 +1,4 @@
+import { ASSET_BATCH_COUNT, ASSET_BATCH_BYTES } from '../core/entity-assets.mjs';
 import { shallowRef, ref } from 'vue';
 import { storage } from './storage';
 import { createState } from '../core/application.mjs';
@@ -57,6 +58,20 @@ export async function createPatternWithAsset(file, pattern, operationId = crypto
       const result = await storage.createPatternWithAsset(request, state.value.revision);
       adopt(result.state); return result;
     } catch (error) { if (error.code === 'stale_revision') adopt(await storage.load()); throw error; }
+    finally { saving.value = false; }
+  };
+  const result = queue.then(operation, operation); queue = result.catch(() => {}); return result;
+}
+export async function saveEntityWithAssets(type, payload, files, operationId = crypto.randomUUID()) {
+  const selected = Array.from(files || []), owner = { type, payload: JSON.parse(JSON.stringify(payload)) };
+  if (selected.length > ASSET_BATCH_COUNT || selected.reduce((sum, file) => sum + file.size, 0) > ASSET_BATCH_BYTES) throw Object.assign(new Error(), { code: 'asset_batch_limit' });
+  if (selected.some(file => file.size > 25 * 1024 * 1024)) throw Object.assign(new Error(), { code: 'file_too_large' });
+  const captured = await Promise.all(selected.map(async file => ({ name: file.name, data: new Uint8Array(await file.arrayBuffer()) })));
+  const request = { files: captured, owner, operationId };
+  const operation = async () => {
+    saving.value = true;
+    try { const result = await storage.saveEntityWithAssets(request, state.value.revision); adopt(result.state); return result; }
+    catch (error) { if (error.code === 'stale_revision') adopt(await storage.load()); throw error; }
     finally { saving.value = false; }
   };
   const result = queue.then(operation, operation); queue = result.catch(() => {}); return result;
