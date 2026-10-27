@@ -1,3 +1,4 @@
+import { entityAssetOwnerCommand } from './entity-assets.mjs';
 import { afterKitCommand } from './kit-workflows.mjs';
 import { DomainError, assert, assertSafeJson, text, identifier, stableStringify, oneOf, jsonObject, stringList, recordId, put } from './shared.mjs';
 import { saveMaterial, archiveMaterial, duplicateMaterial, mergeMaterial, addLot, saveLot, stockMove, reverseMovement, setReservation, saveLocation, saveSupplier } from './inventory.mjs';
@@ -72,8 +73,9 @@ export function applyCommand(state, command, context = {}) {
     assert(previous.signature === signature || previous.signature === canonical, 'idempotency_conflict', { operationId });
     return structuredClone(state);
   }
-  guardFabricCommand(state, command);
-  guardToolCommand(state, command);
+  const ownerCommand = entityAssetOwnerCommand(command);
+  guardFabricCommand(state, ownerCommand);
+  guardToolCommand(state, ownerCommand);
   const handler = Object.hasOwn(handlers, command.type) ? handlers[command.type] : context.handlers && Object.hasOwn(context.handlers, command.type) ? context.handlers[command.type] : null;
   assert(typeof handler === 'function', 'unknown_command', { type: command.type });
   const now = typeof context.now === 'function' ? context.now() : context.now ?? new Date().toISOString();
@@ -81,10 +83,10 @@ export function applyCommand(state, command, context = {}) {
   const ctx = { now, id: context.id ?? (() => globalThis.crypto.randomUUID()), operationId };
   const next = structuredClone(state);
   handler(next, payload, ctx);
-  afterFabricCommand(next, command, ctx);
-  afterToolCommand(next, command, ctx);
-  afterEstimateCommand(next, command, ctx, state);
-  afterKitCommand(next, command, ctx);
+  afterFabricCommand(next, ownerCommand, ctx);
+  afterToolCommand(next, ownerCommand, ctx);
+  afterEstimateCommand(next, ownerCommand, ctx, state);
+  afterKitCommand(next, ownerCommand, ctx);
   next.revision++;
   next.operations.push({ id: operationId, type: command.type, signature, date: now });
   return next;
