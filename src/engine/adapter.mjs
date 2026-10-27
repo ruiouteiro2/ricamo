@@ -3,10 +3,10 @@ import { convert, dmcPalette, anchorPalette } from './stitch-engine.ts';
 import { createBlank, validateRevision, SYMBOLS, PatternError } from '../../core/pattern.mjs';
 
 export const ENGINE = Object.freeze({
-  name: 'Stitch Studio', version: '0.1.0+ricamo.1', adapterVersion: 1,
+  name: 'Stitch Studio', version: '0.1.0+ricamo.2', adapterVersion: 2,
   originalSha256: '7eb63a9d4c5915249b638fa6bd1ee35cff1e6f2e3982d8a6ca60b78279fe6052',
   algorithm: 'weighted-CIELAB-kmeans-CIE76', iterations: 8,
-  adaptations: ['500x500-limit', '80-color-detail-limit', 'input-validation', 'revision-model'],
+  adaptations: ['500x500-limit', '80-color-detail-limit', 'input-validation', 'revision-model', 'bounded-inventory-preference', 'protected-cleanup-regions'],
 });
 export const DEFAULT_SETTINGS = Object.freeze({ width: 100, height: 100, count: 14, strands: 2, maxColors: 24, mode: 'balanced', region: 0, waste: 20 });
 export const CAPABILITIES = Object.freeze({ width: 500, height: 500, maxColors: 80, modes: { detail: 80, balanced: 40, simple: 16 }, alphaThreshold: 128,
@@ -22,7 +22,10 @@ export function validateSettings(input) {
   for (const [field, range] of Object.entries(ranges)) if (!finite(settings[field], ...range)) fail('engine.settingRange', { field, min: range[0], max: range[1], integer: !!range[2] });
   if (!['detail', 'balanced', 'simple'].includes(settings.mode)) fail('engine.mode');
   // Keep only normalized settings; arbitrary caller fields do not enter provenance.
-  return Object.fromEntries([...Object.keys(ranges), 'mode'].map(key => [key, settings[key]]));
+  const protectedRegions=input.protectedRegions??[];
+  if(!Array.isArray(protectedRegions)||protectedRegions.length>20)fail('engine.protectedRegions');
+  for(const r of protectedRegions)if(!r||!finite(r.x,0,settings.width-1,true)||!finite(r.y,0,settings.height-1,true)||!finite(r.width,1,settings.width,true)||!finite(r.height,1,settings.height,true)||r.x+r.width>settings.width||r.y+r.height>settings.height)fail('engine.protectedRegions');
+  return {...Object.fromEntries([...Object.keys(ranges), 'mode'].map(key => [key, settings[key]])),...(protectedRegions.length?{protectedRegions:protectedRegions.map(({x,y,width,height})=>({x,y,width,height}))}:{})};
 }
 
 export function validatePalette(palette) {
@@ -69,6 +72,22 @@ export function inventoryPalette(items, lots, { itemIds, includeUnknown = true }
   return validatePalette({ brand: 'Inventory', source: 'user-inventory', approximate: true, colors });
 }
 
+/** Preference never means availability or sufficient stock: reserved and unmeasured usable holdings remain eligible. */
+export function preferredInventoryPalette(items,lots,{tolerance=6}={}) {
+  if(!finite(tolerance,0,15))fail('engine.preferenceTolerance');
+  let owned;try{owned=inventoryPalette(items,lots).colors}catch(error){if(error.code!=='engine.inventoryPaletteEmpty')throw error;owned=[];}
+  return validatePalette({brand:'Inventory + DMC',source:'user-inventory + '+dmcPalette.source,approximate:true,
+    colors:[...owned,...dmcPalette.colors.map(c=>({...c,brand:'DMC'}))],
+    preference:{version:1,indices:owned.map((_,i)=>i),tolerance,maxDistance:20,metric:'CIE76',stage:'cluster-to-palette',holdings:'positive-or-unmeasured-usable-including-reserved'}});
+}
+function conversionOptions(settings,palette){
+  const protectedMask=new Uint8Array(settings.width*settings.height);
+  for(const r of settings.protectedRegions??[])for(let y=r.y;y<r.y+r.height;y++)protectedMask.fill(1,y*settings.width+r.x,y*settings.width+r.x+r.width);
+  const preference=palette.preference;
+  if(preference && (preference.version!==1||!Array.isArray(preference.indices)||preference.indices.length>palette.colors.length||new Set(preference.indices).size!==preference.indices.length||preference.indices.some(i=>!finite(i,0,palette.colors.length-1,true))||!finite(preference.tolerance,0,15)||preference.maxDistance!==20))fail('engine.preference');
+  return {protectedMask,...(preference?{preferredIndices:preference.indices,preferenceTolerance:preference.tolerance,maxPreferenceDistance:20}:{})};
+}
+
 export function generate({ rgba, settings: input, palette = dmcPalette, source = null, metadata = {} }) {
   const settings = validateSettings(input);
   validatePalette(palette);
@@ -80,15 +99,15 @@ export function generate({ rgba, settings: input, palette = dmcPalette, source =
   // All mutable inputs are copied: conversion must not mutate caller palettes.
   const effectivePalette = structuredClone(palette);
   let result;
-  try { result = convert(new Uint8ClampedArray(rgba), settings, effectivePalette); }
+  try { result = convert(new Uint8ClampedArray(rgba), settings, effectivePalette, conversionOptions(settings,effectivePalette)); }
   catch (error) { throw new PatternError('engine.generationFailed', { cause: error instanceof PatternError ? error.code : 'quantizer' }); }
   const colors = result.colors.map((color, index) => ({ ...color, brand: color.brand ?? palette.brand, symbol: SYMBOLS[index], strands: settings.strands }));
   const revision = createBlank(settings.width, settings.height, colors, metadata);
   revision.cells = result.cells;
   revision.settings = settings;
   revision.provenance = { ...ENGINE, parameters: structuredClone(settings), palette: { brand: palette.brand, source: palette.source, approximate: palette.approximate !== false,
-    colors: effectivePalette.colors.map(c => ({ brand: c.brand ?? palette.brand, range: c.range ?? '', code: c.code, hex: c.hex, ...(c.itemId ? { itemId: c.itemId } : {}) })) },
-    source: source == null ? null : structuredClone(source), alphaPolicy: { emptyBelow: 128, partialBackground: '#ffffff' }, effectiveColorLimit: Math.min(settings.maxColors, CAPABILITIES.modes[settings.mode], palette.colors.length) };
+    colors: effectivePalette.colors.map(c => ({ brand: c.brand ?? palette.brand, range: c.range ?? '', code: c.code, hex: c.hex, rgb: [...c.rgb], ...(c.itemId ? { itemId: c.itemId } : {}) })) },
+    preference: effectivePalette.preference??null, cleanup:{changedCells:result.cleanupChanged,protection:'keep-whole-four-connected-regions-touching-protected-output-grid-rectangles'}, source: source == null ? null : structuredClone(source), alphaPolicy: { emptyBelow: 128, partialBackground: '#ffffff' }, effectiveColorLimit: Math.min(settings.maxColors, CAPABILITIES.modes[settings.mode], palette.colors.length) };
   validateRevision(revision);
   return revision;
 }
