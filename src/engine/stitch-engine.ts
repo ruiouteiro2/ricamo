@@ -1,14 +1,14 @@
-import dmc from './dmc.json';
+import dmc from './dmc.json' with { type: 'json' };
 export interface Color { code:string; name:string; rgb:number[]; hex:string }
 export interface Palette { brand:string; colors:Color[]; source:string; approximate:boolean; skeinMeters:number }
 export interface Settings { width:number; height:number; count:number; strands:number; maxColors:number; mode:'detail'|'balanced'|'simple'; region:number; waste:number }
 
 export const settingRules = {
- width: { label: 'Larghezza (punti)', min: 1, max: 400, integer: true },
- height: { label: 'Altezza (punti)', min: 1, max: 400, integer: true },
+ width: { label: 'Larghezza (punti)', min: 1, max: 500, integer: true },
+ height: { label: 'Altezza (punti)', min: 1, max: 500, integer: true },
  count: { label: 'Aida (count)', min: 6, max: 40, integer: false },
  strands: { label: 'Fili utilizzati', min: 1, max: 6, integer: true },
- maxColors: { label: 'Colori massimi', min: 1, max: 72, integer: true },
+ maxColors: { label: 'Colori massimi', min: 1, max: 80, integer: true },
  region: { label: 'Rimuovi aree ≤', min: 0, max: 30, integer: true },
  waste: { label: 'Margine di consumo (%)', min: 0, max: 100, integer: false },
 } as const;
@@ -25,7 +25,7 @@ export function settingsErrors(s: Settings): string[] {
 }
 
 export interface Project { version:1; title:string; author:string; settings:Settings; palette:Palette; colors:Color[]; cells:number[]; source?:string; crop?:number[] }
-export const symbols = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*+=?';
+export const symbols = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*+=?!/:;<>[]{}';
 export const dmcPalette:Palette={brand:'DMC',colors:dmc,source:'Dati colore: craft-color-codes di MakeBead (https://makebead.com), CC BY 4.0. Digital RGB approximations.',approximate:true,skeinMeters:8};
 // Initial, approximate subset: Anchor codes paired with common DMC equivalents.
 const anchorPairs:Record<string,string>={'310':'403','B5200':'1','321':'47','349':'13','666':'46','817':'13','740':'316','741':'304','742':'303','444':'290','307':'289','700':'228','701':'227','702':'226','703':'238','704':'256','796':'134','797':'133','798':'131','799':'130','820':'134','995':'410','996':'433','550':'102','552':'99','554':'96','208':'110','209':'109','210':'108','211':'342','3799':'236','317':'400','318':'399','414':'235','415':'398','762':'234','3865':'2',' Blanc':'2','3371':'382','801':'359','938':'380','434':'310','435':'1046','436':'1045','437':'362','738':'361','739':'366','945':'881','754':'1012','761':'1021','3713':'1020'};
@@ -47,7 +47,7 @@ export function convert(rgba:Uint8ClampedArray,s:Settings,p:Palette):{colors:Col
  const pixels:number[][]=[],indices:number[]=[];const histogram=new Map<string,{lab:number[];n:number}>();
  for(let i=0;i<rgba.length;i+=4){if(rgba[i+3]<128){indices.push(-1);continue}const alpha=rgba[i+3]/255;const rgb=[0,1,2].map(j=>Math.min(255,Math.round((rgba[i+j]*alpha+255*(1-alpha))/8)*8));const l=lab(rgb);indices.push(pixels.length);pixels.push(l);const key=rgb.join(',');const row=histogram.get(key);if(row)row.n++;else histogram.set(key,{lab:l,n:1})}
  if(!pixels.length)throw Error('L’immagine non contiene punti visibili.');
- const rows=[...histogram.values()].sort((a,b)=>b.n-a.n);const k=Math.min(s.maxColors,rows.length,p.colors.length,s.mode==='simple'?16:s.mode==='balanced'?40:72);const centers=[rows[0].lab];
+ const rows=[...histogram.values()].sort((a,b)=>b.n-a.n);const k=Math.min(s.maxColors,rows.length,p.colors.length,s.mode==='simple'?16:s.mode==='balanced'?40:80);const centers=[rows[0].lab];
  while(centers.length<k){let winner=rows[0],best=-1;for(const row of rows){const score=deltaE(row.lab,centers[nearest(row.lab,centers)])**2*Math.sqrt(row.n);if(score>best){best=score;winner=row}}if(best<1e-8)break;centers.push([...winner.lab])}
  for(let iteration=0;iteration<8;iteration++){const sums=centers.map(()=>[0,0,0,0]);for(const row of rows){const sum=sums[nearest(row.lab,centers)];for(let j=0;j<3;j++)sum[j]+=row.lab[j]*row.n;sum[3]+=row.n}for(let j=0;j<centers.length;j++)if(sums[j][3])centers[j]=sums[j].slice(0,3).map(v=>v/sums[j][3])}
  const paletteLabs=p.colors.map(c=>lab(c.rgb));const chosen=[...new Set(centers.map(c=>nearest(c,paletteLabs)))];const colors=chosen.map(i=>p.colors[i]);const labs=chosen.map(i=>paletteLabs[i]);let cells=indices.map(i=>i<0?-1:nearest(pixels[i],labs));
@@ -58,7 +58,7 @@ export function consumption(stitches:number,s:Settings,meters=8){const pitch=.02
 export function validateProject(value:unknown):Project{
  const p=value as Project;if(!p||p.version!==1||!p.settings||!Array.isArray(p.cells)||!Array.isArray(p.colors)||!p.palette)throw Error('Formato del progetto non valido.');
  const s=p.settings;const issues=settingsErrors(s);if(issues.length)throw Error(issues.join(" "));
- if(!Number.isInteger(s.width)||!Number.isInteger(s.height)||p.cells.length!==s.width*s.height||p.colors.length>72||!p.colors.length||p.cells.some(i=>!Number.isInteger(i)||i< -1||i>=p.colors.length))throw Error('Griglia non valida.');
+ if(!Number.isInteger(s.width)||!Number.isInteger(s.height)||p.cells.length!==s.width*s.height||p.colors.length>80||!p.colors.length||p.cells.some(i=>!Number.isInteger(i)||i< -1||i>=p.colors.length))throw Error('Griglia non valida.');
  if(!['detail','balanced','simple'].includes(s.mode)||typeof p.title!=='string'||typeof p.author!=='string')throw Error('Metadati non validi.');
  validatePalette(p.palette);for(const c of p.colors)validateColor(c);if(p.source&&!(p.source==='/exemplo.svg'||/^data:image\/(png|jpeg|webp|gif|svg\+xml);base64,/i.test(p.source)))throw Error('L’immagine del progetto deve essere incorporata, senza URL esterni.');if(p.crop&&(!Array.isArray(p.crop)||p.crop.length!==4||p.crop.some(v=>!Number.isFinite(v)||v<0||v>100)||p.crop[2]<=0||p.crop[3]<=0||p.crop[0]+p.crop[2]>100||p.crop[1]+p.crop[3]>100))throw Error('Ritaglio non valido.');return p;
 }
