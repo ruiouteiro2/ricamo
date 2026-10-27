@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { documentPrintPlan, printPdfDocument } from '../src/print-document.mjs';
+import { documentPrintPlan, documentPrintBatches, printPdfDocument } from '../src/print-document.mjs';
 
 test('document printing preserves PDF physical dimensions and page order', () => {
   const rows = documentPrintPlan([{ width: 612, height: 792 }, { width: 1190.5511811, height: 841.8897638 }]);
@@ -35,4 +35,14 @@ test('large complete charts adapt uniformly between 96 and 144 dpi inside the re
     assert.ok(rows[0].scale<2, 'full chart should fit by adapting its resolution');
     assert.ok(Math.abs(rows[0].widthMm-210)<.01);
   }
+});
+
+
+test('Five hundred readable A4 pages split into bounded jobs without dropping or duplicating pages',()=>{
+ const dimensions=Array.from({length:500},()=>({width:595.28,height:841.89}));
+ const jobs=documentPrintBatches(dimensions);assert.ok(jobs.length>1);
+ assert.deepEqual(jobs.flatMap(job=>job.plan.map((_,index)=>job.start+index)),Array.from({length:500},(_,i)=>i));
+ for(const job of jobs){assert.ok(job.plan.length<=200);assert.ok(job.plan.reduce((sum,row)=>sum+row.canvasWidth*row.canvasHeight,0)<=128000000);assert.ok(job.plan.every(row=>row.scale>=96/72));}
+ assert.throws(()=>documentPrintBatches([...dimensions,dimensions[0]]),{code:'print_document_limit'});
+ assert.throws(()=>documentPrintBatches([{width:10,height:10},{width:Infinity,height:10}]),{code:'print_document_invalid'});
 });
