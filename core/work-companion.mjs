@@ -1,6 +1,7 @@
 import {LIMITS} from './pattern.mjs';
+import {cellKind} from './pattern-materials.mjs';
 import {assert,identifier,integer,text,date,oneOf,find,activeProject,jsonObject,audit} from './shared.mjs';
-export const WORK_KINDS = Object.freeze(['full','half','backstitch']);
+export const WORK_KINDS = Object.freeze(['full','half','backstitch','bead']);
 export const WORK_MARKER_LIMIT = 200;
 const viewportKeys = ['zoom','x','y','cursor','selectedColor','grid','symbols','monochrome','highlight','workType'];
 const markerKeys = ['id','patternId','revisionId','kind','x','y','color','stitchKind','note','createdAt','updatedAt'];
@@ -84,17 +85,17 @@ export const workCompanionHandlers={'project.work.view':saveView,'project.work.m
 const indices=new WeakMap();
 function progressIndex(revision){
   let index=indices.get(revision);if(index)return index;
-  const totals=revision.colors.map(()=>({full:0,half:0,backstitch:0})),halves=new Map(),backs=new Map();
-  for(const color of revision.cells)if(color>=0)totals[color].full++;
+  const totals=revision.colors.map(()=>({full:0,half:0,backstitch:0,bead:0})),halves=new Map(),backs=new Map();
+  for(const color of revision.cells)if(color>=0)totals[color][cellKind(revision.colors[color])]++;
   for(const row of revision.halfStitches??[]){totals[row.color].half++;halves.set(`h:${row.id}`,row.color)}
   for(const row of revision.backstitches??[]){totals[row.color].backstitch++;backs.set(`b:${row.id}`,row.color)}
   index={totals,halves,backs};indices.set(revision,index);return index;
 }
 /** Colour/type filters never enter this calculation: its denominator is real geometry. */
 export function workProgress(revision,completed=[]){
-  const index=progressIndex(revision),done=revision.colors.map(()=>({full:0,half:0,backstitch:0}));
+  const index=progressIndex(revision),done=revision.colors.map(()=>({full:0,half:0,backstitch:0,bead:0}));
   for(const key of new Set(completed)){
-    if(/^c:(0|[1-9][0-9]*)$/.test(key)){const cell=Number(key.slice(2)),color=revision.cells[cell];if(color>=0)done[color].full++;}
+    if(/^c:(0|[1-9][0-9]*)$/.test(key)){const cell=Number(key.slice(2)),color=revision.cells[cell];if(color>=0)done[color][cellKind(revision.colors[color])]++;}
     else if(index.halves.has(key))done[index.halves.get(key)].half++;
     else if(index.backs.has(key))done[index.backs.get(key)].backstitch++;
   }
