@@ -5,16 +5,23 @@ import { saveNeed, projectRevision } from './projects.mjs';
 import { estimateThreads, estimateForMaterial } from './estimates.mjs';
 import { validateRevision } from './pattern.mjs';
 import { referenceHandlers, validateReferenceData } from './references.mjs';
+import { inventoryWorkflowHandlers, validateInventoryWorkflowState } from './inventory-workflows.mjs';
+import { fabricPlanningHandlers, validateFabricPlanning } from './fabric-planning.mjs';
 
 export { createState };
 const handlers = {
+  ...inventoryWorkflowHandlers,
+  ...fabricPlanningHandlers,
   ...referenceHandlers,
   'project.estimate': (state, p, ctx) => {
     const project = find(state, 'projects', p.projectId);
     assert(!['completed', 'archived'].includes(project.status), 'project_closed');
     const revision = projectRevision(state, project);
     assert(revision, 'structured_pattern_required');
-    for (const estimate of estimateThreads(revision, { ...project.settings.fabric, ...project.settings.thread })) {
+    const piece = project.fabricLotId ? find(state, 'lots', project.fabricLotId) : null;
+    const fabric = piece ? { ...project.settings.fabric, countX: piece.properties.countX, countY: piece.properties.countY, countMeaning: piece.properties.countMeaning } : project.settings.fabric;
+    assert(fabric?.countX > 0 && fabric?.countY > 0, 'fabric_count_unknown');
+    for (const estimate of estimateThreads(revision, { ...fabric, ...project.settings.thread })) {
       if (!estimate.filamentMetres) continue;
       const color = estimate.color;
       let material = state.materials.find(row => !row.archived && (color.itemId ? row.id === color.itemId : row.category === 'thread' && row.brand === color.brand && row.code === color.code && row.range === (color.range || '')));
@@ -107,6 +114,8 @@ export function executeCommand(state, command, context = {}) {
 
 export function validateApplicationState(state) {
   validateState(state);
+  validateInventoryWorkflowState(state);
+  validateFabricPlanning(state);
   const seenAttachments = new Set();
   for (const attachment of state.attachments) {
     identifier(attachment.id);
