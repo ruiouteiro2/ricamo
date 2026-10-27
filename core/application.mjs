@@ -1,9 +1,10 @@
+import { motifHandlers, validateEditorMotifs } from './editor-inserts.mjs';
+import { projectInsightHandlers, validateProjectInsights } from './project-insights.mjs';
 import { importProjectPackage } from './project-package.mjs';
 import { applyCommand, createState, validateState } from './commands.mjs';
 import { assert, text, identifier, find, put, stringList } from './shared.mjs';
 import { saveMaterial, addLot, saveLocation } from './inventory.mjs';
-import { saveNeed, projectRevision } from './projects.mjs';
-import { estimateThreads, estimateForMaterial } from './estimates.mjs';
+import { applyProjectThreadEstimate, validateThreadEstimateState } from './thread-estimate-workflow.mjs';
 import { validateRevision } from './pattern.mjs';
 import { referenceHandlers, validateReferenceData } from './references.mjs';
 import { inventoryWorkflowHandlers, validateInventoryWorkflowState } from './inventory-workflows.mjs';
@@ -13,36 +14,15 @@ import { toolActivityHandlers, validateToolActivity } from './tool-activity.mjs'
 
 export { createState };
 const handlers = {
+  ...motifHandlers,
+  ...projectInsightHandlers,
   'project.package.import': importProjectPackage,
   ...toolActivityHandlers,
   ...draftHandlers,
   ...inventoryWorkflowHandlers,
   ...fabricPlanningHandlers,
   ...referenceHandlers,
-  'project.estimate': (state, p, ctx) => {
-    const project = find(state, 'projects', p.projectId);
-    assert(!['completed', 'archived'].includes(project.status), 'project_closed');
-    const revision = projectRevision(state, project);
-    assert(revision, 'structured_pattern_required');
-    const piece = project.fabricLotId ? find(state, 'lots', project.fabricLotId) : null;
-    const fabric = piece ? { ...project.settings.fabric, countX: piece.properties.countX, countY: piece.properties.countY, countMeaning: piece.properties.countMeaning } : project.settings.fabric;
-    assert(fabric?.countX > 0 && fabric?.countY > 0, 'fabric_count_unknown');
-    for (const estimate of estimateThreads(revision, { ...fabric, ...project.settings.thread })) {
-      if (!estimate.filamentMetres) continue;
-      const color = estimate.color;
-      let material = state.materials.find(row => !row.archived && (color.itemId ? row.id === color.itemId : row.category === 'thread' && row.brand === color.brand && row.code === color.code && row.range === (color.range || '')));
-      if (!material) {
-        const id = ctx.id();
-        saveMaterial(state, { id, name: color.name || color.code, category: 'thread', brand: color.brand || '', range: color.range || '', code: color.code, color: color.hex, unit: 'strand-m' }, ctx);
-        material = state.materials.find(row => row.id === id);
-      }
-      const previous = state.needs.find(row => row.projectId === project.id && row.materialId === material.id);
-      if (previous?.source === 'manual') continue;
-      saveNeed(state, { projectId: project.id, materialId: material.id, quantity: estimateForMaterial(estimate, material), confidence: 'estimated', source: 'pattern' }, ctx);
-      const need = state.needs.find(row => row.projectId === project.id && row.materialId === material.id);
-      need.estimate = { method: estimate.method, assumptions: estimate.assumptions, filamentMetres: estimate.filamentMetres, revisionId: revision.id };
-    }
-  },
+  'project.estimate': applyProjectThreadEstimate,
   'material.createWithLot': (state, payload, context) => {
     const id = payload.material.id || context.id();
     saveMaterial(state, { ...payload.material, id }, context);
@@ -126,6 +106,9 @@ export function validateApplicationState(state) {
   validateInventoryWorkflowState(state);
   validateFabricPlanning(state);
   validateToolActivity(state);
+  validateThreadEstimateState(state);
+  validateProjectInsights(state);
+  validateEditorMotifs(state);
   const seenAttachments = new Set();
   for (const attachment of state.attachments) {
     identifier(attachment.id);
