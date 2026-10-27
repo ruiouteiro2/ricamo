@@ -1,3 +1,4 @@
+import {normalizeSupplierProduct,supplierIdentity} from './supplier-products.mjs';
 import {assert,text,quantity,oneOf,find,activeProject,audit} from './shared.mjs';
 import {normalizePatternFabric,purchaseUrl} from './pattern-fabric.mjs';
 import {saveMaterial,UNITS} from './inventory.mjs';
@@ -8,8 +9,10 @@ export function normalizePatternSupplies(value){
   if(value.fabric!==undefined&&value.fabric!==null)result.fabric=normalizePatternFabric(value.fabric);
   assert(Array.isArray(value.requirements??[])&&(value.requirements??[]).length<=1000,'pattern_supplies_invalid');
   result.requirements=(value.requirements??[]).map(row=>{
-    assert(row&&typeof row==='object'&&!Array.isArray(row)&&Object.keys(row).every(key=>['category','brand','range','code','name','quantity','unit','url'].includes(key)),'pattern_supplies_invalid');
-    return {category:oneOf(row.category??'thread',['thread','fabric','embellishment','tool','preparation','stabilizer','finishing','other'],'category'),...Object.fromEntries(['brand','range','code'].map(key=>[key,text(row[key],key,{max:200})])),name:text(row.name,'name',{required:true,max:300}),quantity:quantity(row.quantity,{nullable:true}),unit:oneOf(row.unit??'piece',UNITS,'unit'),url:purchaseUrl(row.url??'')};
+    assert(row&&typeof row==='object'&&!Array.isArray(row)&&Object.keys(row).every(key=>['category','brand','range','code','name','quantity','unit','url','product'].includes(key)),'pattern_supplies_invalid');
+    const result={category:oneOf(row.category??'thread',['thread','fabric','embellishment','tool','preparation','stabilizer','finishing','other'],'category'),...Object.fromEntries(['brand','range','code'].map(key=>[key,text(row[key],key,{max:200})])),name:text(row.name,'name',{required:true,max:300}),quantity:quantity(row.quantity,{nullable:true}),unit:oneOf(row.unit??'piece',UNITS,'unit'),url:purchaseUrl(row.url??'')};
+    if(row.product!==undefined){result.product=normalizeSupplierProduct(row.product);assert(result.product.category===result.category&&supplierIdentity(result.product)===supplierIdentity(result),'pattern_supplies_invalid');}
+    return result;
   });
   return result;
 }
@@ -22,7 +25,7 @@ export function applyPatternSupplies(state,payload,context){
   let created=0,retained=0;
   for(const row of requirements.values()){
     const matches=state.materials.filter(material=>!material.archived&&identity(material)===identity(row));assert(matches.length<=1,'pattern_supplies_ambiguous');
-    let material=matches[0];if(!material){const id=context.id();saveMaterial(state,{...row,id,properties:row.url?{purchaseUrl:row.url}:{}},context);material=find(state,'materials',id);}
+    let material=matches[0];if(!material){const id=context.id();saveMaterial(state,{...row,id,properties:{...(row.url?{purchaseUrl:row.url}:{}),...(row.product?{product:structuredClone(row.product)}:{})}},context);material=find(state,'materials',id);}
     if(state.needs.some(need=>need.projectId===project.id&&need.materialId===material.id)){retained++;continue;}
     saveNeed(state,{projectId:project.id,materialId:material.id,quantity:row.quantity,source:'manual',confidence:'exact'},context);created++;
   }
