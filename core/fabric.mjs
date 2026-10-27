@@ -67,8 +67,8 @@ export function openKit(state, p, ctx) {
   const kitLot = find(state, 'lots', p.lotId), kit = find(state, 'materials', kitLot.materialId);
   assert(kit.category === 'kit' && kit.unit === 'piece', 'not_physical_kit');
   assert(kitLot.status === 'usable' && kitLot.quantity !== null && kitLot.quantity >= 1, 'kit_unavailable');
-  assert(totalReserved(state, kitLot.id) === 0, 'kit_reserved');
-  assert(Array.isArray(p.components) && p.components.length > 0 && p.components.length <= 1000, 'invalid_components');
+  assert(totalReserved(state, kitLot.id) <= subtract(kitLot.quantity, 1), 'kit_reserved');
+  assert(Array.isArray(p.components) && (p.components.length > 0 || p.confirmEmpty === true) && p.components.length <= 1000, 'invalid_components');
   const originalQuantity = kitLot.quantity;
   const kitCost = kitLot.cost === null ? null : Math.round(kitLot.cost / originalQuantity);
   const openingId = ctx.id(), componentLotIds = [];
