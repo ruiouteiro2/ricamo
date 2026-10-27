@@ -1,4 +1,5 @@
 <script setup>
+import PurchaseDocuments from '../components/PurchaseDocuments.vue';
 import { computed, ref } from 'vue';
 import { ShoppingBag, Plus, Download, Search, Truck, Store, RefreshCw, Pencil, PackageCheck, ClipboardList } from '@lucide/vue';
 import PageHeader from '../components/PageHeader.vue';
@@ -10,6 +11,7 @@ import { t, number, money, date, language, errorText } from '../i18n';
 import { shoppingNeeds } from '../../core/commands.mjs';
 import { quantity, DomainError, subtract } from '../../core/shared.mjs';
 
+const documentsId=ref(null);
 const tab = ref('orders'), search = ref(''), status = ref('open'), priority = ref(''), projectId = ref('');
 const form = ref(null), busy = ref(false), error = ref('');
 const activeProjects = computed(() => state.value.projects.filter(p => !['completed', 'archived'].includes(p.status)));
@@ -177,7 +179,7 @@ async function printList() {
           <td><span class="badge" :class="{ green: order.status === 'received', accent: order.status === 'ordered', warning: order.status === 'partial' }">{{ statusText(order.status) }}</span><span v-if="order.priority !== 'normal'" class="cell-subtitle">{{ t('priority') }}: {{ t(order.priority) }}</span></td>
           <td>{{ supplierById.get(order.supplierId)?.name || '—' }}</td>
           <td>{{ order.unitPrice === null ? t('unknown') : money(Math.round(order.quantity * order.unitPrice), order.currency) }}</td>
-          <td><div class="actions"><button class="icon-button" :aria-label="t('editNamedPurchase', { name: materialName(order.materialId) })" @click="openPurchase(order)"><Pencil :size="16" /></button><button v-if="!['received','cancelled'].includes(order.status)" class="button small" @click="openReceive(order)"><PackageCheck :size="15" />{{ t('receive') }}</button></div></td>
+          <td><div class="actions"><button class="button small" @click="documentsId=order.id">{{ t('purchaseDocuments') }}</button><button class="icon-button" :aria-label="t('editNamedPurchase', { name: materialName(order.materialId) })" @click="openPurchase(order)"><Pencil :size="16" /></button><button v-if="!['received','cancelled'].includes(order.status)" class="button small" @click="openReceive(order)"><PackageCheck :size="15" />{{ t('receive') }}</button></div></td>
         </tr>
       </tbody></table></div>
       <EmptyState v-else :icon="ShoppingBag" :title="state.purchases.length ? t('noResults') : t('emptyShopping')" :description="t('emptyShoppingBody')">
@@ -214,4 +216,5 @@ async function printList() {
     </tbody></table></div><EmptyState v-else :icon="Store" :title="t('noSuppliers')" :description="t('supplierLocalHelp')"><button class="button primary" @click="openSupplier()">{{ t('newSupplier') }}</button></EmptyState></div>
   </template>
   <EntityForm v-if="form" :key="form.key" :title="t(form.title)" :fields="formFields" :initial="form.initial" :submit="submitForm" :help="formHelp" :confirm-label="form.kind === 'receive' ? t('receive') : t('save')" wide @close="form = null" @saved="saved" />
+<PurchaseDocuments v-if="documentsId" :purchase-id="documentsId" @close="documentsId=null"/>
 </template>
