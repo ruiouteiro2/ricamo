@@ -5,6 +5,7 @@ import { savePurchase, receivePurchase, generatePurchases } from './purchasing.m
 import { cutFabric, openKit } from './fabric.mjs';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
+import { guardFabricCommand, afterFabricCommand } from './fabric-planning.mjs';
 
 export { DomainError };
 export { inventorySummary } from './inventory.mjs';
@@ -68,6 +69,7 @@ export function applyCommand(state, command, context = {}) {
     assert(previous.signature === signature || previous.signature === canonical, 'idempotency_conflict', { operationId });
     return structuredClone(state);
   }
+  guardFabricCommand(state, command);
   const handler = Object.hasOwn(handlers, command.type) ? handlers[command.type] : context.handlers && Object.hasOwn(context.handlers, command.type) ? context.handlers[command.type] : null;
   assert(typeof handler === 'function', 'unknown_command', { type: command.type });
   const now = typeof context.now === 'function' ? context.now() : context.now ?? new Date().toISOString();
@@ -75,6 +77,7 @@ export function applyCommand(state, command, context = {}) {
   const ctx = { now, id: context.id ?? (() => globalThis.crypto.randomUUID()), operationId };
   const next = structuredClone(state);
   handler(next, payload, ctx);
+  afterFabricCommand(next, command, ctx);
   next.revision++;
   next.operations.push({ id: operationId, type: command.type, signature, date: now });
   return next;
