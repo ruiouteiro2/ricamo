@@ -1262,5 +1262,145 @@
   "manualBackupDestination": [
     "Ultima esportazione manuale",
     "Last manual backup destination"
+  ],
+  "referenceAnnotationHelp": [
+    "Questo documento è un riferimento. Le annotazioni sono separate dall’originale e non rappresentano una conta esatta dei punti né un consumo di materiali.",
+    "This document is a reference. Annotations stay separate from the original and do not represent an exact stitch count or material consumption."
+  ],
+  "referenceLoading": [
+    "Apertura del riferimento locale…",
+    "Opening the local reference…"
+  ],
+  "referenceLoadFailed": [
+    "Non è stato possibile leggere questo riferimento. L’originale è conservato: puoi salvarne una copia o riprovare.",
+    "This reference could not be read. The original is preserved: you can save a copy or try again."
+  ],
+  "referenceInvalidPdf": [
+    "Il PDF è danneggiato o non supportato. Il file originale è conservato e può essere salvato separatamente.",
+    "The PDF is damaged or unsupported. The original file is preserved and can be saved separately."
+  ],
+  "referenceEncrypted": [
+    "Il PDF richiede una password valida. Riprova per inserirla; la password non viene salvata.",
+    "The PDF requires a valid password. Retry to enter it; the password is not saved."
+  ],
+  "referencePrevious": [
+    "Pagina precedente",
+    "Previous page"
+  ],
+  "referenceNext": [
+    "Pagina successiva",
+    "Next page"
+  ],
+  "referencePage": [
+    "Pagina",
+    "Page"
+  ],
+  "referenceTools": [
+    "Strumenti di annotazione",
+    "Annotation tools"
+  ],
+  "referenceTool_pan": [
+    "Sposta documento",
+    "Pan document"
+  ],
+  "referenceTool_highlight": [
+    "Evidenzia regione",
+    "Highlight region"
+  ],
+  "referenceTool_rectangle": [
+    "Riquadro",
+    "Rectangle"
+  ],
+  "referenceTool_line": [
+    "Linea di riferimento",
+    "Reference line"
+  ],
+  "referenceTool_text": [
+    "Nota sul documento",
+    "Document note"
+  ],
+  "referenceAddNote": [
+    "Aggiungi nota",
+    "Add note"
+  ],
+  "referenceEditNote": [
+    "Annotazione",
+    "Annotation"
+  ],
+  "referenceAnnotationCanvas": [
+    "Livello di annotazioni del riferimento",
+    "Reference annotation layer"
+  ],
+  "referenceCanvasHelp": [
+    "Trascina per disegnare una regione. Alt e trascinamento spostano la vista. Puoi aggiungere e modificare note anche con i pulsanti, senza disegnare.",
+    "Drag to draw a region. Alt-drag pans the view. You can also add and edit notes with the buttons, without drawing."
+  ],
+  "referenceAnnotations": [
+    "Annotazioni della pagina",
+    "Page annotations"
+  ],
+  "referenceNoAnnotations": [
+    "Nessuna annotazione su questa pagina.",
+    "No annotations on this page."
+  ],
+  "referenceRegion": [
+    "Regione segnata",
+    "Marked region"
+  ],
+  "referenceAddBookmark": [
+    "Segna questa pagina",
+    "Bookmark this page"
+  ],
+  "referenceNoBookmarks": [
+    "Segna una pagina per ritrovarla rapidamente.",
+    "Bookmark a page to return to it quickly."
+  ],
+  "referenceOpacity": [
+    "Opacità",
+    "Opacity"
+  ],
+  "referencePassword": [
+    "Password del PDF",
+    "PDF password"
+  ],
+  "referencePasswordHelp": [
+    "Questo PDF è protetto. Inserisci la password solo per questa apertura; non verrà conservata.",
+    "This PDF is protected. Enter the password for this session only; it will not be stored."
+  ],
+  "referenceWrongPassword": [
+    "La password non è corretta. Controllala e riprova, oppure annulla per conservare il file senza aprirlo.",
+    "The password is incorrect. Check it and try again, or cancel to keep the file without opening it."
+  ],
+  "referenceExport": [
+    "Esporta con annotazioni",
+    "Export with annotations"
+  ],
+  "referenceExportHelp": [
+    "Crea un PDF A4 del riferimento e delle tue annotazioni. Le pagine vengono rasterizzate; il testo completo delle note viene aggiunto in appendice. L’originale rimane separato.",
+    "Create an A4 PDF of the reference and your annotations. Pages are rasterized; complete note text is added in an appendix. The original stays separate."
+  ],
+  "referenceAllPages": [
+    "Tutte le {count} pagine (altrimenti solo questa)",
+    "All {count} pages (otherwise this page only)"
+  ],
+  "referenceExporting": [
+    "Preparazione del PDF: {page} pagine completate…",
+    "Preparing PDF: {page} pages completed…"
+  ],
+  "referenceExportLimit": [
+    "Una singola esportazione supporta fino a 300 pagine, inclusa l’appendice delle note. Esporta la pagina corrente oppure conserva l’originale completo.",
+    "A single export supports up to 300 pages, including the notes appendix. Export the current page or keep the complete original."
+  ],
+  "referenceExportFailed": [
+    "L’esportazione non è riuscita. Il documento e le annotazioni salvate sono intatti; riprova con la sola pagina corrente.",
+    "Export failed. The document and saved annotations are intact; try again with the current page only."
+  ],
+  "referenceFinishEditing": [
+    "Salva o annulla la nota e attendi la fine dell’operazione prima di uscire.",
+    "Save or cancel the note and wait for the operation to finish before leaving."
+  ],
+  "referenceEditorHelp": [
+    "Leggi il documento, segna le parti utili e ritrova il punto da cui riprendere.",
+    "Read the document, mark useful details and return to where you left off."
   ]
 }
