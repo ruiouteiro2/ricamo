@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>Ricamo — embroidery hoop</title>
+  <rect x="8" y="8" width="240" height="240" rx="50" fill="#634453"/>
+  <circle cx="128" cy="139" r="83" fill="#fff9ed" stroke="#b69c80" stroke-width="12"/>
+  <circle cx="128" cy="139" r="70" fill="none" stroke="#dfd1bb" stroke-width="3"/>
+  <path d="M111 53V35h34v18" fill="none" stroke="#b69c80" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M101 36h54" fill="none" stroke="#fff9ed" stroke-width="6" stroke-linecap="round"/>
+  <g fill="none" stroke="#634453" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M128 130c-31-17-41-37-24-44 14-6 24 14 24 44Z"/>
+    <path d="M128 130c0-35 10-55 24-44 15 12-3 30-24 44Z"/>
+    <path d="M136 138c28-22 50-23 50-6 0 18-24 18-50 6Z"/>
+    <path d="M134 148c34 8 48 25 32 34-14 9-27-12-32-34Z"/>
+    <path d="M122 148c-4 33-18 49-30 36-13-14 8-28 30-36Z"/>
+    <path d="M118 137c-31 17-53 12-48-5 5-16 29-9 48 5Z"/>
+  </g>
+  <circle cx="128" cy="139" r="12" fill="#b69c80" stroke="#fff9ed" stroke-width="4"/>
+</svg>
