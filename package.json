@@ -17,8 +17,9 @@
     "package:dir": "npm run build && electron-builder --dir --publish never"
   },
   "dependencies": {
-    "jspdf": "4.2.1",
     "@lucide/vue": "1.62.0",
+    "jspdf": "4.2.1",
+    "pdfjs-dist": "6.4.299",
     "vue": "3.5.44"
   },
   "devDependencies": {
@@ -29,15 +30,36 @@
     "electron-builder": "26.18.0",
     "vite": "8.3.5"
   },
-  "engines": { "node": ">=24.0.0" },
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "build": {
     "appId": "com.ruiouteiro.ricamo",
     "productName": "Ricamo",
-    "directories": { "output": "release" },
-    "files": ["dist/**", "desktop/**", "core/**", "LICENSE", "THIRD-PARTY-NOTICES.md", "package.json"],
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**",
+      "desktop/**",
+      "core/**",
+      "LICENSE",
+      "THIRD-PARTY-NOTICES.md",
+      "package.json"
+    ],
     "asar": true,
     "npmRebuild": false,
-    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "signAndEditExecutable": false },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "signAndEditExecutable": false
+    },
     "nsis": {
       "oneClick": false,
       "perMachine": false,
@@ -45,7 +67,10 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "deleteAppDataOnUninstall": false,
-      "installerLanguages": ["it_IT", "en_US"],
+      "installerLanguages": [
+        "it_IT",
+        "en_US"
+      ],
       "displayLanguageSelector": true,
       "artifactName": "Ricamo-${version}-Windows-x64-Setup.${ext}"
     }
