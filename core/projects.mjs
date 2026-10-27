@@ -1,0 +1,167 @@
+import { add, subtract, assert, quantity, text, oneOf, integer, currency, date, stringList, jsonObject, find, optionalRef, recordId, put, activeProject, audit } from './shared.mjs';
+
+export const PROJECT_STATUSES = ['idea', 'preparing', 'ready', 'active', 'paused', 'finishing', 'completed', 'archived'];
+
+export function projectRevision(state, project) {
+  if (!project.patternId) return null;
+  const pattern = find(state, 'patterns', project.patternId);
+  if (pattern.kind === 'reference') return null;
+  const revision = pattern.revisions?.find(r => r.id === project.revisionId);
+  assert(revision, 'revision_not_found', { patternId: project.patternId, revisionId: project.revisionId });
+  return revision;
+}
+
+export function saveProject(state, p, ctx) {
+  const id = recordId(state, 'projects', p, ctx), existing = state.projects.find(row => row.id === id);
+  const source = { ...existing, ...p };
+  const patternId = optionalRef(state, 'patterns', source.patternId);
+  const pattern = patternId ? find(state, 'patterns', patternId) : null;
+  const revisionId = pattern?.kind === 'structured' ? text(source.revisionId || pattern.currentRevisionId, 'revisionId', { required: true, max: 128 }) : null;
+  if (revisionId) assert(pattern.revisions?.some(r => r.id === revisionId), 'revision_not_found');
+  const status = oneOf(source.status ?? 'idea', PROJECT_STATUSES, 'status');
+  if (['completed', 'archived'].includes(status) && !['completed', 'archived'].includes(existing?.status)) {
+    assert(!state.reservations.some(r => r.projectId === id && r.quantity > 0), 'close_project_first');
+  }
+  const designChanged = existing && (existing.patternId !== patternId || existing.revisionId !== revisionId);
+  if (designChanged && existing.completed.length) assert(p.acceptRevisionChange === true, 'revision_change_confirmation');
+  const project = {
+    id, name: text(source.name, 'name', { required: true, max: 300 }),
+    technique: text(source.technique ?? 'cross_stitch', 'technique', { required: true, max: 100 }),
+    description: text(source.description, 'description', { max: 10000 }), notes: text(source.notes, 'notes', { max: 20000 }),
+    recipient: text(source.recipient, 'recipient', { max: 300 }), priority: oneOf(source.priority ?? 'normal', ['low', 'normal', 'high'], 'priority'),
+    status, dueDate: date(source.dueDate, 'dueDate'), completedAt: date(source.completedAt, 'completedAt'),
+    patternId, revisionId, fabricLotId: optionalRef(state, 'lots', source.fabricLotId),
+    budget: integer(source.budget, 'budget', { nullable: true }), currency: currency(source.currency ?? state.settings.currency),
+    settings: jsonObject(source.settings), tags: stringList(source.tags), attachments: stringList(source.attachments, 'attachments'),
+    completed: designChanged ? [] : (existing?.completed ?? []),
+    manualPercent: designChanged ? 0 : (existing?.manualPercent ?? 0),
+    view: existing?.view ?? {}, progressHistory: existing?.progressHistory ?? [],
+    createdAt: existing?.createdAt ?? ctx.now, updatedAt: ctx.now,
+  };
+  if (designChanged) {
+    project.progressHistory.push({ patternId: existing.patternId, revisionId: existing.revisionId, completed: [...existing.completed], manualPercent: existing.manualPercent, savedAt: ctx.now });
+  }
+  if (project.fabricLotId) assert(find(state, 'materials', find(state, 'lots', project.fabricLotId).materialId).category === 'fabric', 'not_fabric');
+  put(state, 'projects', project);
+  audit(state, ctx, 'project', id, existing ? 'updated' : 'created', { designChanged: !!designChanged });
+}
+
+export function duplicateProject(state, p, ctx) {
+  const source = find(state, 'projects', p.id), newId = ctx.id();
+  saveProject(state, { ...source, id: newId, name: p.name ?? source.name, status: 'idea', dueDate: '', completedAt: '' }, ctx);
+  for (const need of state.needs.filter(n => n.projectId === source.id)) state.needs.push({ ...structuredClone(need), id: ctx.id(), projectId: newId, createdAt: ctx.now, updatedAt: ctx.now });
+  for (const task of state.tasks.filter(t => t.projectId === source.id)) state.tasks.push({ ...structuredClone(task), id: ctx.id(), projectId: newId, done: false, createdAt: ctx.now, updatedAt: ctx.now });
+  audit(state, ctx, 'project', newId, 'duplicated', { sourceId: source.id });
+}
+
+export function closeProject(state, p, ctx) {
+  const project = find(state, 'projects', p.projectId ?? p.id);
+  const status = oneOf(p.status ?? 'completed', ['completed', 'archived'], 'status');
+  const released = [];
+  for (const reservation of state.reservations.filter(r => r.projectId === project.id && r.quantity > 0)) {
+    released.push({ lotId: reservation.lotId, quantity: reservation.quantity });
+    reservation.quantity = 0;
+    reservation.updatedAt = ctx.now;
+  }
+  project.status = status;
+  project.completedAt = status === 'completed' ? ctx.now : project.completedAt;
+  project.updatedAt = ctx.now;
+  if (p.notes !== undefined) project.notes = text(p.notes, 'notes', { max: 20000 });
+  audit(state, ctx, 'project', project.id, status, { released, consumptionCreated: false });
+}
+
+export function saveNeed(state, p, ctx) {
+  const project = activeProject(state, p.projectId), material = find(state, 'materials', p.materialId);
+  const previous = p.id ? find(state, 'needs', p.id) : state.needs.find(n => n.projectId === project.id && n.materialId === material.id);
+  if (previous) assert(previous.projectId === project.id && previous.materialId === material.id, 'need_identity_changed');
+  const amount = quantity(p.quantity, { nullable: true });
+  put(state, 'needs', {
+    id: previous?.id ?? ctx.id(), projectId: project.id, materialId: material.id, quantity: amount, unit: material.unit,
+    source: oneOf(p.source ?? previous?.source ?? 'manual', ['manual', 'estimate', 'pattern'], 'source'),
+    confidence: amount === null ? 'unknown' : oneOf(p.confidence ?? (previous?.confidence === 'unknown' ? 'estimated' : previous?.confidence) ?? 'estimated', ['exact', 'estimated'], 'confidence'),
+    notes: text(p.notes ?? previous?.notes, 'notes', { max: 10000 }), createdAt: previous?.createdAt ?? ctx.now, updatedAt: ctx.now,
+  });
+}
+
+export function confirmedConsumption(state, projectId, materialId) {
+  const lotIds = new Set(state.lots.filter(l => l.materialId === materialId).map(l => l.id));
+  const movements = state.movements.filter(m => m.projectId === projectId && (m.materialId === materialId || lotIds.has(m.lotId)));
+  const consumptionIds = new Set(movements.filter(m => m.kind === 'consume').map(m => m.id));
+  return Math.max(0, subtract(add(...movements.filter(m => m.kind === 'consume').map(m => m.quantity)), add(...movements.filter(m => m.kind === 'correction' && consumptionIds.has(m.reversesId)).map(m => m.quantity))));
+}
+
+export function saveTask(state, p, ctx) {
+  const existing = p.id ? state.tasks.find(t => t.id === p.id) : null;
+  const projectId = p.projectId ?? existing?.projectId;
+  find(state, 'projects', projectId);
+  if (existing) assert(existing.projectId === projectId, 'task_project_changed');
+  const source = { ...existing, ...p };
+  put(state, 'tasks', {
+    id: recordId(state, 'tasks', p, ctx), projectId,
+    title: text(source.title, 'title', { required: true, max: 500 }),
+    stage: oneOf(source.stage ?? 'preparation', ['preparation', 'work', 'finishing', 'custom'], 'stage'),
+    done: source.done === true, notes: text(source.notes, 'notes', { max: 10000 }),
+    order: integer(source.order ?? 0, 'order', { max: 100000 }), dueDate: date(source.dueDate, 'dueDate'),
+    createdAt: existing?.createdAt ?? ctx.now, updatedAt: ctx.now,
+  });
+}
+
+export function saveSession(state, p, ctx) {
+  const existing = p.id ? state.sessions.find(s => s.id === p.id) : null;
+  const projectId = p.projectId ?? existing?.projectId;
+  find(state, 'projects', projectId);
+  if (existing) assert(existing.projectId === projectId, 'session_project_changed');
+  const source = { ...existing, ...p };
+  const durationMinutes = quantity(source.durationMinutes, { field: 'durationMinutes' });
+  assert(durationMinutes <= 1440, 'session_too_long');
+  put(state, 'sessions', {
+    id: recordId(state, 'sessions', p, ctx), projectId,
+    date: date(source.date ?? ctx.now, 'date'), durationMinutes,
+    notes: text(source.notes, 'notes', { max: 10000 }), source: oneOf(source.source ?? 'manual', ['manual', 'timer'], 'source'),
+    attachments: stringList(source.attachments, 'attachments'), createdAt: existing?.createdAt ?? ctx.now, updatedAt: ctx.now,
+  });
+}
+
+export function validProgressKeys(revision) {
+  const keys = new Set();
+  revision.cells.forEach((color, i) => { if (color >= 0) keys.add(`c:${i}`); });
+  for (const half of revision.halfStitches ?? []) keys.add(`h:${half.id}`);
+  for (const segment of revision.backstitches ?? []) keys.add(`b:${segment.id}`);
+  return keys;
+}
+
+export function updateProgress(state, p, ctx) {
+  const project = activeProject(state, p.projectId), revision = projectRevision(state, project);
+  if (revision) {
+    assert(p.manualPercent === undefined, 'structured_progress_required');
+    assert(p.revisionId === undefined || p.revisionId === project.revisionId, 'stale_revision');
+    assert(Array.isArray(p.completed) && p.completed.length <= 1_000_000, 'invalid_progress');
+    const valid = validProgressKeys(revision);
+    assert(p.completed.every(key => typeof key === 'string' && valid.has(key)), 'invalid_progress');
+    const mode = oneOf(p.mode ?? 'add', ['add', 'remove', 'replace'], 'mode');
+    const completed = new Set(mode === 'replace' ? [] : project.completed);
+    for (const key of p.completed) { if (mode === 'remove') completed.delete(key); else completed.add(key); }
+    project.completed = [...completed].sort();
+  } else {
+    const percent = quantity(p.manualPercent, { field: 'manualPercent' });
+    assert(percent <= 100, 'invalid_progress');
+    project.manualPercent = percent;
+  }
+  project.updatedAt = ctx.now;
+}
+
+export function saveProjectView(state, p, ctx) {
+  const project = find(state, 'projects', p.projectId);
+  project.view = jsonObject(p.view, 'view');
+  project.updatedAt = ctx.now;
+}
+
+export function projectProgress(state, projectId) {
+  const project = find(state, 'projects', projectId), revision = projectRevision(state, project);
+  if (!revision) return { mode: 'manual', percent: project.manualPercent, completed: null, total: null };
+  const valid = validProgressKeys(revision), completed = project.completed.filter(key => valid.has(key));
+  return { mode: 'structured', percent: valid.size ? completed.length / valid.size * 100 : 0, completed: completed.length, total: valid.size,
+    cross: { completed: completed.filter(k => k.startsWith('c:')).length, total: revision.cells.filter(c => c >= 0).length },
+    half: { completed: completed.filter(k => k.startsWith('h:')).length, total: revision.halfStitches?.length ?? 0 },
+    backstitch: { completed: completed.filter(k => k.startsWith('b:')).length, total: revision.backstitches?.length ?? 0 } };
+}
