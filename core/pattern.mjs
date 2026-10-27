@@ -1,3 +1,4 @@
+import { catalogueReference } from './thread-catalogues.mjs';
 import { validateThreadColor, blendSignature } from './thread-recipes.mjs';
 /** Immutable, bounded geometry for Ricamo's version-one structured revisions.
  * Cells are whole crosses; half stitches and backstitches remain distinct.
@@ -31,6 +32,7 @@ export function validateColors(colors, { allowEmpty = true } = {}) {
       symbols.add(color.symbol);
     }
     validateThreadColor(color);
+    if(color.catalogueRef!==undefined)catalogueReference(color.catalogueRef);
     if (color.strands !== undefined && !integer(color.strands, 1, 12)) fail('pattern.strands', { index });
   }
   return colors;
