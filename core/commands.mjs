@@ -7,6 +7,7 @@ import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 import { guardFabricCommand, afterFabricCommand } from './fabric-planning.mjs';
 import { guardToolCommand, afterToolCommand } from './tool-activity.mjs';
+import { afterEstimateCommand } from './estimate-invalidation.mjs';
 
 export { DomainError };
 export { inventorySummary } from './inventory.mjs';
@@ -81,6 +82,7 @@ export function applyCommand(state, command, context = {}) {
   handler(next, payload, ctx);
   afterFabricCommand(next, command, ctx);
   afterToolCommand(next, command, ctx);
+  afterEstimateCommand(next, command, ctx, state);
   next.revision++;
   next.operations.push({ id: operationId, type: command.type, signature, date: now });
   return next;
