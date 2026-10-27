@@ -15,7 +15,7 @@ async function launch() {
   // The coding host may itself be Electron. Its Node-mode flag is not an app setting.
   delete environment.ELECTRON_RUN_AS_NODE;
   delete environment.NODE_OPTIONS;
-  const app = await electron.launch({ executablePath: resolve(executable), args: [...(process.env.RICAMO_TEST_NO_SANDBOX === '1' ? ['--no-sandbox'] : []), ...(packaged ? [] : [root])], env: environment, timeout: 40000 });
+  const app = await electron.launch({ chromiumSandbox: true, executablePath: resolve(executable), args: [...(packaged ? [] : [root])], env: environment, timeout: 40000 });
   const page = await app.firstWindow();
   page.on('pageerror', error => errors.push(error.message));
   page.on('request', request => { if (/^https?:/.test(request.url())) remoteRequests.push(request.url()); });
