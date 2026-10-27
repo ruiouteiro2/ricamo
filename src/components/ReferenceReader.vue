@@ -217,7 +217,7 @@ async function exportAnnotated() {
       page?.cleanup();exportProgress.value=index+1;await new Promise(resolve=>setTimeout(resolve,0));
     }
     if (!cancelExport) await appendReferenceNotes(pdfOut, exportMarks.filter(mark=>pages.includes(mark.page)), {locale:exportLanguage.value});
-    if(!cancelExport)await storage.saveFile({name:`${pattern.value.name.replace(/[<>:"/\\|?*]/g,'-').slice(0,100)}-annotated.pdf`,data:new Uint8Array(pdfOut.output('arraybuffer'))});
+    if(!cancelExport){const saved=await storage.saveFile({name:`${pattern.value.name.replace(/[<>:"/\\|?*]/g,'-').slice(0,100)}-annotated.pdf`,data:new Uint8Array(pdfOut.output('arraybuffer'))});if(saved===false)dialog.value='export';}
   }catch(caught){if(cancelExport)return;error.value=caught.code?.startsWith('pdf_')?errorText(caught):caught.code==='reference_export_limit'?t('referenceExportLimit'):t('referenceExportFailed');}
   finally{exporting.value=false;}
 }
