@@ -1,6 +1,6 @@
 import { createState, executeCommand } from '../core/application.mjs';
 import { createBackup, inspectBackup } from '../core/backup.mjs';
-import { detectFile, safeDisplayName, digestBytes } from '../core/files.mjs';
+import { detectFile, safeDisplayName, digestBytes, boundedBytes } from '../core/files.mjs';
 
 function failure(code) { return Object.assign(new Error(code), { code }); }
 const request = value => new Promise((resolve, reject) => { value.onsuccess = () => resolve(value.result); value.onerror = () => reject(value.error); });
@@ -49,7 +49,7 @@ const browser = {
     return mutate((state, tx) => writeCommand(state, tx, command, revision));
   },
   async importAsset({ name, data, operationId }, revision) {
-    const bytes = new Uint8Array(data), mime = detectFile(bytes), digest = await digestBytes(bytes);
+    const bytes = boundedBytes(data), mime = detectFile(bytes), digest = await digestBytes(bytes);
     return mutate((state, tx) => {
       const existing = state.attachments.find(row => row.digest === digest);
       if (existing) return { state, asset: existing, duplicate: true };
@@ -83,8 +83,9 @@ const browser = {
   },
   async restore(token, revision) {
     if (!pendingRestore || pendingRestore.token !== token) throw failure('invalid_restore_token');
-    const oldBackup = await browser.backupText();
     const prepared = pendingRestore.prepared;
+    pendingRestore = null;
+    const oldBackup = await browser.backupText();
     const next = await mutate((state, tx) => {
       if (state.revision !== revision) throw failure('stale_revision');
       tx.objectStore('recovery').put(oldBackup, 'before-restore');
@@ -94,7 +95,6 @@ const browser = {
       tx.objectStore('state').put(next, 'current');
       return next;
     });
-    pendingRestore = null;
     return next;
   },
   async print() { window.print(); return true; },
