@@ -1,6 +1,6 @@
 {
   "name": "ricamo",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Offline embroidery studio, inventory and project companion",
   "author": "RuiOuteiro2",
   "license": "MIT",
@@ -79,6 +79,7 @@
       "dist/**",
       "desktop/**",
       "core/**",
+      "data/**",
       "LICENSE",
       "THIRD-PARTY-NOTICES.md",
       "package.json",
