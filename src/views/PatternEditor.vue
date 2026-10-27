@@ -8,8 +8,11 @@ import FormField from '../components/FormField.vue';
 import ReferenceReader from '../components/ReferenceReader.vue';
 import PaletteRecipes from '../components/PaletteRecipes.vue';
 import EditorInserts from '../components/EditorInserts.vue';
+import WorkCompanion from '../components/WorkCompanion.vue';
+import {workProgress} from '../../core/work-companion.mjs';
+import {integer} from '../../core/shared.mjs';
 import { state, dispatch, navigate, notify } from '../state';
-import { storage, desktop } from '../storage';
+import { storage, windowControls } from '../storage';
 import { createDraftAutosave } from '../editor-draft.mjs';
 import { t, language, number, errorText } from '../i18n';
 import { dmcPalette } from '../engine/adapter.mjs';
@@ -18,8 +21,8 @@ import { drawPattern } from '../pattern-render.mjs';
 import { patternPng, patternPdf } from '../pattern-export.mjs';
 
 const props = defineProps({ id: { type: String, required: true }, projectId: String });
-const pattern = computed(() => state.value.patterns.find(p => p.id === props.id));
 const project = computed(() => props.projectId ? state.value.projects.find(p => p.id === props.projectId) : null);
+const pattern = computed(() => state.value.patterns.find(p => p.id === (props.projectId?project.value?.patternId:props.id)));
 const progressMode = computed(() => Boolean(props.projectId));
 const chosenRevisionId = ref('');
 const persisted = computed(() => pattern.value?.revisions.find(r => r.id === (project.value?.revisionId || chosenRevisionId.value || pattern.value.currentRevisionId)));
@@ -30,14 +33,20 @@ const viewport = reactive({ left: 0, top: 0, width: 900, height: 520 });
 const resizeForm = reactive({ width: 100, height: 100, offsetX: 0, offsetY: 0 });
 const exportForm = reactive({ kind: 'pdf', locale: language.value, paper: 'a4', monochrome: false, progress: true });
 const colorSearch = ref(''), newColor = reactive({ code: '', name: '', hex: '#634453', brand: '', strands: 2, symbol: '' }), replacement = ref(0), symbolDraft = ref(''), strandDraft = ref(2);
-const notesDraft = ref(''), pendingProgress = ref(null), progressHistory = shallowRef([]), progressFuture = shallowRef([]), revisionNotes = ref('');
+const pendingProgress = ref(null), progressHistory = shallowRef([]), progressFuture = shallowRef([]), revisionNotes = ref('');
 const recipeIndex=ref(-1),backStrandDraft=ref(1);
 const baseRevisionId = ref(''), recoveryHold = ref(false), recovery = shallowRef(null);
 const draftStatus = shallowRef({pending:false,saving:false,hasDraft:false,savedAt:null,error:null});
-let pointer = null, resizeObserver, frame, viewTimer, allowLeave = false, pendingNavigation = null, lastSeenKey = '';
+const workType=ref('all'),paletteQuery=ref(''),markerPanel=ref(),coordinateDraft=reactive({column:1,row:1});
+const viewStatus=shallowRef({pending:false,saving:false,hasDraft:false,savedAt:null,error:null});
+let viewLoading=false,workScope={patternId:null,revisionId:null};
+let pointer = null, resizeObserver, frame, allowLeave = false, pendingNavigation = null, lastSeenKey = '';
 let closeRequested=false;
 const completed = computed(() => new Set(project.value?.completed ?? []));
 const metrics = computed(() => draft.value ? counts(draft.value) : null);
+const completedSignature=computed(()=>project.value?.completed.join('|')??'');
+const workMetrics=computed(()=>progressMode.value&&draft.value?workProgress(draft.value,completedSignature.value?completedSignature.value.split('|'):[]):null);
+const paletteRows=computed(()=>{const query=paletteQuery.value.trim().toLocaleLowerCase();return(draft.value?.colors??[]).map((color,index)=>({color,index})).filter(({color})=>!query||[color.brand,color.range,color.code,color.name,color.symbol,...(color.blend?.components??[]).flatMap(c=>[c.brand,c.range,c.code,c.name])].join(' ').toLocaleLowerCase().includes(query))});
 const existingColors = computed(() => dmcPalette.colors.filter(c => `${c.code} ${c.name}`.toLowerCase().includes(colorSearch.value.toLowerCase())).slice(0, 60));
 const selectedColor = computed(() => draft.value?.colors[selected.value]);
 const totalWidth = computed(() => (draft.value?.width ?? 1) * zoom.value), totalHeight = computed(() => (draft.value?.height ?? 1) * zoom.value);
@@ -53,17 +62,21 @@ const draftAutosave = createDraftAutosave({
   onStatus: value => {
     const before=draftStatus.value, changed=before.pending!==value.pending || before.hasDraft!==value.hasDraft || before.savedAt!==value.savedAt;
     if(changed || before.saving!==value.saving || before.error!==value.error)draftStatus.value=value;
-    if(changed)window.dispatchEvent(new CustomEvent('ricamo:draft-state',{detail:{pending:value.pending,hasDraft:value.hasDraft,savedAt:value.savedAt}}));
+    if(changed)publishAutosaveStatus();
   },
 });
+function publishAutosaveStatus(){window.dispatchEvent(new CustomEvent('ricamo:draft-state',{detail:{pending:draftStatus.value.pending||viewStatus.value.pending,hasDraft:draftStatus.value.hasDraft,savedAt:draftStatus.value.savedAt||viewStatus.value.savedAt}}));}
+const viewAutosave=createDraftAutosave({snapshot:()=>({projectId:props.projectId,...workScope,view:{zoom:zoom.value,x:stage.value?.scrollLeft??0,y:stage.value?.scrollTop??0,cursor:{...cursor},selectedColor:selected.value,grid:grid.value,symbols:symbols.value,monochrome:monochrome.value,highlight:highlight.value,workType:workType.value}}),save:async payload=>{const next=await dispatch('project.work.view',payload);return next.projects.find(row=>row.id===payload.projectId)},discard:async()=>{},onStatus:value=>{viewStatus.value=value;publishAutosaveStatus();},delay:700});
 const draftBase = computed(() => pattern.value?.revisions.find(row=>row.id === (recovery.value?.baseRevisionId || baseRevisionId.value)));
 const oldDraftBase = computed(() => Boolean(baseRevisionId.value && pattern.value?.currentRevisionId !== baseRevisionId.value));
 function changed() { if (progressMode.value || recoveryHold.value || !draft.value) return; dirty.value = true; error.value='';draftAutosave.changed(); }
 function canEdit() { if (recoveryHold.value) { error.value=t('draftResumeToEdit'); return false; } return !working.value && !progressMode.value; }
 async function loadSavedRevision(id, { offerRecovery = false } = {}) {
-  error.value='';
-  if (!pattern.value || pattern.value.kind !== 'structured') { draft.value=null; return; }
-  const saved = pattern.value.revisions.find(row=>row.id === id); if (!saved) return;
+  error.value='';viewLoading=true;
+  if(viewStatus.value.pending)await viewAutosave.discard();
+  if (!pattern.value || pattern.value.kind !== 'structured') { draft.value=null;viewLoading=false;return; }
+  const saved = pattern.value.revisions.find(row=>row.id === id);if(!saved){viewLoading=false;return;}
+  workScope={patternId:pattern.value.id,revisionId:saved.id};viewAutosave.reset();
   chosenRevisionId.value=saved.id; baseRevisionId.value=saved.id; draft.value=structuredClone(saved);
   name.value=saved.name || t('revision'); revisionNotes.value=saved.notes || ''; dirty.value=false;
   history.value=[];future.value=[];progressHistory.value=[];progressFuture.value=[];selected.value=0;selection.value=null;
@@ -71,8 +84,12 @@ async function loadSavedRevision(id, { offerRecovery = false } = {}) {
   recoveryHold.value=Boolean(recovery.value); draftAutosave.reset({hasDraft:recoveryHold.value,savedAt:recovery.value?.updatedAt});
   tool.value=progressMode.value?'mark':'pan'; if(offerRecovery && recoveryHold.value)dialog.value='recover';
   await nextTick();
-  if (project.value?.view?.zoom && stage.value) { zoom.value=Math.max(1,Math.min(36,project.value.view.zoom));stage.value.scrollLeft=project.value.view.x||0;stage.value.scrollTop=project.value.view.y||0;selected.value=Math.max(0,Math.min(draft.value.colors.length-1,project.value.view.selectedColor||0));Object.assign(cursor,project.value.view.cursor??{x:0,y:0}); }
-  else fit(); scheduleDraw();
+  const view=project.value?.view,scoped=view?.patternId===pattern.value.id&&view?.revisionId===saved.id;
+  selected.value=scoped?view.selectedColor??0:0;Object.assign(cursor,scoped?view.cursor??{x:0,y:0}:{x:0,y:0});
+  grid.value=scoped?view.grid??true:true;symbols.value=scoped?view.symbols??false:false;monochrome.value=scoped?view.monochrome??false:false;highlight.value=scoped?view.highlight??false:false;workType.value=scoped?view.workType??'all':'all';
+  if(scoped&&view.zoom&&stage.value){zoom.value=view.zoom;await nextTick();stage.value.scrollLeft=view.x??0;stage.value.scrollTop=view.y??0;}else fit();
+  await nextTick();viewLoading=false;scheduleDraw();
+
 }
 function resumeDraft() {
   const saved=pattern.value?.draft; if(!saved)return;
@@ -103,19 +120,16 @@ function fit() {
   stage.value.scrollLeft = 0; stage.value.scrollTop = 0; scheduleDraw();
 }
 function scroll() { scheduleDraw(); saveViewSoon(); }
-function saveViewSoon() {
-  if (!project.value) return;
-  clearTimeout(viewTimer);
-  viewTimer = setTimeout(() => { dispatch('project.view', { projectId: props.projectId, view: { ...project.value.view, zoom: zoom.value, x: stage.value?.scrollLeft ?? 0, y: stage.value?.scrollTop ?? 0, selectedColor: selected.value, cursor: { ...cursor }, grid: grid.value, symbols: symbols.value } }).catch(caught => { error.value = errorText(caught); }); }, 700);
-}
-watch([() => props.id, () => props.projectId], async () => {
+function saveViewSoon() { if(project.value&&!viewLoading&&draft.value&&workScope.patternId===project.value.patternId&&workScope.revisionId===project.value.revisionId)viewAutosave.changed(); }
+
+watch([() => props.id, () => props.projectId,()=>project.value?.patternId,()=>project.value?.revisionId], async () => {
   error.value='';dialog.value='';chosenRevisionId.value='';
-  if (!pattern.value || pattern.value.kind !== 'structured') { draft.value=null;draftAutosave.reset();return; }
+  if (!pattern.value || pattern.value.kind !== 'structured') { await viewAutosave.discard();draft.value=null;draftAutosave.reset();viewLoading=false;return; }
   await loadSavedRevision(project.value?.revisionId || pattern.value.currentRevisionId,{offerRecovery:!progressMode.value});
 }, {immediate:true});
-watch([zoom, grid, symbols, selected], () => { scheduleDraw(); saveViewSoon(); });
+watch([zoom, grid, symbols, selected,monochrome,highlight,workType], () => { scheduleDraw(); saveViewSoon(); });
 watch([monochrome, highlight, selection, draft, () => JSON.stringify(project.value?.completed ?? [])], scheduleDraw);
-watch(cursor, scheduleDraw);
+watch(cursor,()=>{coordinateDraft.column=cursor.x+1;coordinateDraft.row=cursor.y+1;scheduleDraw();saveViewSoon();});
 function edit(operation) {
   if (!canEdit() || !draft.value) return false;
   try { const previous = draft.value, next = operation(previous); validateRevision(next); history.value = [...history.value, previous].slice(-20); future.value = []; draft.value = next; changed(); error.value = ''; return true; }
@@ -180,38 +194,39 @@ function pointerUp(event) {
 }
 function keysInRect(rect) {
   const keys = [], p = draft.value;
-  for (let y = rect.y; y < rect.y + rect.height; y++) for (let x = rect.x; x < rect.x + rect.width; x++) { const i = y * p.width + x; if (p.cells[i] >= 0 && (!highlight.value || p.cells[i] === selected.value)) keys.push(`c:${i}`); }
-  for (const h of p.halfStitches ?? []) if (h.x >= rect.x && h.x < rect.x + rect.width && h.y >= rect.y && h.y < rect.y + rect.height && (!highlight.value || h.color === selected.value)) keys.push(`h:${h.id}`);
-  for (const b of p.backstitches ?? []) if (Math.min(b.x1,b.x2) >= rect.x && Math.max(b.x1,b.x2) <= rect.x + rect.width && Math.min(b.y1,b.y2) >= rect.y && Math.max(b.y1,b.y2) <= rect.y + rect.height && (!highlight.value || b.color === selected.value)) keys.push(`b:${b.id}`);
+  for (let y = rect.y; y < rect.y + rect.height; y++) for (let x = rect.x; x < rect.x + rect.width; x++) { const i = y * p.width + x; if ((workType.value==='all'||workType.value==='full') && p.cells[i] >= 0 && (!highlight.value || p.cells[i] === selected.value)) keys.push(`c:${i}`); }
+  for (const h of p.halfStitches ?? []) if ((workType.value==='all'||workType.value==='half') && h.x >= rect.x && h.x < rect.x + rect.width && h.y >= rect.y && h.y < rect.y + rect.height && (!highlight.value || h.color === selected.value)) keys.push(`h:${h.id}`);
+  for (const b of p.backstitches ?? []) if ((workType.value==='all'||workType.value==='backstitch') && Math.min(b.x1,b.x2) >= rect.x && Math.max(b.x1,b.x2) <= rect.x + rect.width && Math.min(b.y1,b.y2) >= rect.y && Math.max(b.y1,b.y2) <= rect.y + rect.height && (!highlight.value || b.color === selected.value)) keys.push(`b:${b.id}`);
   return keys;
 }
 function requestMark(mode, rect = selection.value) {
   if (!rect || blockedWork.value) return;
   const keys = keysInRect(rect);
   if (!keys.length) { notify(t('noStitchesSelected')); return; }
-  pendingProgress.value = { mode, keys };
+  pendingProgress.value = { mode, keys,...workScope };
   if (rect.width * rect.height > 1 || keys.length > 1) dialog.value = 'progress';
   else confirmProgress();
 }
 async function confirmProgress() {
   if (!pendingProgress.value || working.value) return;
   working.value = true;
-  try { const previous = [...project.value.completed]; await dispatch('project.progress', { projectId: props.projectId, revisionId: project.value.revisionId, completed: pendingProgress.value.keys, mode: pendingProgress.value.mode }); progressHistory.value = [...progressHistory.value, previous].slice(-20); progressFuture.value = []; pendingProgress.value = null; dialog.value = ''; selection.value = null; }
+  try { const previous = [...project.value.completed]; await dispatch('project.progress', { projectId: props.projectId, patternId:pendingProgress.value.patternId,revisionId:pendingProgress.value.revisionId, completed: pendingProgress.value.keys, mode: pendingProgress.value.mode }); progressHistory.value = [...progressHistory.value, previous].slice(-20); progressFuture.value = []; pendingProgress.value = null; dialog.value = ''; selection.value = null; }
   catch (caught) { error.value = errorText(caught); } finally { working.value = false; }
 }
 async function undoProgress(redo) {
   const source = redo ? progressFuture : progressHistory, destination = redo ? progressHistory : progressFuture;
   if (!source.value.length || working.value || blockedWork.value) return;
   working.value = true;
-  try { const previous = [...project.value.completed]; await dispatch('project.progress', { projectId: props.projectId, revisionId: project.value.revisionId, completed: source.value.at(-1), mode: 'replace' }); source.value = source.value.slice(0, -1); destination.value = [...destination.value, previous]; }
+  try { const previous = [...project.value.completed]; await dispatch('project.progress', { projectId: props.projectId, ...workScope, completed: source.value.at(-1), mode: 'replace' }); source.value = source.value.slice(0, -1); destination.value = [...destination.value, previous]; }
   catch (caught) { error.value = errorText(caught); } finally { working.value = false; }
 }
 function keydown(event) {
   if (!draft.value || working.value) return;
   if ((event.ctrlKey || event.metaKey) && ['z', 'y', 's', 'c', 'v'].includes(event.key.toLowerCase())) {
     event.preventDefault(); const key = event.key.toLowerCase();
-    if (key === 'z') event.shiftKey ? redo() : undo(); else if (key === 'y') redo(); else if (key === 's' && !progressMode.value) openSave(); else if (key === 'c') copy(); else if (key === 'v') paste(); return;
+    if (key === 'z') event.shiftKey ? redo() : undo(); else if (key === 'y') redo(); else if (key === 's') progressMode.value?retryWorkView():openSave(); else if (key === 'c') copy(); else if (key === 'v') paste(); return;
   }
+  if(progressMode.value&&!event.ctrlKey&&!event.metaKey&&!event.altKey&&['b','p'].includes(event.key.toLowerCase())){event.preventDefault();markerPanel.value?.open(event.key.toLowerCase()==='p'?'parked':'bookmark');return;}
   const movements = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
   if (movements[event.key]) {
     event.preventDefault(); cursor.x = Math.max(0, Math.min(draft.value.width - 1, cursor.x + movements[event.key][0])); cursor.y = Math.max(0, Math.min(draft.value.height - 1, cursor.y + movements[event.key][1]));
@@ -280,8 +295,8 @@ async function exportPattern() {
   } catch (caught) { error.value = errorText(caught); } finally { working.value = false; }
 }
 async function createProject() { if (dirty.value) { error.value = t('saveBeforeProject'); return; } try { const id = crypto.randomUUID(); await dispatch('project.save', { id, name: pattern.value.name, patternId: pattern.value.id, revisionId: persisted.value?.id, status: 'preparing' }); navigate('project', id); } catch (caught) { error.value = errorText(caught); } }
-function beforeUnload(event) { if (draftStatus.value.pending) { event.preventDefault(); event.returnValue=''; } }
-function beforeNavigate(event) { if (dirty.value && !allowLeave) { event.preventDefault();pendingNavigation=event.detail;dialog.value='discard'; } }
+function beforeUnload(event) { if (draftStatus.value.pending||viewStatus.value.pending) { event.preventDefault(); event.returnValue=''; } }
+function beforeNavigate(event) { if(progressMode.value&&viewStatus.value.pending&&!allowLeave){event.preventDefault();pendingNavigation=event.detail;leaveWork();return;} if (dirty.value && !allowLeave) { event.preventDefault();pendingNavigation=event.detail;dialog.value='discard'; } }
 function stay() { pendingNavigation=null;dialog.value=''; }
 async function leaveEditor(discardChanges = false) {
   if (working.value) return;working.value=true;
@@ -293,6 +308,10 @@ async function leaveEditor(discardChanges = false) {
     allowLeave=false;
   }catch(caught){error.value=errorText(caught);}finally{working.value=false;}
 }
+async function leaveWork(discard=false){if(working.value)return;working.value=true;try{if(discard)await viewAutosave.discard();else await viewAutosave.flush();const target=pendingNavigation;pendingNavigation=null;dialog.value='';allowLeave=true;if(target?.action)target.action();else navigate(target?.page||'project',target?.id||props.projectId);allowLeave=false;}catch(caught){error.value=errorText(caught);dialog.value='workViewLeave';}finally{working.value=false;}}
+function leaveContext(action){if(!viewStatus.value.pending){action();return;}pendingNavigation={action};leaveWork();}
+defineExpose({leaveContext});
+async function retryWorkView(){try{await viewAutosave.flush();error.value='';}catch(caught){error.value=errorText(caught);}}
 function changeRevision(event) {
   const id=event.target.value;event.target.value=persisted.value.id;
   if(dirty.value){pendingNavigation={revisionId:id};dialog.value='discard';return;}
@@ -301,17 +320,22 @@ function changeRevision(event) {
 async function flushForClose(discardChanges = false) {
   if (working.value) return;closeRequested=false;working.value=true;
   try {
-    if(discardChanges)await draftAutosave.discard();else await draftAutosave.flush();
+    const autosave=progressMode.value?viewAutosave:draftAutosave;
+    if(discardChanges)await autosave.discard();else await autosave.flush();
     if(discardChanges)dirty.value=false;
-    dialog.value='';if(desktop && storage.finishClose)await storage.finishClose();
-  }catch(caught){error.value=errorText(caught);dialog.value='closeDraft';}finally{working.value=false;}
+    dialog.value='';if(windowControls)await windowControls.finishClose();
+  }catch(caught){error.value=errorText(caught);dialog.value=progressMode.value?'closeWorkView':'closeDraft';}finally{working.value=false;}
 }
-function beforeClose(event) { if(draftStatus.value.pending){event.preventDefault();closeRequested=true;if(!working.value)flushForClose();} }
+function stayAfterCloseFailure() { closeRequested=false;dialog.value='';windowControls?.cancelClose?.().catch(caught=>{error.value=errorText(caught);}); }
+function stayAfterWorkFailure() { if(dialog.value==='closeWorkView')stayAfterCloseFailure();else stay(); }
+function beforeClose(event) { if(draftStatus.value.pending||viewStatus.value.pending){event.preventDefault();closeRequested=true;if(!working.value)flushForClose();} }
 watch(working,value=>{if(!value && closeRequested)flushForClose();});
-function bookmark() { if (!project.value) return; const markers = [...(project.value.view.markers ?? []), { id: crypto.randomUUID(), x: cursor.x, y: cursor.y, note: notesDraft.value }]; dispatch('project.view', { projectId: props.projectId, view: { ...project.value.view, markers } }).then(() => { notesDraft.value = ''; notify(); }).catch(caught => { error.value = errorText(caught); }); }
-function gotoMarker(marker) { Object.assign(cursor, { x: marker.x, y: marker.y }); stage.value.scrollLeft = Math.max(0, marker.x * zoom.value - stage.value.clientWidth / 2); stage.value.scrollTop = Math.max(0, marker.y * zoom.value - stage.value.clientHeight / 2); }
+function selectWorkColor(index){selected.value=index;highlight.value=true;paletteQuery.value='';}
+function gotoMarker(marker){if(marker.patternId!==workScope.patternId||marker.revisionId!==workScope.revisionId){error.value=t('work_marker_other_revision');return;}if(marker.color!==null)selectWorkColor(marker.color);if(marker.stitchKind)workType.value=marker.stitchKind;moveCursor(marker.x,marker.y);}
+function moveCursor(x,y){Object.assign(cursor,{x,y});stage.value.scrollLeft=Math.max(0,x*zoom.value-stage.value.clientWidth/2);stage.value.scrollTop=Math.max(0,y*zoom.value-stage.value.clientHeight/2);canvas.value?.focus();saveViewSoon();}
+function gotoCoordinate(){try{moveCursor(integer(coordinateDraft.column,'column',{min:1,max:draft.value.width})-1,integer(coordinateDraft.row,'row',{min:1,max:draft.value.height})-1);error.value='';}catch(caught){error.value=errorText(caught);}}
 onMounted(() => { window.addEventListener('beforeunload', beforeUnload);window.addEventListener('ricamo:before-close',beforeClose); window.addEventListener('ricamo:before-navigate', beforeNavigate); resizeObserver = new ResizeObserver(scheduleDraw); if (stage.value) resizeObserver.observe(stage.value); });
-onBeforeUnmount(() => { draftAutosave.dispose();window.dispatchEvent(new CustomEvent('ricamo:draft-state',{detail:{pending:false,hasDraft:false,savedAt:null}}));window.removeEventListener('ricamo:before-close',beforeClose);window.removeEventListener('beforeunload', beforeUnload); window.removeEventListener('ricamo:before-navigate', beforeNavigate); resizeObserver?.disconnect(); clearTimeout(viewTimer); cancelAnimationFrame(frame); });
+onBeforeUnmount(() => { viewAutosave.dispose();draftAutosave.dispose();window.dispatchEvent(new CustomEvent('ricamo:draft-state',{detail:{pending:false,hasDraft:false,savedAt:null}}));window.removeEventListener('ricamo:before-close',beforeClose);window.removeEventListener('beforeunload', beforeUnload); window.removeEventListener('ricamo:before-navigate', beforeNavigate); resizeObserver?.disconnect(); cancelAnimationFrame(frame); });
 </script>
 
 <template>
@@ -325,15 +349,17 @@ onBeforeUnmount(() => { draftAutosave.dispose();window.dispatchEvent(new CustomE
       <template v-else-if="draft">
         <div class="toolbar"><select v-if="!progressMode" :value="persisted?.id" :aria-label="t('revision')" @change="changeRevision"><option v-for="r in pattern.revisions" :key="r.id" :value="r.id">{{ r.name || t('revision') }} · {{ r.createdAt?.slice(0,10) }}</option></select><span class="badge">{{ draft.width }} × {{ draft.height }} {{ t('stitches') }}</span><span class="badge">{{ number(metrics.full,0) }} {{ t('fullCrosses') }} · {{ number(metrics.half,0) }} {{ t('half') }} · {{ number(metrics.backstitch,0) }} {{ t('backstitch') }}</span><span v-if="progressMode" class="badge green">{{ completed.size }} / {{ metrics.total }} {{ t('completedPrimitives') }}</span></div>
         <div class="editor-tools" role="toolbar" :aria-label="t('drawingTools')"><button v-for="[key, icon] in tools" :key="key" class="icon-button" :class="{selected:tool === key}" :aria-label="t(key)" :title="t(key)" :aria-pressed="tool === key" :disabled="blockedWork && key !== 'pan' && key !== 'select'" @click="tool = key"><component :is="icon" :size="19" /></button><button class="icon-button" :disabled="progressMode ? !progressHistory.length || working : !history.length" :aria-label="t('undo')" :title="t('undo')" @click="undo"><Undo2 :size="18" /></button><button class="icon-button" :disabled="progressMode ? !progressFuture.length || working : !future.length" :aria-label="t('redo')" :title="t('redo')" @click="redo"><Redo2 :size="18" /></button><label class="checkbox-label"><input v-model="grid" type="checkbox" />{{ t('grid') }}</label><label class="checkbox-label"><input v-model="symbols" type="checkbox" />{{ t('symbols') }}</label><label class="checkbox-label"><input v-model="monochrome" type="checkbox" />{{ t('monochrome') }}</label><button class="button small" @click="fit"><Maximize :size="14" />{{ t('fit') }}</button><label class="sr-only" for="pattern-zoom">{{ t('zoom') }}</label><input id="pattern-zoom" v-model.number="zoom" type="range" min="1" max="36" step="0.5" style="width:110px" /><span class="muted">{{ number(zoom / 12 * 100,0) }}%</span></div>
+        <form v-if="progressMode" class="toolbar" @submit.prevent="gotoCoordinate"><FormField :label="t('workTargetType')" v-slot="{id}"><select :id="id" v-model="workType"><option value="all">{{t('all')}}</option><option v-for="kind in ['full','half','backstitch']" :key="kind" :value="kind">{{t(`workKind_${kind}`)}}</option></select></FormField><FormField :label="t('workColumn')" v-slot="{id}"><input :id="id" v-model="coordinateDraft.column" inputmode="numeric"/></FormField><FormField :label="t('workRow')" v-slot="{id}"><input :id="id" v-model="coordinateDraft.row" inputmode="numeric"/></FormField><button class="button" type="submit">{{t('workGotoCoordinate')}}</button></form><p v-if="progressMode" class="field-help">{{t('workKeyboardHelp')}}</p><p v-if="progressMode&&viewStatus.pending" class="notice" :class="{error:viewStatus.error}" role="status">{{t(viewStatus.error?'workPositionFailed':'workPositionPending')}} <button v-if="viewStatus.error" class="button small" @click="retryWorkView">{{t('retry')}}</button></p>
         <div class="editor-layout"><div>
-          <div ref="stage" class="editor-stage" @scroll="scroll"><div :style="{position:'relative',width:`${totalWidth}px`,height:`${totalHeight}px`}"><canvas ref="canvas" tabindex="0" role="img" :aria-label="`${pattern.name}. ${t('canvasKeyboardHelp')}`" :style="{position:'absolute',left:`${viewport.left}px`,top:`${viewport.top}px`,cursor:tool === 'pan' ? 'grab' : 'crosshair'}" @pointerdown="pointerDown" @pointermove="pointerMove" @pointerup="pointerUp" @pointercancel="pointerUp" @keydown="keydown" /></div></div>
+          <div ref="stage" class="editor-stage" @scroll="scroll"><div :style="{position:'relative',width:`${totalWidth}px`,height:`${totalHeight}px`}"><canvas ref="canvas" tabindex="0" role="img" :aria-label="`${pattern.name}. ${t('canvasKeyboardHelp')} ${progressMode?t('workKeyboardHelp'):''}`" :style="{position:'absolute',left:`${viewport.left}px`,top:`${viewport.top}px`,cursor:tool === 'pan' ? 'grab' : 'crosshair'}" @pointerdown="pointerDown" @pointermove="pointerMove" @pointerup="pointerUp" @pointercancel="pointerUp" @keydown="keydown" /></div></div>
           <p class="cell-subtitle" aria-live="polite">{{ t('coordinate') }}: {{ cursor.x + 1 }}, {{ cursor.y + 1 }} · {{ draft.cells[cursor.y * draft.width + cursor.x] >= 0 ? draft.colors[draft.cells[cursor.y * draft.width + cursor.x]].code : t('emptyCell') }} · {{ t('canvasKeyboardHelp') }}</p>
           <div v-if="selection" class="notice"><span>{{ t('selection') }}: {{ selection.width }} × {{ selection.height }} ({{ selection.x + 1 }}, {{ selection.y + 1 }})</span><div class="actions"><template v-if="progressMode"><button class="button small" :disabled="working || blockedWork" @click="requestMark('add')">{{ t('mark') }}</button><button class="button small" :disabled="working || blockedWork" @click="requestMark('remove')">{{ t('unmark') }}</button></template><template v-else><button class="button small" @click="copy"><Copy :size="14" />{{ t('copySelection') }}</button><button class="button small" @click="moveSelected"><Move :size="14" />{{ t('moveToCursor') }}</button></template></div></div>
           <div v-if="!progressMode" class="editor-tools"><button class="button small" :disabled="!clipboard" @click="paste"><ClipboardPaste :size="14" />{{ t('pasteAtCursor') }}</button><button class="button small" @click="transform('rotate')"><RotateCw :size="14" />{{ t('rotate') }}</button><button class="button small" @click="transform('horizontal')"><FlipHorizontal2 :size="14" />{{ t('flipHorizontal') }}</button><button class="button small" @click="transform('vertical')"><FlipVertical2 :size="14" />{{ t('flipVertical') }}</button><button class="button small" :disabled="recoveryHold || working" @click="dialog='inserts'">{{t('editorInserts')}}</button><button class="button small" @click="openResize">{{ t('resizeGrid') }}</button></div>
           <div v-if="!progressMode" class="panel panel-body"><FormField :label="t('notes')" v-slot="{ id }"><textarea :id="id" v-model="revisionNotes" :readonly="recoveryHold || working" maxlength="20000" @input="changed" /></FormField></div>
-          <div v-else class="panel panel-body"><h3>{{ t('bookmarks') }}</h3><div class="inline-row"><input v-model="notesDraft" :aria-label="t('bookmarkNote')" :placeholder="t('bookmarkNote')" maxlength="500" /><button class="button" @click="bookmark">{{ t('add') }}</button></div><div v-for="marker in project.view.markers || []" :key="marker.id" class="inline-row" style="margin-top:10px"><button class="button text" @click="gotoMarker(marker)">{{ marker.x + 1 }}, {{ marker.y + 1 }} · {{ marker.note || t('bookmark') }}</button></div></div>
+          <WorkCompanion v-else ref="markerPanel" :project="project" :pattern-id="pattern.id" :revision="draft" :cursor="cursor" :selected-color="selected" :work-type="workType" :blocked="blockedWork" @goto="gotoMarker" @select-color="selectWorkColor"/>
+
         </div>
-        <aside class="panel"><div class="panel-heading"><h2>{{ t('palette') }}</h2><button v-if="!progressMode" class="icon-button" :aria-label="t('addColor')" @click="dialog = 'color'"><Plus :size="18" /></button></div><div class="panel-body" style="padding:12px"><label class="checkbox-label" style="margin:0 0 12px"><input v-model="highlight" type="checkbox" />{{ t('highlightColor') }}</label><div class="palette-list"><button v-for="(color,index) in draft.colors" :key="index" class="palette-item" :class="{selected:selected === index}" :aria-pressed="selected === index" @click="selected = index"><span class="swatch" :style="{background:color.hex,color:(color.rgb[0]+color.rgb[1]+color.rgb[2]) > 390 ? '#111' : '#fff'}">{{ color.symbol }}</span><div><strong class="mono">{{ color.code }}</strong><small class="cell-subtitle">{{ color.brand }}</small></div><span>{{ metrics.byColor[index].total }}</span></button></div><button v-if="!progressMode" class="button small" style="margin-top:12px" :disabled="draft.colors.length>=80 || recoveryHold" @click="recipeIndex=-1;dialog='blend'">{{t('blendCreate')}}</button><p v-if="!draft.colors.length" class="muted">{{ t('addColorHelp') }}</p><template v-if="selectedColor"><h3 style="margin:18px 0 6px">{{ selectedColor.name }}</h3><p v-if="selectedColor.blend" class="field-help">{{t('blendPaletteSummary',{components:selectedColor.blend.components.map(row=>`${row.strands} × ${row.brand} ${row.range||''} ${row.code}`).join(' + ')})}}</p><button v-if="!progressMode && selectedColor.blend" class="button small" :disabled="recoveryHold" @click="recipeIndex=selected;dialog='blend'">{{t('blendEdit')}}</button><button v-if="!progressMode && !selectedColor.blend" class="button small" :disabled="recoveryHold" @click="recipeIndex=selected;dialog='blend'">{{t('blendConvert')}}</button><p class="cell-subtitle">{{ selectedColor.strands ?? 2 }} {{ t('strands') }}</p><div v-if="!progressMode" class="stack" style="gap:8px"><button class="button small" @click="replacement = selected; symbolDraft = selectedColor.symbol; strandDraft = selectedColor.strands || 2; backStrandDraft=selectedColor.backStrands || 1; dialog = 'paletteEdit'">{{ t('editColor') }}</button></div></template></div></aside></div>
+        <aside class="panel"><div class="panel-heading"><h2>{{ t('palette') }}</h2><button v-if="!progressMode" class="icon-button" :aria-label="t('addColor')" @click="dialog = 'color'"><Plus :size="18" /></button></div><div class="panel-body" style="padding:12px"><label class="checkbox-label" style="margin:0 0 12px"><input v-model="highlight" type="checkbox" />{{ t('highlightColor') }}</label><FormField :label="t('workFindReference')" v-slot="{id}"><input :id="id" v-model="paletteQuery" type="search"/></FormField><p v-if="progressMode" class="field-help">{{t('workPaletteCountHelp')}}</p><div class="palette-list"><button v-for="{color,index} in paletteRows" :key="index" class="palette-item" :class="{selected:selected === index}" :aria-pressed="selected === index" @click="selected = index"><span class="swatch" :style="{background:color.hex,color:(color.rgb[0]+color.rgb[1]+color.rgb[2]) > 390 ? '#111' : '#fff'}">{{ color.symbol }}</span><div><strong class="mono">{{ color.code }}</strong><small class="cell-subtitle">{{ color.brand }}</small></div><span :title="progressMode?t('workRemainingOfTotal',{remaining:workMetrics.byColor[index].remaining,total:metrics.byColor[index].total}):''">{{progressMode?`${workMetrics.byColor[index].remaining} / `:''}}{{ metrics.byColor[index].total }}</span></button></div><button v-if="!progressMode" class="button small" style="margin-top:12px" :disabled="draft.colors.length>=80 || recoveryHold" @click="recipeIndex=-1;dialog='blend'">{{t('blendCreate')}}</button><p v-if="!draft.colors.length" class="muted">{{ t('addColorHelp') }}</p><template v-if="selectedColor"><h3 style="margin:18px 0 6px">{{ selectedColor.name }}</h3><p v-if="selectedColor.blend" class="field-help">{{t('blendPaletteSummary',{components:selectedColor.blend.components.map(row=>`${row.strands} × ${row.brand} ${row.range||''} ${row.code}`).join(' + ')})}}</p><button v-if="!progressMode && selectedColor.blend" class="button small" :disabled="recoveryHold" @click="recipeIndex=selected;dialog='blend'">{{t('blendEdit')}}</button><button v-if="!progressMode && !selectedColor.blend" class="button small" :disabled="recoveryHold" @click="recipeIndex=selected;dialog='blend'">{{t('blendConvert')}}</button><p class="cell-subtitle">{{ selectedColor.strands ?? 2 }} {{ t('strands') }}</p><div v-if="!progressMode" class="stack" style="gap:8px"><button class="button small" @click="replacement = selected; symbolDraft = selectedColor.symbol; strandDraft = selectedColor.strands || 2; backStrandDraft=selectedColor.backStrands || 1; dialog = 'paletteEdit'">{{ t('editColor') }}</button></div></template></div></aside></div>
       </template>
     </template>
 
@@ -347,6 +373,7 @@ onBeforeUnmount(() => { draftAutosave.dispose();window.dispatchEvent(new CustomE
     <AppDialog v-if="dialog === 'export'" :title="t('export')" :busy="working" @close="dialog = ''"><p v-if="error" role="alert" class="notice error">{{ error }}</p><div class="form-grid"><FormField :label="t('type')" v-slot="{id}"><select :id="id" v-model="exportForm.kind"><option value="pdf">PDF</option><option value="png">PNG</option><option value="native">Ricamo (.ricamopattern)</option></select></FormField><FormField :label="t('language')" v-slot="{id}"><select :id="id" v-model="exportForm.locale"><option value="it">Italiano</option><option value="en">English</option></select></FormField><FormField :label="t('paper')" v-slot="{id}"><select :id="id" v-model="exportForm.paper"><option value="a4">A4</option><option value="letter">Letter</option></select></FormField><label class="checkbox-label"><input v-model="exportForm.monochrome" type="checkbox" />{{ t('monochrome') }}</label><label v-if="progressMode" class="checkbox-label"><input v-model="exportForm.progress" type="checkbox" />{{ t('includeProgress') }}</label></div><p v-if="exportForm.kind==='native' && dirty" class="notice">{{ t('draftNativeSavedOnly') }}</p><p class="notice">{{ t('exportScaleHelp') }}</p><template #footer><button class="button" :disabled="working" @click="dialog = ''">{{ t('cancel') }}</button><button class="button primary" :disabled="working" @click="exportPattern">{{ working ? t('saving') : t('export') }}</button></template></AppDialog>
     <AppDialog v-if="dialog==='recover'" :title="t('draftRecovery')" :busy="working" @close="openSaved"><p v-if="error" role="alert" class="notice error">{{ error }}</p><p>{{ t('draftRecoveryHelp',{name:recovery?.name || draftBase?.name || t('revision'),time:draftTime(recovery?.updatedAt)}) }}</p><p class="notice">{{ t('draftBaseLabel',{name:draftBase?.name || recovery?.baseRevisionId}) }}</p><p v-if="recovery?.baseRevisionId!==pattern.currentRevisionId" class="notice warning">{{ t('draftOldBase') }}</p><template #footer><button class="button" :disabled="working" @click="openSaved">{{ t('draftOpenSaved') }}</button><button class="button danger" :disabled="working" @click="discardRecovery">{{ t('draftDiscard') }}</button><button class="button primary" :disabled="working" @click="resumeDraft">{{ t('draftResume') }}</button></template></AppDialog>
     <AppDialog v-if="dialog==='discard'" :title="t('draftLeaveTitle')" :busy="working" @close="stay"><p v-if="error" role="alert" class="notice error">{{ error }}</p><p>{{ t('draftLeaveHelp') }}</p><template #footer><button class="button" :disabled="working" @click="stay">{{ t('draftStay') }}</button><button class="button danger" :disabled="working" @click="leaveEditor(true)">{{ t('discardChanges') }}</button><button class="button primary" :disabled="working" @click="leaveEditor(false)">{{ t('draftSaveLeave') }}</button></template></AppDialog>
-    <AppDialog v-if="dialog==='closeDraft'" :title="t('draftCloseFailed')" :busy="working" @close="dialog='' "><p v-if="error" role="alert" class="notice error">{{ error }}</p><p class="notice error">{{ t('draftSaveFailed') }}</p><template #footer><button class="button" :disabled="working" @click="dialog=''">{{ t('draftStay') }}</button><button class="button danger" :disabled="working" @click="flushForClose(true)">{{ t('draftDiscardClose') }}</button><button class="button primary" :disabled="working" @click="flushForClose(false)">{{ t('draftRetryClose') }}</button></template></AppDialog>
+    <AppDialog v-if="dialog==='workViewLeave'||dialog==='closeWorkView'" :title="t('workPositionFailed')" :busy="working" @close="stayAfterWorkFailure"><p class="notice error">{{t('workPositionFailureHelp')}}</p><p v-if="error" role="alert">{{error}}</p><template #footer><button class="button" :disabled="working" @click="stayAfterWorkFailure">{{t('draftStay')}}</button><button class="button danger" :disabled="working" @click="dialog==='closeWorkView'?flushForClose(true):leaveWork(true)">{{t('workLeaveWithoutPosition')}}</button><button class="button primary" :disabled="working" @click="dialog==='closeWorkView'?flushForClose(false):leaveWork(false)">{{t('retry')}}</button></template></AppDialog>
+    <AppDialog v-if="dialog==='closeDraft'" :title="t('draftCloseFailed')" :busy="working" @close="stayAfterCloseFailure"><p v-if="error" role="alert" class="notice error">{{ error }}</p><p class="notice error">{{ t('draftSaveFailed') }}</p><template #footer><button class="button" :disabled="working" @click="stayAfterCloseFailure">{{ t('draftStay') }}</button><button class="button danger" :disabled="working" @click="flushForClose(true)">{{ t('draftDiscardClose') }}</button><button class="button primary" :disabled="working" @click="flushForClose(false)">{{ t('draftRetryClose') }}</button></template></AppDialog>
   </section>
 </template>
