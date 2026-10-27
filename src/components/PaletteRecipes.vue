@@ -8,11 +8,12 @@ import {t,errorText} from '../i18n';
 import {dmcPalette} from '../engine/adapter.mjs';
 import {makeBlendColor} from '../../core/thread-recipes.mjs';
 import {SYMBOLS} from '../../core/pattern.mjs';
-const props=defineProps({color:Object,colors:{type:Array,default:()=>[]},apply:{type:Function,required:true}}),emit=defineEmits(['close']);
+import {symbolsForMode} from '../../core/pattern-symbols.mjs';
+const props=defineProps({color:Object,symbolMode:String,colors:{type:Array,default:()=>[]},apply:{type:Function,required:true}}),emit=defineEmits(['close']);
 const error=ref(''),busy=ref(false),search=ref('');
 const blank=()=>({brand:'',range:'',code:'',name:'',hex:'#808080',strands:1,choice:''});
 const fromComponent=row=>({...structuredClone(row),choice:row.itemId?`inventory:${row.itemId}`:row.brand==='DMC'&&!row.range&&dmcPalette.colors.some(c=>c.code===row.code)?`catalogue:${row.code}`:'custom'});
-const form=reactive({code:props.color?.code||`MIX-${props.colors.length+1}`,name:props.color?.name||'',symbol:props.color?.symbol||[...SYMBOLS].find(symbol=>!props.colors.some(c=>c.symbol===symbol))||'',
+const form=reactive({code:props.color?.code||`MIX-${props.colors.length+1}`,name:props.color?.name||'',symbol:props.color?.symbol||[...(props.symbolMode?symbolsForMode(props.symbolMode,500):SYMBOLS)].find(symbol=>!props.colors.some(c=>c.symbol===symbol))||'',
   components:props.color?.blend?.components.map(fromComponent)||(props.color?[fromComponent({...props.color,strands:1}),blank()]:[blank(),blank()]),ownBack:Boolean(props.color?.blend?.backComponents),backComponents:props.color?.blend?.backComponents?.map(fromComponent)||[]});
 const inventory=computed(()=>state.value.materials.filter(row=>!row.archived && row.category==='thread'));
 function catalogueFor(component){return dmcPalette.colors.filter(row=>`catalogue:${row.code}`===component.choice || `${row.code} ${row.name}`.toLowerCase().includes(search.value.toLowerCase()));}
