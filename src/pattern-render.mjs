@@ -1,3 +1,4 @@
+import {isBead,beadFootprint} from '../core/pattern-materials.mjs';
 /** Canvas rendering shared by editor, thumbnails and tiled exports. Offsets and
  * sizes are pixels. The caller controls the bounded canvas backing store. */
 export function drawPattern(canvas, revision, options = {}) {
@@ -10,15 +11,26 @@ export function drawPattern(canvas, revision, options = {}) {
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, width, height); ctx.fillStyle = options.monochrome?'#fff':'#fffefa'; ctx.fillRect(0, 0, width, height);
   const completed = options.completed instanceof Set ? options.completed : new Set(options.completed ?? []);
-  const left = Math.max(0, Math.floor(offsetX / cell)), top = Math.max(0, Math.floor(offsetY / cell));
-  const right = Math.min(revision.width, Math.ceil((offsetX + width) / cell)), bottom = Math.min(revision.height, Math.ceil((offsetY + height) / cell));
+  const footprints=revision.colors.map(color=>beadFootprint(color,options.fabric??revision.settings?.fabric));
+  const padding=Math.ceil(Math.max(0,...footprints.filter(Boolean).flatMap(row=>[row.x/2,row.y/2])));
+  const left = Math.max(0, Math.floor(offsetX / cell)-padding), top = Math.max(0, Math.floor(offsetY / cell)-padding);
+  const right = Math.min(revision.width, Math.ceil((offsetX + width) / cell)+padding), bottom = Math.min(revision.height, Math.ceil((offsetY + height) / cell)+padding);
   const opacity = color => options.highlightColor == null || options.highlightColor < 0 || options.highlightColor === color ? 1 : 0.2;
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `${Math.max(5, cell * 0.62)}px monospace`;
-  for (let y = top; y < bottom; y++) for (let x = left; x < right; x++) {
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `${Math.max(5, cell * 0.62)}px RicamoSymbols, monospace`;
+  // Cross backgrounds must not erase a bead footprint extending into neighbouring cells.
+  for(const beadLayer of [false,true]) for (let y = top; y < bottom; y++) for (let x = left; x < right; x++) {
     const index = y * revision.width + x, colorIndex = revision.cells[index];
     if (colorIndex < 0) continue;
-    const color = revision.colors[colorIndex], px = x * cell - offsetX, py = y * cell - offsetY;
-    ctx.globalAlpha = opacity(colorIndex); ctx.fillStyle = options.monochrome ? '#fff' : color.hex; ctx.fillRect(px, py, cell, cell);
+    const color = revision.colors[colorIndex];
+    if(isBead(color)!==beadLayer)continue;
+    if(options.workType&&options.workType!=='all'&&options.workType!==(isBead(color)?'bead':'full'))continue;
+    const px = x * cell - offsetX, py = y * cell - offsetY;
+    ctx.globalAlpha = opacity(colorIndex); ctx.fillStyle = options.monochrome ? '#fff' : color.hex;
+    if(isBead(color)){
+      const footprint=footprints[colorIndex],rx=cell*(footprint?.x??.78)/2,ry=cell*(footprint?.y??.78)/2;
+      ctx.beginPath();ctx.ellipse(px+cell/2,py+cell/2,rx,ry,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#252525';ctx.lineWidth=Math.max(.65,cell*.06);ctx.stroke();
+      if(!options.symbols){ctx.beginPath();ctx.ellipse(px+cell/2,py+cell/2,Math.max(.4,rx*.18),Math.max(.4,ry*.18),0,0,Math.PI*2);ctx.fillStyle='#ffffff';ctx.fill();ctx.stroke();}
+    }else ctx.fillRect(px, py, cell, cell);
     if (options.symbols && cell >= 7) {
       ctx.fillStyle = options.monochrome || (color.rgb[0] * .2126 + color.rgb[1] * .7152 + color.rgb[2] * .0722 > 145) ? (options.monochrome?'#171717':'#17151a') : '#fff';
       ctx.fillText(color.symbol ?? String(colorIndex + 1), px + cell / 2, py + cell / 2, cell * .86);
@@ -33,14 +45,14 @@ export function drawPattern(canvas, revision, options = {}) {
     for (let x = left; x <= right; x++) { ctx.strokeStyle = options.monochrome?(x%10?'#2a2a2a2b':'#2a2a2a8c'):(x % 10 ? '#2a25322b' : '#2a25328c'); ctx.lineWidth = x % 10 ? .5 : 1; ctx.beginPath(); ctx.moveTo(x * cell - offsetX, 0); ctx.lineTo(x * cell - offsetX, height); ctx.stroke(); }
     for (let y = top; y <= bottom; y++) { ctx.strokeStyle = options.monochrome?(y%10?'#2a2a2a2b':'#2a2a2a8c'):(y % 10 ? '#2a25322b' : '#2a25328c'); ctx.lineWidth = y % 10 ? .5 : 1; ctx.beginPath(); ctx.moveTo(0, y * cell - offsetY); ctx.lineTo(width, y * cell - offsetY); ctx.stroke(); }
   }
-  for (const h of revision.halfStitches ?? []) {
+  for (const h of options.workType&& !['all','half'].includes(options.workType)?[]:revision.halfStitches ?? []) {
     if (h.x < left || h.x >= right || h.y < top || h.y >= bottom) continue;
     ctx.globalAlpha = opacity(h.color); ctx.strokeStyle = completed.has(`h:${h.id}`) ? (options.monochrome?'#222222':'#225945') : options.monochrome ? '#171717' : revision.colors[h.color].hex;
     ctx.lineWidth = Math.max(1.5, cell * .16); ctx.beginPath();
     const x = h.x * cell - offsetX, y = h.y * cell - offsetY;
     ctx.moveTo(x + cell * .12, y + cell * (h.direction === '/' ? .88 : .12)); ctx.lineTo(x + cell * .88, y + cell * (h.direction === '/' ? .12 : .88)); ctx.stroke();
   }
-  for (const b of revision.backstitches ?? []) {
+  for (const b of options.workType&& !['all','backstitch'].includes(options.workType)?[]:revision.backstitches ?? []) {
     if (Math.max(b.x1, b.x2) * cell < offsetX || Math.min(b.x1, b.x2) * cell > offsetX + width || Math.max(b.y1, b.y2) * cell < offsetY || Math.min(b.y1, b.y2) * cell > offsetY + height) continue;
     ctx.globalAlpha = opacity(b.color); ctx.strokeStyle = completed.has(`b:${b.id}`) ? (options.monochrome?'#222222':'#225945') : options.monochrome ? '#171717' : revision.colors[b.color].hex;
     ctx.lineWidth = Math.max(1.2, cell * .12); ctx.beginPath(); ctx.moveTo(b.x1 * cell - offsetX, b.y1 * cell - offsetY); ctx.lineTo(b.x2 * cell - offsetX, b.y2 * cell - offsetY); ctx.stroke();
