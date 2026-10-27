@@ -1,8 +1,11 @@
 <script setup>
-import { reactive, ref, computed, useId } from 'vue';
+import { reactive, ref, computed, useId, watch, onBeforeUnmount } from 'vue';
 import { AlertTriangle } from '@lucide/vue';
 import AppDialog from './AppDialog.vue';
 import FormField from './FormField.vue';
+import MaterialProductPicker from './MaterialProductPicker.vue';
+import {supplierLookup} from '../supplier-catalogues.mjs';
+import {supplierIdentity,supplierSwatch,SUPPLIER_CATEGORIES} from '../../core/supplier-products.mjs';
 import MaterialDescriptors from './MaterialDescriptors.vue';
 import { normalizeDescriptorProperties } from '../../core/material-descriptors.mjs';
 import StagedAttachments from './StagedAttachments.vue';
@@ -19,6 +22,9 @@ draft.tagsText = (props.material?.tags || []).join(', ');
 const stock = reactive({ enabled: !props.material, quantity: '', confidence: 'exact', status: 'usable', locationId: '', lotCode: '', cost: '', currency: state.value.settings.currency, supplierId: '', widthCm: '', heightCm: '', properties: {} });
 const busy = ref(false), error = ref(''), photoFiles = ref([]);
 const isEdit = computed(() => Boolean(props.material));
+const showCatalogue=ref(!props.material),lookupBusy=ref(false);let lookupTimer,lookupToken=0;
+const catalogueCategory=computed(()=>SUPPLIER_CATEGORIES.includes(draft.category));
+const colourCategory=computed(()=>['thread','fabric','embellishment'].includes(draft.category));
 const categoryOptions = inventoryCategories;
 draft.properties.custom ||= {};
 const customFields = computed(() => materialCustomFields(draft));
@@ -29,7 +35,34 @@ const similar = computed(() => {
     draft.code.trim() ? item.code === draft.code.trim() && item.brand.toLowerCase() === draft.brand.trim().toLowerCase() && item.range.toLowerCase() === draft.range.trim().toLowerCase() : item.name.toLowerCase() === draft.name.trim().toLowerCase()
   )).slice(0, 4);
 });
+function chooseProduct(product){
+  delete draft.properties.colorSource;
+  Object.assign(draft,{name:product.name,brand:product.brand,range:product.range,code:product.code,color:product.hex??''});
+  draft.properties.product=JSON.parse(JSON.stringify(product));
+  if(!isEdit.value){
+    draft.unit=units.includes(product.pack.unit)?product.pack.unit:product.category==='thread'?'m':'piece';
+    draft.packageSize=draft.unit==='m'?product.pack.lengthM??'':'';
+  }
+  draft.strands=product.pack.strands??'';draft.divisible=product.pack.divisible===true;
+  if(product.fabric)Object.assign(draft.properties,product.fabric,{fabricType:product.type});
+  if(['cotton','pearl','silk','wool','rayon','polyester','metallic','variegated','ribbon','other'].includes(product.type))draft.properties.threadType=product.type;
+  showCatalogue.value=false;
+}
+watch(()=>[draft.category,draft.brand,draft.range,draft.code],()=>{
+  clearTimeout(lookupTimer);const token=++lookupToken;lookupBusy.value=false;
+  const snapshot=draft.properties.product;
+  if(snapshot&&snapshot.category===draft.category&&supplierIdentity(snapshot)===supplierIdentity(draft)){delete draft.properties.colorSource;draft.color=snapshot.hex??'';return;}
+  if(snapshot){delete draft.properties.product;draft.strands='';draft.divisible=false;draft.packageSize='';}
+  delete draft.properties.colorSource;
+  if(!catalogueCategory.value)return;
+  draft.color='';if(!draft.brand||!draft.range||!draft.code)return;
+  lookupBusy.value=true;
+  lookupTimer=setTimeout(async()=>{try{const rows=await supplierLookup({category:draft.category,brand:draft.brand,range:draft.range,code:draft.code});if(token!==lookupToken)return;const product=rows.find(row=>row.hex)??rows[0];if(product){draft.properties.product=product;draft.color=product.hex??'';draft.strands=product.pack.strands??'';draft.divisible=product.pack.divisible===true;if(draft.unit==='m')draft.packageSize=product.pack.lengthM??'';}else{const swatch=supplierSwatch({brand:draft.brand,range:draft.range,code:draft.code});if(swatch.hex){draft.color=swatch.hex;draft.properties.colorSource=swatch.rgbSource;}}}catch(caught){if(token===lookupToken)error.value=errorText(caught);}finally{if(token===lookupToken)lookupBusy.value=false;}},250);
+},{immediate:true});
+onBeforeUnmount(()=>{clearTimeout(lookupTimer);lookupToken++;});
 function chooseCategory() {
+  showCatalogue.value=true;
+
   if (!isEdit.value) {
     if (['fabric', 'tool', 'kit', 'reference', 'storage'].includes(draft.category)) draft.unit = 'piece';
     else if (draft.category === 'thread') draft.unit = 'm';
@@ -43,7 +76,7 @@ function price(value) {
   return Math.round(number * 100);
 }
 async function save() {
-  if (busy.value) return;
+  if (busy.value||lookupBusy.value) return;
   busy.value = true; error.value = '';
   try {
     const properties = normalizeDescriptorProperties(JSON.parse(JSON.stringify(draft.properties)));
@@ -72,11 +105,20 @@ async function save() {
         <FormField :label="t('name')" required wide v-slot="{ id }"><input :id="id" v-model="draft.name" required maxlength="300" autofocus :placeholder="t('materialNameExample')" /></FormField>
         <FormField :label="t('category')" required v-slot="{ id }"><select :id="id" v-model="draft.category" @change="chooseCategory"><option v-for="option in categoryOptions" :key="option.value" :value="option.value">{{ option.label }}</option></select></FormField>
         <FormField :label="t('unit')" :help="unitLocked ? t('unitLockedHelp') : t('unitHelp')" v-slot="{ id, describedby }"><select :id="id" v-model="draft.unit" :disabled="unitLocked" :aria-describedby="describedby"><option v-for="unit in units" :key="unit" :value="unit">{{ t(`unit_${unit}`) }}</option></select></FormField>
-        <FormField :label="t('brand')" v-slot="{ id }"><input :id="id" v-model="draft.brand" maxlength="200" /></FormField>
-        <FormField :label="t('range')" v-slot="{ id }"><input :id="id" v-model="draft.range" maxlength="200" /></FormField>
-        <FormField :label="t('code')" :help="t('codeHelp')" v-slot="{ id, describedby }"><input :id="id" v-model="draft.code" type="text" maxlength="200" :aria-describedby="describedby" /></FormField>
-        <FormField :label="t('color')" v-slot="{ id }"><input :id="id" v-model="draft.color" type="color" /></FormField>
+        <FormField v-if="colourCategory" :label="t('materialAutoColor')" wide v-slot="{id}"><output :id="id" class="actions"><span class="swatch" :style="{background:draft.color||'#aaa6a0'}" aria-hidden="true"/>{{lookupBusy?t('loading'):draft.properties.product?.colorName||draft.color||t('materialColorUnavailable')}}</output></FormField>
       </div>
+      <p v-if="draft.properties.product?.colorVariation==='multicolour'" class="field-help">{{t('materialMulticolour')}}</p>
+      <section v-if="catalogueCategory" class="form-section">
+        <h3>{{t('chooseCatalogueMaterial')}}</h3>
+        <MaterialProductPicker v-if="showCatalogue" :key="draft.category" :category="draft.category" :initial-brand="draft.brand" :initial-code="draft.code" @select="chooseProduct"/>
+        <div v-else class="notice"><span>{{draft.brand}} {{draft.range}} · {{draft.code}}</span><button type="button" class="button small" @click="showCatalogue=true">{{t('changeMaterial')}}</button></div>
+      </section>
+      <details class="form-section"><summary>{{t('manualMaterialIdentity')}}</summary><div class="form-grid">
+        <FormField :label="t('brand')" v-slot="{id}"><input :id="id" v-model="draft.brand" maxlength="200"/></FormField>
+        <FormField :label="t(draft.category==='thread'?'threadProductType':'materialProductType')" v-slot="{id}"><input :id="id" v-model="draft.range" maxlength="200"/></FormField>
+        <FormField :label="t(colourCategory?'materialColorCode':'materialArticleCode')" :help="t('codeHelp')" v-slot="{id,describedby}"><input :id="id" v-model="draft.code" maxlength="200" :aria-describedby="describedby"/></FormField>
+        <FormField v-if="!catalogueCategory" :label="t('color')" v-slot="{id}"><input :id="id" v-model="draft.color" type="color"/></FormField>
+      </div><p v-if="colourCategory" class="field-help">{{t('materialAutoColorHelp')}}</p></details>
       <div v-if="similar.length" class="notice warning form-section"><AlertTriangle :size="18" /><div><strong>{{ t('duplicates') }}</strong><p v-for="item in similar" :key="item.id">{{ item.name }} · {{ item.brand }} {{ item.code }}</p><p>{{ t('duplicateMaterialHelp') }}</p></div></div>
       <section v-if="!isEdit" class="form-section">
         <h3><label class="checkbox-label"><input v-model="stock.enabled" type="checkbox" />{{ t('initialStock') }}</label></h3>
@@ -105,7 +147,7 @@ async function save() {
             <FormField :label="t('threadSize')" v-slot="{ id }"><input :id="id" v-model="draft.properties.threadSize" maxlength="100" /></FormField>
           </template>
           <template v-if="draft.category === 'fabric'">
-            <FormField :label="t('fabricType')" v-slot="{ id }"><select :id="id" v-model="draft.properties.fabricType"><option value="">{{ t('unknown') }}</option><option v-for="type in ['aida','linen','evenweave','canvas','felt','soluble','garment','other']" :key="type" :value="type">{{ t(`fabric_${type}`) }}</option></select></FormField>
+            <FormField :label="t('fabricType')" v-slot="{ id }"><select :id="id" v-model="draft.properties.fabricType"><option value="">{{ t('unknown') }}</option><option v-for="type in ['aida','linen','evenweave','canvas','hardanger','afghan','band','soluble','garment','other']" :key="type" :value="type">{{ t(`fabric_${type}`) }}</option></select></FormField>
             <FormField :label="t('countMeaning')" v-slot="{ id }"><select :id="id" v-model="draft.properties.countMeaning"><option value="stitches">{{ t('countStitches') }}</option><option value="threads">{{ t('countThreads') }}</option></select></FormField>
             <FormField :label="t('countHorizontal')" v-slot="{ id }"><input :id="id" v-model="draft.properties.countX" inputmode="decimal" /></FormField>
             <FormField :label="t('countVertical')" v-slot="{ id }"><input :id="id" v-model="draft.properties.countY" inputmode="decimal" /></FormField>
@@ -128,6 +170,6 @@ async function save() {
         <section v-if="!isEdit && stock.enabled" class="form-section"><h3>{{ t('lotCategoryDetails') }}</h3><MaterialDescriptors :properties="stock.properties" :category="draft.category" scope="lot" /></section>
       </details>
     </form>
-    <template #footer><button type="button" class="button" :disabled="busy" @click="emit('close')">{{ t('cancel') }}</button><button class="button primary" type="submit" :form="formId" :disabled="busy">{{ busy ? t('saving') : t('save') }}</button></template>
+    <template #footer><button type="button" class="button" :disabled="busy" @click="emit('close')">{{ t('cancel') }}</button><button class="button primary" type="submit" :form="formId" :disabled="busy||lookupBusy">{{ busy ? t('saving') : t('save') }}</button></template>
   </AppDialog>
 </template>
