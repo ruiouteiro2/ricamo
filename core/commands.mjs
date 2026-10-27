@@ -1,3 +1,4 @@
+import { afterKitCommand } from './kit-workflows.mjs';
 import { DomainError, assert, assertSafeJson, text, identifier, stableStringify, oneOf, jsonObject, stringList, recordId, put } from './shared.mjs';
 import { saveMaterial, archiveMaterial, duplicateMaterial, mergeMaterial, addLot, saveLot, stockMove, reverseMovement, setReservation, saveLocation, saveSupplier } from './inventory.mjs';
 import { saveProject, duplicateProject, closeProject, saveNeed, saveTask, saveSession, updateProgress, saveProjectView } from './projects.mjs';
@@ -83,6 +84,7 @@ export function applyCommand(state, command, context = {}) {
   afterFabricCommand(next, command, ctx);
   afterToolCommand(next, command, ctx);
   afterEstimateCommand(next, command, ctx, state);
+  afterKitCommand(next, command, ctx);
   next.revision++;
   next.operations.push({ id: operationId, type: command.type, signature, date: now });
   return next;
