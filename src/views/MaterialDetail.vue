@@ -3,13 +3,13 @@ import { computed, ref, watch } from 'vue';
 import { ArrowLeft, Plus, Pencil, Copy, Archive, Package, ArrowRightLeft, CircleAlert, Scissors, ImagePlus, Download, RotateCcw, Heart } from '@lucide/vue';
 import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
-import AppDialog from '../components/AppDialog.vue';
 import EntityForm from '../components/EntityForm.vue';
-import FormField from '../components/FormField.vue';
 import InventoryLabels from '../components/InventoryLabels.vue';
 import { categoryLabel } from '../inventory-categories.mjs';
 import MaterialForm from '../components/MaterialForm.vue';
 import FabricWorkspace from '../components/FabricWorkspace.vue';
+import KitHistory from '../components/KitHistory.vue';
+import KitOpening from '../components/KitOpening.vue';
 import ToolActivity from '../components/ToolActivity.vue';
 import { state, dispatch, navigate, notify, locate, importAsset, assetUrl } from '../state';
 import { storage } from '../storage';
@@ -108,17 +108,8 @@ const formConfig = computed(() => {
 });
 
 function openCut(lot) { openModal('cut', lot.id); }
-const kitComponents = ref([]), kitError = ref('');
-const componentMaterials = computed(() => state.value.materials.filter(row => row.id !== props.id && !row.archived));
-function addComponent() { kitComponents.value.push({ key: crypto.randomUUID(), materialId: '', quantity: '', confidence: 'exact', lotCode: '' }); }
-function openKit(lot) { kitComponents.value = []; kitError.value = ''; addComponent(); openModal('kit', lot.id); }
-async function confirmKit() {
-  if (busy.value) return;
-  busy.value = true; kitError.value = '';
-  try { const components = kitComponents.value.map(({ key, ...row }) => ({ ...row, quantity: optionalNumber(row.quantity) })); await dispatch('kit.open', { lotId: currentLot.value.id, components }, modalOperation.value); done(); }
-  catch (error) { kitError.value = errorText(error); }
-  finally { busy.value = false; }
-}
+function openKit(lot) { openModal('kit', lot.id); }
+
 </script>
 
 <template>
@@ -158,6 +149,7 @@ async function confirmKit() {
         <p v-if="summary.regionHeld" class="notice">{{ t('fabricRegionalStockHelp') }}</p><section class="panel"><div class="panel-heading"><h2>{{ t('history') }}</h2><span class="muted">{{ number(movements.length, 0) }}</span></div><EmptyState v-if="!movements.length" compact :title="t('noMovements')" /><div v-else class="table-wrap"><table><thead><tr><th>{{ t('date') }}</th><th>{{ t('type') }}</th><th>{{ t('quantity') }}</th><th>{{ t('notes') }}</th><th></th></tr></thead><tbody><tr v-for="movement in history" :key="movement.id"><td>{{ date(movement.date) }}<span class="cell-subtitle">{{ state.lots.find(row => row.id === movement.lotId)?.lotCode || movement.lotId.slice(0,8) }}</span></td><td>{{ t(movement.kind) }}<span v-if="movement.projectId" class="cell-subtitle">{{ projectName(movement.projectId) }}</span></td><td>{{ number(movement.quantity) }}<span class="cell-subtitle">{{ number(movement.before) }} → {{ number(movement.after) }}</span></td><td>{{ movement.reason || '—' }}</td><td><button v-if="['consume','loss','discard','return'].includes(movement.kind) && !state.movements.some(row => row.reversesId === movement.id)" class="icon-button" :aria-label="t('reverseMovement')" @click="openModal('reverse', null, { movementId: movement.id })"><RotateCcw :size="16" /></button></td></tr></tbody></table></div><div v-if="historyPages > 1" class="panel-heading"><small class="muted">{{ t('page') }} {{ historyPage }} / {{ historyPages }}</small><div class="actions"><button class="button small" :disabled="historyPage <= 1" @click="historyPage--">{{ t('previousPage') }}</button><button class="button small" :disabled="historyPage >= historyPages" @click="historyPage++">{{ t('nextPage') }}</button></div></div></section>
       </div>
       <aside class="stack">
+        <KitHistory v-if="material.category==='kit'&&material.unit==='piece'" :material-id="material.id" />
         <section class="panel"><div class="panel-heading"><h2>{{ t('details') }}</h2><span class="swatch" :style="{ backgroundColor: material.color || undefined }"><Heart v-if="material.favorite" :size="17" /></span></div><div class="panel-body"><p class="field-help">{{ t('quantityHelp') }}</p><div v-for="[label, value] in [[t('brand'),material.brand],[t('range'),material.range],[t('code'),material.code],[t('minimum'),material.minimum === null ? '' : number(material.minimum)],[t('packageSize'),material.packageSize === null ? '' : number(material.packageSize)],[t('strands'),material.strands],[t('composition'),material.properties.composition]]" :key="label" class="stat-row"><span>{{ label }}</span><span>{{ value || '—' }}</span></div><div v-for="[field,value] in Object.entries(material.properties.custom || {})" :key="field" class="stat-row"><span>{{ field }}</span><span>{{ value || '—' }}</span></div><div v-if="material.tags.length" class="actions form-section"><span v-for="tag in material.tags" :key="tag" class="badge">{{ tag }}</span></div><div v-if="material.properties.care" class="form-section"><h3>{{ t('careInstructions') }}</h3><p>{{ material.properties.care }}</p></div><div v-if="material.notes" class="form-section"><h3>{{ t('notes') }}</h3><p>{{ material.notes }}</p></div></div></section>
         <section class="panel"><div class="panel-heading"><h2>{{ t('photosAndFiles') }}</h2><button class="icon-button" :disabled="busy" :aria-label="t('addAttachment')" @click="attachmentInput.click()"><ImagePlus :size="18" /></button><input ref="attachmentInput" class="sr-only" type="file" accept="image/png,image/jpeg,image/webp,image/gif,application/pdf" multiple @change="addPhotos" /></div><div class="panel-body"><p v-if="!photos.length" class="field-help">{{ t('photoHelp') }}</p><div v-else class="attachment-list"><div v-for="photo in photos" :key="photo.id" class="attachment"><img v-if="photo.url" :src="photo.url" :alt="photo.name" /><span v-else class="badge">{{ photo.unavailable ? t('fileUnavailable') : 'PDF' }}</span><small>{{ photo.name }}</small><button class="button text small" @click="downloadAttachment(photo)"><Download :size="14" />{{ t('export') }}</button></div></div></div></section>
       </aside>
@@ -167,10 +159,7 @@ async function confirmKit() {
     <EntityForm v-if="formConfig" :key="modalOperation" v-bind="formConfig" @close="modal = null" @saved="done" />
     <ToolActivity v-if="modal?.kind === 'toolActivity'" :lot-id="currentLot.id" @close="modal=null" />
     <FabricWorkspace v-if="modal?.kind === 'cut'" :lot-id="currentLot.id" @close="modal=null" />
-    <AppDialog v-if="modal?.kind === 'kit'" :title="t('openKit')" wide :busy="busy" @close="modal = null">
-      <p class="notice">{{ t('kitOpenHelp') }}</p><p v-if="kitError" class="notice error" role="alert">{{ kitError }}</p><form id="kit-open-form" @submit.prevent="confirmKit"><section v-for="(component, index) in kitComponents" :key="component.key" class="form-section"><div class="split-heading"><h3>{{ t('component') }} {{ index + 1 }}</h3><button class="button text small" type="button" :disabled="kitComponents.length === 1" @click="kitComponents.splice(index, 1)">{{ t('remove') }}</button></div><div class="form-grid"><FormField :label="t('materials')" required wide v-slot="{ id }"><select :id="id" v-model="component.materialId" required><option value="">{{ t('chooseMaterial') }}</option><option v-for="row in componentMaterials" :key="row.id" :value="row.id">{{ row.name }} · {{ row.code }} · {{ t(`unit_${row.unit}`) }}</option></select></FormField><FormField :label="t('quantity')" :help="t('unknownHint')" v-slot="{ id, describedby }"><input :id="id" v-model="component.quantity" inputmode="decimal" :aria-describedby="describedby" /></FormField><FormField :label="t('confidence')" v-slot="{ id }"><select :id="id" v-model="component.confidence"><option value="exact">{{ t('exact') }}</option><option value="estimated">{{ t('estimated') }}</option></select></FormField><FormField :label="t('lotCode')" v-slot="{ id }"><input :id="id" v-model="component.lotCode" maxlength="200" /></FormField></div></section><button class="button" type="button" @click="addComponent"><Plus :size="16" />{{ t('addComponent') }}</button></form>
-      <template #footer><button class="button" :disabled="busy" @click="modal = null">{{ t('cancel') }}</button><button class="button primary" form="kit-open-form" type="submit" :disabled="busy || !componentMaterials.length">{{ t('confirmKitOpening') }}</button></template>
-    </AppDialog>
+    <KitOpening v-if="modal?.kind === 'kit'" :lot-id="currentLot.id" @close="modal=null" />
   </div>
   <EmptyState v-else :icon="Package" :title="t('materialNotFound')"><button class="button" @click="navigate('materials')">{{ t('back') }}</button></EmptyState>
 </template>
