@@ -1596,8 +1596,8 @@
     "{count} labels in the PDF"
   ],
   "labelLimit": [
-    "Seleziona al massimo 200 materiali o lotti e 500 etichette totali.",
-    "Select at most 200 materials or lots and 500 total labels."
+    "Seleziona al massimo 200 record, da 1 a 10 copie e 500 etichette totali.",
+    "Select at most 200 records, 1–10 copies and 500 total labels."
   ],
   "labelPreviewSample": [
     "L’anteprima mostra le prime quattro etichette. Il PDF include tutta la selezione.",
@@ -2628,8 +2628,8 @@
     "Include progress history and required revisions"
   ],
   "packagePrivacyHelp": [
-    "Nomi del progetto, schemi e materiali, scadenze e impostazioni tecniche sono inclusi. Le opzioni private sono disattivate inizialmente. Le annotazioni di testo e i segnalibri richiedono le note private.",
-    "Project, pattern and material names, deadlines and technical settings are included. Private options start disabled. Text annotations and bookmarks require private notes."
+    "Nomi del progetto, schemi e materiali, scadenze e impostazioni tecniche sono inclusi. Le opzioni private sono disattivate inizialmente. Le annotazioni di testo e i segnalibri richiedono le note private. Autore, tecnica, tema e diritti/restrizioni annotati sono inclusi; origine personale, difficoltà e collezioni richiedono le note private.",
+    "Project, pattern and material names, deadlines and technical settings are included. Private options start disabled. Text annotations and bookmarks require private notes. Author, technique, theme and recorded rights/restrictions are included; personal source, difficulty and collections require private notes."
   ],
   "packageFiles": [
     "File e fotografie",
@@ -3364,8 +3364,8 @@
     "The PDF exceeds the 500-page limit. Reduce the exported content."
   ],
   "pdf_label_overflow": [
-    "Il testo completo supera una pagina di etichetta. Abbreviare i campi prima di stampare.",
-    "The full label text exceeds one page. Shorten the fields before printing."
+    "Il testo completo non entra a una dimensione leggibile. Aumenta larghezza o altezza dell’etichetta; nessun testo o identificativo è stato rimosso.",
+    "The complete text does not fit at a readable size. Increase label width or height; no text or identifier has been removed."
   ],
   "project_package_settings": [
     "Le impostazioni del pacchetto non sono valide.",
@@ -4710,5 +4710,661 @@
   "invalid_asset_owner": [
     "Questo tipo di registro non può ricevere allegati.",
     "This record type cannot receive attachments."
+  ],
+  "libraryDetails": [
+    "Dettagli",
+    "Details"
+  ],
+  "libraryEditDetails": [
+    "Modifica dettagli dello schema",
+    "Edit pattern details"
+  ],
+  "library_author": [
+    "Autore / designer",
+    "Author / designer"
+  ],
+  "library_origin": [
+    "Origine personale",
+    "Personal source"
+  ],
+  "library_technique": [
+    "Tecnica",
+    "Technique"
+  ],
+  "library_theme": [
+    "Tema",
+    "Theme"
+  ],
+  "library_difficulty": [
+    "Difficoltà personale",
+    "Personal difficulty"
+  ],
+  "library_rights": [
+    "Diritti / restrizioni annotati",
+    "Recorded rights / restrictions"
+  ],
+  "libraryCollections": [
+    "Collezioni",
+    "Collections"
+  ],
+  "libraryListHelp": [
+    "Una voce per riga. Le collezioni raggruppano gli schemi senza copiare i file.",
+    "One entry per line. Collections group patterns without copying files."
+  ],
+  "libraryPrivacyHelp": [
+    "Autore, tecnica, tema e diritti annotati accompagnano il pacchetto condiviso. Origine, difficoltà personale e collezioni richiedono l’inclusione delle note private. Queste annotazioni non concedono una licenza.",
+    "Author, technique, theme and recorded rights accompany a shared package. Personal source, difficulty and collections require private notes to be included. These annotations do not grant a licence."
+  ],
+  "libraryUsage": [
+    "Utilizzo nei progetti",
+    "Use in projects"
+  ],
+  "libraryUnused": [
+    "Nessun utilizzo registrato nei progetti.",
+    "No recorded project use."
+  ],
+  "libraryUseKind": [
+    "Utilizzo",
+    "Use"
+  ],
+  "libraryUseCurrent": [
+    "Revisione attualmente collegata",
+    "Currently linked revision"
+  ],
+  "libraryUseHistory": [
+    "Revisione usata in precedenza",
+    "Previously used revision"
+  ],
+  "libraryFavoritesOnly": [
+    "Solo preferiti",
+    "Favorites only"
+  ],
+  "error.invalid_pattern_library": [
+    "Dettagli dello schema non validi.",
+    "Invalid pattern details."
+  ],
+  "stockCountTitle": [
+    "Inventario fisico",
+    "Physical inventory"
+  ],
+  "stockCountHelp": [
+    "Conta solo i lotti desiderati. Una casella vuota lascia il lotto invariato; zero è una quantità osservata. Le scatole comprendono le loro sottoposizioni.",
+    "Count only the lots you want. A blank field leaves a lot unchanged; zero is an observed quantity. Boxes include their sublocations."
+  ],
+  "countRegistered": [
+    "Quantità registrata",
+    "Recorded quantity"
+  ],
+  "countObserved": [
+    "Quantità osservata",
+    "Observed quantity"
+  ],
+  "countDifference": [
+    "Differenza",
+    "Difference"
+  ],
+  "countCostUnknown": [
+    "Il cambiamento rende sconosciuto il costo totale del lotto; il valore precedente non viene riutilizzato come stima.",
+    "The change makes the lot’s total cost unknown; the previous value is not reused as an estimate."
+  ],
+  "countDecision": [
+    "Risoluzione delle riserve",
+    "Reservation decision"
+  ],
+  "countChooseDecision": [
+    "Scegli una risoluzione",
+    "Choose a decision"
+  ],
+  "countKeep": [
+    "Mantieni le riserve e segnala la mancanza",
+    "Keep reservations and mark the shortage"
+  ],
+  "countAllocate": [
+    "Redistribuisci le riserve per progetto",
+    "Redistribute reservations by project"
+  ],
+  "countAfter": [
+    "Riserva dopo la conta",
+    "Reservation after count"
+  ],
+  "countKeepHelp": [
+    "Le riserve restano intatte. Il conflitto rimane visibile finché il materiale manca o le riserve non vengono risolte.",
+    "Reservations remain intact. The conflict stays visible until stock is replenished or reservations are resolved."
+  ],
+  "countRequirements": [
+    "Fabbisogni conservati",
+    "Requirements retained"
+  ],
+  "countRequirementsHelp": [
+    "I fabbisogni esistenti rimangono invariati. Dove mancavano, la conferma crea il minimo impegnato: tutte le riserve precedenti del progetto per il materiale, anche fuori da questa conta, più il consumo già registrato.",
+    "Existing requirements remain unchanged. Where none existed, confirmation creates the committed minimum: all previous reservations for that project/material, including lots outside this count, plus consumption already recorded."
+  ],
+  "countNewNeed": [
+    "Nuovo fabbisogno minimo",
+    "New minimum requirement"
+  ],
+  "countExistingNeed": [
+    "Fabbisogno invariato",
+    "Unchanged requirement"
+  ],
+  "countApply": [
+    "Conferma conta e decisioni",
+    "Confirm count and decisions"
+  ],
+  "countConflict": [
+    "Impegni oltre la disponibilità: {quantity} {unit}.",
+    "Commitments beyond availability: {quantity} {unit}."
+  ],
+  "countToolHolds": [
+    "Attrezzi in prestito o manutenzione: {quantity} {unit}. Questa conta non li restituisce né elimina gli impegni.",
+    "Tools on loan or held for maintenance: {quantity} {unit}. This count does not return them or remove their commitments."
+  ],
+  "count_batch_limit": [
+    "Seleziona da 1 a 200 lotti osservati. Restringi scatola, categoria o riferimento se il gruppo è più grande.",
+    "Select 1 to 200 observed lots. Narrow the box, category or reference if the group is larger."
+  ],
+  "count_decision_required": [
+    "Scegli esplicitamente come gestire questo conflitto.",
+    "Explicitly choose how to handle this conflict."
+  ],
+  "count_allocation_exceeds": [
+    "Le nuove riserve superano la quantità utilizzabile. Riducile oppure mantieni il conflitto; i prestiti richiedono il loro percorso di risoluzione.",
+    "The new reservations exceed usable stock. Reduce them or keep the conflict; loans require their own resolution workflow."
+  ],
+  "count_invalid_decision": [
+    "La decisione di inventario non è valida.",
+    "The inventory decision is invalid."
+  ],
+  "count_project_mismatch": [
+    "Le assegnazioni non corrispondono ai progetti della riserva.",
+    "Allocations do not match the reserved projects."
+  ],
+  "csvTemplates": [
+    "Modelli CSV vuoti",
+    "Empty CSV templates"
+  ],
+  "csvTemplateHelp": [
+    "Scegli un modello italiano (punto e virgola, decimali con virgola) o inglese (virgola, decimali con punto). Contiene solo intestazioni: aggiungi i tuoi dati. Importa i codici come testo nel foglio elettronico. Quantità vuota significa sconosciuta; zero significa zero.",
+    "Choose an Italian template (semicolon, comma decimals) or English template (comma, decimal point). It contains headers only: add your own data. Import reference columns as text in your spreadsheet. Blank quantity means unknown; zero means zero."
+  ],
+  "csvTemplateValues": [
+    "Valori per categoria: thread, fabric, tool, storage, preparation, stabilizer, embellishment, finishing, kit, reference, other. Unità: m, cm, mm, g, kg, piece, skein, spool, pack, m2, strand-m, custom. Precisione: exact, estimated, unknown. Stato: usable, blocked, damaged, unverified. __has_stock: 0 per solo catalogo, 1 per un lotto fisico.",
+    "Category values: thread, fabric, tool, storage, preparation, stabilizer, embellishment, finishing, kit, reference, other. Units: m, cm, mm, g, kg, piece, skein, spool, pack, m2, strand-m, custom. Confidence: exact, estimated, unknown. Status: usable, blocked, damaged, unverified. __has_stock: 0 for catalogue only, 1 for a physical lot."
+  ],
+  "diagnosticsTitle": [
+    "Diagnostica senza dati personali",
+    "Diagnostics without personal records"
+  ],
+  "diagnosticsHelp": [
+    "Il file contiene versione, conteggi e risultato della verifica interna. Non contiene nomi, note, codici, percorsi o allegati. Controlla l’anteprima prima di salvarlo; non viene inviato automaticamente.",
+    "The file contains version, counts and the internal validation outcome. It contains no names, notes, codes, paths or attachments. Review the preview before saving; it is never sent automatically."
+  ],
+  "diagnosticsPreview": [
+    "Anteprima del file diagnostico",
+    "Diagnostic file preview"
+  ],
+  "insufficient_disk_space": [
+    "Spazio libero insufficiente per completare questa operazione in sicurezza. Libera spazio o scegli un’altra destinazione. I dati esistenti sono conservati.",
+    "There is not enough free space to complete this operation safely. Free space or choose another destination. Existing data is retained."
+  ],
+  "disk_space_unavailable": [
+    "Impossibile verificare lo spazio libero nella destinazione. Verifica che il disco o la cartella siano disponibili.",
+    "The destination could not report its free space. Check that the drive or folder is available."
+  ],
+  "purchaseDocuments": [
+    "Fatture e ricevute",
+    "Invoices and receipts"
+  ],
+  "purchaseDocumentsHelp": [
+    "I documenti vengono conservati con l’acquisto o con una ricezione precisa. Aggiungerli non modifica quantità, costi, scorte o date storiche. La selezione resta locale fino a Salva.",
+    "Documents belong to this purchase or a specific receipt. Adding them does not change quantities, costs, stock or historical dates. Selection stays local until Save."
+  ],
+  "invoiceDocuments": [
+    "Documenti dell’acquisto",
+    "Purchase documents"
+  ],
+  "receiptDocuments": [
+    "Documenti della ricezione",
+    "Receipt documents"
+  ],
+  "addInvoiceDocument": [
+    "Aggiungi fattura o documento",
+    "Add invoice or document"
+  ],
+  "addReceiptDocument": [
+    "Aggiungi documento della ricezione",
+    "Add receipt document"
+  ],
+  "noReceiptDocumentsYet": [
+    "Non ci sono ancora ricezioni per questo acquisto.",
+    "There are no receipts for this purchase yet."
+  ],
+  "locationDocuments": [
+    "Foto e documenti del luogo",
+    "Location photos and documents"
+  ],
+  "addLocationDocument": [
+    "Aggiungi foto o documento",
+    "Add photo or document"
+  ],
+  "noDocuments": [
+    "Nessun documento allegato.",
+    "No attached documents."
+  ],
+  "document_fields_immutable": [
+    "Questo comando aggiunge solo documenti. I valori storici non possono essere modificati.",
+    "This command only adds documents. Historical values cannot be changed."
+  ],
+  "documentExportPolicy": [
+    "Il backup conserva i file originali. CSV e JSON contengono solo riferimenti e metadati, non i file. I pacchetti di progetto non includono documenti di acquisti o luoghi.",
+    "Backups retain the original files. CSV and JSON contain references and metadata, not the files. Project packages exclude purchasing and location documents."
+  ],
+  "readingPdfSettingsHelp": [
+    "Impostazioni del PDF ingrandito per la lettura. Non modificano la stampa a grandezza reale o la calibrazione.",
+    "Settings for the enlarged reading PDF. These do not change actual-size printing or calibration."
+  ],
+  "pdfOrientation": [
+    "Orientamento",
+    "Orientation"
+  ],
+  "pdfPortrait": [
+    "Verticale",
+    "Portrait"
+  ],
+  "pdfLandscape": [
+    "Orizzontale",
+    "Landscape"
+  ],
+  "pdfMargin": [
+    "Margini (mm)",
+    "Margins (mm)"
+  ],
+  "pdfMarginHelp": [
+    "Da 5 a 40 mm, uguali sui quattro lati. La dimensione delle celle resta invariata.",
+    "5–40 mm, the same on all four sides. Cell size stays unchanged."
+  ],
+  "pdf_page_settings": [
+    "Scegli A4 o Letter, orientamento verticale o orizzontale e margini da 5 a 40 mm.",
+    "Choose A4 or Letter, portrait or landscape, and margins from 5 to 40 mm."
+  ],
+  "motifCategory": [
+    "Categoria del motivo",
+    "Motif category"
+  ],
+  "motifCategoryHelp": [
+    "Facoltativa. Riutilizza lo stesso nome per raggruppare i tuoi motivi.",
+    "Optional. Reuse the same name to group your motifs."
+  ],
+  "motifCategoryFilter": [
+    "Categoria dei motivi personali",
+    "Personal motif category"
+  ],
+  "motifUncategorized": [
+    "Senza categoria",
+    "Uncategorised"
+  ],
+  "motifEditMetadata": [
+    "Nome e categoria del motivo",
+    "Motif name and category"
+  ],
+  "motif_category": [
+    "La categoria del motivo deve essere un testo di massimo 120 caratteri.",
+    "The motif category must be text of up to 120 characters."
+  ],
+  "designFullGrid": [
+    "Griglia completa",
+    "Full grid"
+  ],
+  "designStitchedExtent": [
+    "Estensione ricamata",
+    "Stitched extent"
+  ],
+  "designEmptyExtent": [
+    "Nessun punto nel disegno",
+    "No stitched content"
+  ],
+  "designGridUnits": [
+    "unità di griglia",
+    "grid units"
+  ],
+  "designExtentCoordinates": [
+    "Limiti sui vertici della griglia (origine 0)",
+    "Grid-vertex bounds (zero-based)"
+  ],
+  "designExtentHelp": [
+    "Misura informativa senza spessore del filo. Taglio e margini restano riferiti alla griglia completa; prenotazioni e fabbisogni non cambiano.",
+    "Informational size without thread thickness. Cut and margins still use the full grid; reservations and requirements stay unchanged."
+  ],
+  "generationBackground": [
+    "Trattamento della trasparenza",
+    "Transparency handling"
+  ],
+  "generationBackgroundTransparent": [
+    "Trasparenza come celle vuote",
+    "Transparency as empty cells"
+  ],
+  "generationBackgroundWhite": [
+    "Componi su bianco",
+    "Composite over white"
+  ],
+  "generationBackgroundColor": [
+    "Componi su un colore",
+    "Composite over a colour"
+  ],
+  "generationBackgroundColour": [
+    "Colore del fondo",
+    "Background colour"
+  ],
+  "generationTransparentHelp": [
+    "Alfa inferiore a 128: nessun punto. Alfa 128–255: composizione sul bianco prima della quantizzazione. Il bianco opaco resta un punto; non viene rimosso alcun fondo opaco.",
+    "Alpha below 128: no stitch. Alpha 128–255: composited over white before quantisation. Opaque white remains a stitch; opaque backgrounds are not removed."
+  ],
+  "generationCompositeHelp": [
+    "La trasparenza viene composta sul fondo scelto prima della quantizzazione: anche le aree prima vuote diventano punti. Il fondo opaco originale non viene rimosso.",
+    "Transparency is composited over the chosen background before quantisation: previously empty areas also become stitches. The original opaque background is not removed."
+  ],
+  "generationConstraints": [
+    "Colori fissati o esclusi",
+    "Fixed or excluded colours"
+  ],
+  "generationConstraintHelp": [
+    "I colori fissati occupano posti nel limite della tavolozza, anche se nessun punto li usa. Un colore senza punti non genera consumo. Le esclusioni impediscono l’uso del colore. Nessuna equivalenza tra marche.",
+    "Fixed colours occupy palette slots even when no stitch uses them. Unused colours create no consumption. Excluded colours cannot be used. No equivalence between brands is assumed."
+  ],
+  "generationColourSearch": [
+    "Cerca marca, gamma, codice o nome",
+    "Search brand, range, code or name"
+  ],
+  "generationColourChoice": [
+    "Colore della tavolozza",
+    "Palette colour"
+  ],
+  "generationFirstMatches": [
+    "Prime 100 corrispondenze; restringi la ricerca.",
+    "First 100 matches; narrow the search."
+  ],
+  "generationFixed": [
+    "Colori fissati",
+    "Fixed colours"
+  ],
+  "generationExcluded": [
+    "Colori esclusi",
+    "Excluded colours"
+  ],
+  "generationFix": [
+    "Fissa colore",
+    "Fix colour"
+  ],
+  "generationExclude": [
+    "Escludi colore",
+    "Exclude colour"
+  ],
+  "generationRestrictionsReset": [
+    "La tavolozza è cambiata: colori fissati ed esclusi sono stati azzerati.",
+    "The palette changed: fixed and excluded colours were cleared."
+  ],
+  "generationPhysical": [
+    "Griglia {columns} × {rows}: {width} × {height} cm a {count} punti effettivi/pollice, senza margini. Nessuna modifica a tessuti o scorte.",
+    "Grid {columns} × {rows}: {width} × {height} cm at {count} effective stitches/inch, excluding margins. Fabrics and stock are unchanged."
+  ],
+  "previousGeneration": [
+    "Generazione precedente",
+    "Previous generation"
+  ],
+  "currentGeneration": [
+    "Generazione attuale",
+    "Current generation"
+  ],
+  "generationPreviewStats": [
+    "{width} × {height} punti · {colors} colori in tavolozza · {stitches} punti · limite richiesto {limit}",
+    "{width} × {height} grid · {colors} palette colours · {stitches} stitches · requested limit {limit}"
+  ],
+  "generationComparisonHelp": [
+    "La precedente generazione è solo un confronto. Salva conserva soltanto quella attuale; modifica i parametri e rigenera per aggiornarla.",
+    "The previous generation is comparison only. Save keeps only the current one; change settings and regenerate to update it."
+  ],
+  "engine.background": [
+    "Scegli una politica di trasparenza valida e un colore esadecimale.",
+    "Choose a valid transparency policy and hexadecimal colour."
+  ],
+  "engine.colorConstraints": [
+    "I colori scelti non corrispondono alla tavolozza corrente o contengono duplicati.",
+    "Chosen colours do not match the current palette or contain duplicates."
+  ],
+  "engine.constraintConflict": [
+    "Un colore non può essere fissato ed escluso.",
+    "A colour cannot be both fixed and excluded."
+  ],
+  "engine.paletteEmpty": [
+    "Non puoi escludere tutti i colori della tavolozza.",
+    "You cannot exclude every palette colour."
+  ],
+  "engine.fixedColorLimit": [
+    "Troppi colori fissati: il limite effettivo è {limit}.",
+    "Too many fixed colours: the effective limit is {limit}."
+  ],
+  "referenceBatchTitle": [
+    "Importa riferimenti PDF e immagini",
+    "Import PDF and image references"
+  ],
+  "referenceBatchHelp": [
+    "Ogni originale e riferimento viene salvato insieme. I file diventano riferimenti, senza generare punti. La firma del file viene verificata; il contenuto completo del PDF non viene validato durante questa importazione.",
+    "Each original and reference is saved together. Files become references without generating stitches. File signatures are checked; full PDF contents are not validated during this import."
+  ],
+  "referenceBatchLimits": [
+    "Massimo 20 file, 100 MiB in totale e 25 MiB per file. Nessun originale viene salvato prima della conferma.",
+    "Up to 20 files, 100 MiB total and 25 MiB per file. Originals are not saved before confirmation."
+  ],
+  "referenceChoose": [
+    "Scegli gli originali",
+    "Choose originals"
+  ],
+  "referenceReselect": [
+    "Riseleziona gli stessi originali mancanti",
+    "Reselect the same missing originals"
+  ],
+  "referenceChecking": [
+    "Controllo degli originali…",
+    "Checking originals…"
+  ],
+  "referenceBatchSummary": [
+    "Originali salvati: {saved} · Errori: {failed} · Da importare: {pending} · Esclusi: {skipped}",
+    "Originals stored: {saved} · Failed: {failed} · Pending: {pending} · Skipped: {skipped}"
+  ],
+  "referenceOriginal": [
+    "Originale",
+    "Original"
+  ],
+  "referenceDuplicate": [
+    "Originale già presente o ripetuto nella lista",
+    "Original already stored or repeated in this list"
+  ],
+  "referenceDuplicateDecision": [
+    "Decisione per il duplicato",
+    "Duplicate decision"
+  ],
+  "referenceChooseDecision": [
+    "Scegli come procedere",
+    "Choose an action"
+  ],
+  "referenceSkipDuplicate": [
+    "Non creare un altro riferimento",
+    "Do not create another reference"
+  ],
+  "referenceCreateDuplicate": [
+    "Crea un riferimento riutilizzando l’originale",
+    "Create a reference using the existing original"
+  ],
+  "referenceState_pending": [
+    "Da importare",
+    "Pending"
+  ],
+  "referenceState_saving": [
+    "Salvataggio…",
+    "Saving…"
+  ],
+  "referenceState_saved": [
+    "Originale salvato",
+    "Original stored"
+  ],
+  "referenceState_failed": [
+    "Non importato: errore",
+    "Not imported: error"
+  ],
+  "referenceState_skipped": [
+    "Escluso",
+    "Skipped"
+  ],
+  "referenceCloseHelp": [
+    "I risultati già salvati rimangono nella libreria. La chiusura mantiene questo rapporto; per continuare dopo un riavvio dovrai riselezionare gli stessi originali non importati.",
+    "Saved results remain in the library. Closing keeps this report; after a restart, reselect the same unimported originals to continue."
+  ],
+  "referenceStopping": [
+    "Il file corrente finirà prima della pausa. Gli altri resteranno da importare.",
+    "The current file will finish before stopping. Remaining files will stay pending."
+  ],
+  "referenceStop": [
+    "Ferma dopo questo file",
+    "Stop after this file"
+  ],
+  "referenceCloseApp": [
+    "Chiudi applicazione e conserva rapporto",
+    "Close app and keep report"
+  ],
+  "referenceCloseReport": [
+    "Chiudi rapporto",
+    "Close report"
+  ],
+  "referenceNewBatch": [
+    "Nuova lista",
+    "New batch"
+  ],
+  "referenceRetryFailed": [
+    "Riprova solo gli errori",
+    "Retry failed files only"
+  ],
+  "referenceImportPending": [
+    "Importa file in attesa",
+    "Import pending files"
+  ],
+  "referenceOpen": [
+    "Apri riferimento",
+    "Open reference"
+  ],
+  "referenceClearHelp": [
+    "La nuova lista elimina questo rapporto e la selezione non importata. I riferimenti già salvati rimangono nella libreria.",
+    "A new batch discards this report and the unimported selection. Saved references remain in the library."
+  ],
+  "referenceDiscardPending": [
+    "Scarta lista non importata",
+    "Discard unimported batch"
+  ],
+  "reference_report_invalid": [
+    "Il rapporto locale non è leggibile. Gli originali già salvati rimangono nella libreria. Seleziona una nuova lista.",
+    "The local report cannot be read. Saved originals remain in the library. Choose a new batch."
+  ],
+  "reference_result_unconfirmed": [
+    "Il risultato salvato non corrisponde a questo originale. Verifica la libreria prima di riprovare.",
+    "The saved result does not match this original. Check the library before retrying."
+  ],
+  "reference_reselect_needed": [
+    "Riseleziona lo stesso file per continuare; il rapporto non conserva i byte.",
+    "Reselect the same file to continue; the report does not retain file bytes."
+  ],
+  "reference_reselect_mismatch": [
+    "Nessun file corrisponde ai nomi, dimensioni e contenuti della lista.",
+    "No file matches the batch’s names, sizes and contents."
+  ],
+  "reference_invalid_original": [
+    "Il file non è un PDF o un’immagine supportata con una firma valida.",
+    "The file is not a supported PDF or image with a valid signature."
+  ],
+  "reference_report_write_failed": [
+    "Impossibile conservare il rapporto di riprova. Questo file non è stato importato.",
+    "Could not retain the retry report. This file was not imported."
+  ],
+  "referenceStay": [
+    "Rimani nel rapporto",
+    "Stay in report"
+  ],
+  "catalogueReferences": [
+    "Libri e riviste collegati",
+    "Linked books and magazines"
+  ],
+  "catalogueReferenceAdd": [
+    "Collega riferimento",
+    "Link reference"
+  ],
+  "catalogueReferenceEdit": [
+    "Collega un riferimento del catalogo",
+    "Link a catalogue reference"
+  ],
+  "catalogueReferenceChoose": [
+    "Riferimento del catalogo",
+    "Catalogue reference"
+  ],
+  "catalogueReferencePages": [
+    "Pagine pertinenti",
+    "Relevant pages"
+  ],
+  "catalogueReferencePageHelp": [
+    "Ad esempio: 12–14, tavola 3. Lascia vuoto se non noto.",
+    "For example: 12–14, plate 3. Leave blank if unknown."
+  ],
+  "catalogueReferenceSearchHelp": [
+    "Sono mostrati i primi 100 risultati. Affina la ricerca per trovare altri riferimenti.",
+    "The first 100 matches are shown. Refine the search to find other references."
+  ],
+  "catalogueReferenceHelp": [
+    "Collegamenti locali, anche a titoli non posseduti: nessuna scansione, scorta o necessità viene creata. Conservati nel backup completo; esclusi dai pacchetti di progetto.",
+    "Local links, including titles you do not own: no scan, stock or material need is created. Kept in full backups; excluded from project packages."
+  ],
+  "catalogueReferenceUsage": [
+    "Schemi e progetti collegati",
+    "Linked patterns and projects"
+  ],
+  "catalogue_reference_invalid": [
+    "Riferimenti non validi: massimo 50 titoli e 500 caratteri per le pagine.",
+    "Invalid references: up to 50 titles and 500 characters for pages."
+  ],
+  "catalogue_reference_duplicate": [
+    "Questo riferimento è già collegato. Modifica le pagine della voce esistente.",
+    "This reference is already linked. Edit the pages of the existing entry."
+  ],
+  "catalogue_reference_category": [
+    "Il titolo deve esistere nella categoria Riferimenti. Rimuovi i collegamenti da schemi e progetti prima di cambiare categoria.",
+    "The title must exist in the References category. Remove its pattern and project links before changing category."
+  ],
+  "catalogueReferenceSearch": [
+    "Cerca titolo, autore o ISBN",
+    "Search title, author or ISBN"
+  ],
+  "catalogueReferencePattern": [
+    "Schema",
+    "Pattern"
+  ],
+  "projectLabel": [
+    "Etichetta del progetto",
+    "Project label"
+  ],
+  "labelExactHeight": [
+    "Altezza etichetta (mm)",
+    "Label height (mm)"
+  ],
+  "labelFixedSizeHelp": [
+    "Dimensioni fisse: 30–180 × 20–250 mm. Margini pagina 12 mm, spazio tra etichette 4 mm. Il testo completo va a capo e non scende sotto 6,5 pt; se non entra, aumenta la dimensione. Il PDF si salva anche senza stampante.",
+    "Fixed sizes: 30–180 × 20–250 mm. Page margins 12 mm, label gap 4 mm. Full text wraps and never falls below 6.5 pt; if it does not fit, increase the size. PDF saving works without a printer."
+  ],
+  "labelSheetSummary": [
+    "{width} × {height} mm · {columns} colonne × {rows} righe · {perPage} etichette per pagina · {pages} pagine",
+    "{width} × {height} mm · {columns} columns × {rows} rows · {perPage} labels per page · {pages} pages"
+  ],
+  "labelSheetPreview": [
+    "Disposizione della prima pagina (non in scala reale)",
+    "First-page layout (not actual size)"
+  ],
+  "pdf_label_dimensions": [
+    "Scegli A4 o Letter e un’etichetta larga 30–180 mm e alta 20–250 mm.",
+    "Choose A4 or Letter and a label 30–180 mm wide and 20–250 mm high."
   ]
 }
