@@ -23,7 +23,7 @@ try {
 } finally { repository.close(); }
 const environment = { ...process.env, RICAMO_DATA_DIR: data }; delete environment.ELECTRON_RUN_AS_NODE; delete environment.NODE_OPTIONS;
 const executable = process.env.RICAMO_EXECUTABLE || join(root, 'node_modules/electron/dist', process.platform === 'win32' ? 'electron.exe' : 'electron');
-const app = await electron.launch({ executablePath: resolve(executable), args: process.env.RICAMO_EXECUTABLE ? [] : [root], env: environment, timeout: 40000 });
+const app = await electron.launch({ chromiumSandbox: true, executablePath: resolve(executable), args: process.env.RICAMO_EXECUTABLE ? [] : [root], env: environment, timeout: 40000 });
 const page = await app.firstWindow(), errors = [], remote = [], checks = [];
 page.setDefaultTimeout(10000);
 page.on('pageerror', error => errors.push(error.message)); page.on('request', request => { if (/^https?:/.test(request.url())) remote.push(request.url()); });
