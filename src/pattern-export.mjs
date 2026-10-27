@@ -27,45 +27,68 @@ export async function patternPng(revision, { symbols = false, monochrome = false
   const blob = await new Promise((resolve, reject) => canvas.toBlob(value => value ? resolve(value) : reject(Error('image_export_failed')), 'image/png'));
   return new Uint8Array(await blob.arrayBuffer());
 }
-export async function patternPdf(revision, { title = '', locale = 'it', paper = 'a4', monochrome = false, completed = [], notes = '', overlap = 2, margin = 14, thread = {}, fontBytes, boldFontBytes } = {}) {
+/** Reading-chart geometry only. Physical transfer uses physical-print.mjs. */
+export function patternPageLayout({ paper = 'a4', orientation = 'portrait', margin = 14, headerHeight = 17.5 } = {}) {
+  margin = typeof margin === 'string' && margin.trim() ? Number(margin.replace(',', '.')) : margin;
+  if (!['a4', 'letter'].includes(paper) || !['portrait', 'landscape'].includes(orientation) || !Number.isFinite(margin) || margin < 5 || margin > 40 || !Number.isFinite(headerHeight) || headerHeight < 0) throw Object.assign(Error('pdf_page_settings'), { code: 'pdf_page_settings' });
+  const portrait = paper === 'letter' ? [215.9, 279.4] : [210, 297];
+  const [width, height] = orientation === 'landscape' ? [...portrait].reverse() : portrait;
+  const usableWidth = width - 2 * margin, cellMm = 3.5, gridX = margin + 7, gridY = margin + headerHeight + 4;
+  const columns = Math.floor((usableWidth - 8) / cellMm), rows = Math.floor((height - margin - 20 - gridY) / cellMm);
+  if (columns <= 2 || rows <= 2) throw Object.assign(Error('pdf_export_limit'), { code: 'pdf_export_limit' });
+  return { width, height, margin, usableWidth, cellMm, gridX, gridY, columns, rows };
+}
+export async function patternPdf(revision, { title = '', locale = 'it', paper = 'a4', orientation = 'portrait', monochrome = false, completed = [], notes = '', overlap = 2, margin = 14, thread = {}, fontBytes, boldFontBytes } = {}) {
   validateRevision(revision);
-  const t = words[locale] ?? words.it, doc = new jsPDF({ unit: 'mm', format: paper === 'letter' ? 'letter' : 'a4', compress: true });
+  const initial = patternPageLayout({ paper, orientation, margin }); margin = initial.margin;
+  const t = words[locale] ?? words.it, doc = new jsPDF({ unit: 'mm', format: paper, orientation, compress: true });
   await embedPdfFont(doc, { fontBytes, boldFontBytes });
   pdfText(doc, title); pdfText(doc, notes);
-  const pageWidth = doc.internal.pageSize.getWidth(), pageHeight = doc.internal.pageSize.getHeight();
-  const usableWidth = pageWidth - 2 * margin, cellMm = 3.5, columns = Math.max(10, Math.floor((usableWidth - 8) / cellMm)), rows = Math.max(10, Math.floor((pageHeight - 58 - margin) / cellMm));
+  doc.setFontSize(16);
+  const titleLines = doc.splitTextToSize(String(title || t.pattern), initial.usableWidth), titleHeight = titleLines.length * 6.5;
+  const layout = patternPageLayout({ paper, orientation, margin, headerHeight: titleHeight + 11 });
+  const { width: pageWidth, height: pageHeight, usableWidth, cellMm, columns, rows, gridX, gridY } = layout;
   const tiles = pageTiles(revision.width, revision.height, columns, rows, overlap), totals = counts(revision);
-  const heading = subtitle => { doc.setTextColor('#29272b'); doc.setFontSize(16); doc.text(String(title || t.pattern).slice(0, 95), margin, 17); doc.setFontSize(9); doc.text(subtitle, margin, 24); };
-  heading(t.pattern); doc.setFontSize(10); doc.text(`${t.dimensions}: ${revision.width} × ${revision.height} | ${t.colors}: ${revision.colors.length}`, margin, 34);
-  doc.text(`${t.stitch}: ${totals.full} | ${t.half}: ${totals.half} | ${t.back}: ${totals.backstitch}`, margin, 41);
-  const coverCell = Math.min(700 / revision.width, 700 / revision.height), cover = drawPattern(document.createElement('canvas'), revision, { cellSize: coverCell, width: revision.width * coverCell, height: revision.height * coverCell, completed });
-  const scale = Math.min(usableWidth / cover.width, (pageHeight - 112) / cover.height);
-  doc.addImage(cover.toDataURL('image/png'), 'PNG', margin, 49, cover.width * scale, cover.height * scale);
-  doc.setFontSize(8); doc.text(t.approximation, margin, pageHeight - 38); doc.text(t.scale, margin, pageHeight - 32);
-  doc.text(completed.length ? t.completed : t.noProgress, margin, pageHeight - 26);
-  doc.text('Colour data: craft-color-codes / MakeBead, CC BY 4.0.', margin, pageHeight - 20);
-  doc.addPage(); heading(t.overview);
-  const mapW = Math.min(usableWidth, 160), mapH = Math.min(pageHeight - 100, mapW * revision.height / revision.width), sx = mapW / revision.width, sy = mapH / revision.height;
+  const heading = subtitle => {
+    doc.setTextColor('#29272b'); doc.setFontSize(16); doc.text(titleLines, margin, margin + 6, { lineHeightFactor: 6.5 / (16 * 25.4 / 72) });
+    doc.setFontSize(9); const lines = doc.splitTextToSize(subtitle, usableWidth);
+    if (lines.length > 2) throw Object.assign(Error('pdf_export_limit'), { code: 'pdf_export_limit' });
+    doc.text(lines, margin, margin + titleHeight + 5, { lineHeightFactor: 4 / (9 * 25.4 / 72) });
+  };
+  heading(t.pattern); doc.setFontSize(10);
+  const facts = [ `${t.dimensions}: ${revision.width} × ${revision.height} | ${t.colors}: ${revision.colors.length}`, `${t.stitch}: ${totals.full} | ${t.half}: ${totals.half} | ${t.back}: ${totals.backstitch}` ].flatMap(line => doc.splitTextToSize(line, usableWidth));
+  doc.text(facts, margin, gridY + 2, { lineHeightFactor: 5 / (10 * 25.4 / 72) });
+  const imageY = gridY + facts.length * 5 + 5;
   doc.setFontSize(8);
-  tiles.forEach((tile, index) => { doc.setDrawColor('#94858d'); doc.rect(margin + tile.x * sx, 38 + tile.y * sy, tile.width * sx, tile.height * sy); doc.text(String(index + 1), margin + tile.x * sx + 2, 43 + tile.y * sy); });
-  doc.text(doc.splitTextToSize(t.overlap, usableWidth), margin, 48 + mapH);
-  appendPatternLegend(doc, revision, { locale, totals, margin, thread });
+  const remarks = [t.approximation, t.scale, completed.length ? t.completed : t.noProgress, 'Colour data: craft-color-codes / MakeBead, CC BY 4.0.'].flatMap(line => doc.splitTextToSize(line, usableWidth));
+  const remarksY = pageHeight - margin - 10 - (remarks.length - 1) * 4;
+  const coverCell = Math.min(700 / revision.width, 700 / revision.height), cover = drawPattern(document.createElement('canvas'), revision, { cellSize: coverCell, width: revision.width * coverCell, height: revision.height * coverCell, completed });
+  const scale = Math.min(usableWidth / cover.width, (remarksY - 7 - imageY) / cover.height);
+  if (!(scale > 0)) throw Object.assign(Error('pdf_export_limit'), { code: 'pdf_export_limit' });
+  doc.addImage(cover.toDataURL('image/png'), 'PNG', margin, imageY, cover.width * scale, cover.height * scale);
+  doc.text(remarks, margin, remarksY, { lineHeightFactor: 4 / (8 * 25.4 / 72) });
+  doc.addPage(); heading(t.overview);
+  const mapScale = Math.min(usableWidth / revision.width, (pageHeight - margin - gridY - 35) / revision.height);
+  const mapH = revision.height * mapScale;
+  doc.setFontSize(8);
+  tiles.forEach((tile, index) => { doc.setDrawColor('#94858d'); doc.rect(margin + tile.x * mapScale, gridY + tile.y * mapScale, tile.width * mapScale, tile.height * mapScale); doc.text(String(index + 1), Math.min(margin + tile.x * mapScale + 1, pageWidth - margin - doc.getTextWidth(String(index + 1))), gridY + tile.y * mapScale + 4); });
+  doc.text(doc.splitTextToSize(t.overlap, usableWidth), margin, gridY + mapH + 10);
+  appendPatternLegend(doc, revision, { locale, totals, margin, thread, top: margin + 6, bottomMargin: margin + 10 });
   tiles.forEach((tile, index) => {
     doc.addPage(); heading(`${t.page} ${index + 1}/${tiles.length} | ${t.column} ${tile.x + 1}–${tile.x + tile.width} | ${t.row} ${tile.y + 1}–${tile.y + tile.height}`);
     const pixels = 14, image = drawPattern(document.createElement('canvas'), revision, { cellSize: pixels, offsetX: tile.x * pixels, offsetY: tile.y * pixels, width: tile.width * pixels, height: tile.height * pixels, grid: true, symbols: true, monochrome, completed });
-    const x = margin + 7, y = 36;
-    doc.addImage(image.toDataURL('image/png'), 'PNG', x, y, tile.width * cellMm, tile.height * cellMm);
+    doc.addImage(image.toDataURL('image/png'), 'PNG', gridX, gridY, tile.width * cellMm, tile.height * cellMm);
     doc.setFontSize(7); doc.setTextColor('#29272b');
-    for (let col = 0; col < tile.width; col++) if (!col || (tile.x + col + 1) % 10 === 0) doc.text(String(tile.x + col + 1), x + col * cellMm, y - 2);
-    for (let row = 0; row < tile.height; row++) if (!row || (tile.y + row + 1) % 10 === 0) doc.text(String(tile.y + row + 1), margin, y + (row + .75) * cellMm);
-    if (tile.overlapX || tile.overlapY) { doc.setDrawColor('#634453'); doc.setLineWidth(.5); if (tile.overlapX) doc.rect(x, y, tile.overlapX * cellMm, tile.height * cellMm); if (tile.overlapY) doc.rect(x, y, tile.width * cellMm, tile.overlapY * cellMm); }
-    doc.setFontSize(7); doc.text(doc.splitTextToSize(t.overlap, usableWidth), margin, pageHeight - 17);
+    for (let col = 0; col < tile.width; col++) if (!col || (tile.x + col + 1) % 10 === 0) doc.text(String(tile.x + col + 1), Math.min(gridX + col * cellMm, pageWidth - margin - doc.getTextWidth(String(tile.x + col + 1))), gridY - 2);
+    for (let row = 0; row < tile.height; row++) if (!row || (tile.y + row + 1) % 10 === 0) doc.text(String(tile.y + row + 1), margin, gridY + (row + .75) * cellMm);
+    if (tile.overlapX || tile.overlapY) { doc.setDrawColor('#634453'); doc.setLineWidth(.5); if (tile.overlapX) doc.rect(gridX, gridY, tile.overlapX * cellMm, tile.height * cellMm); if (tile.overlapY) doc.rect(gridX, gridY, tile.width * cellMm, tile.overlapY * cellMm); }
+    doc.setFontSize(7); doc.text(doc.splitTextToSize(t.overlap, usableWidth), margin, pageHeight - margin - 13);
   });
   if (notes) {
-    doc.setFontSize(10); const lines = doc.splitTextToSize(notes, usableWidth), perPage = Math.floor((pageHeight - 55) / 5);
-    for (let start = 0; start < lines.length; start += perPage) { doc.addPage(); heading(t.notes); doc.setFontSize(10); doc.text(lines.slice(start, start + perPage), margin, 37); }
+    doc.setFontSize(10); const lines = doc.splitTextToSize(notes, usableWidth), perPage = Math.floor((pageHeight - margin - 13 - gridY) / 5);
+    for (let start = 0; start < lines.length; start += perPage) { doc.addPage(); heading(t.notes); doc.setFontSize(10); doc.text(lines.slice(start, start + perPage), margin, gridY + 3, { lineHeightFactor: 5 / (10 * 25.4 / 72) }); }
   }
   const total = doc.getNumberOfPages();
-  for (let n = 1; n <= total; n++) { doc.setPage(n); doc.setFontSize(7); doc.text(`${n} / ${total}`, pageWidth - margin - 12, pageHeight - 8); }
+  for (let n = 1; n <= total; n++) { doc.setPage(n); doc.setFontSize(7); doc.text(`${n} / ${total}`, pageWidth - margin, pageHeight - margin - 1, { align: 'right' }); }
   return new Uint8Array(doc.output('arraybuffer'));
 }
