@@ -1,3 +1,4 @@
+import { captureAssetBatch, prepareEntityAssetCommand } from '../core/entity-assets.mjs';
 import { preparePatternAssetCommand } from '../core/pattern-asset.mjs';
 import { createProjectPackage, projectExportManifest, projectImportAssets, projectImportCommand, importedProjectId } from '../core/project-package.mjs';
 import { DatabaseSync } from 'node:sqlite';
@@ -76,6 +77,14 @@ export class Repository {
     const prepared = preparePatternAssetCommand(this.load(), metadata, pattern, operationId);
     const state = this.execute(prepared.command, expectedRevision, prepared.duplicateAsset ? null : { id: prepared.assetId, data: bytes });
     return { state, asset: state.attachments.find(row => row.id === prepared.assetId), patternId: prepared.patternId, duplicateAsset: prepared.duplicateAsset };
+  }
+  saveEntityWithAssets({ files, owner, operationId }, expectedRevision) {
+    const captured = captureAssetBatch(files), metadata = captured.map(({ data, ...asset }) => ({ ...asset, digest: createHash('sha256').update(data).digest('hex') }));
+    const prepared = prepareEntityAssetCommand(this.load(), metadata, owner, operationId);
+    const bytesByDigest = new Map(metadata.map((asset, index) => [asset.digest, captured[index].data]));
+    const blobs = prepared.fresh.map(asset => ({ id: asset.id, data: bytesByDigest.get(asset.digest) }));
+    const state = this.execute(prepared.command, expectedRevision, blobs);
+    return { state, ownerId: prepared.ownerId, assetIds: prepared.assets.map(asset => asset.id) };
   }
   getAsset(id) {
     if (typeof id !== 'string' || !/^[a-zA-Z0-9_.:-]{1,128}$/.test(id)) throw new DomainError('invalid_id');
