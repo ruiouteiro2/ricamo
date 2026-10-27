@@ -1,6 +1,6 @@
 # Local data and export formats
 
-Ricamo 0.4.0. These formats are local and versioned. CSV/TSV exports are tables for inspection and analysis; only the inventory table has an import workflow. JSON summaries are not substitutes for a complete backup.
+Ricamo 0.6.0. These formats are local and versioned. CSV/TSV exports are tables for inspection and analysis; only the inventory table has an import workflow. JSON summaries are not substitutes for a complete backup.
 
 ## Storage and transactions
 
@@ -135,3 +135,13 @@ Settings can export header-only IT/EN CSV templates using the same locale delimi
 The previewable support export uses `format: "ricamo-diagnostics"`, `version: 1`. Its whitelist contains application version, generation time, schema version, state revision, storage kind (`sqlite` or `indexeddb`), domain-validation outcome (`passed` or `failed`) and collection counts. It explicitly records `containsRecords: false`, `containsFiles: false`, `containsPaths: false`. Counts cover materials, lots, movements, reservations, patterns, projects, needs, tasks, sessions, purchases, receipts, locations, suppliers and attachments.
 
 It does not copy names, codes, notes, file contents, paths, bibliographic links or import-report rows, and is never sent automatically. Counts and version information are still information the user chooses to share. The validation result concerns the domain snapshot; it is not a backup, a database-repair operation, a digital signature or a complete security assessment.
+
+## Supplier facts and typed bead revisions (0.6)
+
+The optional `supplier-catalogues.sqlite` cache is separate from owned inventory and project backups. Only explicit update/resume operations access allowlisted public supplier HTTPS pages. A damaged or newer cache falls back to bundled read-only facts without replacing that cache. Coverage status distinguishes blocked, failed, pending and processed pages.
+
+Materials can retain a normalized public `properties.product` snapshot; pattern colours and blend components can retain `product` snapshots. These include string identity, source, verification date, optional digital swatch provenance and explicit package facts. Project exports preserve facts required by included ingredients; they do not export the complete supplier cache.
+
+Structured revision `formatVersion: 2` permits `materialKind: "bead"` palette entries. One occupied bead cell is one bead, separate from full crosses. Optional `attachmentThread` is a validated thread recipe; beads cannot be blend components or half/backstitch colours. Version1 thread revisions remain readable. Progress, forecasts, ingredient estimates and portable exports preserve the distinction. Earlier applications that support only version1 revisions cannot open bead revisions; use a pre-upgrade full backup when reverting to an older release.
+
+Fabric settings optionally retain cut margins in centimetres and symbol mode. Missing margins on existing saved fabrics retain zero; the 5 cm allowance is an explicit new-generator default. Derived procurement keeps unknown quantities/conversions distinct from zero and updates only computed needs after confirmation. Catalogue updates never rewrite existing stock quantities or saved pattern swatches.
