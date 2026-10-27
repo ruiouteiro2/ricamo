@@ -8,6 +8,7 @@ import CategoryManager from '../components/CategoryManager.vue';
 import InventoryBulkForm from '../components/InventoryBulkForm.vue';
 import InventoryRapidForm from '../components/InventoryRapidForm.vue';
 import InventoryLabels from '../components/InventoryLabels.vue';
+import KitLibrary from '../components/KitLibrary.vue';
 import InventorySavedViews from '../components/InventorySavedViews.vue';
 import { inventoryCategories as categoryOptions, categoryLabel as categoryName } from '../inventory-categories.mjs';
 import { state, route, navigate, notify, normalize, locate, dispatch } from '../state';
@@ -99,11 +100,11 @@ function workflowSaved(){workflow.value='';selected.value=[];}
       <select v-model="sort" :aria-label="t('sort')"><option value="nameAZ">{{ t('nameAZ') }}</option><option value="recent">{{ t('recent') }}</option><option value="nameZA">{{ t('nameZA') }}</option><option value="codeAZ">{{ t('codeAZ') }}</option><option value="brandAZ">{{ t('brandAZ') }}</option></select>
       <button class="button small" :disabled="preferenceBusy" @click="rememberFilters">{{ t('rememberFilters') }}</button>
     </div>
-    <details class="form-section"><summary>{{ t('inventoryWorkflows') }}</summary><div class="actions form-section"><button class="button" @click="workflow = 'rapid'">{{ t('rapidEntry') }}</button><button class="button" @click="workflow = 'categories'">{{ t('manageCategories') }}</button></div></details>
+    <details class="form-section"><summary>{{ t('inventoryWorkflows') }}</summary><div class="actions form-section"><button class="button" @click="workflow = 'rapid'">{{ t('rapidEntry') }}</button><button class="button" @click="workflow = 'collections'">{{ t('kitCollections') }}</button><button class="button" @click="workflow = 'categories'">{{ t('manageCategories') }}</button></div></details>
     <p v-if="preferenceError" role="alert" class="notice error">{{ preferenceError }}</p>
     <section class="panel">
       <div class="panel-body"><details><summary>{{ t('moreInventoryFilters') }}</summary><div class="form-grid"><label>{{ t('stockFilter') }}<select v-model="stock"><option value="">{{ t('all') }}</option><option value="positive">{{ t('knownPositiveStock') }}</option><option value="zero">{{ t('knownZeroStock') }}</option><option value="unknown">{{ t('unknown') }}</option></select></label><label>{{ t('reservationFilter') }}<select v-model="reservation"><option value="">{{ t('all') }}</option><option value="reserved">{{ t('reserved') }}</option><option value="unreserved">{{ t('notReserved') }}</option><option value="conflict">{{ t('conflict') }}</option></select></label><label>{{ t('project') }}<select v-model="project"><option value="">{{ t('all') }}</option><option v-for="row in state.projects" :key="row.id" :value="row.id">{{ row.name }}</option></select></label><label>{{ t('lotStatusFilter') }}<select v-model="lotStatus"><option value="">{{ t('all') }}</option><option v-for="status in ['usable','blocked','damaged','unverified','transformed']" :key="status" :value="status">{{ t(status) }}</option></select></label></div><p class="field-help">{{ t('projectFilterHelp') }}</p></details><InventorySavedViews :current="currentView()" @apply="applyView" /></div>
-      <div v-if="selected.length" class="panel-heading"><span>{{ t('selectedMaterialCount',{count:selected.length}) }}</span><div class="actions"><button class="button small" @click="selected=[]">{{ t('clearSelection') }}</button><button class="button small" @click="workflow='labels'">{{ t('inventoryLabels') }}</button><button class="button primary small" @click="workflow='bulk'">{{ t('bulkEdit') }}</button></div></div>
+      <div v-if="selected.length" class="panel-heading"><span>{{ t('selectedMaterialCount',{count:selected.length}) }}</span><div class="actions"><button class="button small" @click="selected=[]">{{ t('clearSelection') }}</button><button class="button small" @click="workflow='collectionSelection'">{{ t('kitCreateFromSelection') }}</button><button class="button small" @click="workflow='labels'">{{ t('inventoryLabels') }}</button><button class="button primary small" @click="workflow='bulk'">{{ t('bulkEdit') }}</button></div></div>
       <EmptyState v-if="!rows.length" :icon="Package" :title="t('emptyMaterials')" :description="t('emptyMaterialsBody')"><button class="button primary" @click="adding = true"><Plus :size="16" />{{ t('addMaterial') }}</button></EmptyState>
       <EmptyState v-else-if="!filtered.length" :icon="Search" :title="t('noResults')"><button class="button" @click="clear">{{ t('clearFilters') }}</button></EmptyState>
       <template v-else>
@@ -124,6 +125,7 @@ function workflowSaved(){workflow.value='';selected.value=[];}
         <div class="panel-heading"><small class="muted">{{ number(filtered.length, 0) }} {{ t('materials').toLowerCase() }} · {{ t('page') }} {{ page }} / {{ pageCount }}</small><div class="actions"><button class="icon-button" :disabled="page <= 1" :aria-label="t('previousPage')" @click="page--"><ChevronLeft :size="18" /></button><button class="icon-button" :disabled="page >= pageCount" :aria-label="t('nextPage')" @click="page++"><ChevronRight :size="18" /></button></div></div>
       </template>
     </section>
+    <KitLibrary v-if="workflow==='collections'||workflow==='collectionSelection'" :selected-material-ids="workflow==='collectionSelection'?selected:[]" @close="workflow=''" />
     <CategoryManager v-if="workflow==='categories'" @close="workflow=''" />
     <InventoryBulkForm v-if="workflow==='bulk'" :ids="selected" @close="workflow=''" @saved="workflowSaved" />
     <InventoryRapidForm v-if="workflow==='rapid'" @close="workflow=''" @saved="workflowSaved" />
