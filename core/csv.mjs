@@ -1,3 +1,4 @@
+import { documentMetadataIndex } from './owner-documents.mjs';
 import { quantity, date, stableStringify, oneOf } from './shared.mjs';
 import { setDescriptor, validateDescriptorProperties, MATERIAL_DESCRIPTORS, LOT_DESCRIPTORS } from './material-descriptors.mjs';
 
@@ -111,13 +112,14 @@ export function csvText(headers, rows, delimiter = ';') {
 }
 export function exportInventory(state, language='it', delimiter = language === 'it' ? ';' : ',') {
   oneOf(delimiter, [';',',','\t'], 'delimiter');
-  const extraHeaders=['description','divisible','reusable','favorite','composition','materialProperties','lotProperties','lotNotes','acquiredAt',...exportedDescriptorColumns.map(([key])=>key)];
+  const documentMetadata=documentMetadataIndex(state);
+  const extraHeaders=['locationAttachments','locationAttachmentMetadata','description','divisible','reusable','favorite','composition','materialProperties','lotProperties','lotNotes','acquiredAt',...exportedDescriptorColumns.map(([key])=>key)];
   const headers=['name','category','brand','range','code','unit','quantity','confidence','status','location','lotCode','notes','color','minimum','packageSize','strands','cost','currency','tags','__has_stock','__ricamo_escape',...extraHeaders];
   const decimal=value=>value==null?'':String(value).replace('.',language==='it'?',':'.');
   const rows=[],holdings=new Map();for(const lot of state.lots){if(!holdings.has(lot.materialId))holdings.set(lot.materialId,[]);holdings.get(lot.materialId).push(lot)}
   for(const material of state.materials){
     const lots=holdings.get(material.id)||[];
-    for(const lot of lots.length?lots:[null])rows.push([material.name,material.category,material.brand,material.range,material.code,material.unit,decimal(lot?.quantity),lot?.confidence||'',lot?.status||'',state.locations.find(row=>row.id===lot?.locationId)?.name||'',lot?.lotCode||'',material.notes,material.color,decimal(material.minimum),decimal(material.packageSize),decimal(material.strands),lot?.cost==null?'':decimal(lot.cost/100),lot?.currency||state.settings.currency,material.tags.join('|'),lot?'1':'0','apostrophe-v1',material.description,material.divisible,material.reusable,material.favorite,material.properties?.composition,JSON.stringify(material.properties||{}),lot?JSON.stringify(lot.properties||{}):'',lot?.notes||'',lot?.acquiredAt||'',...exportedDescriptorColumns.map(([,key,scope])=>(scope==='lot'?lot?.properties:material.properties)?.details?.[key]??'')]);
+    for(const lot of lots.length?lots:[null])rows.push([material.name,material.category,material.brand,material.range,material.code,material.unit,decimal(lot?.quantity),lot?.confidence||'',lot?.status||'',state.locations.find(row=>row.id===lot?.locationId)?.name||'',lot?.lotCode||'',material.notes,material.color,decimal(material.minimum),decimal(material.packageSize),decimal(material.strands),lot?.cost==null?'':decimal(lot.cost/100),lot?.currency||state.settings.currency,material.tags.join('|'),lot?'1':'0','apostrophe-v1',JSON.stringify(state.locations.find(row=>row.id===lot?.locationId)?.attachments||[]),JSON.stringify(documentMetadata(state.locations.find(row=>row.id===lot?.locationId)?.attachments||[])),material.description,material.divisible,material.reusable,material.favorite,material.properties?.composition,JSON.stringify(material.properties||{}),lot?JSON.stringify(lot.properties||{}):'',lot?.notes||'',lot?.acquiredAt||'',...exportedDescriptorColumns.map(([,key,scope])=>(scope==='lot'?lot?.properties:material.properties)?.details?.[key]??'')]);
   }
   return csvText(headers,rows,delimiter);
 }
