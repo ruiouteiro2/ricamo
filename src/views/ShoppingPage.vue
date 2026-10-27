@@ -198,7 +198,7 @@ async function printList() {
         <tr v-for="need in matchingRequirements" :key="need.materialId">
           <td><button class="cell-title" @click="navigate('material', need.materialId)">{{ materialName(need.materialId) }}</button><span class="cell-subtitle mono">{{ materialCode(need.materialId) }}</span><span class="cell-subtitle">{{ projectNames(need.allocations.map(a => a.projectId)) }}</span><span v-if="need.unknownStock || need.unknownDemand" class="badge warning">{{ t('needsReview') }}</span></td>
           <td>{{ number(need.remaining, 6) }}<span class="cell-subtitle">{{ t(need.unit) }}</span></td>
-          <td>{{ number(need.eligibleForGroup, 6) }}<span class="cell-subtitle">{{ t('reserved') }}: {{ number(need.reserved, 6) }}</span></td>
+          <td>{{ number(need.eligibleForGroup, 6) }}<span v-if="need.estimatedStock" class="cell-subtitle">{{ t('estimated') }}</span><span class="cell-subtitle">{{ t('reserved') }}: {{ number(need.reserved, 6) }}</span></td>
           <td>{{ number(need.ordered, 6) }}</td>
           <td><span :class="{ 'badge warning': need.knownShortfall > 0 }">{{ number(need.shortfall, 6) }}</span></td>
           <td>{{ number(need.toOrder, 6) }}<span v-if="need.packageCount !== null && need.toOrder > 0" class="cell-subtitle">{{ t('packageRoundingHelp') }}</span></td>
