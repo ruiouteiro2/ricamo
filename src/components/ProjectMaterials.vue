@@ -50,7 +50,7 @@ function configureFabric() {
   form.value = {title:t('fabric'),fields:[
     {key:'fabricLotId',label:t('lot'),type:'select',wide:true,options:fabricLots.value.map(row=>({value:row.id,label:`${material(row.materialId)?.name} · ${row.properties.widthCm??'?'} × ${row.properties.heightCm??'?'} cm · ${locate(row.locationId)}`}))},
     {key:'countX',label:t('countX'),type:'number',required:true},{key:'countY',label:t('countY'),type:'number',required:true},
-    {key:'countMeaning',label:t('countMeaning'),type:'select',required:true,options:[{value:'stitches',label:t('stitchesPerInch')},{value:'threads',label:t('threadsPerInch')}]},
+    {key:'countMeaning',label:t('countMeaning'),type:'select',required:true,options:[{value:'stitches',label:()=>t('stitchesPerInch')},{value:'threads',label:()=>t('threadsPerInch')}]},
     {key:'overX',label:t('overX'),type:'number',required:true},{key:'overY',label:t('overY'),type:'number',required:true},
     ...['left','right','top','bottom'].map(key=>({key,label:`${t(key)} (cm)`,type:'number',required:true})),
   ],initial:{fabricLotId:props.project.fabricLotId||'',countX:config.countX||14,countY:config.countY||14,countMeaning:config.countMeaning||'stitches',overX:config.overX||1,overY:config.overY||1,left:config.margins?.left??3,right:config.margins?.right??3,top:config.margins?.top??3,bottom:config.margins?.bottom??3},submit:async draft=>{
