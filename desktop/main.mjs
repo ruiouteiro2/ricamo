@@ -1,7 +1,8 @@
+import { purchaseUrl } from '../core/pattern-fabric.mjs';
 import { initialWindowBounds } from './window-bounds.mjs';
 import { createExampleStudio } from './example-studio.mjs';
 import { ProjectTransferService } from './project-transfer.mjs';
-import { app, BrowserWindow, ipcMain, dialog, session, Menu, protocol, screen } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog, session, Menu, protocol, screen, shell } from 'electron';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, extname } from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -123,7 +124,8 @@ async function start() {
     await backupManager.run('before-restore');
     return repository.restore(prepared, revision);
   });
-  handle('print', () => new Promise((resolve, reject) => window.webContents.print({ silent: false, printBackground: true }, (success, reason) => success ? resolve(true) : reject(Object.assign(new Error(reason), { code: 'print_failed' })))));
+  handle('open-purchase-link', async value => {const url=purchaseUrl(value);if(!url)throw Object.assign(new Error(),{code:'purchase_link_invalid'});await shell.openExternal(url);return true;});
+  handle('print', () => new Promise((resolve, reject) => window.webContents.print({ silent: false, printBackground: true }, (success, reason) => success ? resolve(true) : reason === 'Print job canceled' ? resolve(false) : reject(Object.assign(new Error(reason), { code: 'print_failed' })))));
   await window.loadURL('ricamo://app/index.html');
   window.show();
   backupManager.start();
