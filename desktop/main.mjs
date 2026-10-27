@@ -1,18 +1,19 @@
 import { app, BrowserWindow, ipcMain, dialog, session, Menu, protocol } from 'electron';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, extname } from 'node:path';
-import { mkdir, writeFile, readFile, rename, readdir, unlink } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { Repository } from './repository.mjs';
 import { inspectBackup } from '../core/backup.mjs';
 import { BACKUP_LIMIT, safeDisplayName, boundedBytes } from '../core/files.mjs';
 import { createAssetHandler } from './protocol.mjs';
+import { atomicWrite } from './filesystem.mjs';
+import { BackupManager, writeBackup } from './backup-manager.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 protocol.registerSchemesAsPrivileged([{ scheme: 'ricamo', privileges: { standard: true, secure: true, supportFetchAPI: true } }]);
 if (process.env.RICAMO_DATA_DIR) app.setPath('userData', process.env.RICAMO_DATA_DIR);
 const lock = app.requestSingleInstanceLock();
-let window, repository, pendingRestore, automaticBackupTimer;
+let window, repository, pendingRestore, backupManager;
 if (!lock) app.quit();
 else {
   app.on('second-instance', () => { if (window?.isMinimized()) window.restore(); window?.focus(); });
@@ -22,23 +23,6 @@ else {
   });
 }
 
-async function atomicWrite(path, content) {
-  const temporary = `${path}.${randomUUID()}.tmp`;
-  await writeFile(temporary, content, { flag: 'wx' });
-  try { await rename(temporary, path); } catch (error) { await unlink(temporary).catch(() => {}); throw error; }
-}
-async function localBackup(label = 'automatic') {
-  const directory = join(app.getPath('userData'), 'backups');
-  await mkdir(directory, { recursive: true });
-  const text = await repository.backup();
-  await inspectBackup(text);
-  const path = join(directory, `${new Date().toISOString().replace(/[:.]/g, '-')}-${label}.ricamobackup`);
-  await atomicWrite(path, text);
-  await inspectBackup(await readFile(path, 'utf8'));
-  const files = (await readdir(directory)).filter(name => name.endsWith('-automatic.ricamobackup')).sort().reverse();
-  for (const name of files.slice(7)) await unlink(join(directory, name));
-  return path;
-}
 function handle(channel, action) {
   ipcMain.handle(`ricamo:${channel}`, async (event, ...args) => {
     if (!window || event.sender !== window.webContents || event.senderFrame !== window.webContents.mainFrame) return { ok: false, error: { code: 'unauthorized' } };
@@ -48,6 +32,8 @@ function handle(channel, action) {
 }
 async function start() {
   repository = new Repository(join(app.getPath('userData'), 'ricamo.sqlite'));
+  backupManager = new BackupManager(repository, app.getPath('userData'));
+  await backupManager.initialise();
   protocol.handle('ricamo', await createAssetHandler(join(root, 'dist')));
   Menu.setApplicationMenu(null);
   session.defaultSession.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
@@ -62,6 +48,14 @@ async function start() {
   window.webContents.on('will-navigate', event => event.preventDefault());
   window.webContents.on('will-attach-webview', event => event.preventDefault());
   handle('load', () => repository.load());
+  handle('backup-status', () => backupManager.status());
+  handle('configure-backup', patch => backupManager.configure(patch));
+  handle('choose-backup-folder', async remove => {
+    if (remove === true) return backupManager.chooseExternal(null);
+    const choice = await dialog.showOpenDialog(window, { properties: ['openDirectory', 'createDirectory'] });
+    return choice.canceled ? backupManager.status() : backupManager.chooseExternal(choice.filePaths[0]);
+  });
+  handle('run-backup', () => backupManager.run());
   handle('command', (command, revision) => {
     if (['attachment.add'].includes(command?.type)) throw Object.assign(new Error(), { code: 'unauthorized_command' });
     return repository.execute(command, revision);
@@ -83,9 +77,8 @@ async function start() {
     const choice = await dialog.showSaveDialog(window, { defaultPath: `Ricamo-${new Date().toISOString().slice(0, 10)}.ricamobackup`, filters: [{ name: 'Ricamo backup', extensions: ['ricamobackup'] }] });
     if (choice.canceled) return false;
     const text = await repository.backup();
-    await inspectBackup(text);
-    await atomicWrite(choice.filePath, text);
-    await inspectBackup(await readFile(choice.filePath, 'utf8'));
+    await writeBackup(choice.filePath, text);
+    await backupManager.recordManual(choice.filePath);
     return true;
   });
   handle('inspect-restore', async text => {
@@ -97,14 +90,14 @@ async function start() {
     if (!pendingRestore || token !== pendingRestore.token || Date.now() > pendingRestore.expires) throw Object.assign(new Error(), { code: 'invalid_restore_token' });
     const prepared = pendingRestore.prepared;
     pendingRestore = null;
-    await localBackup('before-restore');
+    await backupManager.run('before-restore');
     return repository.restore(prepared, revision);
   });
   handle('print', () => new Promise((resolve, reject) => window.webContents.print({ silent: false, printBackground: true }, (success, reason) => success ? resolve(true) : reject(Object.assign(new Error(reason), { code: 'print_failed' })))));
   await window.loadURL('ricamo://app/index.html');
   window.show();
-  automaticBackupTimer = setInterval(() => { localBackup().catch(() => { /* Manual backup remains available; data is never discarded. */ }); }, 30 * 60_000);
+  backupManager.start();
   window.on('closed', () => { window = null; });
 }
 app.on('window-all-closed', () => app.quit());
-app.on('before-quit', () => { clearInterval(automaticBackupTimer); repository?.close(); repository = null; });
+app.on('before-quit', () => { backupManager?.stop(); repository?.close(); repository = null; });
