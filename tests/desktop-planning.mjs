@@ -41,8 +41,8 @@ const environment = { ...process.env, RICAMO_DATA_DIR: data };
 delete environment.ELECTRON_RUN_AS_NODE; delete environment.NODE_OPTIONS;
 const binary = process.platform === 'win32' ? 'electron.exe' : process.platform === 'darwin' ? 'Electron.app/Contents/MacOS/Electron' : 'electron';
 const executable = resolve(process.env.RICAMO_EXECUTABLE || join(root, 'node_modules/electron/dist', binary));
-const args = [...(process.env.RICAMO_TEST_NO_SANDBOX === '1' ? ['--no-sandbox'] : []), ...(process.env.RICAMO_EXECUTABLE ? [] : [root])];
-const launch = () => electron.launch({ executablePath: executable, args, env: environment, timeout: 40000 });
+const args = [...(process.env.RICAMO_EXECUTABLE ? [] : [root])];
+const launch = () => electron.launch({ chromiumSandbox: true, executablePath: executable, args, env: environment, timeout: 40000 });
 let app, page;
 const errors = [], externalRequests = [], checks = [];
 const observe = current => {
