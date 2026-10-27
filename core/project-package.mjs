@@ -60,6 +60,7 @@ function subsetFor(state,projectId,rawOptions={}) {
 }
 export function projectExportManifest(state,projectId,options={}) { return subsetFor(state,projectId,options).manifest; }
 function validateSubset(state) {
+  assert(state?.threadCatalogues===undefined,'project_package_privacy');
   assert(Array.isArray(state?.projects)&&Array.isArray(state?.patterns),'project_package_invalid');
   assert([...state.projects,...state.patterns].every(owner=>owner?.catalogueReferences===undefined),'project_package_privacy');
   assert(new TextEncoder().encode(JSON.stringify(state)).length<=PROJECT_METADATA_LIMIT,'project_package_bounds');
