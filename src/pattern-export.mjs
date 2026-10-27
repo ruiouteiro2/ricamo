@@ -20,8 +20,8 @@ export function pageTiles(width, height, columns = 50, rows = 60, overlap = 2) {
 }
 export async function patternPng(revision, { symbols = false, monochrome = false, completed = [] } = {}) {
   validateRevision(revision);
-  const cellSize = Math.min(symbols ? 14 : 6, 2400 / Math.max(revision.width, revision.height));
-  const canvas = drawPattern(document.createElement('canvas'), revision, { cellSize, width: revision.width * cellSize, height: revision.height * cellSize, grid: symbols, symbols, monochrome, completed });
+  const cellSize = Math.min(symbols ? 8 : 6, 4096 / Math.max(revision.width, revision.height));
+  const canvas = drawPattern(document.createElement('canvas'), revision, { cellSize, width: revision.width * cellSize, height: revision.height * cellSize, maxDimension:4096, grid: symbols, symbols, monochrome, completed });
   const blob = await new Promise((resolve, reject) => canvas.toBlob(value => value ? resolve(value) : reject(Error('image_export_failed')), 'image/png'));
   return new Uint8Array(await blob.arrayBuffer());
 }
