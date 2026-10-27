@@ -1,10 +1,14 @@
+import { saveEntityWithAssets } from './entity-assets.mjs';
+import { saveProject, saveSession } from './projects.mjs';
+import { validateMaterialDescriptors, validateDescriptorProperties } from './material-descriptors.mjs';
+import {workCompanionHandlers,validateWorkCompanion} from './work-companion.mjs';
 import { kitWorkflowHandlers, validateKitWorkflows } from './kit-workflows.mjs';
 import { createPatternWithAsset } from './pattern-asset.mjs';
 import { motifHandlers, validateEditorMotifs } from './editor-inserts.mjs';
 import { projectInsightHandlers, validateProjectInsights } from './project-insights.mjs';
 import { importProjectPackage } from './project-package.mjs';
 import { applyCommand, createState, validateState } from './commands.mjs';
-import { assert, text, identifier, find, put, stringList } from './shared.mjs';
+import { assert, text, identifier, find, put, stringList, stableStringify } from './shared.mjs';
 import { saveMaterial, addLot, saveLocation } from './inventory.mjs';
 import { applyProjectThreadEstimate, validateThreadEstimateState } from './thread-estimate-workflow.mjs';
 import { validateRevision } from './pattern.mjs';
@@ -16,6 +20,8 @@ import { toolActivityHandlers, validateToolActivity } from './tool-activity.mjs'
 
 export { createState };
 const handlers = {
+  'entity.saveWithAssets': (state, payload, context) => saveEntityWithAssets(state, payload, context, { saveAttachment: handlers['attachment.add'], ownerHandlers: { 'material.save': saveMaterial, 'material.createWithLot': handlers['material.createWithLot'], 'project.save': saveProject, 'session.save': saveSession } }),
+  ...workCompanionHandlers,
   ...kitWorkflowHandlers,
   'pattern.createWithAsset': (state, payload, context) => createPatternWithAsset(state, payload, context, { saveAttachment: handlers['attachment.add'], savePattern: handlers['pattern.save'] }),
   ...motifHandlers,
@@ -77,10 +83,15 @@ const handlers = {
     assert(Array.isArray(p.rows) && p.rows.length > 0 && p.rows.length <= 5000, 'invalid_import');
     assert(typeof p.digest === 'string' && /^[a-f0-9]{64}$/.test(p.digest), 'invalid_file_digest');
     assert(!state.audit.some(row => row.kind === 'csv_import' && row.digest === p.digest) || p.allowRepeat === true, 'duplicate_import');
-    const createdMaterials = new Map();
+    const createdMaterials = new Map(), metadata = new Map();
     for (const row of p.rows) {
+      assert(row && typeof row === 'object' && !Array.isArray(row) && (row.skip === undefined || typeof row.skip === 'boolean'), 'invalid_import');
       if (row.skip) continue;
+      assert(row.material && typeof row.material === 'object' && !Array.isArray(row.material) && (!row.issues || Array.isArray(row.issues) && row.issues.length === 0), 'invalid_import');
+      validateDescriptorProperties(row.material.properties ?? {});
+      if (row.lot) validateDescriptorProperties(row.lot.properties ?? {}, 'lot');
       const identity = JSON.stringify([row.material.brand, row.material.range, row.material.code || row.material.name]);
+      if (!row.materialId) { const signature = stableStringify(row.material); assert(!metadata.has(identity) || metadata.get(identity) === signature, 'csv_metadata_conflict'); metadata.set(identity, signature); }
       const id = row.materialId || createdMaterials.get(identity) || ctx.id();
       if (!row.materialId && !createdMaterials.has(identity)) { saveMaterial(state, { ...row.material, id }, ctx); createdMaterials.set(identity, id); }
       else find(state, 'materials', id);
@@ -107,7 +118,9 @@ export function executeCommand(state, command, context = {}) {
 
 export function validateApplicationState(state) {
   validateState(state);
+  validateMaterialDescriptors(state);
   validateKitWorkflows(state);
+  validateWorkCompanion(state);
   validateInventoryWorkflowState(state);
   validateFabricPlanning(state);
   validateToolActivity(state);
