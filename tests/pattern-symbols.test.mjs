@@ -1,3 +1,4 @@
+import {inventoryPalette} from '../src/engine/adapter.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {jsPDF} from 'jspdf';import {createCanvas} from '@napi-rs/canvas';import {getDocument} from 'pdfjs-dist/legacy/build/pdf.mjs';
 import {SYMBOL_MODES,symbolsForMode,assignSymbols} from '../core/pattern-symbols.mjs';
@@ -19,3 +20,13 @@ test('Actual A4 chart and legend export all 500 special symbols with embedded fo
 test('Anchor remains an independent sourced palette with original manufacturer codes and no invented offers',()=>{const palette=selectedThreadPalette({},'bundled-anchor-stranded');assert.equal(palette.colors.length,444);assert.ok(palette.colors.every(c=>c.brand==='Anchor'&&c.range==='Stranded Cotton'&&/^\d{5}$/.test(c.code)&&!c.product));assert.match(palette.catalogue.source,/Farbkarte_Anchor_Sticktwist\.pdf/);assert.match(palette.catalogue.license,/not measured/);assert.equal(new Set(threadCatalogueVersions({}).map(c=>c.id)).size,3);assert.equal(palette.catalogue.digest,anchorThreadCatalogue.digest);});
 
 test('Explicit finishing margins change the fabric cut without changing embroidery geometry or old defaults',()=>{const old=normalizePatternFabric({countX:14,countY:14}),dimensions={widthCm:25.4,heightCm:12.7};assert.equal(old.margins,undefined);const original=fabricGridFromCm(dimensions,old);assert.equal(original.cutWidthCm,original.widthCm);const fabric=normalizePatternFabric({...old,margins:{left:5,right:5,top:5,bottom:5}}),extra=fabricGridFromCm(dimensions,fabric);assert.equal(extra.width,original.width);assert.equal(extra.height,original.height);assert.equal(extra.cutWidthCm,original.widthCm+10);assert.equal(extra.cutHeightCm,original.heightCm+10);const revision=createBlank(extra.width,extra.height,[],{settings:{fabric}}),portable=portableRevision(revision,true);validatePortableRevision(portable);assert.deepEqual(portable.settings.fabric.margins,fabric.margins);for(const margins of [null,{left:null},{left:-1},{left:1001},{left:2,extra:3}])assert.throws(()=>normalizePatternFabric({...old,margins}));});
+
+test('owned-stock generation excludes multicolour averages and retains known purchase facts',()=>{
+ const product=bundledSupplierProducts().find(row=>row.brand==='DMC'&&row.range==='Mouliné'&&row.code==='310');
+ const make=(id,p)=>({id,category:'thread',brand:p.brand,range:p.range,code:p.code,name:p.name,color:p.hex,properties:{product:p}});
+ const items=[make('solid',product),make('multi',{...product,id:'synthetic-multi',code:'synthetic',colorVariation:'multicolour'}),make('unverified',{...product,id:'synthetic-unverified',code:'other',suitability:'verify-technique'})];
+ const lots=items.map(item=>({materialId:item.id,status:'usable',quantity:1}));
+ const palette=inventoryPalette(items,lots);assert.equal(palette.colors.length,1);assert.equal(palette.colors[0].product.id,product.id);
+ const legacy={...items[0],id:'legacy',range:'Light Effects',code:'E130',properties:{}};
+ assert.throws(()=>inventoryPalette([legacy],[{materialId:'legacy',quantity:1,status:'usable'}]),{code:'engine.inventoryPaletteEmpty'});
+});
