@@ -40,6 +40,7 @@ export function saveProject(state, p, ctx) {
     manualPercent: designChanged ? 0 : (existing?.manualPercent ?? 0),
     view: designChanged ? resetWorkView(existing.view) : existing?.view ?? {}, progressHistory: existing?.progressHistory ?? [],
     ...(!designChanged && existing?.referenceData ? { referenceData: existing.referenceData } : {}),
+    ...(source.catalogueReferences !== undefined ? { catalogueReferences: structuredClone(source.catalogueReferences) } : {}),
     createdAt: existing?.createdAt ?? ctx.now, updatedAt: ctx.now,
   };
   if (!existing && project.settings.thread === undefined && state.settings.preferences?.threadEstimates) project.settings.thread = structuredClone(state.settings.preferences.threadEstimates);
