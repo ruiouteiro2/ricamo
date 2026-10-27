@@ -1,10 +1,33 @@
 import { applyCommand, createState, validateState } from './commands.mjs';
 import { assert, text, identifier, find, put, stringList } from './shared.mjs';
-import { saveMaterial, addLot } from './inventory.mjs';
+import { saveMaterial, addLot, saveLocation } from './inventory.mjs';
+import { saveNeed, projectRevision } from './projects.mjs';
+import { estimateThreads, estimateForMaterial } from './estimates.mjs';
 import { validateRevision } from './pattern.mjs';
 
 export { createState };
 const handlers = {
+  'project.estimate': (state, p, ctx) => {
+    const project = find(state, 'projects', p.projectId);
+    assert(!['completed', 'archived'].includes(project.status), 'project_closed');
+    const revision = projectRevision(state, project);
+    assert(revision, 'structured_pattern_required');
+    for (const estimate of estimateThreads(revision, { ...project.settings.fabric, ...project.settings.thread })) {
+      if (!estimate.filamentMetres) continue;
+      const color = estimate.color;
+      let material = state.materials.find(row => !row.archived && (color.itemId ? row.id === color.itemId : row.category === 'thread' && row.brand === color.brand && row.code === color.code && row.range === (color.range || '')));
+      if (!material) {
+        const id = ctx.id();
+        saveMaterial(state, { id, name: color.name || color.code, category: 'thread', brand: color.brand || '', range: color.range || '', code: color.code, color: color.hex, unit: 'strand-m' }, ctx);
+        material = state.materials.find(row => row.id === id);
+      }
+      const previous = state.needs.find(row => row.projectId === project.id && row.materialId === material.id);
+      if (previous?.source === 'manual') continue;
+      saveNeed(state, { projectId: project.id, materialId: material.id, quantity: estimateForMaterial(estimate, material), confidence: 'estimated', source: 'pattern' }, ctx);
+      const need = state.needs.find(row => row.projectId === project.id && row.materialId === material.id);
+      need.estimate = { method: estimate.method, assumptions: estimate.assumptions, filamentMetres: estimate.filamentMetres, revisionId: revision.id };
+    }
+  },
   'material.createWithLot': (state, payload, context) => {
     const id = payload.material.id || context.id();
     saveMaterial(state, { ...payload.material, id }, context);
@@ -52,12 +75,23 @@ const handlers = {
     assert(Array.isArray(p.rows) && p.rows.length > 0 && p.rows.length <= 5000, 'invalid_import');
     assert(typeof p.digest === 'string' && /^[a-f0-9]{64}$/.test(p.digest), 'invalid_file_digest');
     assert(!state.audit.some(row => row.kind === 'csv_import' && row.digest === p.digest) || p.allowRepeat === true, 'duplicate_import');
+    const createdMaterials = new Map();
     for (const row of p.rows) {
       if (row.skip) continue;
-      const id = row.materialId || ctx.id();
-      if (!row.materialId) saveMaterial(state, { ...row.material, id }, ctx);
+      const identity = JSON.stringify([row.material.brand, row.material.range, row.material.code || row.material.name]);
+      const id = row.materialId || createdMaterials.get(identity) || ctx.id();
+      if (!row.materialId && !createdMaterials.has(identity)) { saveMaterial(state, { ...row.material, id }, ctx); createdMaterials.set(identity, id); }
       else find(state, 'materials', id);
-      if (row.lot) addLot(state, { ...row.lot, materialId: id }, ctx);
+      if (row.lot) {
+        const lot = { ...row.lot, materialId: id };
+        if (!lot.locationId && lot.locationName && p.createLocations === true) {
+          let location = state.locations.find(item => item.name === lot.locationName);
+          if (!location) { const locationId = ctx.id(); saveLocation(state, { id: locationId, name: lot.locationName }, ctx); location = state.locations.find(item => item.id === locationId); }
+          lot.locationId = location.id;
+        }
+        delete lot.locationName;
+        addLot(state, lot, ctx);
+      }
     }
     state.audit.push({ id: ctx.id(), kind: 'csv_import', digest: p.digest, date: ctx.now, rows: p.rows.filter(row => !row.skip).length });
   },
