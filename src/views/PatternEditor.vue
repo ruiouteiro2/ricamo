@@ -1,6 +1,6 @@
 <script setup>
 import { computed, shallowRef, ref, reactive, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
-import { ArrowLeft, Save, Undo2, Redo2, Pencil, Eraser, PaintBucket, Move, Minus, Square, Slash, MousePointer2, Check, Download, Plus, Copy, ClipboardPaste, RotateCw, FlipHorizontal2, FlipVertical2, Maximize, FileImage } from '@lucide/vue';
+import { ChevronLeft, Save, Undo2, Redo2, Pencil, Eraser, PaintBucket, Move, Minus, Square, Slash, MousePointer2, Check, Download, Plus, Copy, ClipboardPaste, RotateCw, FlipHorizontal2, FlipVertical2, Maximize, FileImage } from '@lucide/vue';
 import PatternDetails from '../components/PatternDetails.vue';
 import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
@@ -345,7 +345,7 @@ onBeforeUnmount(() => { viewAutosave.dispose();draftAutosave.dispose();window.di
 
 <template>
   <section class="page">
-    <button class="button text" @click="navigate(projectId ? 'project' : 'patterns', projectId || null)"><ArrowLeft :size="16" />{{ projectId ? t('project') : t('patterns') }}</button>
+    <button class="button text" @click="navigate(projectId ? 'project' : 'patterns', projectId || null)"><ChevronLeft :size="16" />{{ projectId ? t('project') : t('patterns') }}</button>
     <EmptyState v-if="!pattern" :icon="FileImage" :title="t('noResults')" />
     <template v-else>
       <PageHeader :eyebrow="progressMode ? t('work') : t('patterns')" :title="pattern.name" :description="pattern.kind === 'reference' ? t('referenceEditorHelp') : progressMode ? t('progressDoesNotConsume') : t('editorHelp')"><PatternDetails v-if="!progressMode" :pattern="pattern"/><span v-if="dirty" class="badge" :class="draftStatus.pending?'warning':'green'">{{ t(draftStatus.pending?'draftPending':'draftSaved') }}</span><button v-if="!progressMode" class="button" @click="createProject">{{ t('createProject') }}</button><button v-if="draft" class="button" @click="dialog = 'export'"><Download :size="16" />{{ t('export') }}</button><button v-if="!progressMode && draft" class="button primary" :disabled="!dirty || working" @click="openSave"><Save :size="16" />{{ t('newRevision') }}</button></PageHeader>
