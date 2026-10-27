@@ -1,3 +1,4 @@
+import { createProjectPackage, inspectProjectPackage, previewProjectImport, projectExportManifest, projectImportAssets, projectImportCommand, importedProjectId } from '../core/project-package.mjs';
 import { createState, executeCommand } from '../core/application.mjs';
 import { createBackup, inspectBackup } from '../core/backup.mjs';
 import { detectFile, safeDisplayName, digestBytes, boundedBytes } from '../core/files.mjs';
@@ -41,11 +42,11 @@ function writeCommand(state, transaction, command, revision) {
   transaction.objectStore('state').put(next, 'current');
   return next;
 }
-let pendingRestore;
+let pendingRestore, pendingProject, pendingProjectTimer;
 const browser = {
   async load() { return request((await db()).transaction('state').objectStore('state').get('current')); },
   command(command, revision) {
-    if (command.type === 'attachment.add') throw failure('unauthorized_command');
+    if (['attachment.add','project.package.import'].includes(command.type)) throw failure('unauthorized_command');
     return mutate((state, tx) => writeCommand(state, tx, command, revision));
   },
   async importAsset({ name, data, operationId }, revision) {
@@ -97,6 +98,48 @@ const browser = {
     });
     return next;
   },
+async exportProject(projectId, options = {}) {
+  const connection = await db();
+  const { state, assets } = await new Promise((resolve, reject) => {
+    const tx = connection.transaction(['state', 'assets']);
+    let state, error; const assets = [];
+    const current = tx.objectStore('state').get('current');
+    current.onsuccess = () => {
+      try {
+        state = current.result;
+        const manifest = projectExportManifest(state, projectId, options);
+        const ids = new Set([...manifest.requiredAttachmentIds, ...(options.attachmentIds || [])]);
+        for (const id of ids) {
+          const read = tx.objectStore('assets').get(id);
+          read.onsuccess = () => { if (read.result) assets.push(read.result); };
+        }
+      } catch (caught) { error = caught; tx.abort(); }
+    };
+    tx.oncomplete = () => resolve({ state, assets });
+    tx.onerror = tx.onabort = () => reject(error || tx.error || failure('storage_error'));
+  });
+  return createProjectPackage(state, projectId, assets, options);
+},
+async inspectProject(text) {
+  const prepared = await inspectProjectPackage(text), state = await browser.load();
+  const token = crypto.randomUUID();
+  clearTimeout(pendingProjectTimer);
+  pendingProject = { token, prepared, operationId: crypto.randomUUID(), expires: Date.now() + 10 * 60_000 };
+  pendingProjectTimer = setTimeout(() => { if (pendingProject?.token === token) pendingProject = null; }, 10 * 60_000);
+  return { token, revision: state.revision, preview: previewProjectImport(state, prepared) };
+},
+async importProject(token, decisions, revision) {
+  if (!pendingProject || pendingProject.token !== token || Date.now() > pendingProject.expires) throw failure('invalid_project_token');
+  const captured = pendingProject; pendingProject = null; clearTimeout(pendingProjectTimer); pendingProjectTimer = null;
+  return mutate((state, tx) => {
+    const command = projectImportCommand(captured.prepared, decisions, captured.operationId, revision);
+    const assets = projectImportAssets(state, captured.prepared, captured.operationId);
+    const next = writeCommand(state, tx, command, revision);
+    if (next.revision !== state.revision) for (const asset of assets) tx.objectStore('assets').add(asset);
+    return { state: next, projectId: importedProjectId(captured.operationId) };
+  });
+},
+
   async print() { window.print(); return true; },
 };
 
