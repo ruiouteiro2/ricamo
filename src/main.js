@@ -3,4 +3,4 @@ import App from './App.vue';
 import './styles.css';
 import './ui.css';
 
-createApp(App).mount('#app');
+document.fonts.load('12px RicamoSymbols').catch(()=>{}).finally(()=>createApp(App).mount('#app'));
