@@ -31,6 +31,7 @@ async function save() {
           </FormField>
         </template>
       </div>
+      <slot :draft="draft" :busy="busy"/>
     </form>
     <template #footer><button type="button" class="button" :disabled="busy" @click="emit('close')">{{ t('cancel') }}</button><button class="button primary" :form="formId" type="submit" :disabled="busy">{{ busy ? t('saving') : confirmLabel || t('save') }}</button></template>
   </AppDialog>
