@@ -81,9 +81,10 @@ async function start() {
   });
   handle('run-backup', () => backupManager.run());
   handle('command', (command, revision) => {
-    if (['attachment.add','project.package.import'].includes(command?.type)) throw Object.assign(new Error(), { code: 'unauthorized_command' });
+    if (['attachment.add','project.package.import','pattern.createWithAsset'].includes(command?.type)) throw Object.assign(new Error(), { code: 'unauthorized_command' });
     return repository.execute(command, revision);
   });
+  handle('create-pattern-with-asset', (request, revision) => repository.createPatternWithAsset(request, revision));
   handle('import-asset', (asset, revision) => repository.importAsset(asset, revision));
   handle('get-asset', id => repository.getAsset(id));
   handle('save-file', async ({ name, data }) => {
