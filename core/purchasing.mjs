@@ -1,4 +1,4 @@
-import { add, subtract, assert, quantity, text, oneOf, integer, currency, date, find, optionalRef, recordId, put, audit, totalReserved } from './shared.mjs';
+import { add, subtract, assert, quantity, text, stringList, oneOf, integer, currency, date, find, optionalRef, recordId, put, audit, totalReserved } from './shared.mjs';
 import { addLot } from './inventory.mjs';
 import { confirmedConsumption } from './projects.mjs';
 import { fabricHeldPieces } from './fabric-state.mjs';
@@ -24,6 +24,7 @@ export function savePurchase(state, p, ctx) {
     unitPrice: integer(source.unitPrice, 'unitPrice', { nullable: true }), currency: currency(source.currency ?? state.settings.currency),
     priority: oneOf(source.priority ?? 'normal', ['low', 'normal', 'high'], 'priority'),
     notes: text(source.notes, 'notes', { max: 10000 }), expectedDate: date(source.expectedDate, 'expectedDate'),
+    attachments: stringList(existing?.attachments ?? source.attachments, 'attachments'),
     source: oneOf(source.source ?? 'manual', ['manual', 'project'], 'source'),
     createdAt: existing?.createdAt ?? ctx.now, updatedAt: ctx.now,
   });
@@ -40,7 +41,7 @@ export function receivePurchase(state, p, ctx) {
   const lastMovement = state.movements[state.movements.length - 1];
   lastMovement.kind = 'receipt';
   lastMovement.purchaseId = purchase.id;
-  state.receipts.push({ id: ctx.id(), purchaseId: purchase.id, lotId: lot.id, materialId: purchase.materialId, quantity: amount, unit: purchase.unit, cost, currency: purchase.currency, date: ctx.now, operationId: ctx.operationId });
+  state.receipts.push({ id: ctx.id(), attachments: [], purchaseId: purchase.id, lotId: lot.id, materialId: purchase.materialId, quantity: amount, unit: purchase.unit, cost, currency: purchase.currency, date: ctx.now, operationId: ctx.operationId });
   purchase.received = add(alreadyReceived, amount);
   purchase.status = purchase.received === purchase.quantity ? 'received' : 'partial';
   purchase.updatedAt = ctx.now;
