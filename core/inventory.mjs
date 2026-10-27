@@ -226,7 +226,7 @@ export function saveLocation(state, p, ctx) {
   const parentId = optionalRef(state, 'locations', 'parentId' in p ? p.parentId : existing?.parentId);
   let ancestor = parentId;
   while (ancestor) { assert(ancestor !== id, 'location_cycle'); ancestor = find(state, 'locations', ancestor).parentId; }
-  put(state, 'locations', { id, name: text(p.name ?? existing?.name, 'name', { required: true, max: 300 }), parentId, notes: text(p.notes ?? existing?.notes, 'notes', { max: 10000 }), createdAt: existing?.createdAt ?? ctx.now, updatedAt: ctx.now });
+  put(state, 'locations', { id, attachments: stringList(existing?.attachments ?? p.attachments, 'attachments'), name: text(p.name ?? existing?.name, 'name', { required: true, max: 300 }), parentId, notes: text(p.notes ?? existing?.notes, 'notes', { max: 10000 }), createdAt: existing?.createdAt ?? ctx.now, updatedAt: ctx.now });
 }
 
 export function saveSupplier(state, p, ctx) {
