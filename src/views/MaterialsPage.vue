@@ -1,4 +1,5 @@
 <script setup>
+import { materialSearchDescriptors } from '../material-descriptors.mjs';
 import { computed, ref, watch } from 'vue';
 import { Plus, Search, Package, CircleAlert, Download, ChevronLeft, ChevronRight, Heart, MapPin } from '@lucide/vue';
 import PageHeader from '../components/PageHeader.vue';
@@ -43,7 +44,7 @@ const rows = computed(() => {
     const summary = inventorySummary({ lots: holdings, reservations: holdings.flatMap(lot => reservations.get(lot.id) || []) }, material.id);
     const locationIds = [...new Set(holdings.filter(lot => lot.status !== 'transformed').map(lot => lot.locationId))];
     const locationNames = locationIds.map(locate);
-    return { material, holdings, summary, locationIds, locationNames, projectIds:projects.get(material.id)||new Set(), search: normalize([material.id, material.name, material.brand, material.range, material.code, material.notes, ...material.tags, ...locationNames, ...holdings.flatMap(lot=>[lot.id,lot.lotCode,lot.notes]),...Object.values(material.properties.custom||{})].join(' ')), low: material.minimum !== null && summary.available < material.minimum };
+    return { material, holdings, summary, locationIds, locationNames, projectIds:projects.get(material.id)||new Set(), search: normalize([material.id, material.name, material.brand, material.range, material.code, material.notes, ...material.tags, ...locationNames, ...holdings.flatMap(lot=>[lot.id,lot.lotCode,lot.notes]),materialSearchDescriptors(material,holdings)].join(' ')), low: material.minimum !== null && summary.available < material.minimum };
   });
 });
 const filtered = computed(() => {
