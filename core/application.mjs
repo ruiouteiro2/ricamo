@@ -98,7 +98,9 @@ const handlers = {
 };
 
 export function executeCommand(state, command, context = {}) {
-  return applyCommand(state, command, { ...context, handlers });
+  const next = applyCommand(state, command, { ...context, handlers });
+  validateApplicationState(next);
+  return next;
 }
 
 export function validateApplicationState(state) {
@@ -110,14 +112,20 @@ export function validateApplicationState(state) {
     seenAttachments.add(attachment.id);
     assert(/^[a-f0-9]{64}$/.test(attachment.digest), 'invalid_file_digest');
     assert(Number.isSafeInteger(attachment.size) && attachment.size > 0 && attachment.size <= 25 * 1024 * 1024, 'file_too_large');
+    text(attachment.name, 'name', { required: true, max: 250 });
+    assert(['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'application/pdf'].includes(attachment.mime), 'invalid_file_type');
   }
   for (const pattern of state.patterns) {
     identifier(pattern.id);
+    text(pattern.name, 'name', { required: true, max: 300 });
+    assert(Array.isArray(pattern.tags), 'invalid_list'); stringList(pattern.tags);
+    assert(typeof pattern.favorite === 'boolean' && typeof pattern.archived === 'boolean', 'invalid_boolean');
     assert(['structured', 'reference'].includes(pattern.kind), 'invalid_pattern_kind');
     assert(Array.isArray(pattern.revisions), 'invalid_pattern_revisions');
     for (const revision of pattern.revisions) validateRevision(revision);
     if (pattern.kind === 'structured') assert(pattern.revisions.some(row => row.id === pattern.currentRevisionId), 'invalid_current_revision');
     if (pattern.sourceAttachmentId) assert(seenAttachments.has(pattern.sourceAttachmentId), 'missing_attachment');
+    if (pattern.kind === 'reference') assert(Boolean(pattern.sourceAttachmentId), 'pattern_content_required');
   }
   return state;
 }
