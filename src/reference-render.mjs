@@ -1,3 +1,4 @@
+import { embedPdfFont, pdfText, PDF_FONT } from './pdf-font.mjs';
 import { displayPoint, displayRect } from '../core/references.mjs';
 
 export function drawReferenceAnnotations(canvas, annotations, { rotation = 0, selectedId = null, preview = null, clear = true } = {}) {
@@ -44,9 +45,10 @@ function wrapText(context, text, maxWidth) {
 
 /** Raster marks can extend past an edge. Include complete note text in a printable
  * appendix, bounded together with the document to avoid unbounded PDF growth. */
-export function appendReferenceNotes(pdf, annotations, { locale = 'it', maxPages = 300 } = {}) {
+export async function appendReferenceNotes(pdf, annotations, { locale = 'it', maxPages = 300, fontBytes, boldFontBytes } = {}) {
   const notes = annotations.filter(mark => mark.text?.trim());
   if (!notes.length) return 0;
+  if (pdf.getFont().fontName !== PDF_FONT) await embedPdfFont(pdf, { fontBytes, boldFontBytes });
   const english = locale === 'en', firstCount = pdf.getNumberOfPages();
   let y;
   function addPage() {
@@ -59,7 +61,7 @@ export function appendReferenceNotes(pdf, annotations, { locale = 'it', maxPages
     if (y > 265) addPage();
     pdf.setFontSize(10); pdf.text(`${english ? 'Page' : 'Pagina'} ${mark.page} · ${english ? 'Note' : 'Nota'} ${index + 1}`, 14, y); y += 7;
     pdf.setFontSize(9);
-    for (const line of pdf.splitTextToSize(mark.text, 182)) {
+    for (const line of pdf.splitTextToSize(pdfText(pdf, mark.text), 182)) {
       if (y > 282) { addPage(); pdf.setFontSize(9); }
       pdf.text(line, 14, y); y += 4.5;
     }
