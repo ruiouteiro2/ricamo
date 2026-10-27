@@ -16,7 +16,7 @@ let app, page, demo;
 function observe(target) { target.setDefaultTimeout(12000); target.on('pageerror', error => errors.push(error.message)); target.on('request', request => { if (/^(?:https?|wss?):/.test(request.url())) remoteRequests.push(request.url()); }); }
 async function launch() {
   const env = { ...process.env, RICAMO_DATA_DIR: data }; delete env.ELECTRON_RUN_AS_NODE; delete env.NODE_OPTIONS;
-  app = await electron.launch({ executablePath: resolve(executable), args: process.env.RICAMO_EXECUTABLE ? [] : [root], env, timeout: 40000 });
+  app = await electron.launch({ chromiumSandbox: true, executablePath: resolve(executable), args: process.env.RICAMO_EXECUTABLE ? [] : [root], env, timeout: 40000 });
   page = await app.firstWindow(); observe(page); await expect(page.locator('h1').first()).toBeVisible();
 }
 const normalState = async () => { const response = await page.evaluate(() => window.ricamo.load()); assert.equal(response.ok, true); return response.value; };
