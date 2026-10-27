@@ -33,25 +33,28 @@ export const anchorPalette:Palette={brand:'Anchor',source:'Selezione iniziale ap
 export function lab(rgb:number[]):number[] { const [r,g,b]=rgb.map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4}); const f=(v:number)=>v>.008856?Math.cbrt(v):7.787*v+16/116;const x=f((r*.4124564+g*.3575761+b*.1804375)/.95047),y=f(r*.2126729+g*.7151522+b*.072175),z=f((r*.0193339+g*.119192+b*.9503041)/1.08883);return [116*y-16,500*(x-y),200*(y-z)] }
 export function deltaE(a:number[],b:number[]):number{return Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2])} // CIE76, Euclidean CIELAB
 function nearest(v:number[],centers:number[][]):number {let best=0,min=Infinity;for(let i=0;i<centers.length;i++){const d=deltaE(v,centers[i]);if(d<min){best=i;min=d}}return best}
-export function simplify(cells:number[],w:number,h:number,threshold:number):number[]{
+export function simplify(cells:number[],w:number,h:number,threshold:number,protectedMask?:Uint8Array):number[]{
  if(threshold<=0)return [...cells];const result=[...cells],seen=new Uint8Array(cells.length);
  for(let start=0;start<cells.length;start++){
   if(seen[start]||result[start]<0)continue;
   const color=result[start],region=[start],local=new Set([start]),border=new Map<number,number>();
   for(let q=0;q<region.length;q++){const i=region[q],x=i%w,y=Math.floor(i/w);for(const n of [x>0?i-1:-1,x<w-1?i+1:-1,y>0?i-w:-1,y<h-1?i+w:-1]){if(n<0)continue;if(result[n]===color){if(!local.has(n)){local.add(n);region.push(n)}}else if(result[n]>=0)border.set(result[n],(border.get(result[n])||0)+1)}}
   region.forEach(i=>seen[i]=1);
-  if(region.length<=threshold&&border.size){const replacement=[...border].sort((a,b)=>b[1]-a[1]||a[0]-b[0])[0][0];region.forEach(i=>result[i]=replacement)}
+  if(region.length<=threshold&&border.size&&!region.some(i=>protectedMask?.[i])){const replacement=[...border].sort((a,b)=>b[1]-a[1]||a[0]-b[0])[0][0];region.forEach(i=>result[i]=replacement)}
  }return result;
 }
-export function convert(rgba:Uint8ClampedArray,s:Settings,p:Palette):{colors:Color[];cells:number[]}{
+export interface ConversionOptions {preferredIndices?:number[];preferenceTolerance?:number;maxPreferenceDistance?:number;protectedMask?:Uint8Array}
+export function convert(rgba:Uint8ClampedArray,s:Settings,p:Palette,options:ConversionOptions={}):{colors:Color[];cells:number[];cleanupChanged:number}{
  const pixels:number[][]=[],indices:number[]=[];const histogram=new Map<string,{lab:number[];n:number}>();
  for(let i=0;i<rgba.length;i+=4){if(rgba[i+3]<128){indices.push(-1);continue}const alpha=rgba[i+3]/255;const rgb=[0,1,2].map(j=>Math.min(255,Math.round((rgba[i+j]*alpha+255*(1-alpha))/8)*8));const l=lab(rgb);indices.push(pixels.length);pixels.push(l);const key=rgb.join(',');const row=histogram.get(key);if(row)row.n++;else histogram.set(key,{lab:l,n:1})}
  if(!pixels.length)throw Error('L’immagine non contiene punti visibili.');
  const rows=[...histogram.values()].sort((a,b)=>b.n-a.n);const k=Math.min(s.maxColors,rows.length,p.colors.length,s.mode==='simple'?16:s.mode==='balanced'?40:80);const centers=[rows[0].lab];
  while(centers.length<k){let winner=rows[0],best=-1;for(const row of rows){const score=deltaE(row.lab,centers[nearest(row.lab,centers)])**2*Math.sqrt(row.n);if(score>best){best=score;winner=row}}if(best<1e-8)break;centers.push([...winner.lab])}
  for(let iteration=0;iteration<8;iteration++){const sums=centers.map(()=>[0,0,0,0]);for(const row of rows){const sum=sums[nearest(row.lab,centers)];for(let j=0;j<3;j++)sum[j]+=row.lab[j]*row.n;sum[3]+=row.n}for(let j=0;j<centers.length;j++)if(sums[j][3])centers[j]=sums[j].slice(0,3).map(v=>v/sums[j][3])}
- const paletteLabs=p.colors.map(c=>lab(c.rgb));const chosen=[...new Set(centers.map(c=>nearest(c,paletteLabs)))];const colors=chosen.map(i=>p.colors[i]);const labs=chosen.map(i=>paletteLabs[i]);let cells=indices.map(i=>i<0?-1:nearest(pixels[i],labs));
- cells=simplify(cells,s.width,s.height,s.region);const used=[...new Set(cells.filter(i=>i>=0))].sort((a,b)=>a-b);const remap=new Map(used.map((n,i)=>[n,i]));return {colors:used.map(i=>colors[i]),cells:cells.map(i=>i<0?-1:remap.get(i)!)};
+ const paletteLabs=p.colors.map(c=>lab(c.rgb));const preferred=options.preferredIndices??[];
+ const choose=(center:number[])=>{const best=nearest(center,paletteLabs);let owned=-1,distance=Infinity;for(const index of preferred){const d=deltaE(center,paletteLabs[index]);if(d<distance){owned=index;distance=d}}return owned>=0&&distance<=deltaE(center,paletteLabs[best])+(options.preferenceTolerance??0)&&distance<=(options.maxPreferenceDistance??20)?owned:best};
+ const chosen=[...new Set(centers.map(choose))];const colors=chosen.map(i=>p.colors[i]);const labs=chosen.map(i=>paletteLabs[i]);let cells=indices.map(i=>i<0?-1:nearest(pixels[i],labs));
+ const before=cells;cells=simplify(cells,s.width,s.height,s.region,options.protectedMask);const cleanupChanged=cells.reduce((n,value,i)=>n+(value!==before[i]?1:0),0);const used=[...new Set(cells.filter(i=>i>=0))].sort((a,b)=>a-b);const remap=new Map(used.map((n,i)=>[n,i]));return {colors:used.map(i=>colors[i]),cells:cells.map(i=>i<0?-1:remap.get(i)!),cleanupChanged};
 }
 export function counts(p:Project):number[]{const n=p.colors.map(()=>0);p.cells.forEach(i=>{if(i>=0)n[i]++});return n}
 export function consumption(stitches:number,s:Settings,meters=8){const pitch=.0254/s.count;const doubleLength=stitches*pitch*(2*Math.SQRT2+2)*(1+s.waste/100)+Math.ceil(stitches/80)*.12;const singleMeters=doubleLength*s.strands;return {meters:singleMeters,skeins:stitches?Math.ceil(singleMeters/(meters*6)):0}}
