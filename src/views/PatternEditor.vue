@@ -7,7 +7,8 @@ import AppDialog from '../components/AppDialog.vue';
 import FormField from '../components/FormField.vue';
 import ReferenceReader from '../components/ReferenceReader.vue';
 import { state, dispatch, navigate, notify } from '../state';
-import { storage } from '../storage';
+import { storage, desktop } from '../storage';
+import { createDraftAutosave } from '../editor-draft.mjs';
 import { t, language, number, errorText } from '../i18n';
 import { dmcPalette } from '../engine/adapter.mjs';
 import { validateRevision, counts, paint, fill, line, rectangle, replaceColor, copySelection, pasteSelection, moveSelection, rotate, flip, resize, resizeImpact, addHalfStitch, addBackstitch, SYMBOLS } from '../../core/pattern.mjs';
@@ -28,7 +29,10 @@ const resizeForm = reactive({ width: 100, height: 100, offsetX: 0, offsetY: 0 })
 const exportForm = reactive({ kind: 'pdf', locale: language.value, paper: 'a4', monochrome: false, progress: true });
 const colorSearch = ref(''), newColor = reactive({ code: '', name: '', hex: '#634453', brand: '', strands: 2, symbol: '' }), replacement = ref(0), symbolDraft = ref(''), strandDraft = ref(2);
 const notesDraft = ref(''), pendingProgress = ref(null), progressHistory = shallowRef([]), progressFuture = shallowRef([]), revisionNotes = ref('');
+const baseRevisionId = ref(''), recoveryHold = ref(false), recovery = shallowRef(null);
+const draftStatus = shallowRef({pending:false,saving:false,hasDraft:false,savedAt:null,error:null});
 let pointer = null, resizeObserver, frame, viewTimer, allowLeave = false, pendingNavigation = null, lastSeenKey = '';
+let closeRequested=false;
 const completed = computed(() => new Set(project.value?.completed ?? []));
 const metrics = computed(() => draft.value ? counts(draft.value) : null);
 const existingColors = computed(() => dmcPalette.colors.filter(c => `${c.code} ${c.name}`.toLowerCase().includes(colorSearch.value.toLowerCase())).slice(0, 60));
@@ -37,6 +41,50 @@ const totalWidth = computed(() => (draft.value?.width ?? 1) * zoom.value), total
 const tools = computed(() => progressMode.value ? [ ['pan',Move],['mark',Check],['unmark',Eraser],['select',MousePointer2] ] : [ ['pan',Move],['paint',Pencil],['erase',Eraser],['fill',PaintBucket],['line',Minus],['rectangle',Square],['half',Slash],['backstitch',Slash],['select',MousePointer2] ]);
 const blockedWork = computed(() => progressMode.value && ['completed', 'archived'].includes(project.value?.status));
 const impact = computed(() => { try { return draft.value ? resizeImpact(draft.value, resizeForm.width, resizeForm.height, resizeForm) : null; } catch { return null; } });
+
+const draftAutosave = createDraftAutosave({
+  snapshot: () => ({ patternId: props.id, baseRevisionId: baseRevisionId.value, name: name.value,
+    revision: { ...structuredClone(draft.value), notes: revisionNotes.value } }),
+  save: async value => { const next = await dispatch('pattern.draft.save', value); return next.patterns.find(row => row.id === value.patternId).draft; },
+  discard: () => dispatch('pattern.draft.discard', {patternId:props.id}),
+  onStatus: value => {
+    const before=draftStatus.value, changed=before.pending!==value.pending || before.hasDraft!==value.hasDraft || before.savedAt!==value.savedAt;
+    if(changed || before.saving!==value.saving || before.error!==value.error)draftStatus.value=value;
+    if(changed)window.dispatchEvent(new CustomEvent('ricamo:draft-state',{detail:{pending:value.pending,hasDraft:value.hasDraft,savedAt:value.savedAt}}));
+  },
+});
+const draftBase = computed(() => pattern.value?.revisions.find(row=>row.id === (recovery.value?.baseRevisionId || baseRevisionId.value)));
+const oldDraftBase = computed(() => Boolean(baseRevisionId.value && pattern.value?.currentRevisionId !== baseRevisionId.value));
+function changed() { if (progressMode.value || recoveryHold.value || !draft.value) return; dirty.value = true; error.value='';draftAutosave.changed(); }
+function canEdit() { if (recoveryHold.value) { error.value=t('draftResumeToEdit'); return false; } return !working.value && !progressMode.value; }
+async function loadSavedRevision(id, { offerRecovery = false } = {}) {
+  error.value='';
+  if (!pattern.value || pattern.value.kind !== 'structured') { draft.value=null; return; }
+  const saved = pattern.value.revisions.find(row=>row.id === id); if (!saved) return;
+  chosenRevisionId.value=saved.id; baseRevisionId.value=saved.id; draft.value=structuredClone(saved);
+  name.value=saved.name || t('revision'); revisionNotes.value=saved.notes || ''; dirty.value=false;
+  history.value=[];future.value=[];progressHistory.value=[];progressFuture.value=[];selected.value=0;selection.value=null;
+  recovery.value=!progressMode.value && pattern.value.draft ? structuredClone(pattern.value.draft) : null;
+  recoveryHold.value=Boolean(recovery.value); draftAutosave.reset({hasDraft:recoveryHold.value,savedAt:recovery.value?.updatedAt});
+  tool.value=progressMode.value?'mark':'pan'; if(offerRecovery && recoveryHold.value)dialog.value='recover';
+  await nextTick();
+  if (project.value?.view?.zoom && stage.value) { zoom.value=Math.max(1,Math.min(36,project.value.view.zoom));stage.value.scrollLeft=project.value.view.x||0;stage.value.scrollTop=project.value.view.y||0;selected.value=Math.max(0,Math.min(draft.value.colors.length-1,project.value.view.selectedColor||0));Object.assign(cursor,project.value.view.cursor??{x:0,y:0}); }
+  else fit(); scheduleDraw();
+}
+function resumeDraft() {
+  const saved=pattern.value?.draft; if(!saved)return;
+  chosenRevisionId.value=saved.baseRevisionId;baseRevisionId.value=saved.baseRevisionId;draft.value=structuredClone(saved.revision);
+  name.value=saved.name || t('revision');revisionNotes.value=saved.revision.notes||'';dirty.value=true;recoveryHold.value=false;recovery.value=null;
+  history.value=[];future.value=[];draftAutosave.reset({hasDraft:true,savedAt:saved.updatedAt});dialog.value='';nextTick(()=>{fit();scheduleDraw();});
+}
+function openSaved() { dialog.value='';recoveryHold.value=Boolean(pattern.value?.draft); }
+async function discardRecovery() {
+  working.value=true;
+  try { await draftAutosave.discard();dialog.value='';await loadSavedRevision(pattern.value.currentRevisionId); }
+  catch(caught){error.value=errorText(caught);}finally{working.value=false;}
+}
+async function retryDraft() { try {await draftAutosave.flush();error.value='';}catch(caught){error.value=errorText(caught);} }
+function draftTime(value) { return value ? new Date(value).toLocaleString(language.value==='en'?'en-GB':'it-IT') : ''; }
 
 function draw() {
   if (!draft.value || !canvas.value || !stage.value) return;
@@ -57,32 +105,28 @@ function saveViewSoon() {
   clearTimeout(viewTimer);
   viewTimer = setTimeout(() => { dispatch('project.view', { projectId: props.projectId, view: { ...project.value.view, zoom: zoom.value, x: stage.value?.scrollLeft ?? 0, y: stage.value?.scrollTop ?? 0, selectedColor: selected.value, cursor: { ...cursor }, grid: grid.value, symbols: symbols.value } }).catch(caught => { error.value = errorText(caught); }); }, 700);
 }
-watch([() => props.id, () => props.projectId, () => persisted.value?.id], async () => {
-  if (!pattern.value) return;
-  error.value = ''; selected.value = 0; selection.value = null; dirty.value = false; history.value = []; future.value = []; progressHistory.value = []; progressFuture.value = [];
-  if (pattern.value.kind === 'reference') { draft.value = null; return; }
-  if (!persisted.value) { draft.value = null; return; }
-  draft.value = structuredClone(persisted.value); name.value = persisted.value.name || t('revision'); revisionNotes.value = draft.value.notes || ''; tool.value = progressMode.value ? 'mark' : 'pan';
-  await nextTick();
-  if (project.value?.view?.zoom) { zoom.value = Math.max(1, Math.min(36, project.value.view.zoom)); stage.value.scrollLeft = project.value.view.x || 0; stage.value.scrollTop = project.value.view.y || 0; selected.value = Math.max(0, Math.min(draft.value.colors.length - 1, project.value.view.selectedColor || 0)); Object.assign(cursor, project.value.view.cursor ?? { x: 0, y: 0 }); }
-  else fit();
-  scheduleDraw();
-}, { immediate: true });
+watch([() => props.id, () => props.projectId], async () => {
+  error.value='';dialog.value='';chosenRevisionId.value='';
+  if (!pattern.value || pattern.value.kind !== 'structured') { draft.value=null;draftAutosave.reset();return; }
+  await loadSavedRevision(project.value?.revisionId || pattern.value.currentRevisionId,{offerRecovery:!progressMode.value});
+}, {immediate:true});
 watch([zoom, grid, symbols, selected], () => { scheduleDraw(); saveViewSoon(); });
 watch([monochrome, highlight, selection, draft, () => JSON.stringify(project.value?.completed ?? [])], scheduleDraw);
 watch(cursor, scheduleDraw);
 function edit(operation) {
-  if (progressMode.value || !draft.value) return false;
-  try { const previous = draft.value, next = operation(previous); validateRevision(next); history.value = [...history.value, previous].slice(-20); future.value = []; draft.value = next; dirty.value = true; error.value = ''; return true; }
+  if (!canEdit() || !draft.value) return false;
+  try { const previous = draft.value, next = operation(previous); validateRevision(next); history.value = [...history.value, previous].slice(-20); future.value = []; draft.value = next; changed(); error.value = ''; return true; }
   catch (caught) { error.value = errorText(caught); return false; }
 }
 function undo() {
+  if(working.value)return;
   if (progressMode.value) return undoProgress(false);
-  if (!history.value.length) return; future.value = [...future.value, draft.value]; draft.value = history.value.at(-1); history.value = history.value.slice(0, -1); dirty.value = true;
+  if (!history.value.length) return; future.value = [...future.value, draft.value]; draft.value = history.value.at(-1); history.value = history.value.slice(0, -1); changed();
 }
 function redo() {
+  if(working.value)return;
   if (progressMode.value) return undoProgress(true);
-  if (!future.value.length) return; history.value = [...history.value, draft.value]; draft.value = future.value.at(-1); future.value = future.value.slice(0, -1); dirty.value = true;
+  if (!future.value.length) return; history.value = [...history.value, draft.value]; draft.value = future.value.at(-1); future.value = future.value.slice(0, -1); changed();
 }
 function coordinates(event, vertex = false) {
   const rect = canvas.value.getBoundingClientRect();
@@ -93,6 +137,7 @@ function coordinates(event, vertex = false) {
 const area = (a, b) => ({ x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), width: Math.abs(b.x - a.x) + 1, height: Math.abs(b.y - a.y) + 1 });
 function pointerDown(event) {
   if (!draft.value || working.value || event.button !== 0) return;
+  if (recoveryHold.value && !['pan','select'].includes(tool.value) && !event.altKey) { dialog.value='recover';return; }
   canvas.value.focus(); canvas.value.setPointerCapture(event.pointerId);
   const at = coordinates(event); Object.assign(cursor, at);
   pointer = { start: at, end: at, vertex: coordinates(event, true), clientX: event.clientX, clientY: event.clientY, left: stage.value.scrollLeft, top: stage.value.scrollTop, previous: draft.value, changed: false, tool: event.altKey ? 'pan' : tool.value };
@@ -107,11 +152,11 @@ function pointerDown(event) {
 function stroke(at) {
   if (!pointer || lastSeenKey === `${at.x}:${at.y}`) return;
   const from = pointer.end;
-  try { draft.value = line(draft.value, from.x, from.y, at.x, at.y, pointer.tool === 'erase' ? -1 : selected.value); pointer.end = at; pointer.changed = true; lastSeenKey = `${at.x}:${at.y}`; }
+  try { draft.value = line(draft.value, from.x, from.y, at.x, at.y, pointer.tool === 'erase' ? -1 : selected.value); pointer.end = at; pointer.changed = true; lastSeenKey = `${at.x}:${at.y}`; changed(); }
   catch (caught) { error.value = errorText(caught); }
 }
 function pointerMove(event) {
-  if (!draft.value) return;
+  if (!draft.value || working.value) return;
   const at = coordinates(event); Object.assign(cursor, at);
   if (!pointer) return;
   if (pointer.tool === 'pan') { stage.value.scrollLeft = pointer.left - (event.clientX - pointer.clientX); stage.value.scrollTop = pointer.top - (event.clientY - pointer.clientY); return; }
@@ -124,7 +169,7 @@ function pointerUp(event) {
   const active = pointer; pointer = null; lastSeenKey = '';
   if (active.tool === 'pan' || active.tool === 'select') return;
   if (progressMode.value) { if (blockedWork.value) return; requestMark(active.tool === 'unmark' ? 'remove' : 'add', selection.value); return; }
-  if (active.changed) { history.value = [...history.value, active.previous].slice(-20); future.value = []; dirty.value = true; }
+  if (active.changed) { history.value = [...history.value, active.previous].slice(-20); future.value = []; }
   else if (active.tool === 'line') edit(p => line(p, active.start.x, active.start.y, active.end.x, active.end.y, selected.value));
   else if (active.tool === 'rectangle') edit(p => rectangle(p, area(active.start, active.end), selected.value, { filled: event.shiftKey }));
   else if (active.tool === 'backstitch') { const end = coordinates(event, true); if (active.vertex.x !== end.x || active.vertex.y !== end.y) edit(p => addBackstitch(p, { id: crypto.randomUUID(), x1: active.vertex.x, y1: active.vertex.y, x2: end.x, y2: end.y, color: selected.value })); }
@@ -159,7 +204,7 @@ async function undoProgress(redo) {
   catch (caught) { error.value = errorText(caught); } finally { working.value = false; }
 }
 function keydown(event) {
-  if (!draft.value) return;
+  if (!draft.value || working.value) return;
   if ((event.ctrlKey || event.metaKey) && ['z', 'y', 's', 'c', 'v'].includes(event.key.toLowerCase())) {
     event.preventDefault(); const key = event.key.toLowerCase();
     if (key === 'z') event.shiftKey ? redo() : undo(); else if (key === 'y') redo(); else if (key === 's' && !progressMode.value) openSave(); else if (key === 'c') copy(); else if (key === 'v') paste(); return;
@@ -184,14 +229,20 @@ function transform(kind) {
 }
 function openResize() { Object.assign(resizeForm, { width: draft.value.width, height: draft.value.height, offsetX: 0, offsetY: 0 }); dialog.value = 'resize'; }
 function applyResize() { if (!impact.value) return; edit(p => resize(p, resizeForm.width, resizeForm.height, { ...resizeForm, allowCrop: true })); dialog.value = ''; selection.value = null; nextTick(fit); }
-function openSave() { if (dirty.value && !progressMode.value) { name.value = t('revision'); dialog.value = 'save'; } }
+function openSave() { if (dirty.value && !progressMode.value) { if(!name.value.trim())name.value=t('revision');dialog.value='save'; } }
 async function saveRevision() {
   if (working.value || !name.value.trim()) return;
-  working.value = true;
-  try { const revision = { ...structuredClone(draft.value), id: crypto.randomUUID(), name: name.value, notes: revisionNotes.value }; await dispatch('pattern.save', { id: props.id, revision }); chosenRevisionId.value = revision.id; dirty.value = false; dialog.value = ''; notify(t('patternSaved')); }
-  catch (caught) { error.value = errorText(caught); } finally { working.value = false; }
+  working.value=true;
+  try {
+    await draftAutosave.flush();
+    const revision={...structuredClone(draft.value),id:crypto.randomUUID(),name:name.value,notes:revisionNotes.value,
+      provenance:{...draft.value.provenance,editorBaseRevisionId:baseRevisionId.value}};
+    await dispatch('pattern.save',{id:props.id,revision,clearDraft:true});
+    dialog.value='';await loadSavedRevision(revision.id);notify(t('patternSaved'));
+  }catch(caught){error.value=errorText(caught);}finally{working.value=false;}
 }
 function addColor(color) {
+  if (!canEdit()) return;
   if (draft.value.colors.length >= 80) { error.value = t('paletteLimit'); return; }
   const symbol = [...SYMBOLS].find(s => !draft.value.colors.some(c => c.symbol === s));
   edit(p => ({ ...structuredClone(p), colors: [...p.colors, { ...color, symbol, strands: Number(color.strands) || 2 }] }));
@@ -211,21 +262,45 @@ async function exportPattern() {
   if (working.value) return;
   working.value = true;
   try {
-    const fileName = pattern.value.name.replace(/[<>:"/\\|?*]/g, '-').slice(0, 100), revision = structuredClone(draft.value);
+    const fileName = pattern.value.name.replace(/[<>:"/\\|?*]/g, '-').slice(0, 100), revision = structuredClone(exportForm.kind === 'native' ? persisted.value : draft.value);
     const options = { title: pattern.value.name, locale: exportForm.locale, paper: exportForm.paper, monochrome: exportForm.monochrome, completed: exportForm.progress && progressMode.value ? [...completed.value] : [], notes: revisionNotes.value };
     const data = exportForm.kind === 'pdf' ? patternPdf(revision, options) : exportForm.kind === 'png' ? await patternPng(revision, { ...options, symbols: true }) : JSON.stringify({ format: 'ricamo-pattern', version: 1, name: pattern.value.name, revision }, null, 2);
     await storage.saveFile({ name: `${fileName}.${exportForm.kind === 'native' ? 'ricamopattern' : exportForm.kind}`, data }); dialog.value = ''; notify();
   } catch (caught) { error.value = errorText(caught); } finally { working.value = false; }
 }
 async function createProject() { if (dirty.value) { error.value = t('saveBeforeProject'); return; } try { const id = crypto.randomUUID(); await dispatch('project.save', { id, name: pattern.value.name, patternId: pattern.value.id, revisionId: persisted.value?.id, status: 'preparing' }); navigate('project', id); } catch (caught) { error.value = errorText(caught); } }
-function beforeUnload(event) { if (dirty.value) { event.preventDefault(); event.returnValue = ''; } }
-function beforeNavigate(event) { if (dirty.value && !allowLeave) { event.preventDefault(); pendingNavigation = event.detail; dialog.value = 'discard'; } }
-function discard() { dirty.value = false; allowLeave = true; dialog.value = ''; if (pendingNavigation) navigate(pendingNavigation.page, pendingNavigation.id); else navigate('patterns'); allowLeave = false; }
-function changeRevision(event) { const id = event.target.value; if (dirty.value && !window.confirm(t('discardHelp'))) { event.target.value = persisted.value.id; return; } chosenRevisionId.value = id; }
+function beforeUnload(event) { if (draftStatus.value.pending) { event.preventDefault(); event.returnValue=''; } }
+function beforeNavigate(event) { if (dirty.value && !allowLeave) { event.preventDefault();pendingNavigation=event.detail;dialog.value='discard'; } }
+function stay() { pendingNavigation=null;dialog.value=''; }
+async function leaveEditor(discardChanges = false) {
+  if (working.value) return;working.value=true;
+  try {
+    if (discardChanges) await draftAutosave.discard(); else await draftAutosave.flush();
+    const destination=pendingNavigation;pendingNavigation=null;dialog.value='';allowLeave=true;
+    if(destination?.revisionId) await loadSavedRevision(destination.revisionId);
+    else navigate(destination?.page || 'patterns',destination?.id || null);
+    allowLeave=false;
+  }catch(caught){error.value=errorText(caught);}finally{working.value=false;}
+}
+function changeRevision(event) {
+  const id=event.target.value;event.target.value=persisted.value.id;
+  if(dirty.value){pendingNavigation={revisionId:id};dialog.value='discard';return;}
+  loadSavedRevision(id);
+}
+async function flushForClose(discardChanges = false) {
+  if (working.value) return;closeRequested=false;working.value=true;
+  try {
+    if(discardChanges)await draftAutosave.discard();else await draftAutosave.flush();
+    if(discardChanges)dirty.value=false;
+    dialog.value='';if(desktop && storage.finishClose)await storage.finishClose();
+  }catch(caught){error.value=errorText(caught);dialog.value='closeDraft';}finally{working.value=false;}
+}
+function beforeClose(event) { if(draftStatus.value.pending){event.preventDefault();closeRequested=true;if(!working.value)flushForClose();} }
+watch(working,value=>{if(!value && closeRequested)flushForClose();});
 function bookmark() { if (!project.value) return; const markers = [...(project.value.view.markers ?? []), { id: crypto.randomUUID(), x: cursor.x, y: cursor.y, note: notesDraft.value }]; dispatch('project.view', { projectId: props.projectId, view: { ...project.value.view, markers } }).then(() => { notesDraft.value = ''; notify(); }).catch(caught => { error.value = errorText(caught); }); }
 function gotoMarker(marker) { Object.assign(cursor, { x: marker.x, y: marker.y }); stage.value.scrollLeft = Math.max(0, marker.x * zoom.value - stage.value.clientWidth / 2); stage.value.scrollTop = Math.max(0, marker.y * zoom.value - stage.value.clientHeight / 2); }
-onMounted(() => { window.addEventListener('beforeunload', beforeUnload); window.addEventListener('ricamo:before-navigate', beforeNavigate); resizeObserver = new ResizeObserver(scheduleDraw); if (stage.value) resizeObserver.observe(stage.value); });
-onBeforeUnmount(() => { window.removeEventListener('beforeunload', beforeUnload); window.removeEventListener('ricamo:before-navigate', beforeNavigate); resizeObserver?.disconnect(); clearTimeout(viewTimer); cancelAnimationFrame(frame); });
+onMounted(() => { window.addEventListener('beforeunload', beforeUnload);window.addEventListener('ricamo:before-close',beforeClose); window.addEventListener('ricamo:before-navigate', beforeNavigate); resizeObserver = new ResizeObserver(scheduleDraw); if (stage.value) resizeObserver.observe(stage.value); });
+onBeforeUnmount(() => { draftAutosave.dispose();window.dispatchEvent(new CustomEvent('ricamo:draft-state',{detail:{pending:false,hasDraft:false,savedAt:null}}));window.removeEventListener('ricamo:before-close',beforeClose);window.removeEventListener('beforeunload', beforeUnload); window.removeEventListener('ricamo:before-navigate', beforeNavigate); resizeObserver?.disconnect(); clearTimeout(viewTimer); cancelAnimationFrame(frame); });
 </script>
 
 <template>
@@ -233,8 +308,8 @@ onBeforeUnmount(() => { window.removeEventListener('beforeunload', beforeUnload)
     <button class="button text" @click="navigate(projectId ? 'project' : 'patterns', projectId || null)"><ArrowLeft :size="16" />{{ projectId ? t('project') : t('patterns') }}</button>
     <EmptyState v-if="!pattern" :icon="FileImage" :title="t('noResults')" />
     <template v-else>
-      <PageHeader :eyebrow="progressMode ? t('work') : t('patterns')" :title="pattern.name" :description="pattern.kind === 'reference' ? t('referenceEditorHelp') : progressMode ? t('progressDoesNotConsume') : t('editorHelp')"><span v-if="dirty" class="badge warning">{{ t('unsaved') }}</span><button v-if="!progressMode" class="button" @click="createProject">{{ t('createProject') }}</button><button v-if="draft" class="button" @click="dialog = 'export'"><Download :size="16" />{{ t('export') }}</button><button v-if="!progressMode && draft" class="button primary" :disabled="!dirty || working" @click="openSave"><Save :size="16" />{{ t('newRevision') }}</button></PageHeader>
-      <p v-if="error" role="alert" class="notice error">{{ error }}</p><p v-if="blockedWork" class="notice warning">{{ t('reopenToProgress') }}</p>
+      <PageHeader :eyebrow="progressMode ? t('work') : t('patterns')" :title="pattern.name" :description="pattern.kind === 'reference' ? t('referenceEditorHelp') : progressMode ? t('progressDoesNotConsume') : t('editorHelp')"><span v-if="dirty" class="badge" :class="draftStatus.pending?'warning':'green'">{{ t(draftStatus.pending?'draftPending':'draftSaved') }}</span><button v-if="!progressMode" class="button" @click="createProject">{{ t('createProject') }}</button><button v-if="draft" class="button" @click="dialog = 'export'"><Download :size="16" />{{ t('export') }}</button><button v-if="!progressMode && draft" class="button primary" :disabled="!dirty || working" @click="openSave"><Save :size="16" />{{ t('newRevision') }}</button></PageHeader>
+      <p v-if="error" role="alert" class="notice error">{{ error }}</p><p v-if="!progressMode && dirty" class="notice" :class="{error:draftStatus.error}" role="status">{{ draftStatus.error?t('draftSaveFailed'):draftStatus.pending?t('draftPendingHelp'):t('draftSavedHelp',{time:draftTime(draftStatus.savedAt)}) }} <button v-if="draftStatus.error" class="button small" @click="retryDraft">{{ t('retry') }}</button></p><p v-if="recoveryHold" class="notice warning">{{ t('draftResumeToEdit') }} <button class="button small" @click="dialog='recover'">{{ t('draftRecovery') }}</button></p><p v-if="!progressMode && dirty && oldDraftBase" class="notice warning">{{ t('draftOldBase') }}</p><p v-if="blockedWork" class="notice warning">{{ t('reopenToProgress') }}</p>
       <ReferenceReader v-if="pattern.kind === 'reference'" :pattern-id="pattern.id" :project-id="projectId" />
       <template v-else-if="draft">
         <div class="toolbar"><select v-if="!progressMode" :value="persisted?.id" :aria-label="t('revision')" @change="changeRevision"><option v-for="r in pattern.revisions" :key="r.id" :value="r.id">{{ r.name || t('revision') }} · {{ r.createdAt?.slice(0,10) }}</option></select><span class="badge">{{ draft.width }} × {{ draft.height }} {{ t('stitches') }}</span><span class="badge">{{ number(metrics.full,0) }} {{ t('fullCrosses') }} · {{ number(metrics.half,0) }} {{ t('half') }} · {{ number(metrics.backstitch,0) }} {{ t('backstitch') }}</span><span v-if="progressMode" class="badge green">{{ completed.size }} / {{ metrics.total }} {{ t('completedPrimitives') }}</span></div>
@@ -244,19 +319,21 @@ onBeforeUnmount(() => { window.removeEventListener('beforeunload', beforeUnload)
           <p class="cell-subtitle" aria-live="polite">{{ t('coordinate') }}: {{ cursor.x + 1 }}, {{ cursor.y + 1 }} · {{ draft.cells[cursor.y * draft.width + cursor.x] >= 0 ? draft.colors[draft.cells[cursor.y * draft.width + cursor.x]].code : t('emptyCell') }} · {{ t('canvasKeyboardHelp') }}</p>
           <div v-if="selection" class="notice"><span>{{ t('selection') }}: {{ selection.width }} × {{ selection.height }} ({{ selection.x + 1 }}, {{ selection.y + 1 }})</span><div class="actions"><template v-if="progressMode"><button class="button small" :disabled="working || blockedWork" @click="requestMark('add')">{{ t('mark') }}</button><button class="button small" :disabled="working || blockedWork" @click="requestMark('remove')">{{ t('unmark') }}</button></template><template v-else><button class="button small" @click="copy"><Copy :size="14" />{{ t('copySelection') }}</button><button class="button small" @click="moveSelected"><Move :size="14" />{{ t('moveToCursor') }}</button></template></div></div>
           <div v-if="!progressMode" class="editor-tools"><button class="button small" :disabled="!clipboard" @click="paste"><ClipboardPaste :size="14" />{{ t('pasteAtCursor') }}</button><button class="button small" @click="transform('rotate')"><RotateCw :size="14" />{{ t('rotate') }}</button><button class="button small" @click="transform('horizontal')"><FlipHorizontal2 :size="14" />{{ t('flipHorizontal') }}</button><button class="button small" @click="transform('vertical')"><FlipVertical2 :size="14" />{{ t('flipVertical') }}</button><button class="button small" @click="openResize">{{ t('resizeGrid') }}</button></div>
-          <div v-if="!progressMode" class="panel panel-body"><FormField :label="t('notes')" v-slot="{ id }"><textarea :id="id" v-model="revisionNotes" maxlength="20000" @input="dirty = true" /></FormField></div>
+          <div v-if="!progressMode" class="panel panel-body"><FormField :label="t('notes')" v-slot="{ id }"><textarea :id="id" v-model="revisionNotes" :readonly="recoveryHold || working" maxlength="20000" @input="changed" /></FormField></div>
           <div v-else class="panel panel-body"><h3>{{ t('bookmarks') }}</h3><div class="inline-row"><input v-model="notesDraft" :aria-label="t('bookmarkNote')" :placeholder="t('bookmarkNote')" maxlength="500" /><button class="button" @click="bookmark">{{ t('add') }}</button></div><div v-for="marker in project.view.markers || []" :key="marker.id" class="inline-row" style="margin-top:10px"><button class="button text" @click="gotoMarker(marker)">{{ marker.x + 1 }}, {{ marker.y + 1 }} · {{ marker.note || t('bookmark') }}</button></div></div>
         </div>
         <aside class="panel"><div class="panel-heading"><h2>{{ t('palette') }}</h2><button v-if="!progressMode" class="icon-button" :aria-label="t('addColor')" @click="dialog = 'color'"><Plus :size="18" /></button></div><div class="panel-body" style="padding:12px"><label class="checkbox-label" style="margin:0 0 12px"><input v-model="highlight" type="checkbox" />{{ t('highlightColor') }}</label><div class="palette-list"><button v-for="(color,index) in draft.colors" :key="index" class="palette-item" :class="{selected:selected === index}" :aria-pressed="selected === index" @click="selected = index"><span class="swatch" :style="{background:color.hex,color:(color.rgb[0]+color.rgb[1]+color.rgb[2]) > 390 ? '#111' : '#fff'}">{{ color.symbol }}</span><div><strong class="mono">{{ color.code }}</strong><small class="cell-subtitle">{{ color.brand }}</small></div><span>{{ metrics.byColor[index].total }}</span></button></div><p v-if="!draft.colors.length" class="muted">{{ t('addColorHelp') }}</p><template v-if="selectedColor"><h3 style="margin:18px 0 6px">{{ selectedColor.name }}</h3><p class="cell-subtitle">{{ selectedColor.strands ?? 2 }} {{ t('strands') }}</p><div v-if="!progressMode" class="stack" style="gap:8px"><button class="button small" @click="replacement = selected; symbolDraft = selectedColor.symbol; strandDraft = selectedColor.strands || 2; dialog = 'paletteEdit'">{{ t('editColor') }}</button></div></template></div></aside></div>
       </template>
     </template>
 
-    <AppDialog v-if="dialog === 'save'" :title="t('newRevision')" :busy="working" @close="dialog = ''"><p v-if="error" role="alert" class="notice error">{{ error }}</p><p class="notice">{{ t('revisionPinnedHelp') }}</p><FormField :label="t('revisionName')" required v-slot="{ id }"><input :id="id" v-model="name" maxlength="300" autofocus /></FormField><template #footer><button class="button" @click="dialog = ''">{{ t('cancel') }}</button><button class="button primary" :disabled="working || !name.trim()" @click="saveRevision">{{ t('save') }}</button></template></AppDialog>
+    <AppDialog v-if="dialog === 'save'" :title="t('newRevision')" :busy="working" @close="dialog = ''"><p v-if="error" role="alert" class="notice error">{{ error }}</p><p class="notice">{{ t('revisionPinnedHelp') }}</p><FormField :label="t('revisionName')" required v-slot="{ id }"><input :id="id" v-model="name" :disabled="working" maxlength="300" autofocus @input="changed" /></FormField><template #footer><button class="button" @click="dialog = ''">{{ t('cancel') }}</button><button class="button primary" :disabled="working || !name.trim()" @click="saveRevision">{{ t('save') }}</button></template></AppDialog>
     <AppDialog v-if="dialog === 'color'" :title="t('addColor')" wide @close="dialog = ''"><p v-if="error" role="alert" class="notice error">{{ error }}</p><input v-model="colorSearch" :aria-label="t('searchColors')" :placeholder="t('searchColors')" /><div class="palette-list" style="margin-top:16px"><button v-for="color in existingColors" :key="color.code" class="palette-item" @click="addColor({...color,brand:'DMC'})"><span class="swatch" :style="{background:color.hex}" /><strong>{{ color.code }}</strong> {{ color.name }}</button></div><details class="form-section"><summary>{{ t('customColor') }}</summary><div class="form-grid" style="margin-top:16px"><FormField v-for="field in ['name','brand','code']" :key="field" :label="t(field)" v-slot="{id}"><input :id="id" v-model="newColor[field]" maxlength="100" /></FormField><FormField :label="t('color')" v-slot="{id}"><input :id="id" v-model="newColor.hex" type="color" /></FormField></div><button class="button" style="margin-top:16px" @click="addCustomColor">{{ t('addColor') }}</button></details></AppDialog>
     <AppDialog v-if="dialog === 'paletteEdit'" :title="t('editColor')" @close="dialog = ''"><p v-if="error" role="alert" class="notice error">{{ error }}</p><p class="notice">{{ t('paletteEditHelp') }}</p><div class="form-grid"><FormField :label="t('symbol')" v-slot="{id}"><input :id="id" v-model="symbolDraft" maxlength="4" /></FormField><FormField :label="t('strands')" v-slot="{id}"><input :id="id" v-model.number="strandDraft" type="number" min="1" max="12" /></FormField><button class="button" @click="saveSymbol">{{ t('saveSymbol') }}</button><FormField :label="t('replaceWith')" v-slot="{id}"><select :id="id" v-model.number="replacement"><option v-for="(color,index) in draft.colors" :key="index" :value="index">{{ color.code }} · {{ color.name }}</option></select></FormField><button class="button" :disabled="selected === replacement" @click="edit(p => replaceColor(p,selected,replacement)); dialog = ''">{{ t('replaceColor') }}</button></div><p class="cell-subtitle">{{ t('removeColorHelp') }}</p><button class="button danger" :disabled="metrics.byColor[selected]?.total > 0" @click="removeColor">{{ t('remove') }}</button></AppDialog>
     <AppDialog v-if="dialog === 'resize'" :title="t('resizeGrid')" @close="dialog = ''"><p v-if="error" role="alert" class="notice error">{{ error }}</p><div class="form-grid"><FormField v-for="field in ['width','height','offsetX','offsetY']" :key="field" :label="t(field)" v-slot="{id}"><input :id="id" v-model.number="resizeForm[field]" type="number" :min="field.startsWith('offset') ? -500 : 1" max="500" /></FormField></div><p v-if="impact?.removed.length" class="notice warning">{{ t('cropImpact', {count:impact.removed.length}) }}</p><p class="notice">{{ t('revisionPinnedHelp') }}</p><template #footer><button class="button" @click="dialog = ''">{{ t('cancel') }}</button><button class="button primary" :disabled="!impact" @click="applyResize">{{ impact?.removed.length ? t('confirmCrop') : t('confirm') }}</button></template></AppDialog>
     <AppDialog v-if="dialog === 'progress'" :title="t('confirmProgress')" :busy="working" @close="dialog = ''"><p v-if="error" role="alert" class="notice error">{{ error }}</p><p>{{ t('progressImpact',{count:pendingProgress?.keys.length}) }}</p><p class="notice">{{ t('progressDoesNotConsume') }}</p><template #footer><button class="button" :disabled="working" @click="dialog = ''">{{ t('cancel') }}</button><button class="button primary" :disabled="working" @click="confirmProgress">{{ pendingProgress?.mode === 'remove' ? t('unmark') : t('mark') }}</button></template></AppDialog>
-    <AppDialog v-if="dialog === 'export'" :title="t('export')" :busy="working" @close="dialog = ''"><p v-if="error" role="alert" class="notice error">{{ error }}</p><div class="form-grid"><FormField :label="t('type')" v-slot="{id}"><select :id="id" v-model="exportForm.kind"><option value="pdf">PDF</option><option value="png">PNG</option><option value="native">Ricamo (.ricamopattern)</option></select></FormField><FormField :label="t('language')" v-slot="{id}"><select :id="id" v-model="exportForm.locale"><option value="it">Italiano</option><option value="en">English</option></select></FormField><FormField :label="t('paper')" v-slot="{id}"><select :id="id" v-model="exportForm.paper"><option value="a4">A4</option><option value="letter">Letter</option></select></FormField><label class="checkbox-label"><input v-model="exportForm.monochrome" type="checkbox" />{{ t('monochrome') }}</label><label v-if="progressMode" class="checkbox-label"><input v-model="exportForm.progress" type="checkbox" />{{ t('includeProgress') }}</label></div><p class="notice">{{ t('exportScaleHelp') }}</p><template #footer><button class="button" :disabled="working" @click="dialog = ''">{{ t('cancel') }}</button><button class="button primary" :disabled="working" @click="exportPattern">{{ working ? t('saving') : t('export') }}</button></template></AppDialog>
-    <AppDialog v-if="dialog === 'discard'" :title="t('unsaved')" @close="dialog = ''"><p v-if="error" role="alert" class="notice error">{{ error }}</p><p>{{ t('discardHelp') }}</p><template #footer><button class="button" @click="dialog = ''">{{ t('cancel') }}</button><button class="button danger" @click="discard">{{ t('discardChanges') }}</button></template></AppDialog>
+    <AppDialog v-if="dialog === 'export'" :title="t('export')" :busy="working" @close="dialog = ''"><p v-if="error" role="alert" class="notice error">{{ error }}</p><div class="form-grid"><FormField :label="t('type')" v-slot="{id}"><select :id="id" v-model="exportForm.kind"><option value="pdf">PDF</option><option value="png">PNG</option><option value="native">Ricamo (.ricamopattern)</option></select></FormField><FormField :label="t('language')" v-slot="{id}"><select :id="id" v-model="exportForm.locale"><option value="it">Italiano</option><option value="en">English</option></select></FormField><FormField :label="t('paper')" v-slot="{id}"><select :id="id" v-model="exportForm.paper"><option value="a4">A4</option><option value="letter">Letter</option></select></FormField><label class="checkbox-label"><input v-model="exportForm.monochrome" type="checkbox" />{{ t('monochrome') }}</label><label v-if="progressMode" class="checkbox-label"><input v-model="exportForm.progress" type="checkbox" />{{ t('includeProgress') }}</label></div><p v-if="exportForm.kind==='native' && dirty" class="notice">{{ t('draftNativeSavedOnly') }}</p><p class="notice">{{ t('exportScaleHelp') }}</p><template #footer><button class="button" :disabled="working" @click="dialog = ''">{{ t('cancel') }}</button><button class="button primary" :disabled="working" @click="exportPattern">{{ working ? t('saving') : t('export') }}</button></template></AppDialog>
+    <AppDialog v-if="dialog==='recover'" :title="t('draftRecovery')" :busy="working" @close="openSaved"><p v-if="error" role="alert" class="notice error">{{ error }}</p><p>{{ t('draftRecoveryHelp',{name:recovery?.name || draftBase?.name || t('revision'),time:draftTime(recovery?.updatedAt)}) }}</p><p class="notice">{{ t('draftBaseLabel',{name:draftBase?.name || recovery?.baseRevisionId}) }}</p><p v-if="recovery?.baseRevisionId!==pattern.currentRevisionId" class="notice warning">{{ t('draftOldBase') }}</p><template #footer><button class="button" :disabled="working" @click="openSaved">{{ t('draftOpenSaved') }}</button><button class="button danger" :disabled="working" @click="discardRecovery">{{ t('draftDiscard') }}</button><button class="button primary" :disabled="working" @click="resumeDraft">{{ t('draftResume') }}</button></template></AppDialog>
+    <AppDialog v-if="dialog==='discard'" :title="t('draftLeaveTitle')" :busy="working" @close="stay"><p v-if="error" role="alert" class="notice error">{{ error }}</p><p>{{ t('draftLeaveHelp') }}</p><template #footer><button class="button" :disabled="working" @click="stay">{{ t('draftStay') }}</button><button class="button danger" :disabled="working" @click="leaveEditor(true)">{{ t('discardChanges') }}</button><button class="button primary" :disabled="working" @click="leaveEditor(false)">{{ t('draftSaveLeave') }}</button></template></AppDialog>
+    <AppDialog v-if="dialog==='closeDraft'" :title="t('draftCloseFailed')" :busy="working" @close="dialog='' "><p v-if="error" role="alert" class="notice error">{{ error }}</p><p class="notice error">{{ t('draftSaveFailed') }}</p><template #footer><button class="button" :disabled="working" @click="dialog=''">{{ t('draftStay') }}</button><button class="button danger" :disabled="working" @click="flushForClose(true)">{{ t('draftDiscardClose') }}</button><button class="button primary" :disabled="working" @click="flushForClose(false)">{{ t('draftRetryClose') }}</button></template></AppDialog>
   </section>
 </template>
