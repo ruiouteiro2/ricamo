@@ -2616,8 +2616,8 @@
     "Include private notes, descriptions, tags, custom fields and budget"
   ],
   "package_includeSessions": [
-    "Includi date e durata delle sessioni",
-    "Include session dates and durations"
+    "Includi sessioni, durate e lavoro misurato",
+    "Include sessions, durations and measured work"
   ],
   "package_includeSessionNotes": [
     "Includi anche le note delle sessioni",
@@ -3144,8 +3144,8 @@
     "Time forecast"
   ],
   "forecastAssumptions": [
-    "Disponibilità e finitura",
-    "Schedule and finishing"
+    "Imposta previsione",
+    "Forecast settings"
   ],
   "weeklyAvailableHours": [
     "Ore disponibili alla settimana (facoltativo)",
@@ -3606,5 +3606,529 @@
   "thread_estimate_history": [
     "Una registrazione storica delle stime non è valida. I dati esistenti non sono stati modificati.",
     "An estimate history receipt is invalid. Existing data was not changed."
+  ],
+  "importedFabricReference": [
+    "Riferimento del tessuto importato",
+    "Imported fabric reference"
+  ],
+  "importedFabricReferenceHelp": [
+    "Queste misure descrivono il tessuto del progetto originale. Scegliere un pezzo locale per verificare spazio, prenotazioni e tagli.",
+    "These measurements describe the original project’s fabric. Select a local piece to check fit, reservations and cutting."
+  ],
+  "useImportedFabricCounts": [
+    "Usa questi count per la pianificazione",
+    "Use these counts for planning"
+  ],
+  "packageMeasuredSessionsHelp": [
+    "Le sessioni misurate includono le revisioni a cui si riferiscono, anche senza la cronologia del progresso.",
+    "Measured sessions include their source revisions, even when progress history is excluded."
+  ],
+  "standaloneBindingsDetached": [
+    "Rimossi {count} collegamenti all’inventario dal file autonomo. Le stime cercheranno corrispondenze univoche per marca, gamma e codice (o nome, se manca il codice) nel tuo catalogo. Nessuna scorta è stata modificata.",
+    "Removed {count} inventory links from this standalone file. Estimates will look for unique brand, range and code matches (or name when no code is supplied) in your catalogue. No stock was changed."
+  ],
+  "packageUnresolved": [
+    "Controlla {count} riferimenti per continuare",
+    "Review {count} references to continue"
+  ],
+  "kitCollections": [
+    "Collezioni virtuali",
+    "Virtual collections"
+  ],
+  "kitDeclaredContents": [
+    "Contenuto dichiarato del kit",
+    "Declared kit contents"
+  ],
+  "kitVirtualHelp": [
+    "Una collezione raggruppa materiali già nel catalogo. Non possiede scorte: salvarla o usarla in un progetto non crea lotti, riserve o consumi.",
+    "A collection groups materials already in your catalogue. It owns no stock: saving or using it in a project creates no lots, reservations or consumption."
+  ],
+  "kitDeclarationHelp": [
+    "Annota ciò che il kit dovrebbe contenere. Le quantità dichiarate non diventano scorte: verifica i componenti reali quando apri il kit.",
+    "Record what the kit should contain. Declared quantities do not become stock: verify the actual components when opening the kit."
+  ],
+  "kitAssociatedPattern": [
+    "Schema associato",
+    "Associated pattern"
+  ],
+  "kitNoPattern": [
+    "Nessuno schema associato",
+    "No associated pattern"
+  ],
+  "kitLineLabel": [
+    "Componente {count}",
+    "Component {count}"
+  ],
+  "kitNotIdentified": [
+    "Non ancora identificato nel catalogo",
+    "Not yet identified in the catalogue"
+  ],
+  "kitComponentDescription": [
+    "Descrizione del componente",
+    "Component description"
+  ],
+  "kitDeclaredQuantity": [
+    "Quantità dichiarata",
+    "Declared quantity"
+  ],
+  "kitPlannedQuantity": [
+    "Quantità prevista",
+    "Planned quantity"
+  ],
+  "kitPlannedReplacement": [
+    "Sostituzione prevista",
+    "Planned replacement"
+  ],
+  "kitReplacementHelp": [
+    "La lista usa la sostituzione selezionata. Sono ammessi solo materiali con la stessa unità; non si presume una conversione.",
+    "The list uses the selected replacement. Only materials with the same unit are offered; no conversion is assumed."
+  ],
+  "kitNoReplacement": [
+    "Usa il materiale originale",
+    "Use the original material"
+  ],
+  "kitChooseList": [
+    "Scegli una lista",
+    "Choose a list"
+  ],
+  "kitShowArchived": [
+    "Mostra liste archiviate",
+    "Show archived lists"
+  ],
+  "kitNewList": [
+    "Nuova lista",
+    "New list"
+  ],
+  "kitApplyToProject": [
+    "Prepara i materiali del progetto",
+    "Plan project materials"
+  ],
+  "kitApplyHelp": [
+    "Controlla le quantità prima di applicarle. Le necessità già presenti vengono mantenute, salvo conferma esplicita di sostituzione. Scorte e riserve non cambiano.",
+    "Review quantities before applying them. Existing requirements are kept unless replacement is explicitly confirmed. Stock and reservations remain unchanged."
+  ],
+  "kitChooseProject": [
+    "Scegli un progetto aperto",
+    "Choose an open project"
+  ],
+  "kitListCopies": [
+    "Numero di copie della lista",
+    "Number of list copies"
+  ],
+  "kitExistingRequirements": [
+    "Necessità già presenti",
+    "Existing requirements"
+  ],
+  "kitKeepRequirements": [
+    "Mantieni le quantità esistenti",
+    "Keep existing quantities"
+  ],
+  "kitReplaceRequirements": [
+    "Sostituisci le quantità dopo la verifica",
+    "Replace quantities after review"
+  ],
+  "kitCurrentRequirement": [
+    "Già previsto",
+    "Already planned"
+  ],
+  "kitChange": [
+    "Modifica",
+    "Change"
+  ],
+  "kitChange_keep": [
+    "Mantieni",
+    "Keep"
+  ],
+  "kitChange_same": [
+    "Invariato",
+    "Unchanged"
+  ],
+  "kitChange_add": [
+    "Aggiungi necessità",
+    "Add requirement"
+  ],
+  "kitChange_replace": [
+    "Sostituisci necessità",
+    "Replace requirement"
+  ],
+  "kitNothingToApply": [
+    "Tutti i materiali sono già presenti o la lista è vuota. Nessuna modifica necessaria.",
+    "All materials are already present or the list is empty. No change is needed."
+  ],
+  "kitConfirmReplacement": [
+    "Confermo la sostituzione delle quantità indicate; le note esistenti rimangono.",
+    "I confirm replacing the indicated quantities; existing notes remain."
+  ],
+  "kitApplyReviewed": [
+    "Applica le necessità verificate",
+    "Apply reviewed requirements"
+  ],
+  "kitCreateFromSelection": [
+    "Crea collezione dalla selezione",
+    "Create collection from selection"
+  ],
+  "error.kit_invalid_data": [
+    "I dati del kit non sono validi.",
+    "The kit data is invalid."
+  ],
+  "error.kit_unsupported_fields": [
+    "Questi dati contengono campi non supportati.",
+    "This data contains unsupported fields."
+  ],
+  "error.kit_invalid_quantity": [
+    "Controlla le quantità dei componenti.",
+    "Check the component quantities."
+  ],
+  "error.kit_plan_missing": [
+    "La lista non è più disponibile.",
+    "The list is no longer available."
+  ],
+  "error.kit_component_material_required": [
+    "Scegli un materiale per ogni componente della collezione.",
+    "Choose a material for every collection component."
+  ],
+  "error.kit_component_unit_changed": [
+    "L’unità di un componente è cambiata. Archivia o aggiorna la lista prima di modificare l’unità.",
+    "A component unit has changed. Archive or update the list before changing the unit."
+  ],
+  "error.kit_quantity_requires_unit": [
+    "Indica un’unità oppure lascia la quantità sconosciuta.",
+    "Choose a unit or leave the quantity unknown."
+  ],
+  "error.kit_substitute_units": [
+    "La sostituzione deve usare la stessa unità ed essere un materiale diverso.",
+    "The replacement must use the same unit and be a different material."
+  ],
+  "error.kit_kind_immutable": [
+    "Il tipo di lista non può essere cambiato. Crea una nuova lista.",
+    "The list type cannot be changed. Create a new list."
+  ],
+  "error.kit_physical_material_required": [
+    "Scegli il kit fisico nel catalogo.",
+    "Choose the physical kit in the catalogue."
+  ],
+  "error.kit_material_immutable": [
+    "La dichiarazione resta legata al kit originale.",
+    "The declaration remains linked to its original kit."
+  ],
+  "error.kit_component_limit": [
+    "Una lista può contenere al massimo 200 componenti.",
+    "A list can contain at most 200 components."
+  ],
+  "error.kit_plan_limit": [
+    "Sono ammesse al massimo 200 liste.",
+    "At most 200 lists are supported."
+  ],
+  "error.kit_virtual_required": [
+    "Scegli una collezione virtuale attiva.",
+    "Choose an active virtual collection."
+  ],
+  "error.kit_component_unavailable": [
+    "Un materiale è archiviato o ha un’unità diversa. Aggiorna prima la lista.",
+    "A material is archived or has a different unit. Update the list first."
+  ],
+  "error.kit_preview_stale": [
+    "I dati sono cambiati. Apri nuovamente l’anteprima prima di confermare.",
+    "The data changed. Open the preview again before confirming."
+  ],
+  "error.kit_no_changes": [
+    "Non ci sono nuove necessità da applicare.",
+    "There are no new requirements to apply."
+  ],
+  "error.kit_replace_confirmation": [
+    "Conferma la sostituzione delle necessità mostrate.",
+    "Confirm replacement of the displayed requirements."
+  ],
+  "error.kit_invalid_revision": [
+    "La versione della lista non è valida.",
+    "The list revision is invalid."
+  ],
+  "error.kit_invalid_confidence": [
+    "Controlla se le quantità sono esatte, stimate o sconosciute.",
+    "Check whether quantities are exact, estimated or unknown."
+  ],
+  "error.kit_virtual_has_no_stock": [
+    "Una collezione virtuale non può possedere scorte.",
+    "A virtual collection cannot own stock."
+  ],
+  "error.kit_unsupported_version": [
+    "Questa versione dei dati dei kit non è supportata. Nessun dato è stato sostituito.",
+    "This kit data version is unsupported. No data was replaced."
+  ],
+  "error.kit_duplicate_definition": [
+    "Esiste già una dichiarazione attiva per questo kit. Modificala o archiviala prima.",
+    "An active declaration already exists for this kit. Edit or archive it first."
+  ],
+  "kitVerifyPending": [
+    "Verifica i componenti in sospeso",
+    "Verify pending components"
+  ],
+  "kitPendingHelp": [
+    "Registra solo i componenti che hai appena verificato. Il kit è già aperto: la sua quantità non verrà ridotta di nuovo. I componenti ancora da controllare restano esclusi dalle scorte.",
+    "Record only the components you have just checked. The kit is already open: its quantity will not be reduced again. Components still awaiting checks remain outside stock."
+  ],
+  "kitActualContentsHelp": [
+    "Aprendo un kit, una unità viene sostituita dai componenti realmente trovati. Le quantità dichiarate sono solo un riferimento. I componenti mancanti o ancora da verificare non creano scorte.",
+    "Opening a kit replaces one unit with the components actually found. Declared quantities are only a reference. Missing or unverified components create no stock."
+  ],
+  "kitSharedCost": [
+    "Costo comune non ripartito",
+    "Unallocated shared cost"
+  ],
+  "kitSharedCostHelp": [
+    "Il costo originale resta collegato all’apertura, senza essere attribuito di nuovo a ogni componente.",
+    "The original cost stays linked to the opening and is not assigned again to every component."
+  ],
+  "kitReservationTransferHelp": [
+    "Se il progetto ha riservato questo kit, viene liberata al massimo una unità della sua riserva. Le riserve degli altri progetti restano invariate.",
+    "If this project reserved the kit, at most one unit of its reservation is released. Other projects’ reservations remain unchanged."
+  ],
+  "kitNoProject": [
+    "Nessun progetto",
+    "No project"
+  ],
+  "kitReserveVerified": [
+    "Riserva al progetto i componenti trovati con quantità nota",
+    "Reserve found components with known quantities for the project"
+  ],
+  "kitVerificationStatus": [
+    "Esito della verifica",
+    "Verification result"
+  ],
+  "kitStatus_available": [
+    "Trovato",
+    "Found"
+  ],
+  "kitStatus_missing": [
+    "Mancante",
+    "Missing"
+  ],
+  "kitStatus_unverified": [
+    "Da verificare",
+    "Not checked yet"
+  ],
+  "kitActualMaterial": [
+    "Materiale effettivamente trovato",
+    "Material actually found"
+  ],
+  "kitActualQuantity": [
+    "Quantità effettivamente trovata",
+    "Quantity actually found"
+  ],
+  "kitUnknownActualHelp": [
+    "Lascia vuoto se il materiale è presente ma non ancora contato. Verrà creato un lotto con quantità sconosciuta, senza riserva automatica.",
+    "Leave blank if the material is present but not counted yet. An unknown-quantity lot will be created without an automatic reservation."
+  ],
+  "kitAddActualComponent": [
+    "Aggiungi un componente non dichiarato",
+    "Add an undeclared component"
+  ],
+  "kitOpeningNotes": [
+    "Note sull’apertura",
+    "Opening notes"
+  ],
+  "kitOpeningSummary": [
+    "Componenti trovati da registrare: {available}. Ancora da verificare, senza scorte: {pending}.",
+    "Found components to record: {available}. Still unverified, with no stock: {pending}."
+  ],
+  "kitConfirmVerification": [
+    "Registra i componenti verificati",
+    "Record verified components"
+  ],
+  "kitContentsAndOpenings": [
+    "Contenuto del kit",
+    "Kit contents"
+  ],
+  "kitNoOpenings": [
+    "Nessuna apertura registrata. Puoi salvare il contenuto dichiarato e poi aprire un lotto del kit.",
+    "No opening recorded. Save the declared contents, then open a kit lot."
+  ],
+  "kitOpenedComponents": [
+    "{count} componenti registrati",
+    "{count} recorded components"
+  ],
+  "kitVerifiedAtOpening": [
+    "Contenuto verificato",
+    "Verified contents"
+  ],
+  "kitAdditionalComponent": [
+    "Non presente nella dichiarazione",
+    "Not in the declaration"
+  ],
+  "kitHistoryHelp": [
+    "Le quantità qui mostrate descrivono la verifica originale. Per quantità attuali, conteggi e consumi apri la scheda del materiale.",
+    "These quantities describe the original verification. Open the material record for current quantities, counts and consumption."
+  ],
+  "kitLegacyOpening": [
+    "Apertura registrata prima delle dichiarazioni dettagliate. I lotti e il costo originali sono conservati.",
+    "Opening recorded before detailed declarations. Its original lots and cost are preserved."
+  ],
+  "error.kit_pending_has_no_stock": [
+    "Un componente non verificato o mancante non può avere quantità o lotti fisici.",
+    "An unverified or missing component cannot have a physical quantity or lot."
+  ],
+  "error.kit_project_required": [
+    "Scegli un progetto per riservare i componenti.",
+    "Choose a project to reserve the components."
+  ],
+  "error.kit_open_confirmation": [
+    "Conferma i contenuti reali prima di registrare l’apertura.",
+    "Confirm the actual contents before recording the opening."
+  ],
+  "error.kit_declared_row_missing": [
+    "Indica un esito per ogni componente dichiarato, anche se manca o resta da verificare.",
+    "Choose an outcome for every declared component, including missing or unverified items."
+  ],
+  "error.kit_already_verified": [
+    "Questo componente è già stato verificato. Usa il conteggio del lotto per correggere la quantità attuale.",
+    "This component has already been verified. Use the lot’s physical count to correct its current quantity."
+  ],
+  "error.kit_invalid_relation": [
+    "I collegamenti tra apertura, componenti e movimenti non sono coerenti. Nessun dato è stato salvato.",
+    "The opening, component and movement links are inconsistent. No data was saved."
+  ],
+  "kitOpenedComponent": [
+    "1 componente registrato",
+    "1 recorded component"
+  ],
+  "error.kit_reserved": [
+    "Non ci sono abbastanza kit liberi. Scegli il progetto titolare oppure libera prima la sua riserva.",
+    "There are not enough unreserved kit units. Choose the owning project or release its reservation first."
+  ],
+  "kitFindMaterials": [
+    "Trova materiali per i componenti",
+    "Find component materials"
+  ],
+  "kitFindMaterialsHelp": [
+    "Cerca nome, codice o marca. I selettori mostrano fino a 100 risultati e mantengono i materiali già scelti.",
+    "Search by name, code or brand. Pickers show up to 100 results and retain materials already selected."
+  ],
+  "forecastMethod": [
+    "Metodo di previsione",
+    "Forecast method"
+  ],
+  "forecastMeasured": [
+    "Previsione da sessioni misurate",
+    "Forecast from measured sessions"
+  ],
+  "forecastManual": [
+    "Previsione manuale: ipotesi personali",
+    "Manual forecast: your assumptions"
+  ],
+  "forecastManualHelp": [
+    "I tempi per punto sono ipotesi inserite da te, non ritmi misurati. Il punto scritto è contato per segmento. Questa stima non cambia progresso o inventario.",
+    "Times per primitive are your assumptions, not measured speeds. Backstitch is counted per segment. This estimate does not change progress or inventory."
+  ],
+  "forecastMeasuredHelp": [
+    "Usa durata e quantità registrate separatamente per tipo di punto nella revisione fissata. Le percentuali non sono convertite in velocità.",
+    "Uses recorded duration and counts separately for each stitch type on the pinned revision. Percentages are not converted into speed."
+  ],
+  "forecastGridCounts": [
+    "Le quantità restanti sono lette dalla griglia e dal progresso effettivo. Cambiano quando aggiorni i punti completati.",
+    "Remaining counts come from the grid and actual progress. They change when you update completed stitches."
+  ],
+  "forecastManualCountsHelp": [
+    "Inserisci il lavoro ancora da fare per ogni tipo: 0 se assente, vuoto se sconosciuto. Sono quantità per questa previsione, indipendenti dalla percentuale di progresso.",
+    "Enter remaining work for each type: 0 if none, blank if unknown. These counts are for this forecast, independent of the progress percentage."
+  ],
+  "forecastRateFor": [
+    "Tempo per elemento: {kind}",
+    "Time per primitive: {kind}"
+  ],
+  "forecastUnitFor": [
+    "Unità di tempo: {kind}",
+    "Time unit: {kind}"
+  ],
+  "forecastRemainingFor": [
+    "Elementi restanti: {kind}",
+    "Remaining primitives: {kind}"
+  ],
+  "forecastWeeklyHelp": [
+    "Vuoto significa che la data di fine è sconosciuta. Da più di 0 a 168 ore.",
+    "Leave blank for an unknown finish date. More than 0 and at most 168 hours."
+  ],
+  "forecastSecondsPerPrimitive": [
+    "Secondi per elemento (ipotesi)",
+    "Seconds per primitive (assumed)"
+  ],
+  "forecast_manual_counts_required": [
+    "Servono le quantità manuali restanti per tutti i tipi: usa 0 per i tipi assenti e lascia vuoto solo ciò che non conosci.",
+    "Remaining manual counts are needed for every type: use 0 for absent types and leave only unknown counts blank."
+  ],
+  "forecast_manual_rates_required": [
+    "Inserisci un tempo manuale per ogni tipo con lavoro restante. Il totale resta sconosciuto finché manca un tempo necessario.",
+    "Enter an assumed time for each type with remaining work. The total remains unknown while a required rate is missing."
+  ],
+  "forecast_rate_range": [
+    "Il tempo deve essere maggiore di 0 e non oltre 86.400 secondi per elemento. Vuoto significa sconosciuto.",
+    "Time must be greater than 0 and at most 86,400 seconds per primitive. Blank means unknown."
+  ],
+  "seconds": [
+    "secondi",
+    "seconds"
+  ],
+  "manageChecklistTemplates": [
+    "Gestisci modelli di checklist",
+    "Manage checklist templates"
+  ],
+  "editChecklistTemplate": [
+    "Modifica modello",
+    "Edit template"
+  ],
+  "newChecklistTemplate": [
+    "Nuovo modello",
+    "New template"
+  ],
+  "copyChecklistTemplate": [
+    "Copia e personalizza",
+    "Copy and customise"
+  ],
+  "deleteChecklistTemplate": [
+    "Elimina modello",
+    "Delete template"
+  ],
+  "templateIndependentHelp": [
+    "Le modifiche valgono per le applicazioni future del modello. Le attività già copiate nei progetti restano invariate.",
+    "Changes affect future applications of this template. Tasks already copied into projects remain unchanged."
+  ],
+  "builtInTemplateHelp": [
+    "Modello incluso, disponibile offline. Copialo per personalizzare la tua versione.",
+    "Included template, available offline. Copy it to customise your own version."
+  ],
+  "templateTaskNumber": [
+    "Attività {number}",
+    "Task {number}"
+  ],
+  "templateMoveUp": [
+    "Sposta su attività {number}",
+    "Move task {number} up"
+  ],
+  "templateMoveDown": [
+    "Sposta giù attività {number}",
+    "Move task {number} down"
+  ],
+  "templateRemoveTask": [
+    "Rimuovi attività {number}",
+    "Remove task {number}"
+  ],
+  "reviewTemplateChanges": [
+    "Controlla modifiche",
+    "Review changes"
+  ],
+  "templateDefinitionCounts": [
+    "Attività nel modello: {before} prima, {after} dopo.",
+    "Template tasks: {before} before, {after} after."
+  ],
+  "deleteTemplateHelp": [
+    "Eliminare il modello “{name}”? Le attività già applicate ai progetti resteranno invariate.",
+    "Delete template “{name}”? Tasks already applied to projects will remain unchanged."
+  ],
+  "template_delete_confirmation": [
+    "Conferma l’eliminazione del modello.",
+    "Confirm deleting the template."
+  ],
+  "forecastPrimitiveKind": [
+    "Tipo di punto",
+    "Stitch type"
   ]
 }
