@@ -1,3 +1,4 @@
+import { ProjectTransferService } from './project-transfer.mjs';
 import { app, BrowserWindow, ipcMain, dialog, session, Menu, protocol } from 'electron';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, extname } from 'node:path';
@@ -36,6 +37,7 @@ async function start() {
   backupManager = new BackupManager(repository, app.getPath('userData'));
   await backupManager.initialise();
   protocol.handle('ricamo', await createAssetHandler(join(root, 'dist')));
+  const projectTransfer = new ProjectTransferService(repository);
   Menu.setApplicationMenu(null);
   session.defaultSession.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
   session.defaultSession.setPermissionCheckHandler(() => false);
@@ -66,6 +68,9 @@ async function start() {
     closeGuard = value; return true;
   });
   handle('finish-close', () => { closeAuthorized = true; closeGuard = false; setImmediate(() => window?.close()); return true; });
+  handle('export-project', (id, options) => projectTransfer.export(id, options));
+  handle('inspect-project', text => projectTransfer.inspect(text));
+  handle('import-project', (token, decisions, revision) => projectTransfer.import(token, decisions, revision));
   handle('load', () => repository.load());
   handle('backup-status', () => backupManager.status());
   handle('configure-backup', patch => backupManager.configure(patch));
@@ -76,7 +81,7 @@ async function start() {
   });
   handle('run-backup', () => backupManager.run());
   handle('command', (command, revision) => {
-    if (['attachment.add'].includes(command?.type)) throw Object.assign(new Error(), { code: 'unauthorized_command' });
+    if (['attachment.add','project.package.import'].includes(command?.type)) throw Object.assign(new Error(), { code: 'unauthorized_command' });
     return repository.execute(command, revision);
   });
   handle('import-asset', (asset, revision) => repository.importAsset(asset, revision));
