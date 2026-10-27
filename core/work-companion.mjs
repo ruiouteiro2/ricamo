@@ -1,3 +1,4 @@
+import {LIMITS} from './pattern.mjs';
 import {assert,identifier,integer,text,date,oneOf,find,activeProject,jsonObject,audit} from './shared.mjs';
 export const WORK_KINDS = Object.freeze(['full','half','backstitch']);
 export const WORK_MARKER_LIMIT = 200;
@@ -46,7 +47,7 @@ export function validateWorkView(state,project) {
   if(view.workVersion===1){
     for(const field of ['zoom','x','y'])if(view[field]!==undefined){assert(typeof view[field]==='number'&&Number.isFinite(view[field]),'invalid_work_view');assert(field==='zoom'?view[field]>=1&&view[field]<=36:view[field]>=0&&view[field]<=25000,'invalid_work_view');}
     if(view.cursor!==undefined){exactKeys(view.cursor,['x','y']);storedWhole(view.cursor.x,'x',(revision?.width??500)-1);storedWhole(view.cursor.y,'y',(revision?.height??500)-1);}
-    if(view.selectedColor!==undefined)storedWhole(view.selectedColor,'selectedColor',revision?Math.max(0,revision.colors.length-1):79);
+    if(view.selectedColor!==undefined)storedWhole(view.selectedColor,'selectedColor',revision?Math.max(0,revision.colors.length-1):LIMITS.colors-1);
     for(const key of ['grid','symbols','monochrome','highlight'])if(view[key]!==undefined)assert(typeof view[key]==='boolean','invalid_work_view');
     if(view.workType!==undefined)oneOf(view.workType,['all',...WORK_KINDS],'workType');
   }
