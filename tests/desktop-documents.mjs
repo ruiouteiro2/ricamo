@@ -5,12 +5,12 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 
-const root = fileURLToPath(new URL('../', import.meta.url));
+const root = resolve(fileURLToPath(new URL('../', import.meta.url)));
 mkdirSync(join(root, '.runtime'), { recursive: true });
 const data = mkdtempSync(join(root, '.runtime', 'documents-'));
 const environment = { ...process.env, RICAMO_DATA_DIR: data };
 delete environment.ELECTRON_RUN_AS_NODE; delete environment.NODE_OPTIONS;
-const executable = process.env.RICAMO_EXECUTABLE || join(root, 'node_modules/electron/dist', process.platform === 'win32' ? 'electron.exe' : 'electron');
+const executable = process.env.RICAMO_EXECUTABLE || process.env.RICAMO_ELECTRON_RUNTIME || join(root, 'node_modules/electron/dist', process.platform === 'win32' ? 'electron.exe' : 'electron');
 const args = [...(process.env.RICAMO_EXECUTABLE ? [] : [root])];
 const pdf = new jsPDF(); pdf.text('Reference page one', 20, 30); pdf.addPage(); pdf.setFillColor(170, 55, 99); pdf.rect(30, 60, 110, 70, 'F'); pdf.text('Reference page two', 20, 30);
 const original = join(data, 'Two pages.pdf'); writeFileSync(original, new Uint8Array(pdf.output('arraybuffer')));
@@ -64,8 +64,11 @@ try {
   assert.equal((await load()).attachments.length, 1, 'cancelled image preview must not retain an orphan attachment');
   await page.locator('input[type=file][accept^="image/png"]').setInputFiles(source);
   await page.getByRole('dialog').getByRole('textbox', { name: /^Name/ }).fill('Real engine in Electron');
-  await page.getByRole('dialog').getByRole('button', { name: 'Generate pattern', exact: true }).click();
-  await expect(page.getByRole('dialog').getByRole('button', { name: 'Save', exact: true })).toBeEnabled();
+  await page.getByRole('dialog').getByLabel('Width (cm)', { exact: true }).fill('8');
+  // White composition is now the default; preserve alpha explicitly for this source-retention assertion.
+  await page.getByRole('dialog').getByLabel('Transparency handling', { exact: true }).selectOption('transparent');
+  await expect(page.getByRole('dialog').getByRole('img', { name: 'Generated chart with symbols', exact: true })).toBeAttached();
+  await expect(page.getByRole('dialog').getByRole('button', { name: 'Save', exact: true })).toBeEnabled({ timeout: 60000 });
   await page.getByRole('dialog').getByRole('button', { name: 'Save', exact: true }).click();
   await expect(page.locator('.editor-stage canvas')).toBeVisible();
   state = await load(); const generated = state.patterns.find(row => row.kind === 'structured'); const revision = generated.revisions[0];
