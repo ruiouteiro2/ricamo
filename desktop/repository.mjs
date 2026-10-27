@@ -1,3 +1,4 @@
+import { createProjectPackage, projectExportManifest, projectImportAssets, projectImportCommand, importedProjectId } from '../core/project-package.mjs';
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync, existsSync } from 'node:fs';
 import { dirname } from 'node:path';
@@ -50,7 +51,8 @@ export class Repository {
       const previous = current.operations.find(row => row.id === command.operationId);
       if (!previous && current.revision !== expectedRevision) throw new DomainError('stale_revision');
       const next = executeCommand(current, command);
-      if (asset && next.revision !== current.revision) this.db.prepare('INSERT INTO assets(id,data) VALUES(?,?)').run(asset.id, asset.data);
+      const assets = asset ? (Array.isArray(asset) ? asset : [asset]) : [];
+      if (next.revision !== current.revision) for (const item of assets) this.db.prepare('INSERT INTO assets(id,data) VALUES(?,?)').run(item.id, item.data);
       this.db.prepare('UPDATE application_state SET revision=?,data=? WHERE id=1').run(next.revision, JSON.stringify(next));
       this.db.exec('COMMIT');
       return next;
@@ -99,5 +101,25 @@ export class Repository {
       return state;
     } catch (error) { this.db.exec('ROLLBACK'); throw error; }
   }
+async exportProject(projectId, options = {}) {
+  this.db.exec('BEGIN');
+  let state, assets;
+  try {
+    state = this.load();
+    const manifest = projectExportManifest(state, projectId, options);
+    const ids = new Set([...manifest.requiredAttachmentIds, ...(options.attachmentIds || [])]);
+    assets = [...ids].map(id => ({ id, data: this.getAsset(id) }));
+    this.db.exec('COMMIT');
+  } catch (error) { this.db.exec('ROLLBACK'); throw error; }
+  return createProjectPackage(state, projectId, assets, options);
+}
+importProject(prepared, decisions, expectedRevision, operationId) {
+  const current = this.load();
+  const assets = projectImportAssets(current, prepared, operationId);
+  const command = projectImportCommand(prepared, decisions, operationId, expectedRevision);
+  const state = this.execute(command, expectedRevision, assets);
+  return { state, projectId: importedProjectId(operationId) };
+}
+
   close() { this.db.close(); }
 }
