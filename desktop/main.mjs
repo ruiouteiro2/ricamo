@@ -1,3 +1,4 @@
+import {SupplierCatalogues} from './supplier-catalogues.mjs';
 import { purchaseUrl } from '../core/pattern-fabric.mjs';
 import { initialWindowBounds } from './window-bounds.mjs';
 import { createExampleStudio } from './example-studio.mjs';
@@ -17,7 +18,8 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 protocol.registerSchemesAsPrivileged([{ scheme: 'ricamo', privileges: { standard: true, secure: true, supportFetchAPI: true } }]);
 if (process.env.RICAMO_DATA_DIR) app.setPath('userData', process.env.RICAMO_DATA_DIR);
 const lock = app.requestSingleInstanceLock();
-let window, repository, pendingRestore, backupManager;
+let window, repository, pendingRestore, backupManager, supplierCatalogues;
+let supplierShutdown, suppliersClosed=false;
 let closeGuard = false, closeAuthorized = false;
 if (!lock) app.quit();
 else {
@@ -37,6 +39,7 @@ function handle(channel, action) {
 }
 async function start() {
   repository = new Repository(join(app.getPath('userData'), 'ricamo.sqlite'));
+  supplierCatalogues = new SupplierCatalogues(join(app.getPath('userData'),'supplier-catalogues.sqlite'));
   backupManager = new BackupManager(repository, app.getPath('userData'));
   await backupManager.initialise();
   protocol.handle('ricamo', await createAssetHandler(join(root, 'dist')));
@@ -77,6 +80,7 @@ async function start() {
   handle('inspect-project', text => projectTransfer.inspect(text));
   handle('import-project', (token, decisions, revision) => projectTransfer.import(token, decisions, revision));
   handle('load', () => repository.load());
+  for(const method of ['start','cancel','status','search','get','lookup','facets'])handle(`supplier-${method}`,args=>supplierCatalogues[method](args));
   handle('backup-status', () => backupManager.status());
   handle('configure-backup', patch => backupManager.configure(patch));
   handle('choose-backup-folder', async remove => {
@@ -132,4 +136,7 @@ async function start() {
   window.on('closed', () => { window = null; });
 }
 app.on('window-all-closed', () => app.quit());
-app.on('before-quit', () => { backupManager?.stop(); repository?.close(); repository = null; });
+app.on('will-quit', event => {
+  if(supplierCatalogues&&!suppliersClosed){event.preventDefault();supplierShutdown??=supplierCatalogues.close().catch(error=>{console.warn('Catalogue cache close failed',error.code??'supplier_close');}).finally(()=>{suppliersClosed=true;setImmediate(()=>app.quit());});return;}
+  backupManager?.stop();repository?.close();repository=null;
+});
