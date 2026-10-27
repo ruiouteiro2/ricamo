@@ -13,7 +13,7 @@ import { storage } from '../storage';
 import { t, language, errorText } from '../i18n';
 import { createReferenceData, originalPoint } from '../../core/references.mjs';
 import { detectFile } from '../../core/files.mjs';
-import { printPdfDocument, documentPrintPlan, grayscaleCanvas, PRINT_DOCUMENT_LIMITS } from '../print-document.mjs';
+import { printPdfDocument, documentPrintBatches, grayscaleCanvas, PRINT_DOCUMENT_LIMITS } from '../print-document.mjs';
 import { drawReferenceAnnotations, appendReferenceNotes } from '../reference-render.mjs';
 
 GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
@@ -225,7 +225,7 @@ async function exportAnnotated() {
   }catch(caught){if(cancelExport)return;error.value=caught.code?.startsWith('pdf_')?errorText(caught):caught.code==='reference_export_limit'?t('referenceExportLimit'):t('referenceExportFailed');}
   finally{exporting.value=false;}
 }
-function openPrintDialog(){if(totalPages.value>PRINT_DOCUMENT_LIMITS.pages)exportAll.value=false;dialog.value='print';}
+function openPrintDialog(){if(totalPages.value>PRINT_DOCUMENT_LIMITS.documentPages)exportAll.value=false;dialog.value='print';}
 function printPlacement(width,height){
   const original=isPdf.value&&printPaper.value==='original',landscape=width>height;
   const base=printPaper.value==='letter'?[215.9,279.4]:[210,297];
@@ -265,7 +265,7 @@ async function printReference(){
   exporting.value=true;cancelExport=false;printAbort=new AbortController();exportProgress.value=0;error.value='';dialog.value='';
   try{
     const pages=exportAll.value?Array.from({length:totalPages.value},(_,i)=>i+1):[view.page];
-    if(pages.length>PRINT_DOCUMENT_LIMITS.pages)throw Object.assign(Error(),{code:'print_document_limit'});
+    if(pages.length>PRINT_DOCUMENT_LIMITS.documentPages)throw Object.assign(Error(),{code:'print_document_limit'});
     const dimensions=[];
     for(const pageNumber of pages){
       if(cancelExport)return;
@@ -274,17 +274,17 @@ async function printReference(){
       else{width=view.rotation%180?imageBitmap.value.height:imageBitmap.value.width;height=view.rotation%180?imageBitmap.value.width:imageBitmap.value.height;}
       const p=printPlacement(width,height);dimensions.push({width:p.paperWidth*72/25.4,height:p.paperHeight*72/25.4});
     }
-    documentPrintPlan(dimensions);
-    let output;
+    documentPrintBatches(dimensions);
+    let output,rasterBytes=0;
     for(const [index,pageNumber] of pages.entries()){
       if(cancelExport)return;
       const {canvas,placement:p}=await renderPrintSource(pageNumber);
-      try{const orientation=p.paperWidth>p.paperHeight?'landscape':'portrait',format=[p.paperWidth,p.paperHeight];if(!output)output=await embedPdfFont(new jsPDF({orientation,unit:'mm',format,compress:true}));else output.addPage(format,orientation);output.addImage(canvas.toDataURL('image/png'),'PNG',p.x,p.y,p.width,p.height);}
+      try{const orientation=p.paperWidth>p.paperHeight?'landscape':'portrait',format=[p.paperWidth,p.paperHeight];if(!output)output=await embedPdfFont(new jsPDF({orientation,unit:'mm',format,compress:true}));else output.addPage(format,orientation);const raster=canvas.toDataURL('image/png');rasterBytes+=Math.ceil((raster.length-22)*3/4);if(rasterBytes>PRINT_DOCUMENT_LIMITS.bytes-4*1024*1024)throw Object.assign(Error(),{code:'print_document_limit'});output.addImage(raster,'PNG',p.x,p.y,p.width,p.height,undefined,'FAST');}
       finally{canvas.width=canvas.height=0;}
       exportProgress.value=index+1;
     }
     if(cancelExport)return;
-    if(printIncludeAnnotations.value)await appendReferenceNotes(output,data.value.annotations.filter(mark=>pages.includes(mark.page)),{locale:language.value,maxPages:PRINT_DOCUMENT_LIMITS.pages});
+    if(printIncludeAnnotations.value)await appendReferenceNotes(output,data.value.annotations.filter(mark=>pages.includes(mark.page)),{locale:language.value,maxPages:PRINT_DOCUMENT_LIMITS.documentPages});
     if(cancelExport)return;
     const result=await printPdfDocument(new Uint8Array(output.output('arraybuffer')),{signal:printAbort.signal,monochrome:printMonochrome.value,onProgress:({page})=>{exportProgress.value=page;}});
     if(result===false&&!cancelExport)openPrintDialog();
@@ -316,7 +316,7 @@ onBeforeUnmount(()=>{mounted=false;sourceVersion++;printPreviewVersion++;printPr
     <AppDialog v-if="dialog==='annotation'" :title="t('referenceEditNote')" :busy="saving" @close="dialog=''"><p v-if="saveError" role="alert" class="notice error">{{ saveError }}</p><div class="form-grid"><FormField :label="t('notes')" wide :required="annotationDraft.type==='text'" v-slot="{id}"><textarea :id="id" v-model="annotationDraft.text" maxlength="2000" autofocus /></FormField><FormField :label="t('color')" v-slot="{id}"><input :id="id" v-model="annotationDraft.color" type="color" /></FormField><FormField :label="t('referenceOpacity')" v-slot="{id}"><RangeSlider :id="id" v-model="annotationDraft.opacity" :min="0.1" :max="1" :step="0.05" /></FormField></div><template #footer><button class="button" :disabled="saving" @click="dialog=''">{{ t('cancel') }}</button><button class="button primary" :disabled="saving || (annotationDraft.type==='text'&&!annotationDraft.text?.trim())" @click="saveAnnotation">{{ t('save') }}</button></template></AppDialog>
     <AppDialog v-if="dialog==='bookmark'" :title="t('referenceAddBookmark')" :busy="saving" @close="dialog=''"><p v-if="saveError" role="alert" class="notice error">{{ saveError }}</p><FormField :label="t('name')" required v-slot="{id}"><input :id="id" v-model="bookmarkLabel" maxlength="300" autofocus /></FormField><template #footer><button class="button" @click="dialog=''">{{ t('cancel') }}</button><button class="button primary" :disabled="saving||!bookmarkLabel.trim()" @click="saveBookmark">{{ t('save') }}</button></template></AppDialog>
     <AppDialog v-if="dialog==='password'" :title="t('referencePassword')" @close="cancelPassword"><p class="notice">{{ t(passwordWrong?'referenceWrongPassword':'referencePasswordHelp') }}</p><FormField :label="t('referencePassword')" v-slot="{id}"><input :id="id" v-model="password" type="password" autocomplete="off" @keydown.enter="sendPassword" autofocus /></FormField><template #footer><button class="button" @click="cancelPassword">{{ t('cancel') }}</button><button class="button primary" :disabled="!password" @click="sendPassword">{{ t('confirm') }}</button></template></AppDialog>
-    <AppDialog v-if="dialog==='print'" :title="t('referencePrintTitle')" wide @close="dialog=''"><p class="notice">{{ t('referencePrintHelp') }}</p><div class="form-grid"><FormField :label="t('printPaper')" v-slot="{id}"><select :id="id" v-model="printPaper"><option v-if="isPdf" value="original">{{ t('printOriginalPaper') }}</option><option value="a4">A4</option><option value="letter">Letter</option></select></FormField><FormField :label="t('printAppearance')" v-slot="{id}"><select :id="id" v-model="printMonochrome"><option :value="false">{{ t('printOriginalColors') }}</option><option :value="true">{{ t('printGrayscale') }}</option></select></FormField></div><label class="checkbox-label"><input v-model="exportAll" type="checkbox" :disabled="totalPages>PRINT_DOCUMENT_LIMITS.pages" />{{ t('referenceAllPages',{count:totalPages}) }}</label><label class="checkbox-label"><input v-model="printIncludeAnnotations" type="checkbox" />{{ t('referencePrintAnnotations') }}</label><p class="muted">{{ t('referencePrintPreview',{page:exportAll?1:view.page}) }}</p><p v-if="printPreviewError" class="notice error" role="alert">{{ printPreviewError }}</p><p v-if="printPreviewBusy" role="status">{{ t('referenceLoading') }}</p><div class="editor-stage" style="height:320px;padding:12px" :aria-busy="printPreviewBusy"><canvas ref="printPreview" role="img" :aria-label="t('referencePrintPreview',{page:exportAll?1:view.page})" style="height:100%;max-width:100%;width:auto;object-fit:contain;image-rendering:auto;display:block;margin:auto" /></div><template #footer><button class="button" @click="dialog=''">{{ t('cancel') }}</button><button class="button primary" :disabled="printPreviewBusy || Boolean(printPreviewError)" @click="printReference"><Printer :size="16" />{{ t('print') }}</button></template></AppDialog>
+    <AppDialog v-if="dialog==='print'" :title="t('referencePrintTitle')" wide @close="dialog=''"><p class="notice">{{ t('referencePrintHelp') }}</p><div class="form-grid"><FormField :label="t('printPaper')" v-slot="{id}"><select :id="id" v-model="printPaper"><option v-if="isPdf" value="original">{{ t('printOriginalPaper') }}</option><option value="a4">A4</option><option value="letter">Letter</option></select></FormField><FormField :label="t('printAppearance')" v-slot="{id}"><select :id="id" v-model="printMonochrome"><option :value="false">{{ t('printOriginalColors') }}</option><option :value="true">{{ t('printGrayscale') }}</option></select></FormField></div><label class="checkbox-label"><input v-model="exportAll" type="checkbox" :disabled="totalPages>PRINT_DOCUMENT_LIMITS.documentPages" />{{ t('referenceAllPages',{count:totalPages}) }}</label><label class="checkbox-label"><input v-model="printIncludeAnnotations" type="checkbox" />{{ t('referencePrintAnnotations') }}</label><p class="muted">{{ t('referencePrintPreview',{page:exportAll?1:view.page}) }}</p><p v-if="printPreviewError" class="notice error" role="alert">{{ printPreviewError }}</p><p v-if="printPreviewBusy" role="status">{{ t('referenceLoading') }}</p><div class="editor-stage" style="height:320px;padding:12px" :aria-busy="printPreviewBusy"><canvas ref="printPreview" role="img" :aria-label="t('referencePrintPreview',{page:exportAll?1:view.page})" style="height:100%;max-width:100%;width:auto;object-fit:contain;image-rendering:auto;display:block;margin:auto" /></div><template #footer><button class="button" @click="dialog=''">{{ t('cancel') }}</button><button class="button primary" :disabled="printPreviewBusy || Boolean(printPreviewError)" @click="printReference"><Printer :size="16" />{{ t('print') }}</button></template></AppDialog>
     <AppDialog v-if="dialog==='export'" :title="t('referenceExport')" @close="dialog=''"><p class="notice">{{ t('referenceExportHelp') }}</p><label class="checkbox-label"><input v-model="exportAll" type="checkbox" :disabled="totalPages>300" />{{ t('referenceAllPages',{count:totalPages}) }}</label><FormField :label="t('language')" v-slot="{id}"><select :id="id" v-model="exportLanguage"><option value="it">Italiano</option><option value="en">English</option></select></FormField><template #footer><button class="button" @click="dialog=''">{{ t('cancel') }}</button><button class="button primary" @click="exportAnnotated">{{ t('export') }}</button></template></AppDialog>
   </div>
 </template>
