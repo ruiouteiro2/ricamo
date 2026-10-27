@@ -2,15 +2,15 @@ import { t } from './i18n';
 import { state, statusText } from './state';
 import { quantity } from '../core/shared.mjs';
 
-export function projectFields() {
+export function projectFields(currency = state.value.settings.currency) {
   return [
     { key: 'name', label: t('name'), required: true, wide: true },
     { key: 'technique', label: t('technique'), type: 'select', required: true, options: ['cross_stitch', 'embroidery', 'blackwork', 'hardanger', 'ribbon', 'beadwork', 'other'] },
-    { key: 'status', label: t('status'), type: 'select', required: true, options: ['idea', 'preparing', 'ready', 'active', 'paused', 'finishing'].map(value => ({ value, label: statusText(value) })) },
+    { key: 'status', label: t('status'), type: 'select', required: true, options: ['idea', 'preparing', 'ready', 'active', 'paused', 'finishing'].map(value => ({ value, label: () => statusText(value) })) },
     { key: 'patternId', label: t('choosePattern'), type: 'select', wide: true, options: state.value.patterns.filter(row => !row.archived).map(row => ({ value: row.id, label: row.name })) },
     { key: 'recipient', label: t('recipient') }, { key: 'dueDate', label: t('deadline'), type: 'date' },
     { key: 'priority', label: t('priority'), type: 'select', required: true, options: ['low', 'normal', 'high'] },
-    { key: 'budgetDisplay', label: `${t('budget')} (${state.value.settings.currency})`, type: 'number' },
+    { key: 'budgetDisplay', label: () => `${t('budget')} (${currency})`, type: 'number' },
     { key: 'notes', label: t('notes'), type: 'textarea', wide: true },
   ];
 }
