@@ -76,7 +76,8 @@
       "core/**",
       "LICENSE",
       "THIRD-PARTY-NOTICES.md",
-      "package.json"
+      "package.json",
+      "!node_modules/@napi-rs/canvas-linux-*/**"
     ],
     "asar": true,
     "npmRebuild": false,
@@ -91,10 +92,7 @@
       ],
       "icon": "build/icon.ico",
       "signExecutable": false,
-      "requestedExecutionLevel": "asInvoker",
-      "files": [
-        "!node_modules/@napi-rs/canvas-linux-*/**"
-      ]
+      "requestedExecutionLevel": "asInvoker"
     },
     "nsis": {
       "oneClick": false,
