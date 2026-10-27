@@ -1,0 +1,37 @@
+import {createBlank,validateRevision,copySelection,pasteSelection,counts} from './pattern.mjs';
+import {assert,identifier,text,integer,assertSafeJson,audit,date,jsonObject} from './shared.mjs';
+import {BITMAP_ALPHABET,SUPPORTED_TEXT} from './bitmap-alphabet.mjs';
+export {SUPPORTED_TEXT};
+export const BUILTIN_MOTIFS=Object.freeze({diamond:['0001000','0010100','0100010','1001001','0100010','0010100','0001000'],heart:['0110110','1111111','1111111','0111110','0011100','0001000'],sprig:['000010000','000011100','001010000','011010000','000010110','000011100','000010000','000100000','001000000']});
+export function builtinMotif(key,color){assert(BUILTIN_MOTIFS[key],'motif_unknown');assert(color,'insert_color');const rows=BUILTIN_MOTIFS[key],p=createBlank(rows[0].length,rows.length,[color]);p.cells=rows.flatMap(row=>[...row].map(c=>c==='1'?0:-1));return p;}
+export function unsupportedText(value){return [...new Set([...value].filter(c=>c!=='\n'&&!Object.hasOwn(BITMAP_ALPHABET,c)))];}
+export function bitmapText(value,color,{spacing=1,lineSpacing=2,scale=1}={}) {
+  text(value,'text',{required:true,max:500});assert(color,'insert_color');assert(!unsupportedText(value).length,'text_unsupported',{characters:unsupportedText(value)});
+  spacing=integer(spacing,'spacing',{min:0,max:8});lineSpacing=integer(lineSpacing,'lineSpacing',{min:0,max:12});scale=integer(scale,'scale',{min:1,max:4});
+  const lines=value.split('\n'),columns=Math.max(...lines.map(row=>row.length)),width=(columns*5+Math.max(0,columns-1)*spacing)*scale,height=(lines.length*7+(lines.length-1)*lineSpacing)*scale;
+  const p=createBlank(width,height,[color]);for(let l=0;l<lines.length;l++)for(let c=0;c<lines[l].length;c++){const glyph=BITMAP_ALPHABET[lines[l][c]];for(let gy=0;gy<7;gy++)for(let gx=0;gx<5;gx++)if(glyph[gy][gx])for(let dy=0;dy<scale;dy++)for(let dx=0;dx<scale;dx++)p.cells[((l*(7+lineSpacing)+gy)*scale+dy)*width+(c*(5+spacing)+gx)*scale+dx]=0;}return p;
+}
+function intersects(b,r){let low=0,high=1;const dx=b.x2-b.x1,dy=b.y2-b.y1;for(const [d,n]of[[-dx,b.x1-r.x],[dx,r.x+r.width-b.x1],[-dy,b.y1-r.y],[dy,r.y+r.height-b.y1]]){if(d===0){if(n<0)return false}else{const t=n/d;if(d<0)low=Math.max(low,t);else high=Math.min(high,t);if(low>high)return false}}return true;}
+function footprint(p,b){const cells=[],dy=b.y2-b.y1,dx=b.x2-b.x1;for(let y=Math.max(0,Math.floor(Math.min(b.y1,b.y2))-1);y<=Math.min(p.height-1,Math.floor(Math.max(b.y1,b.y2)));y++){let lo=0,hi=1;if(dy!==0){const a=(y-b.y1)/dy,z=(y+1-b.y1)/dy;lo=Math.max(0,Math.min(a,z));hi=Math.min(1,Math.max(a,z));if(lo>hi)continue}else if(b.y1<y||b.y1>y+1)continue;const xa=b.x1+lo*dx,xb=b.x1+hi*dx;for(let x=Math.max(0,Math.floor(Math.min(xa,xb))-1);x<=Math.min(p.width-1,Math.floor(Math.max(xa,xb)));x++)if(intersects(b,{x,y,width:1,height:1}))cells.push(y*p.width+x);}return cells;}
+export function stampInsert(pattern,insert,x,y,{mode='empty'}={}){
+  validateRevision(pattern);validateRevision(insert);assert(['empty','overwrite'].includes(mode),'insert_mode');assert(Number.isInteger(x)&&Number.isInteger(y)&&x>=0&&y>=0&&x+insert.width<=pattern.width&&y+insert.height<=pattern.height,'insert_bounds');
+  const next=structuredClone(pattern),source=structuredClone(insert),rect={x,y,width:insert.width,height:insert.height},inside=(px,py)=>px>=x&&py>=y&&px<x+insert.width&&py<y+insert.height,impact={removedFull:0,removedHalf:0,removedBack:0,skippedFull:0,skippedHalf:0,skippedBack:0};
+  if(mode==='overwrite'){
+    for(let py=y;py<y+insert.height;py++)for(let px=x;px<x+insert.width;px++){const i=py*next.width+px;if(next.cells[i]>=0)impact.removedFull++;next.cells[i]=-1;}
+    next.halfStitches=(next.halfStitches??[]).filter(h=>{const remove=inside(h.x,h.y);if(remove)impact.removedHalf++;return !remove});
+    next.backstitches=(next.backstitches??[]).filter(b=>{const remove=intersects(b,rect);if(remove)impact.removedBack++;return !remove});
+  }else{
+    const occupied=new Uint8Array(pattern.cells.map(c=>c>=0?1:0));for(const h of pattern.halfStitches??[])occupied[h.y*pattern.width+h.x]=1;for(const b of pattern.backstitches??[])for(const i of footprint(pattern,b))occupied[i]=1;
+    source.cells=source.cells.map((c,i)=>{if(c>=0&&occupied[(y+Math.floor(i/source.width))*pattern.width+x+i%source.width]){impact.skippedFull++;return -1}return c});
+    source.halfStitches=(source.halfStitches??[]).filter(h=>{const skip=occupied[(y+h.y)*pattern.width+x+h.x];if(skip)impact.skippedHalf++;return !skip});
+    source.backstitches=(source.backstitches??[]).filter(b=>{const translated={...b,x1:b.x1+x,x2:b.x2+x,y1:b.y1+y,y2:b.y2+y},skip=footprint(pattern,translated).some(i=>occupied[i]);if(skip)impact.skippedBack++;return !skip});
+  }
+  return{revision:pasteSelection(next,source,x,y),insert:source,impact,added:counts(source).total};
+}
+export function selectionMotif(pattern,rect){const copy=copySelection(pattern,rect);assert(!copy.excludedCrossingSegments.length,'motif_crossing');assert(copy.width<=64&&copy.height<=64,'motif_dimensions');assert(counts(copy).total>0,'motif_empty');const compact=pasteSelection(createBlank(copy.width,copy.height),copy,0,0);return compact;}
+function validateMotif(row){assert(row&&typeof row==='object'&&!Array.isArray(row),'motif_capacity');assert(Object.keys(row).every(key=>['id','name','revision','createdAt','updatedAt'].includes(key))&&typeof row.createdAt==='string'&&row.createdAt.length>0&&typeof row.updatedAt==='string'&&row.updatedAt.length>0,'motif_capacity');identifier(row.id);date(row.createdAt,'createdAt');date(row.updatedAt,'updatedAt');text(row.name,'name',{required:true,max:120});assertSafeJson(row);validateRevision(row.revision);assert(row.revision.width<=64&&row.revision.height<=64,'motif_dimensions');assert(counts(row.revision).total>0,'motif_empty');assert((row.revision.halfStitches?.length??0)<=4096&&(row.revision.backstitches?.length??0)<=4096,'motif_capacity');}
+export function validateEditorMotifs(state){const value=state.settings.preferences?.editorMotifs;if(value===undefined)return state;assert(value&&value.version===1&&Array.isArray(value.items)&&value.items.length<=50,'motif_capacity');assert(new TextEncoder().encode(JSON.stringify(value)).length<=70000,'motif_capacity');const ids=new Set();for(const row of value.items){validateMotif(row);assert(!ids.has(row.id),'duplicate_id');ids.add(row.id)}return state;}
+export const motifHandlers={
+ 'motif.save':(state,p,ctx)=>{const old=state.settings.preferences?.editorMotifs?.items??[],id=p.id?identifier(p.id):ctx.id(),revision=selectionMotif(p.revision,{x:0,y:0,width:p.revision.width,height:p.revision.height}),row={id,name:text(p.name,'name',{required:true,max:120}),revision,createdAt:old.find(m=>m.id===id)?.createdAt??ctx.now,updatedAt:ctx.now};validateMotif(row);state.settings.preferences={...state.settings.preferences,editorMotifs:{version:1,items:[...old.filter(m=>m.id!==id),row]}};validateEditorMotifs(state);jsonObject(state.settings.preferences,'preferences');audit(state,ctx,'motif',id,'saved');},
+ 'motif.remove':(state,p,ctx)=>{const id=identifier(p.id),old=state.settings.preferences?.editorMotifs?.items??[];assert(old.some(row=>row.id===id),'not_found');state.settings.preferences={...state.settings.preferences,editorMotifs:{version:1,items:old.filter(row=>row.id!==id)}};audit(state,ctx,'motif',id,'removed');}
+};
