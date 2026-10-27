@@ -15,3 +15,5 @@ The 489-entry RGB snapshot supplied with Stitch Studio is included unchanged at 
 ## Application dependencies
 
 Vue and Vite: MIT. Electron: MIT with bundled Chromium/Node third-party notices retained by the packager. jsPDF: MIT. Lucide: ISC. electron-builder: MIT. Playwright: Apache-2.0 (development only). Exact dependency versions and integrity hashes are recorded in package-lock.json. Distribution must retain the notices included with bundled dependencies.
+
+Mozilla PDF.js (`pdfjs-dist` 6.4.299): Apache-2.0, Copyright Mozilla Foundation and contributors. Used locally for document rendering; no hosted viewer or remote document service. Its licence and bundled third-party font/codec notices must remain in the distribution. Upstream: https://github.com/mozilla/pdf.js.
