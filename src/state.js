@@ -47,6 +47,20 @@ export async function importAsset(file) {
   };
   const result = queue.then(operation, operation); queue = result.catch(() => {}); return result;
 }
+export async function createPatternWithAsset(file, pattern, operationId = crypto.randomUUID()) {
+  if (file.size > 25 * 1024 * 1024) throw Object.assign(new Error(), { code: 'file_too_large' });
+  const data = new Uint8Array(await file.arrayBuffer());
+  const request = { name: file.name, data, pattern: JSON.parse(JSON.stringify(pattern)), operationId };
+  const operation = async () => {
+    saving.value = true;
+    try {
+      const result = await storage.createPatternWithAsset(request, state.value.revision);
+      adopt(result.state); return result;
+    } catch (error) { if (error.code === 'stale_revision') adopt(await storage.load()); throw error; }
+    finally { saving.value = false; }
+  };
+  const result = queue.then(operation, operation); queue = result.catch(() => {}); return result;
+}
 const urls = new Map();
 export async function assetUrl(id) {
   if (urls.has(id)) return urls.get(id);
