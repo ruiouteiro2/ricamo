@@ -147,6 +147,7 @@ async function printList() {
 </script>
 
 <template>
+  <section class="page">
   <PageHeader :eyebrow="t('shopping')" :title="t('shoppingTitle')" :description="t('shoppingSubtitle')">
     <button class="button" :disabled="busy" @click="printList">{{ t('print') }}</button>
     <button v-if="tab === 'orders'" class="button" :disabled="busy || !filteredOrders.length" @click="exportList"><Download :size="16" />{{ t('export') }}</button>
@@ -217,4 +218,6 @@ async function printList() {
   </template>
   <EntityForm v-if="form" :key="form.key" :title="t(form.title)" :fields="formFields" :initial="form.initial" :submit="submitForm" :help="formHelp" :confirm-label="form.kind === 'receive' ? t('receive') : t('save')" wide @close="form = null" @saved="saved" />
 <PurchaseDocuments v-if="documentsId" :purchase-id="documentsId" @close="documentsId=null"/>
+
+  </section>
 </template>
