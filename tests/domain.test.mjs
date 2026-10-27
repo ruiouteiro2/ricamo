@@ -366,3 +366,21 @@ test('fabric cutting conserves tiny currency amounts without negative rounding r
   assert.ok(pieces.every(l => l.cost >= 0 && Number.isInteger(l.cost)));
   assert.equal(validateState(s.state), s.state);
 });
+
+
+test('unmeasured stock never becomes a definite shortage or an automatic order', () => {
+  const s = stock(0);
+  s.run('need.save', { projectId: 'A', materialId: 'thread', quantity: 8 });
+  s.run('purchase.generate', { projectIds: ['A'] });
+  assert.equal(s.state.purchases[0].quantity, 8);
+  s.run('lot.add', { id: 'unmeasured', materialId: 'thread', quantity: null, confidence: 'unknown' });
+  let row = shoppingNeeds(s.state, ['A'])[0];
+  assert.equal(row.shortfall, null); assert.equal(row.toOrder, null); assert.equal(row.purchaseQuantity, null);
+  assert.equal(row.knownShortfall, 8);
+  s.run('purchase.generate', { projectIds: ['A'] });
+  assert.equal(s.state.purchases.filter(p => p.status === 'to_buy').length, 0);
+  s.run('stock.move', { lotId: 'unmeasured', kind: 'count', quantity: 10, reason: 'Measured remaining length' });
+  row = shoppingNeeds(s.state, ['A'])[0]; assert.equal(row.shortfall, 0); assert.equal(row.toOrder, 0);
+  s.run('lot.add', { id: 'another-unknown', materialId: 'thread', quantity: null, confidence: 'unknown' });
+  assert.equal(shoppingNeeds(s.state, ['A'])[0].shortfall, 0, 'known stock alone already covers the need');
+});
