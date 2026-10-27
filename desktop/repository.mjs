@@ -1,3 +1,4 @@
+import { ensureDiskSpace } from './disk-space.mjs';
 import { captureAssetBatch, prepareEntityAssetCommand } from '../core/entity-assets.mjs';
 import { preparePatternAssetCommand } from '../core/pattern-asset.mjs';
 import { createProjectPackage, projectExportManifest, projectImportAssets, projectImportCommand, importedProjectId } from '../core/project-package.mjs';
@@ -12,6 +13,7 @@ import { createBackup } from '../core/backup.mjs';
 
 export class Repository {
   constructor(path) {
+    this.databasePath=path;
     // Inspect an existing file without journal changes or schema writes, including
     // future data versions that this application must never downgrade.
     if (path !== ':memory:' && existsSync(path)) {
@@ -109,6 +111,7 @@ export class Repository {
     try {
       const current = this.load();
       if (current.revision !== expectedRevision) throw new DomainError('stale_revision');
+      if(this.databasePath!==':memory:')ensureDiskSpace(dirname(this.databasePath),2*(Buffer.byteLength(JSON.stringify(prepared.state))+prepared.assets.reduce((sum,asset)=>sum+asset.data.byteLength,0)));
       const state = structuredClone(prepared.state);
       state.revision = current.revision + 1;
       this.db.exec('DELETE FROM assets');
