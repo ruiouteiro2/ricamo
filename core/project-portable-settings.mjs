@@ -1,3 +1,4 @@
+import {validateFabricGeometry} from './fabric-geometry.mjs';
 import { forecastSettings, validateForecastSettings } from './project-forecast.mjs';
 import { assert, quantity, integer, oneOf, identifier, text, date } from './shared.mjs';
 import { THREAD_ESTIMATE_DEFAULTS } from './thread-estimate-config.mjs';
@@ -39,6 +40,9 @@ export function portableFabricPlan(value) {
   if (value.washState !== undefined) result.washState = oneOf(value.washState, ['unknown', 'unwashed', 'prewashed'], 'washState');
   if (value.usableMargins !== undefined) result.usableMargins = margins(value.usableMargins);
   if (value.irregular !== undefined) { assert(typeof value.irregular === 'boolean', 'project_package_settings'); result.irregular = value.irregular; }
+  if(value.geometry!==undefined){validateFabricGeometry(value);result.geometry=structuredClone(value.geometry);}
+  if(value.unusableBorder!==undefined){assert(typeof value.unusableBorder==='boolean','project_package_settings');result.unusableBorder=value.unusableBorder;}
+  if(value.defects&&!value.geometry&&Number.isFinite(value.widthCm)&&Number.isFinite(value.heightCm))result.geometry={version:1,frameWidthCm:value.widthCm,frameHeightCm:value.heightCm,offsetXCm:0,offsetYCm:0,complete:false,outline:null,defects:[]};
   return result;
 }
 function sameKeys(source, projection) { assert(Object.keys(object(source)).every(key => Object.hasOwn(projection, key)), 'project_package_privacy'); }
