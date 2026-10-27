@@ -1,3 +1,4 @@
+import { assertElectronSecurity } from './electron-security.mjs';
 import { APP_VERSION } from '../core/version.mjs';
 import { _electron as electron, expect } from '@playwright/test';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -10,7 +11,7 @@ mkdirSync(join(root, '.runtime'), { recursive: true });
 const data = mkdtempSync(join(root, '.runtime', 'desktop-smoke-'));
 const executable = process.env.RICAMO_EXECUTABLE || join(root, 'node_modules/electron/dist', process.platform === 'win32' ? 'electron.exe' : 'electron');
 const packaged = Boolean(process.env.RICAMO_EXECUTABLE);
-const errors = [], remoteRequests = [];
+const errors = [], remoteRequests = [], security = [];
 const requestedScale = Number(process.env.RICAMO_TEST_SCALE || 0);
 if (requestedScale) assert.ok(requestedScale >= 0.5 && requestedScale <= 3);
 async function launch() {
@@ -18,11 +19,12 @@ async function launch() {
   // The coding host may itself be Electron. Its Node-mode flag is not an app setting.
   delete environment.ELECTRON_RUN_AS_NODE;
   delete environment.NODE_OPTIONS;
-  const app = await electron.launch({ executablePath: resolve(executable), args: [...(requestedScale ? [`--force-device-scale-factor=${requestedScale}`] : []), ...(process.env.RICAMO_TEST_NO_SANDBOX === '1' ? ['--no-sandbox'] : []), ...(packaged ? [] : [root])], env: environment, timeout: 40000 });
+  const app = await electron.launch({ chromiumSandbox: true, executablePath: resolve(executable), args: [...(requestedScale ? [`--force-device-scale-factor=${requestedScale}`] : []), ...(packaged ? [] : [root])], env: environment, timeout: 40000 });
   const page = await app.firstWindow();
   page.on('pageerror', error => errors.push(error.message));
   page.on('request', request => { if (/^https?:/.test(request.url())) remoteRequests.push(request.url()); });
   await expect(page.locator('h1').first()).toBeVisible();
+  security.push(await assertElectronSecurity(app));
   return { app, page };
 }
 let { app, page } = await launch();
@@ -60,7 +62,7 @@ try {
   assert.equal(loaded.value.settings.language, 'en');
   assert.equal(errors.length, 0, errors.join('\n'));
   assert.equal(remoteRequests.length, 0, remoteRequests.join('\n'));
-  const report = { displayEvidence, requestedScale, platform: process.platform, executable, packaged, data, materialId: id, persistenceReopened: true, leadingZeroCode: true, decimalComma: true, errors, remoteRequests };
+  const report = { security, displayEvidence, requestedScale, platform: process.platform, executable, packaged, data, materialId: id, persistenceReopened: true, leadingZeroCode: true, decimalComma: true, errors, remoteRequests };
   writeFileSync(join(data, 'result.json'), JSON.stringify(report, null, 2));
   console.log(JSON.stringify(report));
 } finally { await app.close(); }
