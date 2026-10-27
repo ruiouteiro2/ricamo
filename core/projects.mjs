@@ -1,3 +1,4 @@
+import {matchingRevisionProgress} from './revision-progress.mjs';
 import {resetWorkView,workMarkers} from './work-companion.mjs';
 import {normalizeProjectSettings} from './thread-estimate-history.mjs';
 import { validateSessionWorkAssignment, validateSessionWork } from './session-work.mjs';
@@ -26,6 +27,11 @@ export function saveProject(state, p, ctx) {
     assert(!state.reservations.some(r => r.projectId === id && r.quantity > 0), 'close_project_first');
   }
   const designChanged = existing && (existing.patternId !== patternId || existing.revisionId !== revisionId);
+  if (p.revisionReview !== undefined) {
+    const review=p.revisionReview;
+    assert(designChanged && review && typeof review==='object' && !Array.isArray(review) && Object.keys(review).every(key=>['stateRevision','patternId','revisionId','carryProgress'].includes(key)) && typeof review.carryProgress==='boolean','revision_review_invalid');
+    assert(Number.isInteger(review.stateRevision) && review.stateRevision===state.revision && review.patternId===existing.patternId && review.revisionId===existing.revisionId,'revision_review_stale');
+  }
   if (designChanged && (existing.completed.length || existing.manualPercent || existing.referenceData?.annotations?.length || existing.referenceData?.bookmarks?.length || workMarkers(existing.view).length)) assert(p.acceptRevisionChange === true, 'revision_change_confirmation');
   const project = {
     id, name: text(source.name, 'name', { required: true, max: 300 }),
@@ -45,11 +51,16 @@ export function saveProject(state, p, ctx) {
   };
   if (!existing && project.settings.thread === undefined && state.settings.preferences?.threadEstimates) project.settings.thread = structuredClone(state.settings.preferences.threadEstimates);
   if (designChanged) {
+    if (p.revisionReview?.carryProgress) {
+      const correspondence=matchingRevisionProgress(state,existing,project);
+      assert(correspondence.eligible && correspondence.matched>0,'revision_progress_unavailable');
+      project.completed=correspondence.completed;
+    }
     project.progressHistory.push({ patternId: existing.patternId, revisionId: existing.revisionId, completed: [...existing.completed], manualPercent: existing.manualPercent, savedAt: ctx.now, ...(existing.referenceData ? { referenceData: existing.referenceData } : {}) });
   }
   if (project.fabricLotId) assert(find(state, 'materials', find(state, 'lots', project.fabricLotId).materialId).category === 'fabric', 'not_fabric');
   put(state, 'projects', project);
-  audit(state, ctx, 'project', id, existing ? 'updated' : 'created', { designChanged: !!designChanged });
+  audit(state, ctx, 'project', id, existing ? 'updated' : 'created', { designChanged: !!designChanged, carriedProgress: designChanged ? project.completed.length : 0, progressCarryMethod: designChanged && p.revisionReview?.carryProgress ? 'same-grid-thread-v1' : null });
 }
 
 export function duplicateProject(state, p, ctx) {
