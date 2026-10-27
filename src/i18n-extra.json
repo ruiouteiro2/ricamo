@@ -284,8 +284,8 @@
     "Composition"
   ],
   "careInstructions": [
-    "Istruzioni e cura del materiale",
-    "Material instructions and care"
+    "Istruzioni di cura registrate",
+    "Recorded care instructions"
   ],
   "tagsHelp": [
     "Separa le etichette con una virgola.",
@@ -2810,5 +2810,801 @@
   "error.project_package_operation": [
     "Identificativo dell’importazione non valido.",
     "Invalid import operation identifier."
+  ],
+  "threadChoose": [
+    "Scegli un filo…",
+    "Choose a thread…"
+  ],
+  "threadInventory": [
+    "Fili nel catalogo personale",
+    "Threads in your catalogue"
+  ],
+  "blendCreate": [
+    "Crea miscela di fili",
+    "Create thread blend"
+  ],
+  "blendEdit": [
+    "Modifica ricetta",
+    "Edit blend recipe"
+  ],
+  "blendConvert": [
+    "Trasforma in miscela",
+    "Turn into a blend"
+  ],
+  "blendHelp": [
+    "Una ricetta combina filamenti interi di fili reali. I punti usano questa voce di tavolozza; le stime richiedono i componenti originali. Non viene creato stock di miscela.",
+    "A recipe combines whole filaments of real threads. Stitches use this palette entry; estimates require its original components. No blend stock is created."
+  ],
+  "blendFullHalf": [
+    "Punti croce e mezzi punti",
+    "Full crosses and half stitches"
+  ],
+  "blendOutline": [
+    "Ricetta del punto scritto",
+    "Backstitch recipe"
+  ],
+  "blendComponent": [
+    "Componente {number}",
+    "Component {number}"
+  ],
+  "blendWholeStrands": [
+    "Filamenti interi · componente {number}",
+    "Whole filaments · component {number}"
+  ],
+  "blendAddComponent": [
+    "Aggiungi componente",
+    "Add component"
+  ],
+  "blendOwnBack": [
+    "Usa una ricetta distinta per il punto scritto",
+    "Use a separate recipe for backstitch"
+  ],
+  "blendBackHelp": [
+    "Senza una ricetta distinta, il punto scritto usa gli stessi filamenti interi. L’impostazione generale di un solo filo non dimezza i componenti.",
+    "Without a separate recipe, backstitch uses the same whole filaments. A global one-filament setting never halves the components."
+  ],
+  "blendPreview": [
+    "Colore a schermo approssimativo · {full} filamenti per croce/mezzo punto · {back} per punto scritto.",
+    "Approximate screen colour · {full} filaments per cross/half stitch · {back} per backstitch."
+  ],
+  "blendApply": [
+    "Applica alla tavolozza",
+    "Apply to palette"
+  ],
+  "blendDuplicate": [
+    "Lo stesso filo compare più volte. Usa una sola riga e indica il numero totale di filamenti.",
+    "The same thread appears more than once. Use one row with its total number of filaments."
+  ],
+  "blendStrandLimit": [
+    "Ogni componente richiede filamenti interi e la ricetta può averne al massimo 12.",
+    "Each component needs whole filaments and the recipe can use at most 12 in total."
+  ],
+  "blendComponentsHelp": [
+    "Scegli almeno due fili diversi per una miscela. Il punto scritto può usare un solo componente.",
+    "Choose at least two different threads for a blend. Backstitch may use a single component."
+  ],
+  "blendSymbolUnique": [
+    "Usa un simbolo non vuoto e diverso dagli altri, lungo al massimo quattro caratteri.",
+    "Use a non-empty symbol that differs from the others, with at most four characters."
+  ],
+  "blendPaletteSummary": [
+    "Ricetta: {components}. Il colore visualizzato è approssimativo.",
+    "Recipe: {components}. The displayed colour is approximate."
+  ],
+  "threadEstimateSettings": [
+    "Calcola i fili necessari",
+    "Calculate thread requirements"
+  ],
+  "threadEstimateHelp": [
+    "Queste quantità sono stime di pianificazione. Il percorso sul retro, gli avvii e gli scarti dipendono dal lavoro reale. Le ricette vengono suddivise nei fili originali; le quantità manuali restano invariate. Nessun consumo viene registrato.",
+    "These quantities are planning estimates. Travel on the back, starts and waste depend on the actual work. Recipes expand into their original threads; manual requirements stay unchanged. No consumption is recorded."
+  ],
+  "threadSetting_crossTravel": [
+    "Percorso sul retro · croce",
+    "Back travel · full cross"
+  ],
+  "threadSettingHelp_crossTravel": [
+    "Moltiplicatore di larghezza + altezza della cella, oltre alle due diagonali frontali.",
+    "Multiplier of cell width + height, in addition to the two front diagonals."
+  ],
+  "threadSetting_halfTravel": [
+    "Percorso sul retro · mezzo punto",
+    "Back travel · half stitch"
+  ],
+  "threadSettingHelp_halfTravel": [
+    "Moltiplicatore dell’altezza della cella, oltre alla diagonale frontale.",
+    "Multiplier of cell height, in addition to the front diagonal."
+  ],
+  "threadSetting_outlineReturn": [
+    "Percorso complessivo · punto scritto",
+    "Total travel · backstitch"
+  ],
+  "threadSettingHelp_outlineReturn": [
+    "Moltiplica la lunghezza geometrica dei segmenti; 2 include un ritorno della stessa lunghezza.",
+    "Multiplies the segments’ geometric length; 2 includes a return of equal length."
+  ],
+  "threadSetting_batchSize": [
+    "Punti per avvio",
+    "Primitives per start"
+  ],
+  "threadSettingHelp_batchSize": [
+    "Gli avvii vengono stimati separatamente per croci, mezzi punti e segmenti di punto scritto.",
+    "Starts are estimated separately for full crosses, half stitches and backstitch segments."
+  ],
+  "threadSetting_startFinishCm": [
+    "Avvio e chiusura per filamento (cm)",
+    "Start and finish per filament (cm)"
+  ],
+  "threadSettingHelp_startFinishCm": [
+    "Lunghezza aggiunta a ogni gruppo, prima del fattore di calibrazione.",
+    "Length added to every batch, before the calibration factor."
+  ],
+  "threadSetting_waste": [
+    "Margine per scarti (%)",
+    "Waste allowance (%)"
+  ],
+  "threadSettingHelp_waste": [
+    "Si applica al percorso dei punti, non agli avvii già aggiunti.",
+    "Applies to stitch travel, not to the already added starts."
+  ],
+  "threadSetting_strands": [
+    "Filamenti predefiniti",
+    "Default filaments"
+  ],
+  "threadSettingHelp_strands": [
+    "Solo per voci senza un numero esplicito; le ricette mantengono i loro componenti interi.",
+    "Only for entries without an explicit count; recipes retain their whole components."
+  ],
+  "threadSetting_backStrands": [
+    "Filamenti del punto scritto",
+    "Backstitch filaments"
+  ],
+  "threadSettingHelp_backStrands": [
+    "Le impostazioni della singola voce e le ricette del punto scritto hanno la precedenza.",
+    "The individual palette entry and backstitch recipes take precedence."
+  ],
+  "threadSetting_calibrationFactor": [
+    "Fattore di calibrazione",
+    "Calibration factor"
+  ],
+  "threadSettingHelp_calibrationFactor": [
+    "1 mantiene il modello geometrico. Il fattore moltiplica il totale previsto; non indica una percentuale di accuratezza.",
+    "1 retains the geometric model. The factor multiplies the planned total; it is not an accuracy percentage."
+  ],
+  "threadPreview": [
+    "Anteprima dei componenti reali",
+    "Real component preview"
+  ],
+  "threadFilamentMetres": [
+    "Metri di singolo filamento",
+    "Single-filament metres"
+  ],
+  "threadFabricUsed": [
+    "Densità usata: {x} × {y} per pollice. Le misure della pezza selezionata hanno la precedenza.",
+    "Count used: {x} × {y} per inch. The selected fabric piece’s measurements take precedence."
+  ],
+  "threadManualPreserved": [
+    "La quantità manuale esistente verrà conservata.",
+    "The existing manual quantity will be retained."
+  ],
+  "threadConversionUnknown": [
+    "Conversione non nota: completa i dati fisici del materiale prima di usarla per gli acquisti.",
+    "Conversion is unknown: complete the material’s physical data before using it for purchases."
+  ],
+  "threadNoStitches": [
+    "Non ci sono punti da stimare in questa revisione.",
+    "There are no stitches to estimate in this revision."
+  ],
+  "threadCalibrate": [
+    "Confronta con il consumo confermato",
+    "Compare with confirmed consumption"
+  ],
+  "threadCalibrationHelp": [
+    "Usa questo confronto solo dopo aver terminato tutto il lavoro che impiega il materiale scelto. Il consumo registrato viene confrontato con la stima di quel materiale; i movimenti e i costi passati non vengono riscritti.",
+    "Use this comparison only after finishing all work using the selected material. Recorded consumption is compared with that material’s estimate; past movements and costs are never rewritten."
+  ],
+  "threadCalibrationNoConsumption": [
+    "Non c’è consumo confermato per i componenti di questa revisione.",
+    "There is no confirmed consumption for this revision’s components."
+  ],
+  "threadCalibrationConfirm": [
+    "Ho terminato tutto il lavoro che usa questo materiale.",
+    "I have finished all work that uses this material."
+  ],
+  "threadCalibrationValues": [
+    "Consumo confermato: {actual} {unit} = {filaments} metri di filamento. Fattore proposto: {factor}.",
+    "Confirmed consumption: {actual} {unit} = {filaments} filament metres. Proposed factor: {factor}."
+  ],
+  "threadCalibrationApply": [
+    "Usa questo fattore",
+    "Use this factor"
+  ],
+  "threadCalibrationPending": [
+    "Il fattore verrà verificato e registrato quando applichi le stime.",
+    "The factor will be checked and recorded when you apply the estimates."
+  ],
+  "threadSaveDefaults": [
+    "Usa queste impostazioni come base dei nuovi progetti",
+    "Use these settings as defaults for new projects"
+  ],
+  "threadApplyEstimates": [
+    "Applica le stime",
+    "Apply estimates"
+  ],
+  "threadFabricUnknown": [
+    "Imposta la densità orizzontale e verticale del tessuto o scegli una pezza con misure note prima di stimare i fili.",
+    "Set horizontal and vertical fabric count, or choose a piece with known measurements, before estimating threads."
+  ],
+  "threadAmbiguous": [
+    "Più materiali corrispondono allo stesso filo. Unisci i duplicati del catalogo o scegli il materiale preciso nella ricetta.",
+    "Several materials match this thread. Merge catalogue duplicates or choose the exact material in the recipe."
+  ],
+  "threadCalibrationUnknown": [
+    "Il consumo non è convertibile in metri di filamento con i dati disponibili. Non viene assunto un valore pari a zero.",
+    "Consumption cannot be converted to filament metres with the available data. It is not assumed to be zero."
+  ],
+  "threadCalibrationRevision": [
+    "Il progetto ha cambiato revisione: il consumo complessivo non può essere attribuito con certezza a questa sola revisione.",
+    "The project changed revision: its total consumption cannot be confidently attributed to this revision alone."
+  ],
+  "threadCalibrationRange": [
+    "Il fattore ricavato è fuori dall’intervallo 0,1–10. Controlla unità, consumo registrato e completamento del lavoro prima di calibrare.",
+    "The derived factor is outside 0.1–10. Check units, recorded consumption and work completion before calibrating."
+  ],
+  "threadSettingsInvalid": [
+    "Controlla i limiti dei parametri. Il numero di filamenti e di punti per avvio deve essere intero.",
+    "Check the parameter limits. Filament and batch counts must be whole numbers."
+  ],
+  "saveChecklistTemplate": [
+    "Salva come modello",
+    "Save as template"
+  ],
+  "applyChecklistTemplate": [
+    "Applica modello",
+    "Apply template"
+  ],
+  "checklistTemplate": [
+    "Modello di checklist",
+    "Checklist template"
+  ],
+  "templateEmptyHelp": [
+    "Aggiungi i tuoi passi, poi salvali come modello riutilizzabile. I modelli copiano i testi, senza progresso o scadenze.",
+    "Add your steps, then save them as a reusable template. Templates copy text, without progress or deadlines."
+  ],
+  "templateApplyMode": [
+    "Come applicare",
+    "How to apply"
+  ],
+  "templateAppend": [
+    "Aggiungi alla checklist",
+    "Append to checklist"
+  ],
+  "templateReplace": [
+    "Sostituisci solo i passi non completati",
+    "Replace unfinished tasks only"
+  ],
+  "templatePreviewCounts": [
+    "Nuovi passi: {added}. Non completati da sostituire: {removed}. Completati conservati: {retained}.",
+    "New tasks: {added}. Unfinished tasks to replace: {removed}. Completed tasks retained: {retained}."
+  ],
+  "templateReplaceConfirm": [
+    "Confermo la sostituzione dei passi non completati mostrati sopra",
+    "I confirm replacing the unfinished tasks shown above"
+  ],
+  "template_not_found": [
+    "Il modello non è più disponibile.",
+    "This template is no longer available."
+  ],
+  "template_task_limit": [
+    "Un modello richiede da 1 a 100 passi.",
+    "A template requires 1 to 100 tasks."
+  ],
+  "template_limit": [
+    "Sono supportati fino a 50 modelli.",
+    "Up to 50 templates are supported."
+  ],
+  "template_replace_confirmation": [
+    "Conferma la sostituzione dei passi non completati.",
+    "Confirm replacement of unfinished tasks."
+  ],
+  "invalid_template_task": [
+    "Il modello contiene dati di progresso non validi.",
+    "The template contains invalid progress data."
+  ],
+  "finishingDetails": [
+    "Finitura e consegna",
+    "Finishing and delivery"
+  ],
+  "finishedDate": [
+    "Data di finitura",
+    "Finish date"
+  ],
+  "deliveredDate": [
+    "Data di consegna",
+    "Delivery date"
+  ],
+  "finishDescription": [
+    "Finitura / montaggio",
+    "Finish / mounting"
+  ],
+  "deliveryNotes": [
+    "Note private di consegna",
+    "Private delivery notes"
+  ],
+  "finishingMetadataHelp": [
+    "Registra solo le istruzioni fornite da te o dal produttore. Questi dettagli non consumano materiali né modificano lo stato del progetto.",
+    "Record instructions supplied by you or the manufacturer. These details do not consume materials or change project status."
+  ],
+  "delivery_before_finish": [
+    "La consegna non può precedere la data di finitura.",
+    "Delivery cannot precede the finish date."
+  ],
+  "timeForecast": [
+    "Previsione del tempo",
+    "Time forecast"
+  ],
+  "forecastAssumptions": [
+    "Disponibilità e finitura",
+    "Schedule and finishing"
+  ],
+  "weeklyAvailableHours": [
+    "Ore disponibili alla settimana (facoltativo)",
+    "Available hours per week (optional)"
+  ],
+  "extraFinishingMinutes": [
+    "Minuti aggiuntivi di finitura dichiarati",
+    "Explicit extra finishing minutes"
+  ],
+  "estimatedStitchingMinutes": [
+    "Ricamo restante stimato",
+    "Estimated remaining stitching"
+  ],
+  "estimatedTotalMinutes": [
+    "Tempo totale restante stimato",
+    "Estimated total remaining time"
+  ],
+  "estimatedFinishDate": [
+    "Data di fine stimata",
+    "Estimated finish date"
+  ],
+  "forecastScheduleHelp": [
+    "La data distribuisce le ore settimanali su sette giorni. È una stima, non una garanzia. Senza disponibilità settimanale non viene prevista una data.",
+    "The date spreads weekly hours over seven days. It is an estimate, not a guarantee. No date is predicted without a weekly schedule."
+  ],
+  "forecastEvidence": [
+    "Base: {sessions} sessioni compatibili, {minutes} minuti misurati. Sessioni escluse: {ignored}.",
+    "Basis: {sessions} compatible sessions, {minutes} measured minutes. Excluded sessions: {ignored}."
+  ],
+  "forecast_structured_required": [
+    "Per stimare il ricamo servono uno schema strutturato e conteggi misurati. Una percentuale manuale non definisce i punti restanti.",
+    "A structured pattern and measured counts are needed to estimate stitching. A manual percentage does not define remaining stitches."
+  ],
+  "forecast_samples_required": [
+    "Registra durata e quantità per ogni tipo di punto restante nella revisione fissata. Le sessioni senza conteggio o di altre revisioni restano nel diario ma non determinano la velocità.",
+    "Record duration and count for every remaining stitch type on the pinned revision. Sessions without counts or from other revisions remain in the journal but do not determine speed."
+  ],
+  "stitchKind": [
+    "Tipo di punto misurato",
+    "Measured stitch type"
+  ],
+  "sampleStitches": [
+    "Punti misurati",
+    "Measured stitches"
+  ],
+  "workKind_full": [
+    "Punti croce",
+    "Full crosses"
+  ],
+  "workKind_half": [
+    "Mezzi punti",
+    "Half stitches"
+  ],
+  "workKind_backstitch": [
+    "Segmenti di punto scritto",
+    "Backstitch segments"
+  ],
+  "sessionMeasuredWork": [
+    "Ho contato i punti lavorati in questa sessione",
+    "I counted the stitches worked in this session"
+  ],
+  "sessionMeasuredHelp": [
+    "La durata deve riferirsi solo al tipo scelto. Per tipi misti, registra sessioni separate. Il conteggio serve alla previsione e non segna automaticamente il progresso.",
+    "The duration must refer only to the selected type. Record separate sessions for mixed types. This count informs the forecast and does not automatically mark progress."
+  ],
+  "sessionStitchCount": [
+    "Punti lavorati nella sessione",
+    "Stitches worked during this session"
+  ],
+  "invalid_session_work": [
+    "Il conteggio misurato della sessione non è valido.",
+    "The session's measured stitch count is invalid."
+  ],
+  "invalid_session_revision": [
+    "La revisione della sessione non è disponibile.",
+    "The session revision is unavailable."
+  ],
+  "session_revision_mismatch": [
+    "La sessione deve riferirsi alla revisione del progetto o a una sua revisione storica.",
+    "The session must refer to the project's current or historical revision."
+  ],
+  "measured_session_duration": [
+    "Una sessione misurata richiede una durata positiva.",
+    "A measured session requires a positive duration."
+  ],
+  "weekly_hours_range": [
+    "Inserisci più di 0 e non oltre 168 ore settimanali, oppure lascia vuoto.",
+    "Enter more than 0 and at most 168 weekly hours, or leave blank."
+  ],
+  "finishing_minutes_range": [
+    "Il tempo aggiuntivo deve essere tra 0 e 1.000.000 minuti.",
+    "Extra time must be between 0 and 1,000,000 minutes."
+  ],
+  "forecastTooFar": [
+    "La disponibilità indicata produce una previsione oltre 100 anni; correggi le ipotesi per ottenere una data utile.",
+    "The entered schedule predicts more than 100 years; revise the assumptions to obtain a useful date."
+  ],
+  "projectDocuments": [
+    "Documenti del progetto",
+    "Project documents"
+  ],
+  "projectReport": [
+    "Rapporto PDF",
+    "PDF report"
+  ],
+  "reportIncludeRecipient": [
+    "Includi il destinatario",
+    "Include recipient"
+  ],
+  "reportIncludeNotes": [
+    "Includi note private di progetto, checklist e sessioni",
+    "Include private project, checklist and session notes"
+  ],
+  "reportPrivacyHelp": [
+    "Il rapporto include identità dello schema, progresso, checklist, sessioni, materiali e costi per valuta. Destinatario e note private sono esclusi per impostazione predefinita. Le note di consegna richiedono entrambe le opzioni.",
+    "The report includes pattern identity, progress, checklist, sessions, materials and costs by currency. Recipient and private notes are omitted by default. Delivery notes require both options."
+  ],
+  "report_too_large": [
+    "Il rapporto supera il limite di 10.000 righe o 500 pagine.",
+    "The report exceeds 10,000 rows or 500 pages."
+  ],
+  "printCalibration": [
+    "PDF di calibrazione",
+    "Calibration PDF"
+  ],
+  "printCalibrationHelp": [
+    "Stampa al 100%, senza adattamento alla pagina. Misura il quadrato su entrambi gli assi e il righello. Il file non può garantire l'accuratezza della stampante.",
+    "Print at 100%, without fitting to the page. Measure the square on both axes and the ruler. The file cannot guarantee printer accuracy."
+  ],
+  "printCorrection": [
+    "Calcola correzione di stampa",
+    "Calculate print correction"
+  ],
+  "measuredRuler": [
+    "Lunghezza misurata del righello da 100 mm (mm)",
+    "Measured length of the 100 mm ruler (mm)"
+  ],
+  "suggestedPrintScale": [
+    "Scala corretta rispetto alla stampa iniziale al 100%",
+    "Corrected scale relative to the initial 100% print"
+  ],
+  "printCorrectionHelp": [
+    "La percentuale vale solo rispetto a una stampa iniziale al 100%. Ricontrolla il risultato. Se gli assi differiscono, una sola percentuale non corregge entrambi.",
+    "The percentage applies only relative to an initial 100% print. Measure again after adjustment. If the axes differ, one percentage will not correct both."
+  ],
+  "invalid_print_measurement": [
+    "Inserisci una misura positiva tra 1 e 1.000 mm.",
+    "Enter a positive measurement from 1 to 1,000 mm."
+  ],
+  "physicalPattern": [
+    "PDF a grandezza reale",
+    "Actual-size PDF"
+  ],
+  "physicalCountX": [
+    "Densità orizzontale per pollice",
+    "Horizontal count per inch"
+  ],
+  "physicalCountY": [
+    "Densità verticale per pollice",
+    "Vertical count per inch"
+  ],
+  "physicalCountMeaning": [
+    "La densità descrive",
+    "Count describes"
+  ],
+  "physicalCountStitches": [
+    "Punti per pollice",
+    "Stitches per inch"
+  ],
+  "physicalCountThreads": [
+    "Fili del tessuto per pollice",
+    "Fabric threads per inch"
+  ],
+  "physicalOverX": [
+    "Ricamato su fili: orizzontale",
+    "Worked over threads: horizontal"
+  ],
+  "physicalOverY": [
+    "Ricamato su fili: verticale",
+    "Worked over threads: vertical"
+  ],
+  "physicalPatternHelp": [
+    "Inserisci densità fisiche note per entrambi gli assi. Il PDF include calibrazione, mappa, sovrapposizione e riferimenti di allineamento. Stampa al 100%. È distinto dallo schema ingrandito per la lettura.",
+    "Enter known physical counts for both axes. The PDF includes calibration, page map, overlap and alignment marks. Print at 100%. This is separate from the enlarged reading chart."
+  ],
+  "physical_print_geometry": [
+    "La densità produce celle troppo grandi o oltre 512 celle per tessera. Controlla densità e significato del conteggio.",
+    "The count produces oversized cells or more than 512 cells per tile. Check density and count meaning."
+  ],
+  "physical_print_pages": [
+    "Lo schema richiede oltre 200 tessere a grandezza reale.",
+    "The actual-size pattern requires more than 200 tiles."
+  ],
+  "pdf_font_unavailable": [
+    "La fonte PDF locale non è disponibile.",
+    "The local PDF font is unavailable."
+  ],
+  "pdf_unsupported_glyphs": [
+    "La fonte PDF non contiene alcuni caratteri ({characters}). Modifica questi caratteri prima di esportare.",
+    "The PDF font does not support some characters ({characters}). Edit those characters before exporting."
+  ],
+  "exportPdf": [
+    "Esporta PDF",
+    "Export PDF"
+  ],
+  "invalid_finishing_details": [
+    "I dettagli di finitura non sono validi.",
+    "Finishing details are invalid."
+  ],
+  "invalid_forecast_settings": [
+    "Le ipotesi di previsione non sono valide.",
+    "Forecast assumptions are invalid."
+  ],
+  "pdf_export_limit": [
+    "Il PDF supera il limite di 500 pagine. Ridurre il contenuto da esportare.",
+    "The PDF exceeds the 500-page limit. Reduce the exported content."
+  ],
+  "pdf_label_overflow": [
+    "Il testo completo supera una pagina di etichetta. Abbreviare i campi prima di stampare.",
+    "The full label text exceeds one page. Shorten the fields before printing."
+  ],
+  "project_package_settings": [
+    "Le impostazioni del pacchetto non sono valide.",
+    "The package settings are invalid."
+  ],
+  "inventoryPreferred": [
+    "Preferisci i colori del mio inventario",
+    "Prefer my inventory colours"
+  ],
+  "inventoryGenerationHelp": [
+    "Sono ammesse le scorte utilizzabili positive o non misurate, anche se prenotate. Le sole schede di catalogo non contano come scorte. La scelta del colore non garantisce quantità sufficienti e non prenota né consuma materiale. I colori a schermo sono approssimativi.",
+    "Positive or unmeasured usable holdings qualify, including reserved stock. Catalogue-only records do not count as holdings. Colour selection does not guarantee sufficient quantities and never reserves or consumes material. Screen colours are approximate."
+  ],
+  "preferenceTolerance": [
+    "Preferenza inventario · tolleranza CIE76",
+    "Inventory preference · CIE76 tolerance"
+  ],
+  "preferenceRule": [
+    "Per ogni gruppo di colori, preferisce il filo posseduto più vicino se la sua distanza non supera quella della migliore alternativa più questa tolleranza, e resta entro 20 CIE76. Altrimenti usa il catalogo. Con inventario vuoto usa il catalogo.",
+    "For each colour cluster, prefer the closest owned thread only if its distance is within this tolerance of the best alternative and at most 20 CIE76. Otherwise use the catalogue. With no eligible holdings, use the catalogue."
+  ],
+  "protectedRegions": [
+    "Proteggi dettagli dalla pulizia",
+    "Protect details from cleanup"
+  ],
+  "protectionHelp": [
+    "Rettangoli sulla griglia finale, con colonna e riga da 1. La pulizia conserva interamente le piccole regioni che toccano un rettangolo. Non protegge dalla quantizzazione del colore. Ritaglio, rotazione, specchio o dimensioni nuove cancellano le protezioni: ridefiniscile dopo queste modifiche. Massimo 20 rettangoli.",
+    "Rectangles use the final stitch grid, with column and row starting at 1. Cleanup keeps an entire small region when it touches a rectangle. This does not prevent colour quantization. Crop, rotation, flips or dimension changes clear protection: define it again after those changes. Maximum 20 rectangles."
+  ],
+  "protectionReset": [
+    "Le trasformazioni hanno cancellato le protezioni precedenti. Controlla la griglia e aggiungile di nuovo.",
+    "Transform changes cleared the previous protection. Check the grid and add it again."
+  ],
+  "protectionInvalid": [
+    "Il rettangolo deve restare nella griglia, con coordinate e dimensioni intere positive. Sono ammessi fino a 20 rettangoli.",
+    "Keep the rectangle inside the grid, using positive whole coordinates and dimensions. Up to 20 rectangles are allowed."
+  ],
+  "protection_x": [
+    "Colonna iniziale protetta",
+    "Protected start column"
+  ],
+  "protection_y": [
+    "Riga iniziale protetta",
+    "Protected start row"
+  ],
+  "protection_width": [
+    "Larghezza protetta",
+    "Protected width"
+  ],
+  "protection_height": [
+    "Altezza protetta",
+    "Protected height"
+  ],
+  "addProtection": [
+    "Aggiungi protezione",
+    "Add protection"
+  ],
+  "qualityReview": [
+    "Revisione dei dettagli",
+    "Detail review"
+  ],
+  "qualityCounts": [
+    "{colors} colori effettivamente usati · {stitches} crocette · limite effettivo del motore: {limit} colori.",
+    "{colors} colours actually used · {stitches} full crosses · effective engine limit: {limit} colours."
+  ],
+  "qualityRegionHelp": [
+    "{regions} regioni di massimo 3 crocette, di cui {isolated} isolate. La pulizia richiesta ha cambiato {changed} celle. Sono vicine solo le celle che condividono un lato.",
+    "{regions} regions of at most 3 full crosses, including {isolated} singletons. Requested cleanup changed {changed} cells. Only cells sharing an edge are connected."
+  ],
+  "qualityNoDeletion": [
+    "Questa revisione segnala i dettagli senza rimuoverli. Controlla i colori rari prima di modificare la pulizia.",
+    "This review flags details without removing them. Check rare colours before changing cleanup."
+  ],
+  "qualityRare": [
+    "Raro · fino a 5 punti",
+    "Rare · up to 5 stitches"
+  ],
+  "qualityCoordinates": [
+    "Coordinate delle piccole regioni",
+    "Small-region coordinates"
+  ],
+  "qualityFirstRegions": [
+    "Prime 100 regioni, in ordine di lettura. Le coordinate indicano la prima crocetta della regione.",
+    "First 100 regions in reading order. Coordinates identify the first full cross in each region."
+  ],
+  "editorInserts": [
+    "Motivi e testo",
+    "Motifs and text"
+  ],
+  "insertKind": [
+    "Tipo di inserimento",
+    "Insert type"
+  ],
+  "motifs": [
+    "Motivi",
+    "Motifs"
+  ],
+  "insertText": [
+    "Testo a punto croce",
+    "Cross-stitch text"
+  ],
+  "originalMotifs": [
+    "Motivi geometrici Ricamo",
+    "Ricamo geometric motifs"
+  ],
+  "savedMotifs": [
+    "I miei motivi",
+    "My saved motifs"
+  ],
+  "motif_diamond": [
+    "Rombo",
+    "Diamond"
+  ],
+  "motif_heart": [
+    "Cuore",
+    "Heart"
+  ],
+  "motif_sprig": [
+    "Rametto",
+    "Sprig"
+  ],
+  "bitmapAlphabetHelp": [
+    "Alfabeto Ricamo originale 5×7, maiuscole A–Z, cifre e punteggiatura elencata. Ogni pixel pieno è una crocetta. Gli a capo sono mantenuti; caratteri non supportati impediscono l’inserimento.",
+    "Original Ricamo 5×7 alphabet, uppercase A–Z, digits and listed punctuation. Every filled pixel is a full cross. Newlines are preserved; unsupported characters prevent insertion."
+  ],
+  "supportedCharacters": [
+    "Caratteri supportati (più spazio e a capo)",
+    "Supported characters (plus space and newline)"
+  ],
+  "insertUnsupported": [
+    "Caratteri non supportati",
+    "Unsupported characters"
+  ],
+  "bitmap_spacing": [
+    "Spazio fra lettere (celle)",
+    "Letter spacing (cells)"
+  ],
+  "bitmap_lineSpacing": [
+    "Spazio fra righe (celle)",
+    "Line spacing (cells)"
+  ],
+  "bitmap_scale": [
+    "Scala intera dei pixel",
+    "Whole pixel scale"
+  ],
+  "insertColumn": [
+    "Colonna (da 1)",
+    "Column (from 1)"
+  ],
+  "insertRow": [
+    "Riga (da 1)",
+    "Row (from 1)"
+  ],
+  "insertPlacement": [
+    "Comportamento sulle celle occupate",
+    "Placement on occupied cells"
+  ],
+  "insertEmptyOnly": [
+    "Solo celle vuote",
+    "Empty cells only"
+  ],
+  "insertOverwrite": [
+    "Sostituisci il rettangolo",
+    "Replace the rectangle"
+  ],
+  "insertPlacementHelp": [
+    "Solo celle vuote conserva i punti presenti e considera occupate anche le celle toccate da contorni. Sostituisci cancella il rettangolo, inclusi mezzi punti e interi segmenti di contorno che lo toccano. Controlla l’impatto; puoi annullare l’inserimento.",
+    "Empty cells only preserves existing stitches and treats cells touched by outlines as occupied. Replace clears the rectangle, including half stitches and whole outline segments touching it. Review the impact; the insertion can be undone."
+  ],
+  "insertBounds": [
+    "L’inserimento deve rientrare interamente nella griglia, fino a 500×500 celle.",
+    "The entire insert must fit inside the grid, up to 500×500 cells."
+  ],
+  "insertChooseColour": [
+    "Aggiungi o scegli un colore della tavolozza.",
+    "Add or choose a palette colour."
+  ],
+  "insertExactPreview": [
+    "Anteprima esatta dei punti da inserire",
+    "Exact stitch preview for insertion"
+  ],
+  "insertImpact": [
+    "{added} punti da aggiungere · {removed} punti o segmenti da rimuovere · {skipped} punti saltati per celle occupate.",
+    "{added} stitches to add · {removed} stitches or segments to remove · {skipped} stitches skipped because cells are occupied."
+  ],
+  "insertApply": [
+    "Inserisci nello schema",
+    "Insert into pattern"
+  ],
+  "motifSaveSelection": [
+    "Salva la selezione come motivo",
+    "Save selection as motif"
+  ],
+  "motifSaveHelp": [
+    "Seleziona un’area reale del disegno. Il motivo conserva colori, miscele, mezzi punti e contorni interi. Limite 64×64, 50 motivi e 70 KB complessivi; salvati con il backup completo.",
+    "Select a real area of the drawing. The motif preserves colours, blends, half stitches and whole outlines. Limit 64×64, 50 motifs and 70 KB total; included in full backups."
+  ],
+  "motifSelectFirst": [
+    "Usa Seleziona nel disegno prima di aprire questa finestra.",
+    "Use Select in the drawing before opening this dialog."
+  ],
+  "motifName": [
+    "Nome del motivo",
+    "Motif name"
+  ],
+  "motifCrossing": [
+    "Un contorno attraversa il bordo della selezione. Allarga la selezione per includerlo interamente.",
+    "An outline crosses the selection boundary. Enlarge the selection to include the whole segment."
+  ],
+  "motifDimensions": [
+    "Un motivo salvato può avere al massimo 64×64 celle.",
+    "A saved motif can contain at most 64×64 cells."
+  ],
+  "motifEmpty": [
+    "La selezione non contiene punti.",
+    "The selection contains no stitches."
+  ],
+  "motifCapacity": [
+    "La libreria dei motivi ha raggiunto il limite. Rimuovi un motivo o riduci la selezione.",
+    "The motif library reached its limit. Remove a motif or reduce the selection."
+  ],
+  "motifRemove": [
+    "Rimuovi il motivo salvato",
+    "Remove saved motif"
+  ],
+  "motifRemoveConfirm": [
+    "Rimuovere questo motivo dalla libreria? I punti già inseriti nei disegni restano invariati.",
+    "Remove this motif from the library? Stitches already inserted in patterns are preserved."
+  ],
+  "bitmapUppercase": [
+    "Converti in maiuscolo",
+    "Convert to uppercase"
+  ],
+  "thread_estimate_history_capacity": [
+    "Il limite del registro delle stime è stato raggiunto (1000 registrazioni o 32 MiB). La modifica non è stata salvata e la cronologia esistente è stata conservata.",
+    "Estimate history capacity was reached (1000 receipts or 32 MiB). This change was not saved and existing history was preserved."
+  ],
+  "thread_estimate_history": [
+    "Una registrazione storica delle stime non è valida. I dati esistenti non sono stati modificati.",
+    "An estimate history receipt is invalid. Existing data was not changed."
   ]
 }
