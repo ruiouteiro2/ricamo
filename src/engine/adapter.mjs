@@ -30,7 +30,7 @@ export function validateSettings(input) {
 
 export function validatePalette(palette) {
   if (!palette || typeof palette !== 'object' || typeof palette.brand !== 'string' || typeof palette.source !== 'string'
-    || !Array.isArray(palette.colors) || !palette.colors.length || palette.colors.length > 2000) fail('engine.palette');
+    || !Array.isArray(palette.colors) || !palette.colors.length || palette.colors.length > 6000) fail('engine.palette');
   const identities = new Set();
   for (let index = 0; index < palette.colors.length; index++) {
     const c = palette.colors[index];
@@ -50,17 +50,14 @@ export function inventoryPalette(items, lots, { itemIds, includeUnknown = true }
   const itemList = Array.isArray(items) ? items : Object.values(items ?? {});
   const lotList = Array.isArray(lots) ? lots : Object.values(lots ?? {});
   const selection = itemIds ? new Set(itemIds) : null;
-  const colors = [];
+  const colors = [],heldIds=new Set();
+  for(const lot of lotList){
+    if(lot.archived)continue;
+    const status=lot.status??lot.condition??'usable',quantity=lot.quantity??lot.qty;
+    if(['usable','available','good'].includes(status)&&((quantity==null&&includeUnknown)||(Number.isFinite(quantity)&&quantity>0)))heldIds.add(lot.materialId);
+  }
   for (const item of itemList) {
-    if (item.archived || (item.category !== undefined && item.category !== 'thread') || (selection && !selection.has(item.id))) continue;
-    const held = lotList.some(lot => {
-      if (lot.materialId !== item.id || lot.archived) return false;
-      const status = lot.condition ?? lot.status ?? 'usable';
-      if (!['usable', 'available', 'good'].includes(status)) return false;
-      const quantity = lot.quantity ?? lot.qty;
-      return (quantity == null && includeUnknown) || (Number.isFinite(quantity) && quantity > 0);
-    });
-    if (!held) continue;
+    if (item.archived || (item.category !== undefined && item.category !== 'thread') || (selection && !selection.has(item.id)) || !heldIds.has(item.id)) continue;
     const hex = item.hex ?? item.color ?? item.attributes?.hex ?? item.attributes?.color;
     if (typeof hex !== 'string' || !/^#[0-9a-f]{6}$/i.test(hex)) continue;
     const code = item.code ?? item.reference ?? '';
