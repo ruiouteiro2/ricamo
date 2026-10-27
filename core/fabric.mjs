@@ -44,7 +44,9 @@ export function cutFabric(state, p, ctx) {
   let allocatedCost = 0;
   for (let index = 0; index < rectangles.length; index++) {
     const rectangle = rectangles[index], id = ctx.id();
-    const cost = originalCost === null ? null : index === rectangles.length - 1 ? originalCost - allocatedCost : Math.round(originalCost * rectangle.widthCm * rectangle.heightCm / (width * height));
+    // Floor interim allocations, then carry the residual cents to the final piece.
+    // Rounding each part independently could produce a negative final allocation.
+    const cost = originalCost === null ? null : index === rectangles.length - 1 ? originalCost - allocatedCost : Math.floor(originalCost * rectangle.widthCm * rectangle.heightCm / (width * height));
     if (cost !== null) allocatedCost += cost;
     const child = { ...structuredClone(source), id, quantity: 1, cost, sourceLotId: source.id, cutId, properties: { ...source.properties, widthCm: rectangle.widthCm, heightCm: rectangle.heightCm, cutRole: rectangle.role }, createdAt: ctx.now, updatedAt: ctx.now };
     state.lots.push(child);
