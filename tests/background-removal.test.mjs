@@ -13,7 +13,7 @@ test('Border removal preserves enclosed white, caller bytes and exact portable r
   const rgba=motif(),original=rgba.slice(),settings={width:5,height:5,maxColors:2,background};
   const prepared=prepareBackground(rgba,background,5,5);
   assert.equal(prepared[3],0);assert.equal(prepared[(2*5+2)*4+3],255);assert.deepEqual(rgba,original);
-  const revision=generate({rgba,palette,settings});assert.equal(counts(revision).full,9);assert.equal(revision.colors[revision.cells[12]].code,'01');assert.equal(revision.provenance.adapterVersion,4);assert.equal(revision.provenance.alphaPolicy.emptyBelow,128);
+  const revision=generate({rgba,palette,settings});assert.equal(counts(revision).full,9);assert.equal(revision.colors[revision.cells[12]].code,'01');assert.equal(revision.provenance.adapterVersion,5);assert.equal(revision.provenance.alphaPolicy.emptyBelow,128);
   const portable=portableRevision({...revision,id:'r'},false);validatePortableRevision(portable,{revisionIds:new Set(['r']),attachmentIds:new Set()});
   assert.deepEqual(generate({rgba,palette,settings:portable.settings}).cells,revision.cells);
 });
