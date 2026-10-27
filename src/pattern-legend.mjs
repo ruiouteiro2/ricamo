@@ -2,18 +2,18 @@ import { threadComponents } from '../core/thread-recipes.mjs';
 import { pdfText } from './pdf-font.mjs';
 
 /** Both print layouts use the same physical filament recipes as estimation. */
-export function appendPatternLegend(doc, revision, { locale = 'it', totals, margin = 14, thread = {} } = {}) {
+export function appendPatternLegend(doc, revision, { locale = 'it', totals, margin = 14, thread = {}, top = 20, bottomMargin = 20 } = {}) {
   const english = locale === 'en';
   const title = english ? 'Palette and thread recipes' : 'Tavolozza e ricette dei fili';
   const full = english ? 'Full / half' : 'Croce / mezzo punto';
   const back = english ? 'Backstitch' : 'Punto scritto';
   const configuration = { strands: revision.settings?.strands ?? 2, ...thread };
   const width = doc.internal.pageSize.getWidth() - margin * 2 - 16;
-  const bottom = doc.internal.pageSize.getHeight() - 20;
+  const bottom = doc.internal.pageSize.getHeight() - bottomMargin;
   let y = bottom + 1;
   const newPage = () => {
     if (doc.getNumberOfPages() >= 500) throw Object.assign(new Error('pdf_export_limit'), { code: 'pdf_export_limit' });
-    doc.addPage(); doc.setFontSize(16); doc.text(title, margin, 20); y = 34;
+    doc.addPage(); doc.setFontSize(16); doc.text(title, margin, top); y = top + 14;
   };
   const identity = color => [color.brand, color.range, color.code, color.name].filter(Boolean).join(' ');
   for (const [index, color] of revision.colors.entries()) {
