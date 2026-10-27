@@ -5,3 +5,14 @@
   .table-wrap{overflow:visible!important}thead{display:table-header-group}tr{break-inside:avoid}
   h1{font-size:24pt!important}.badge{background:none!important;border:1px solid #999}
 }
+
+/* Only present while preparing a complete document for the native print dialog. */
+#ricamo-print-document{display:none}
+@media print{
+  html:has(body.printing-document),body.printing-document{margin:0!important;padding:0!important;min-width:0!important;min-height:0!important;height:auto!important;overflow:visible!important;background:white!important}
+  body.printing-document>:not(#ricamo-print-document){display:none!important}
+  body.printing-document>#ricamo-print-document{display:block!important;margin:0!important;padding:0!important}
+  .ricamo-print-page{display:block!important;position:relative!important;box-sizing:border-box!important;margin:0!important;padding:0!important;overflow:hidden!important;break-inside:avoid;break-after:page}
+  .ricamo-print-page:last-child{break-after:auto}
+  .ricamo-print-page>img{display:block!important;width:100%!important;height:100%!important;max-width:none!important;margin:0!important;padding:0!important}
+}
