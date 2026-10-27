@@ -1,3 +1,4 @@
+import {fabricSize} from '../core/fabric.mjs';
 import { jsPDF } from 'jspdf';
 import { counts, validateRevision } from '../core/pattern.mjs';
 import { drawPattern } from './pattern-render.mjs';
@@ -38,7 +39,14 @@ export function patternPageLayout({ paper = 'a4', orientation = 'portrait', marg
   if (columns <= 2 || rows <= 2) throw Object.assign(Error('pdf_export_limit'), { code: 'pdf_export_limit' });
   return { width, height, margin, usableWidth, cellMm, gridX, gridY, columns, rows };
 }
-export async function patternPdf(revision, { title = '', locale = 'it', paper = 'a4', orientation = 'portrait', monochrome = false, completed = [], notes = '', overlap = 2, margin = 14, thread = {}, fontBytes, boldFontBytes } = {}) {
+export async function patternPreviewTiles(revision, {title='',locale='it',paper='a4',orientation='portrait',margin=14,overlap=2}={}) {
+  const initial=patternPageLayout({paper,orientation,margin}),doc=new jsPDF({unit:'mm',format:paper,orientation});
+  await embedPdfFont(doc);doc.setFontSize(16);
+  const lines=doc.splitTextToSize(String(title||(words[locale]??words.it).pattern),initial.usableWidth);
+  const layout=patternPageLayout({paper,orientation,margin,headerHeight:lines.length*6.5+11});
+  return pageTiles(revision.width,revision.height,layout.columns,layout.rows,overlap);
+}
+export async function patternPdf(revision, { title = '', locale = 'it', paper = 'a4', orientation = 'portrait', monochrome = false, completed = [], notes = '', overlap = 2, margin = 14, thread = {}, design, fontBytes, boldFontBytes } = {}) {
   validateRevision(revision);
   const initial = patternPageLayout({ paper, orientation, margin }); margin = initial.margin;
   const t = words[locale] ?? words.it, doc = new jsPDF({ unit: 'mm', format: paper, orientation, compress: true });
@@ -50,19 +58,21 @@ export async function patternPdf(revision, { title = '', locale = 'it', paper = 
   const { width: pageWidth, height: pageHeight, usableWidth, cellMm, columns, rows, gridX, gridY } = layout;
   const tiles = pageTiles(revision.width, revision.height, columns, rows, overlap), totals = counts(revision);
   const heading = subtitle => {
-    doc.setTextColor('#29272b'); doc.setFontSize(16); doc.text(titleLines, margin, margin + 6, { lineHeightFactor: 6.5 / (16 * 25.4 / 72) });
+    doc.setTextColor(monochrome?'#292929':'#29272b'); doc.setFontSize(16); doc.text(titleLines, margin, margin + 6, { lineHeightFactor: 6.5 / (16 * 25.4 / 72) });
     doc.setFontSize(9); const lines = doc.splitTextToSize(subtitle, usableWidth);
     if (lines.length > 2) throw Object.assign(Error('pdf_export_limit'), { code: 'pdf_export_limit' });
     doc.text(lines, margin, margin + titleHeight + 5, { lineHeightFactor: 4 / (9 * 25.4 / 72) });
   };
   heading(t.pattern); doc.setFontSize(10);
   const facts = [ `${t.dimensions}: ${revision.width} × ${revision.height} | ${t.colors}: ${revision.colors.length}`, `${t.stitch}: ${totals.full} | ${t.half}: ${totals.half} | ${t.back}: ${totals.backstitch}` ].flatMap(line => doc.splitTextToSize(line, usableWidth));
+  const fabric=design?.fabric??revision.settings?.fabric;if(fabric){const physical=fabricSize({width:revision.width,height:revision.height,...fabric});facts.push(...doc.splitTextToSize(`${locale==='en'?'Fabric':'Tessuto'}: ${[fabric.brand,fabric.range,fabric.colorName,fabric.code].filter(Boolean).join(' ')} · ${fabric.countX} × ${fabric.countY} ct · ${physical.widthCm.toFixed(2)} × ${physical.heightCm.toFixed(2)} cm`,usableWidth));}
   doc.text(facts, margin, gridY + 2, { lineHeightFactor: 5 / (10 * 25.4 / 72) });
   const imageY = gridY + facts.length * 5 + 5;
   doc.setFontSize(8);
   const remarks = [t.approximation, t.scale, completed.length ? t.completed : t.noProgress, 'Colour data: craft-color-codes / MakeBead, CC BY 4.0.'].flatMap(line => doc.splitTextToSize(line, usableWidth));
   const remarksY = pageHeight - margin - 10 - (remarks.length - 1) * 4;
   const coverCell = Math.min(700 / revision.width, 700 / revision.height), cover = drawPattern(document.createElement('canvas'), revision, { cellSize: coverCell, width: revision.width * coverCell, height: revision.height * coverCell, completed });
+  if(monochrome){const ctx=cover.getContext('2d'),pixels=ctx.getImageData(0,0,cover.width,cover.height);for(let i=0;i<pixels.data.length;i+=4){const gray=Math.round(.2126*pixels.data[i]+.7152*pixels.data[i+1]+.0722*pixels.data[i+2]);pixels.data[i]=pixels.data[i+1]=pixels.data[i+2]=gray;}ctx.putImageData(pixels,0,0);}
   const scale = Math.min(usableWidth / cover.width, (remarksY - 7 - imageY) / cover.height);
   if (!(scale > 0)) throw Object.assign(Error('pdf_export_limit'), { code: 'pdf_export_limit' });
   doc.addImage(cover.toDataURL('image/png'), 'PNG', margin, imageY, cover.width * scale, cover.height * scale);
@@ -71,17 +81,17 @@ export async function patternPdf(revision, { title = '', locale = 'it', paper = 
   const mapScale = Math.min(usableWidth / revision.width, (pageHeight - margin - gridY - 35) / revision.height);
   const mapH = revision.height * mapScale;
   doc.setFontSize(8);
-  tiles.forEach((tile, index) => { doc.setDrawColor('#94858d'); doc.rect(margin + tile.x * mapScale, gridY + tile.y * mapScale, tile.width * mapScale, tile.height * mapScale); doc.text(String(index + 1), Math.min(margin + tile.x * mapScale + 1, pageWidth - margin - doc.getTextWidth(String(index + 1))), gridY + tile.y * mapScale + 4); });
+  tiles.forEach((tile, index) => { doc.setDrawColor(monochrome?'#666666':'#94858d'); doc.rect(margin + tile.x * mapScale, gridY + tile.y * mapScale, tile.width * mapScale, tile.height * mapScale); doc.text(String(index + 1), Math.min(margin + tile.x * mapScale + 1, pageWidth - margin - doc.getTextWidth(String(index + 1))), gridY + tile.y * mapScale + 4); });
   doc.text(doc.splitTextToSize(t.overlap, usableWidth), margin, gridY + mapH + 10);
-  appendPatternLegend(doc, revision, { locale, totals, margin, thread, top: margin + 6, bottomMargin: margin + 10 });
+  appendPatternLegend(doc, revision, { locale, totals, margin, thread, monochrome, top: margin + 6, bottomMargin: margin + 10 });
   tiles.forEach((tile, index) => {
     doc.addPage(); heading(`${t.page} ${index + 1}/${tiles.length} | ${t.column} ${tile.x + 1}–${tile.x + tile.width} | ${t.row} ${tile.y + 1}–${tile.y + tile.height}`);
     const pixels = 14, image = drawPattern(document.createElement('canvas'), revision, { cellSize: pixels, offsetX: tile.x * pixels, offsetY: tile.y * pixels, width: tile.width * pixels, height: tile.height * pixels, grid: true, symbols: true, monochrome, completed });
     doc.addImage(image.toDataURL('image/png'), 'PNG', gridX, gridY, tile.width * cellMm, tile.height * cellMm);
-    doc.setFontSize(7); doc.setTextColor('#29272b');
+    doc.setFontSize(7); doc.setTextColor(monochrome?'#292929':'#29272b');
     for (let col = 0; col < tile.width; col++) if (!col || (tile.x + col + 1) % 10 === 0) doc.text(String(tile.x + col + 1), Math.min(gridX + col * cellMm, pageWidth - margin - doc.getTextWidth(String(tile.x + col + 1))), gridY - 2);
     for (let row = 0; row < tile.height; row++) if (!row || (tile.y + row + 1) % 10 === 0) doc.text(String(tile.y + row + 1), margin, gridY + (row + .75) * cellMm);
-    if (tile.overlapX || tile.overlapY) { doc.setDrawColor('#634453'); doc.setLineWidth(.5); if (tile.overlapX) doc.rect(gridX, gridY, tile.overlapX * cellMm, tile.height * cellMm); if (tile.overlapY) doc.rect(gridX, gridY, tile.width * cellMm, tile.overlapY * cellMm); }
+    if (tile.overlapX || tile.overlapY) { doc.setDrawColor(monochrome?'#333333':'#634453'); doc.setLineWidth(.5); if (tile.overlapX) doc.rect(gridX, gridY, tile.overlapX * cellMm, tile.height * cellMm); if (tile.overlapY) doc.rect(gridX, gridY, tile.width * cellMm, tile.overlapY * cellMm); }
     doc.setFontSize(7); doc.text(doc.splitTextToSize(t.overlap, usableWidth), margin, pageHeight - margin - 13);
   });
   if (notes) {
