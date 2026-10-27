@@ -85,6 +85,7 @@ export function validateState(state, { validatePattern } = {}) {
     attachments(material.attachments);
   }
   for (const location of state.locations) {
+    attachments(location.attachments === undefined ? [] : location.attachments);
     text(location.name, 'name', { required: true, max: 300 });
     let cursor = location, visited = new Set();
     while (cursor) {
@@ -180,6 +181,7 @@ export function validateState(state, { validatePattern } = {}) {
     receiptTotals.set(receipt.purchaseId, add(receiptTotals.get(receipt.purchaseId) ?? 0, receipt.quantity));
   }
   for (const purchase of state.purchases) {
+    attachments(purchase.attachments === undefined ? [] : purchase.attachments);
     const material = ref('materials', purchase.materialId);
     assert(purchase.unit === material.unit, 'incompatible_units');
     q(purchase.quantity, 'purchase.quantity'); assert(purchase.quantity > 0, 'quantity_positive');
@@ -192,6 +194,7 @@ export function validateState(state, { validatePattern } = {}) {
     if (purchase.status === 'received') assert(actual === purchase.quantity, 'invalid_purchase_status');
   }
   for (const receipt of state.receipts) {
+    attachments(receipt.attachments === undefined ? [] : receipt.attachments);
     const purchase = ref('purchases', receipt.purchaseId), lot = ref('lots', receipt.lotId);
     ref('materials', receipt.materialId);
     assert(receipt.materialId === purchase.materialId && receipt.materialId === lot.materialId && receipt.unit === lot.unit, 'receipt_identity_mismatch');
