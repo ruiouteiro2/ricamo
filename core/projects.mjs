@@ -1,3 +1,4 @@
+import {isBead} from './pattern-materials.mjs';
 import {matchingRevisionProgress} from './revision-progress.mjs';
 import {resetWorkView,workMarkers} from './work-companion.mjs';
 import {normalizeProjectSettings} from './thread-estimate-history.mjs';
@@ -187,8 +188,8 @@ export function projectProgress(state, projectId) {
   if (!revision) return { mode: 'manual', percent: project.manualPercent, completed: null, total: null };
   // Count geometry without allocating one string and Set entry per full cross.
   // Domain mutation/restore validation still uses validProgressKeys independently.
-  let crossTotal = 0;
-  for (const color of revision.cells) if (color >= 0) crossTotal++;
+  let crossTotal = 0,beadTotal=0;
+  for (const color of revision.cells) if (color >= 0){if(isBead(revision.colors?.[color]))beadTotal++;else crossTotal++;}
   const halfKeys = new Set((revision.halfStitches ?? []).map(row => `h:${row.id}`));
   const backKeys = new Set((revision.backstitches ?? []).map(row => `b:${row.id}`));
   const completed = project.completed.filter(key => {
@@ -199,9 +200,10 @@ export function projectProgress(state, projectId) {
     const index = Number(key.slice(2));
     return index < revision.cells.length && revision.cells[index] >= 0;
   });
-  const total = crossTotal + halfKeys.size + backKeys.size;
+  const total = crossTotal + beadTotal + halfKeys.size + backKeys.size;
   return { mode: 'structured', percent: total ? completed.length / total * 100 : 0, completed: completed.length, total,
-    cross: { completed: completed.filter(key => key.startsWith('c:')).length, total: crossTotal },
+    cross: { completed: completed.filter(key => key.startsWith('c:')&&!isBead(revision.colors?.[revision.cells[Number(key.slice(2))]])).length, total: crossTotal },
+    bead: { completed: completed.filter(key => key.startsWith('c:')&&isBead(revision.colors?.[revision.cells[Number(key.slice(2))]])).length, total: beadTotal },
     half: { completed: completed.filter(key => key.startsWith('h:')).length, total: revision.halfStitches?.length ?? 0 },
     backstitch: { completed: completed.filter(key => key.startsWith('b:')).length, total: revision.backstitches?.length ?? 0 } };
 }
