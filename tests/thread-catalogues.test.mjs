@@ -11,7 +11,7 @@ test('Project sharing excludes unused catalogue candidates and index options, de
 
 test('Restore rejects noncanonical catalogue identities and reserved built-in IDs atomically',()=>{
  const repo=new Repository(':memory:');try{run(repo,'thread.catalogue.import',{catalogue:data(),confirmed:true});const original=repo.load();
- for(const mutate of [state=>state.threadCatalogues[0].id='bundled-dmc',state=>state.threadCatalogues.push({...structuredClone(state.threadCatalogues[0]),id:'second',name:' '+state.threadCatalogues[0].name+' '}),state=>state.threadCatalogues[0].colors[0].hex='#FF0000']){
+ for(const mutate of [state=>state.threadCatalogues[0].id='bundled-dmc',state=>state.threadCatalogues[0].id='bundled-casa-dmc',state=>state.threadCatalogues.push({...structuredClone(state.threadCatalogues[0]),id:'second',name:' '+state.threadCatalogues[0].name+' '}),state=>state.threadCatalogues[0].colors[0].hex='#FF0000']){
   const forged=structuredClone(original);mutate(forged);assert.throws(()=>repo.restore({state:forged,assets:[]},original.revision),{code:'thread_catalogue_invalid'});assert.deepEqual(repo.load(),original);
  }
  }finally{repo.close();}
