@@ -1,3 +1,4 @@
+import { preparePatternAssetCommand } from '../core/pattern-asset.mjs';
 import { createProjectPackage, inspectProjectPackage, previewProjectImport, projectExportManifest, projectImportAssets, projectImportCommand, importedProjectId } from '../core/project-package.mjs';
 import { createState, executeCommand } from '../core/application.mjs';
 import { createBackup, inspectBackup } from '../core/backup.mjs';
@@ -46,7 +47,7 @@ let pendingRestore, pendingProject, pendingProjectTimer;
 const browser = {
   async load() { return request((await db()).transaction('state').objectStore('state').get('current')); },
   command(command, revision) {
-    if (['attachment.add','project.package.import'].includes(command.type)) throw failure('unauthorized_command');
+    if (['attachment.add','project.package.import','pattern.createWithAsset'].includes(command.type)) throw failure('unauthorized_command');
     return mutate((state, tx) => writeCommand(state, tx, command, revision));
   },
   async importAsset({ name, data, operationId }, revision) {
@@ -58,6 +59,16 @@ const browser = {
       const next = writeCommand(state, tx, { type: 'attachment.add', payload: asset, operationId }, revision);
       tx.objectStore('assets').put({ id: asset.id, data: bytes });
       return { state: next, asset, duplicate: false };
+    });
+  },
+  async createPatternWithAsset({ name, data, pattern, operationId }, revision) {
+    const bytes = new Uint8Array(boundedBytes(data)), capturedPattern = structuredClone(pattern);
+    const metadata = { name: safeDisplayName(name), mime: detectFile(bytes), size: bytes.length, digest: await digestBytes(bytes) };
+    return mutate((state, tx) => {
+      const prepared = preparePatternAssetCommand(state, metadata, capturedPattern, operationId);
+      const next = writeCommand(state, tx, prepared.command, revision);
+      if (next.revision !== state.revision && !prepared.duplicateAsset) tx.objectStore('assets').add({ id: prepared.assetId, data: bytes });
+      return { state: next, asset: next.attachments.find(row => row.id === prepared.assetId), patternId: prepared.patternId, duplicateAsset: prepared.duplicateAsset };
     });
   },
   async getAsset(id) {
