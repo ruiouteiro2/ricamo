@@ -50,6 +50,14 @@ export function validateState(state, { validatePattern } = {}) {
     assert(Array.isArray(value) && value.length <= 100, 'invalid_attachments');
     value.forEach(id => ref('attachments', id));
   };
+  const object = (value, field) => assert(value && typeof value === 'object' && !Array.isArray(value), 'invalid_object', { field });
+  const strings = (value, field, max = 100) => {
+    assert(Array.isArray(value) && value.length <= max, 'invalid_list', { field });
+    value.forEach(item => { assert(typeof item === 'string', 'invalid_text', { field }); text(item, field, { max: 200 }); });
+  };
+  const requiredText = (record, fields) => {
+    for (const field of fields) { assert(typeof record[field] === 'string', 'invalid_text', { field }); text(record[field], field, { max: 20000 }); }
+  };
   const uniquePair = (records, fields) => {
     const keys = new Set();
     for (const row of records) {
@@ -61,8 +69,12 @@ export function validateState(state, { validatePattern } = {}) {
   oneOf(state.settings.language, ['it', 'en'], 'language');
   oneOf(state.settings.paper, ['a4', 'letter'], 'paper');
   currency(state.settings.currency);
+  if (state.settings.preferences !== undefined) object(state.settings.preferences, 'preferences');
 
   for (const material of state.materials) {
+    requiredText(material, ['name', 'category', 'brand', 'range', 'code', 'description', 'notes', 'color']);
+    strings(material.tags, 'tags'); object(material.properties, 'properties');
+    for (const field of ['divisible', 'reusable', 'favorite', 'archived']) assert(typeof material[field] === 'boolean', 'invalid_boolean', { field });
     text(material.name, 'name', { required: true, max: 300 });
     assert(typeof material.code === 'string', 'invalid_code');
     oneOf(material.unit, UNITS, 'unit');
@@ -82,6 +94,7 @@ export function validateState(state, { validatePattern } = {}) {
     }
   }
   for (const lot of state.lots) {
+    object(lot.properties, 'properties'); requiredText(lot, ['lotCode', 'notes']);
     const material = ref('materials', lot.materialId);
     assert(lot.unit === material.unit, 'incompatible_units');
     q(lot.quantity, 'lot.quantity', true);
@@ -140,6 +153,11 @@ export function validateState(state, { validatePattern } = {}) {
   }
   const progressKeys = new Map();
   for (const project of state.projects) {
+    requiredText(project, ['name', 'technique', 'description', 'notes', 'recipient']);
+    strings(project.tags, 'tags'); object(project.settings, 'settings'); object(project.view, 'view');
+    for (const field of ['fabric', 'thread']) if (project.settings[field] !== undefined) object(project.settings[field], field);
+    assert(Array.isArray(project.progressHistory), 'invalid_progress_history');
+    if (project.view.markers !== undefined) assert(Array.isArray(project.view.markers), 'invalid_markers');
     text(project.name, 'name', { required: true, max: 300 }); oneOf(project.status, PROJECT_STATUSES, 'status');
     money(project.budget, 'budget'); currency(project.currency);
     ref('lots', project.fabricLotId, true);
@@ -181,6 +199,7 @@ export function validateState(state, { validatePattern } = {}) {
     money(receipt.cost, 'cost'); currency(receipt.currency); identifier(receipt.operationId);
   }
   for (const task of state.tasks) { ref('projects', task.projectId); text(task.title, 'title', { required: true, max: 500 }); assert(typeof task.done === 'boolean', 'invalid_boolean'); }
+  for (const category of state.categories) { text(category.name, 'name', { required: true, max: 200 }); strings(category.fields, 'fields'); }
   for (const session of state.sessions) {
     ref('projects', session.projectId); q(session.durationMinutes, 'durationMinutes'); assert(session.durationMinutes <= 1440, 'session_too_long'); attachments(session.attachments);
   }
