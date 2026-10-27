@@ -1,11 +1,13 @@
+import { normalizePatternFabric } from './pattern-fabric.mjs';
 import { catalogueReference } from './thread-catalogues.mjs';
 import { validateThreadColor, blendSignature } from './thread-recipes.mjs';
 /** Immutable, bounded geometry for Ricamo's version-one structured revisions.
  * Cells are whole crosses; half stitches and backstitches remain distinct.
  * The caller assigns revision identities and persists named/autosaved revisions.
  */
-export const LIMITS = Object.freeze({ width: 500, height: 500, colors: 80, segments: 250000 });
-export const SYMBOLS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*+=?!:;<>[]{}~';
+export const LIMITS = Object.freeze({ width: 500, height: 500, colors: 500, segments: 250000 });
+const baseSymbols = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*+=?!:;<>[]{}~';
+export const SYMBOLS = Object.freeze([...baseSymbols, ...Array.from({length:500-baseSymbols.length},(_,i)=>String.fromCharCode(65+Math.floor(i/26))+String.fromCharCode(65+i%26))]);
 
 export class PatternError extends Error {
   constructor(code, details = {}) { super(code); this.name = 'PatternError'; this.code = code; this.details = details; }
@@ -39,6 +41,7 @@ export function validateColors(colors, { allowEmpty = true } = {}) {
 }
 
 export function validateRevision(p) {
+  if(p?.settings?.fabric!==undefined)normalizePatternFabric(p.settings.fabric);
   if (!p || typeof p !== 'object' || (p.formatVersion !== undefined && p.formatVersion !== 1) || (p.version !== undefined && p.version !== 1)) fail('pattern.version');
   for (const field of ['quarterStitches', 'threeQuarterStitches', 'knots', 'beads']) if (p[field]?.length) fail('pattern.unsupportedPrimitive', { field });
   validSize(p.width, p.height);
