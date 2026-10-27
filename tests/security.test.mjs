@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, mkdirSync, writeFileSync, symlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { createAssetHandler } from '../desktop/protocol.mjs';
 import { Repository } from '../desktop/repository.mjs';
 import { createState, executeCommand } from '../core/application.mjs';
 import { inspectBackup } from '../core/backup.mjs';
@@ -113,4 +114,40 @@ test('stock retries remain idempotent and conflicting or stale commands remain a
     assert.equal(repo.load().revision, 2);
     assert.equal(repo.load().movements.filter(row => row.kind === 'consume').length, 1);
   } finally { repo.close(); }
+});
+
+
+test('renderer asset protocol serves bundled assets and rejects traversal, foreign hosts and writes', async () => {
+  const f = fixture(), directory = dirname(f.path), publicRoot = join(directory, 'dist');
+  try {
+    mkdirSync(publicRoot); writeFileSync(join(publicRoot, 'index.html'), '<!doctype html><p>Synthetic public app</p>');
+    writeFileSync(join(directory, 'private.html'), 'SYNTHETIC_PRIVATE_SENTINEL');
+    const handler = await createAssetHandler(publicRoot);
+    const publicResult = await handler({ url: 'ricamo://app/index.html', method: 'GET' });
+    assert.equal(publicResult.status, 200); assert.match(await publicResult.text(), /Synthetic public app/);
+    assert.equal(publicResult.headers.get('X-Content-Type-Options'), 'nosniff');
+    assert.match(publicResult.headers.get('Content-Security-Policy'), /connect-src 'self'/);
+    for (const [url, method] of [
+      ['ricamo://app/%2e%2e%2fprivate.html', 'GET'], ['ricamo://app/%5c..%5cprivate.html', 'GET'],
+      ['ricamo://outside/index.html', 'GET'], ['file://' + join(directory, 'private.html'), 'GET'],
+      ['ricamo://app/index.html', 'POST'], ['ricamo://app/%00index.html', 'GET'],
+    ]) {
+      const result = await handler({ url, method });
+      assert.ok(result.status >= 400, `${method} ${url} must be rejected`);
+      assert.doesNotMatch(await result.text(), /SYNTHETIC_PRIVATE_SENTINEL/);
+    }
+    const head = await handler({ url: 'ricamo://app/index.html', method: 'HEAD' });
+    assert.equal(head.status, 200); assert.equal(await head.text(), '');
+  } finally { f.cleanup(); }
+});
+
+test('renderer asset protocol resolves symlinks before enforcing its public directory', async t => {
+  const f = fixture(), directory = dirname(f.path), publicRoot = join(directory, 'dist');
+  try {
+    mkdirSync(publicRoot); writeFileSync(join(directory, 'private.html'), 'SYNTHETIC_PRIVATE_SENTINEL');
+    try { symlinkSync(join(directory, 'private.html'), join(publicRoot, 'escape.html')); }
+    catch (error) { if (['EPERM', 'EACCES'].includes(error.code)) { t.skip('OS does not authorize disposable symlink creation'); return; } throw error; }
+    const result = await (await createAssetHandler(publicRoot))({ url: 'ricamo://app/escape.html', method: 'GET' });
+    assert.equal(result.status, 403); assert.doesNotMatch(await result.text(), /SYNTHETIC_PRIVATE_SENTINEL/);
+  } finally { f.cleanup(); }
 });
