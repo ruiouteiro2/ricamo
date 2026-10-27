@@ -127,11 +127,19 @@ node desktop/supplier-scan.mjs --database /tmp/ricamo-catalogues.sqlite --report
 
 `--capture-dir` optionally retains bounded compressed public responses outside Git for factual replay/audit. These are developer artifacts, not app/user data or distributed assets. The production app uses the bounded Node HTTPS transport, the same parser and the same cache contract. A newer cache schema, unreadable cache or malformed stored JSON falls back to bundled read-only facts; the unavailable cache is not reset. Equal-date canonical corrections replace stale seed variants, while newer live page facts take precedence over the bundle.
 
-### Interim scan evidence
+### Final scan evidence
 
-On 2026-10-27, the initial expanded Tessiland curl pass read **995 pages**, all HTTP 200, between **17:57:00 and 18:14:02 UTC**. Its captured replay produced **5,502 product variants**: 3,060 threads, 1,863 embellishments, 145 fabrics/supports, 346 tools, 62 finishing supplies, 14 preparation supplies, three stabilizers and nine storage items. Source URLs, timestamps and input digests are retained in `data/supplier-catalogue.json`.
+The full public Tessiland crawl completed its frontier on **2026-10-27 at 18:45:12 UTC**. The sitemap contains **4,048 entries and 2,119 unique URLs**. **2,115** are eligible after excluding the two explicit felt category routes and two legal/privacy routes; material-keyword filtering is no longer used. Link discovery expands the persisted frontier to **2,207 entries**: **2,197 successful responses**, seven excluded private/invalid routes, and **three HTTP 404 product pages**. Robots-disallowed account pages were never fetched. The current crawl has no pending public pages.
 
-This is **an interim snapshot, not full-site completion**. The old discovery filter selected 990 of the sitemap's 2,119 unique URLs (4,048 entries including duplicates); those filtered-out URLs are now being traversed by the full public scan. The replay records 801 material pages, 151 excluded pages, 42 navigation/category responses (including robots), and two unsupported pages. Their URLs remain in coverage metadata. The final full-frontier snapshot will replace these interim counts. A previous narrower pass must not be described as a scan of every public product.
+The captured replay contains **2,198 public Tessiland responses including robots**: 1,891 material/reference product pages, 257 navigation/category pages plus robots, 24 explicitly excluded fabric pages and 25 non-material pages. Every captured HTTP 200 product page is classified. There are no unreported/unmapped captured product pages. The earlier 995-page pass was reused; it is not substituted for the full public scan.
+
+`data/supplier-catalogue.json` contains **10,524 Tessiland variants**: 4,026 threads/ribbons, 2,984 embellishments, 262 fabrics/supports, 815 tools, 1,993 finishing supplies, 369 physical kits, 42 reference products, ten preparation supplies, nine stabilizers and 14 storage items. Combined with the 2,239 Casa Cenina records, the app ships **12,763 unique product records**. Exact observed URLs, actual retrieval timestamps and input digests accompany the factual snapshot. No price-bearing names or duplicate product IDs remain in the final audit.
+
+Coverage remains explicitly partial because these public Tessiland products returned HTTP 404, including the final retry:
+
+- https://www.tessiland.com/it/anelli-e-cerchi-per-bijoux/15078-anelli-aperti-per-bijoux-4gr.html
+- https://www.tessiland.com/it/anelli-e-cerchi-per-bijoux/16772-anellini-chiusi-in-metallo-oro-e-argento-per-bijoux.html
+- https://www.tessiland.com/it/clic-clac-in-legno/2381-clic-clac-iron-wood-con-manico.html
 
 Casa Cenina's actual curl requests returned HTTP 403. That scan remains blocked; no control was bypassed. Its full brand/range catalogue and unavailable fabric categories are not claimed complete. Public indexed listings supplement the previous 1,359 records with **444 Anchor**, **400 Profilo** and **36 DMC Light Effects** exact observed destination links in `data/casa-supplier-supplement.json`:
 
@@ -141,7 +149,7 @@ Casa Cenina's actual curl requests returned HTTP 403. That scan remains blocked;
 
 Anchor and Profilo listings explicitly state 8 metres and six separable strands. Light Effects' corresponding facts are independently supported by DMC: https://www.dmc.com/FR/fr/products/mouline-light-effect . These physical facts apply to those verified families, not every thread. Profilo retains unknown RGB. Light Effects uses independently sourced photographic approximations described below; no ordinary cotton colour is substituted for an effect thread.
 
-The interim data includes 1,055 ordinary wool/yarn variants, all marked `verify-technique`. **No verified embroidery-wool coverage is claimed**. The Prym ribbon-threading needle was corrected to a tool, fibre matching is word-bounded, and descriptions that merely propose other embroidery threads as decoration do not establish embroidery suitability for the underlying yarn. A final title/category and source-fact audit accompanies the full replay.
+The final data includes 1,055 ordinary wool/yarn variants, all marked `verify-technique`. **No verified embroidery-wool coverage is claimed**. The Prym ribbon-threading needle was corrected to a tool, fibre matching is word-bounded, and descriptions that merely propose other embroidery threads as decoration do not establish embroidery suitability for the underlying yarn. The final audit also corrected stitchable bag blanks, flax-seed filling, tool sets, marking tools and variant-specific packaging. A 250 g yarn variant cannot silently inherit the base 50 g ball’s declared metres. Multi-axis bead dimensions remain unknown in the scalar bead-size field. Aida without a declared count keeps an unknown count and the conventional stitches/over-one defaults. These defaults do not manufacture a retailer density.
 
 ### Independent Anchor colour evidence
 
