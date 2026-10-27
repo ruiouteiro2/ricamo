@@ -1,3 +1,4 @@
+import { displayDate } from '../core/calendar.mjs';
 import { ref } from 'vue';
 import additional from './i18n-extra.json';
 
@@ -36,7 +37,7 @@ export function number(value, digits = 2) {
 }
 export function date(value) {
   if (!value) return '—';
-  const parsed = new Date(value);
+  const parsed = displayDate(value);
   return Number.isNaN(parsed.valueOf()) ? '—' : new Intl.DateTimeFormat(language.value === 'en' ? 'en-GB' : 'it-IT', { dateStyle: 'medium' }).format(parsed);
 }
 export function money(value, currency = 'EUR') {
@@ -45,7 +46,7 @@ export function money(value, currency = 'EUR') {
 }
 export function errorText(error) {
   const code = String(error?.code || error?.message || '');
-  if (Object.hasOwn(additional, code) || Object.hasOwn(words, code)) return t(code);
+  if (Object.hasOwn(additional, code) || Object.hasOwn(words, code)) return t(code, error?.details || {});
   if (/ENOSPC|STORAGE_FULL|QuotaExceeded/i.test(code) || error?.name === 'QuotaExceededError') return t('storageFull');
   if (/EACCES|EPERM|EROFS|STORAGE_PERMISSION|READONLY/i.test(code)) return t('storagePermission');
   if (/INSUFFICIENT|RESERVATION_CONFLICT|STOCK_RESERVED/i.test(code)) return t('insufficientStock');
