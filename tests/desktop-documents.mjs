@@ -56,6 +56,10 @@ try {
   const imageData = await page.evaluate(() => { const canvas = document.createElement('canvas'); canvas.width = 16; canvas.height = 12; const c = canvas.getContext('2d'); c.fillStyle = '#dd2233'; c.fillRect(0, 0, 8, 12); c.fillStyle = '#102050'; c.fillRect(8, 0, 8, 12); c.clearRect(0, 0, 4, 4); return canvas.toDataURL().split(',')[1]; });
   const source = join(data, 'Transparent source.png'); writeFileSync(source, Buffer.from(imageData, 'base64'));
   await page.locator('input[type=file][accept^="image/png"]').setInputFiles(source);
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.getByRole('dialog').getByRole('button', { name: 'Cancel', exact: true }).click();
+  assert.equal((await load()).attachments.length, 1, 'cancelled image preview must not retain an orphan attachment');
+  await page.locator('input[type=file][accept^="image/png"]').setInputFiles(source);
   await page.getByRole('dialog').getByRole('textbox', { name: /^Name/ }).fill('Real engine in Electron');
   await page.getByRole('dialog').getByRole('button', { name: 'Generate pattern', exact: true }).click();
   await expect(page.getByRole('dialog').getByRole('button', { name: 'Save', exact: true })).toBeEnabled();
