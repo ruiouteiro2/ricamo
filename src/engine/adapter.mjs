@@ -25,7 +25,17 @@ export function validateSettings(input) {
   const protectedRegions=input.protectedRegions??[];
   if(!Array.isArray(protectedRegions)||protectedRegions.length>20)fail('engine.protectedRegions');
   for(const r of protectedRegions)if(!r||!finite(r.x,0,settings.width-1,true)||!finite(r.y,0,settings.height-1,true)||!finite(r.width,1,settings.width,true)||!finite(r.height,1,settings.height,true)||r.x+r.width>settings.width||r.y+r.height>settings.height)fail('engine.protectedRegions');
-  return {...Object.fromEntries([...Object.keys(ranges), 'mode'].map(key => [key, settings[key]])),...(protectedRegions.length?{protectedRegions:protectedRegions.map(({x,y,width,height})=>({x,y,width,height}))}:{})};
+  const options = {};
+  if (input.background !== undefined) {
+    const b=input.background;
+    if(!b||typeof b!=='object'||Array.isArray(b)||!['transparent','white','color'].includes(b.mode)||Object.keys(b).some(k=>!['mode','color'].includes(k))||(b.mode==='color'?(typeof b.color!=='string'||!/^#[0-9a-f]{6}$/i.test(b.color)):b.color!==undefined))fail('engine.background');
+    options.background={mode:b.mode,...(b.mode==='color'?{color:b.color.toLowerCase()}:{})};
+  }
+  for(const key of ['fixedColors','excludedColors'])if(input[key]!==undefined){
+    const indices=input[key];if(!Array.isArray(indices)||indices.length>(key==='fixedColors'?80:6000)||new Set(indices).size!==indices.length||indices.some(i=>!finite(i,0,5999,true)))fail('engine.colorConstraints');
+    if(indices.length)options[key]=[...indices];
+  }
+  return {...options,...Object.fromEntries([...Object.keys(ranges), 'mode'].map(key => [key, settings[key]])),...(protectedRegions.length?{protectedRegions:protectedRegions.map(({x,y,width,height})=>({x,y,width,height}))}:{})};
 }
 
 export function validatePalette(palette) {
@@ -85,26 +95,52 @@ function conversionOptions(settings,palette){
   return {protectedMask,...(preference?{preferredIndices:preference.indices,preferenceTolerance:preference.tolerance,maxPreferenceDistance:20}:{})};
 }
 
+/** Composite only alpha; opaque pixels are never classified as a removable background. */
+export function prepareBackground(rgba, background) {
+  const result=new Uint8ClampedArray(rgba);
+  if(!background||background.mode==='transparent')return result;
+  const hex=background.mode==='white'?'#ffffff':background.color;
+  const rgb=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16));
+  for(let i=0;i<result.length;i+=4){const alpha=result[i+3]/255;for(let c=0;c<3;c++)result[i+c]=Math.round(result[i+c]*alpha+rgb[c]*(1-alpha));result[i+3]=255;}
+  return result;
+}
+function constrainedPalette(palette,settings){
+  const fixed=settings.fixedColors??[],excluded=new Set(settings.excludedColors??[]);
+  if([...fixed,...excluded].some(i=>i>=palette.colors.length))fail('engine.colorConstraints');
+  if(fixed.some(i=>excluded.has(i)))fail('engine.constraintConflict');
+  const indices=palette.colors.map((_,i)=>i).filter(i=>!excluded.has(i));
+  if(!indices.length)fail('engine.paletteEmpty');
+  const limit=Math.min(settings.maxColors,CAPABILITIES.modes[settings.mode],indices.length);
+  if(fixed.length>limit)fail('engine.fixedColorLimit',{limit});
+  const map=new Map(indices.map((i,j)=>[i,j])),effective=structuredClone(palette);
+  effective.colors=indices.map(i=>effective.colors[i]);
+  if(palette.preference)effective.preference={...structuredClone(palette.preference),indices:palette.preference.indices.filter(i=>map.has(i)).map(i=>map.get(i))};
+  return {palette:effective,fixedIndices:fixed.map(i=>map.get(i)),limit};
+}
+
 export function generate({ rgba, settings: input, palette = dmcPalette, source = null, metadata = {} }) {
   const settings = validateSettings(input);
   validatePalette(palette);
   if (!(rgba instanceof Uint8ClampedArray) && !(rgba instanceof Uint8Array)) fail('engine.pixelBuffer');
   if (rgba.length !== settings.width * settings.height * 4) fail('engine.pixelLength', { expected: settings.width * settings.height * 4, actual: rgba.length });
+  const prepared=prepareBackground(rgba,settings.background);
   let visible = false;
-  for (let i = 3; i < rgba.length; i += 4) if (rgba[i] >= CAPABILITIES.alphaThreshold) { visible = true; break; }
+  for (let i = 3; i < prepared.length; i += 4) if (prepared[i] >= CAPABILITIES.alphaThreshold) { visible = true; break; }
   if (!visible) fail('engine.emptyImage');
   // All mutable inputs are copied: conversion must not mutate caller palettes.
-  const effectivePalette = structuredClone(palette);
+  if(settings.fixedColors?.length||settings.excludedColors?.length)conversionOptions(settings,palette);
+  const restriction=constrainedPalette(palette,settings),effectivePalette=restriction.palette;
   let result;
-  try { result = convert(new Uint8ClampedArray(rgba), settings, effectivePalette, conversionOptions(settings,effectivePalette)); }
+  try { result = convert(prepared, settings, effectivePalette, {...conversionOptions(settings,effectivePalette),...(restriction.fixedIndices.length?{fixedIndices:restriction.fixedIndices}:{})}); }
   catch (error) { throw new PatternError('engine.generationFailed', { cause: error instanceof PatternError ? error.code : 'quantizer' }); }
   const colors = result.colors.map((color, index) => ({ ...color, brand: color.brand ?? palette.brand, symbol: SYMBOLS[index], strands: settings.strands }));
   const revision = createBlank(settings.width, settings.height, colors, metadata);
   revision.cells = result.cells;
   revision.settings = settings;
-  revision.provenance = { ...ENGINE, parameters: structuredClone(settings), palette: { brand: palette.brand, source: palette.source, approximate: palette.approximate !== false,
-    colors: effectivePalette.colors.map(c => ({ brand: c.brand ?? palette.brand, range: c.range ?? '', code: c.code, hex: c.hex, rgb: [...c.rgb], ...(c.itemId ? { itemId: c.itemId } : {}) })) },
-    preference: effectivePalette.preference??null, cleanup:{changedCells:result.cleanupChanged,protection:'keep-whole-four-connected-regions-touching-protected-output-grid-rectangles'}, source: source == null ? null : structuredClone(source), alphaPolicy: { emptyBelow: 128, partialBackground: '#ffffff' }, effectiveColorLimit: Math.min(settings.maxColors, CAPABILITIES.modes[settings.mode], palette.colors.length) };
+  const advanced=settings.background||settings.fixedColors?.length||settings.excludedColors?.length;
+  revision.provenance = { ...ENGINE,...(advanced?{version:'0.1.0+ricamo.3',adapterVersion:3,adaptations:[...ENGINE.adaptations,'explicit-alpha-background','fixed-excluded-palette-indices']}:{ }), parameters: structuredClone(settings), palette: { brand: palette.brand, source: palette.source, approximate: palette.approximate !== false,
+    colors: palette.colors.map(c => ({ brand: c.brand ?? palette.brand, range: c.range ?? '', code: c.code, hex: c.hex, rgb: [...c.rgb], ...(c.itemId ? { itemId: c.itemId } : {}) })) },
+    preference: palette.preference??null, cleanup:{changedCells:result.cleanupChanged,protection:'keep-whole-four-connected-regions-touching-protected-output-grid-rectangles'}, source: source == null ? null : structuredClone(source), alphaPolicy: { emptyBelow: settings.background&&settings.background.mode!=='transparent'?0:128, partialBackground: settings.background?.mode==='color'?settings.background.color:'#ffffff' }, effectiveColorLimit: restriction.limit };
   validateRevision(revision);
   return revision;
 }
