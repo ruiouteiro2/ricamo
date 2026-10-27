@@ -2,6 +2,11 @@ export const FILE_LIMIT = 25 * 1024 * 1024;
 export const BACKUP_LIMIT = 256 * 1024 * 1024;
 
 export class FileError extends Error { constructor(code) { super(code); this.code = code; } }
+export function boundedBytes(value, limit = FILE_LIMIT) {
+  if (!(value instanceof Uint8Array) && !(value instanceof ArrayBuffer)) throw new FileError('invalid_file_data');
+  if (!value.byteLength || value.byteLength > limit) throw new FileError('file_too_large');
+  return value instanceof Uint8Array ? value : new Uint8Array(value);
+}
 export function detectFile(bytes) {
   if (!(bytes instanceof Uint8Array) || !bytes.length || bytes.length > FILE_LIMIT) throw new FileError('file_too_large');
   const start = [...bytes.slice(0, 16)];
