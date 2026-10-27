@@ -1,34 +1,50 @@
 import { counts } from './pattern.mjs';
 import { fabricSize, convertQuantity } from './fabric.mjs';
 import { assert, quantity } from './shared.mjs';
+import { threadComponents, boundIdentity } from './thread-recipes.mjs';
 
-/** Planning estimate only. Never used as a stock mutation or confirmed consumption. */
-export function estimateThreads(revision, configuration = {}) {
-  const countX = Number(configuration.countX ?? revision.settings?.count ?? 14);
-  const countY = Number(configuration.countY ?? countX);
-  const countMeaning = configuration.countMeaning ?? 'stitches';
-  const overX = Number(configuration.overX ?? 1), overY = Number(configuration.overY ?? overX);
-  const size = fabricSize({ width: revision.width, height: revision.height, countX, countY, countMeaning, overX, overY });
-  const pitchX = size.widthCm / revision.width / 100, pitchY = size.heightCm / revision.height / 100;
-  const waste = quantity(configuration.waste ?? revision.settings?.waste ?? 20);
-  assert(waste <= 100, 'invalid_waste');
-  const byColor = counts(revision).byColor;
-  const results = byColor.map(row => {
-    const color = revision.colors[row.index];
-    const strands = Number(configuration.colorStrands?.[row.index] ?? color.strands ?? configuration.strands ?? 2);
-    const backStrands = Number(configuration.backStrands ?? 1);
-    assert(Number.isInteger(strands) && strands >= 1 && strands <= 100 && Number.isInteger(backStrands) && backStrands >= 1 && backStrands <= 100, 'invalid_strands');
-    const cross = row.full * (2 * Math.hypot(pitchX, pitchY) + pitchX + pitchY) * strands;
-    const half = row.half * (Math.hypot(pitchX, pitchY) + pitchY) * strands;
-    const outline = revision.backstitches.filter(segment => segment.color === row.index).reduce((sum, segment) => sum + Math.hypot((segment.x2 - segment.x1) * pitchX, (segment.y2 - segment.y1) * pitchY) * 2 * backStrands, 0);
-    const starts = row.total ? Math.ceil(row.total / 80) * .12 * strands : 0;
-    const filamentMetres = quantity((cross + half + outline) * (1 + waste / 100) + starts);
-    return { index: row.index, color, filamentMetres, confidence: 'estimated', method: 'ricamo-geometric-v1',
-      assumptions: { pitchX, pitchY, strands, backStrands, wastePercent: waste, startFinishPer80PrimitivesMetres: .12 } };
+import {threadEstimateConfiguration} from './thread-estimate-config.mjs';
+export {THREAD_ESTIMATE_DEFAULTS,threadEstimateConfiguration} from './thread-estimate-config.mjs';
+import {validateThreadEstimateHistory} from './thread-estimate-history.mjs';
+
+/** Versioned geometric planning estimate; each primitive uses actual whole strands. */
+export function estimateThreads(revision,configuration={}) {
+  const settings=threadEstimateConfiguration(configuration),countX=Number(configuration.countX),countY=Number(configuration.countY??countX);
+  assert(countX>0 && countY>0,'fabric_count_unknown');
+  const countMeaning=configuration.countMeaning??'stitches',overX=Number(configuration.overX??1),overY=Number(configuration.overY??overX);
+  const size=fabricSize({width:revision.width,height:revision.height,countX,countY,countMeaning,overX,overY});
+  const pitchX=size.widthCm/revision.width/100,pitchY=size.heightCm/revision.height/100,diagonal=Math.hypot(pitchX,pitchY);
+  return counts(revision).byColor.map(row=>{
+    const color=revision.colors[row.index],components=new Map(),breakdown={full:0,half:0,back:0};
+    const geometry={full:row.full*(2*diagonal+(pitchX+pitchY)*settings.crossTravel),half:row.half*(diagonal+pitchY*settings.halfTravel),
+      back:(revision.backstitches??[]).filter(segment=>segment.color===row.index).reduce((n,b)=>n+Math.hypot((b.x2-b.x1)*pitchX,(b.y2-b.y1)*pitchY)*settings.outlineReturn,0)};
+    const primitiveCounts={full:row.full,half:row.half,back:row.backstitch},strandConfiguration={};
+    for(const type of ['full','half','back']){
+      const recipe=threadComponents(color,type,settings,row.index);strandConfiguration[type]=recipe.map(c=>({identity:boundIdentity(c),strands:c.strands}));
+      if(!primitiveCounts[type])continue;
+      const perFilament=(geometry[type]*(1+settings.waste/100)+Math.ceil(primitiveCounts[type]/settings.batchSize)*settings.startFinishCm/100)*settings.calibrationFactor;
+      for(const component of recipe){const key=boundIdentity(component);if(!components.has(key))components.set(key,{color:component,filamentMetres:0,byType:{full:0,half:0,back:0}});const record=components.get(key),amount=perFilament*component.strands;record.filamentMetres+=amount;record.byType[type]+=amount;breakdown[type]+=amount;}
+    }
+    const expanded=[...components.values()].map(row=>({...row,filamentMetres:quantity(row.filamentMetres),byType:Object.fromEntries(Object.entries(row.byType).map(([key,value])=>[key,quantity(value)]))}));
+    return {index:row.index,color,filamentMetres:quantity(expanded.reduce((n,row)=>n+row.filamentMetres,0)),components:expanded,breakdown,confidence:'estimated',method:'ricamo-geometric-v2',
+      assumptions:{...settings,countX,countY,countMeaning,overX,overY,pitchX,pitchY,strandConfiguration,startFinishPerBatchMetres:settings.startFinishCm/100,batching:'separate-full-half-back'}};
   });
-  return results;
 }
-
-export function estimateForMaterial(estimate, material) {
-  return convertQuantity(estimate.filamentMetres, 'strand-m', material.unit, material);
+export function estimateForMaterial(estimate,material) {
+  const direct=convertQuantity(estimate.filamentMetres,'strand-m',material.unit,material);
+  if(direct!==null)return direct;
+  if(['cm','mm'].includes(material.unit)){const metres=convertQuantity(estimate.filamentMetres,'strand-m','m',material);return metres===null?null:convertQuantity(metres,'m',material.unit,material);}
+  return null;
+}
+/** Called when revising estimates or changing their design/fabric context. */
+export function archivePatternNeeds(state,project,context,reason='reestimated') {
+  const previous=state.needs.filter(row=>row.projectId===project.id && row.source==='pattern');
+  if(previous.length){
+    const history=project.settings.threadEstimateHistory??[];
+    const nextHistory=[...history,{savedAt:context.now,reason,configuration:structuredClone(project.settings.threadEstimate?.configuration??{}),
+      calibration:structuredClone(project.settings.threadEstimate?.calibration??null),fabric:structuredClone(project.settings.threadEstimate?.fabric??null),needs:previous.map(row=>({materialId:row.materialId,quantity:row.quantity,unit:row.unit,revisionId:row.estimate?.revisionId??null,method:row.estimate?.method??null,filamentMetres:row.estimate?.filamentMetres??null,conversion:structuredClone(row.estimate?.conversion??null)}))}];
+    validateThreadEstimateHistory(nextHistory,{state});
+    project.settings.threadEstimateHistory=nextHistory;
+  }else validateThreadEstimateHistory(project.settings.threadEstimateHistory,{state});
+  state.needs=state.needs.filter(row=>row.projectId!==project.id || row.source!=='pattern');delete project.settings.threadEstimate;
 }
