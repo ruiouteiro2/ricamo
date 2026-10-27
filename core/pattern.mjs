@@ -1,8 +1,9 @@
 import { normalizePatternFabric } from './pattern-fabric.mjs';
 import { catalogueReference } from './thread-catalogues.mjs';
-import { validateThreadColor, blendSignature } from './thread-recipes.mjs';
-/** Immutable, bounded geometry for Ricamo's version-one structured revisions.
- * Cells are whole crosses; half stitches and backstitches remain distinct.
+import { validateThreadColor } from './thread-recipes.mjs';
+import {isBead,cellKind,validatePatternMaterial,materialColorIdentity} from './pattern-materials.mjs';
+/** Immutable, bounded geometry. Version two adds typed bead cells.
+ * Whole crosses, beads, half stitches and backstitches remain distinct.
  * The caller assigns revision identities and persists named/autosaved revisions.
  */
 export const LIMITS = Object.freeze({ width: 500, height: 500, colors: 500, segments: 250000 });
@@ -33,7 +34,7 @@ export function validateColors(colors, { allowEmpty = true } = {}) {
       if (typeof color.symbol !== 'string' || !color.symbol.trim() || color.symbol.length > 4 || symbols.has(color.symbol)) fail('pattern.symbol', { index });
       symbols.add(color.symbol);
     }
-    validateThreadColor(color);
+    validateThreadColor(color);validatePatternMaterial(color);
     if(color.catalogueRef!==undefined)catalogueReference(color.catalogueRef);
     if (color.strands !== undefined && !integer(color.strands, 1, 12)) fail('pattern.strands', { index });
   }
@@ -42,21 +43,22 @@ export function validateColors(colors, { allowEmpty = true } = {}) {
 
 export function validateRevision(p) {
   if(p?.settings?.fabric!==undefined)normalizePatternFabric(p.settings.fabric);
-  if (!p || typeof p !== 'object' || (p.formatVersion !== undefined && p.formatVersion !== 1) || (p.version !== undefined && p.version !== 1)) fail('pattern.version');
+  if (!p || typeof p !== 'object' || (p.formatVersion !== undefined && ![1,2].includes(p.formatVersion)) || (p.version !== undefined && p.version !== 1)) fail('pattern.version');
   for (const field of ['quarterStitches', 'threeQuarterStitches', 'knots', 'beads']) if (p[field]?.length) fail('pattern.unsupportedPrimitive', { field });
   validSize(p.width, p.height);
   validateColors(p.colors);
+  if(p.colors.some(isBead)&&p.formatVersion!==2)fail('pattern.version');
   if (!Array.isArray(p.cells) || p.cells.length !== p.width * p.height || p.cells.some(c => !validColor(p, c, true))) fail('pattern.cells');
   const half = p.halfStitches ?? [], back = p.backstitches ?? [];
   if (!Array.isArray(half) || !Array.isArray(back) || half.length > LIMITS.segments || back.length > LIMITS.segments) fail('pattern.primitives');
   const ids = new Set();
   for (const h of half) {
-    if (!h || typeof h.id !== 'string' || !h.id || ids.has(`h:${h.id}`) || !validPoint(p, h.x, h.y) || !validColor(p, h.color) || !['/', '\\'].includes(h.direction)) fail('pattern.halfStitch');
+    if (!h || typeof h.id !== 'string' || !h.id || ids.has(`h:${h.id}`) || !validPoint(p, h.x, h.y) || !validColor(p, h.color) || isBead(p.colors[h.color]) || !['/', '\\'].includes(h.direction)) fail('pattern.halfStitch');
     ids.add(`h:${h.id}`);
   }
   for (const b of back) {
     if (!b || typeof b.id !== 'string' || !b.id || ids.has(`b:${b.id}`) || !validVertex(p, b.x1, b.y1) || !validVertex(p, b.x2, b.y2)
-      || (b.x1 === b.x2 && b.y1 === b.y2) || !validColor(p, b.color)) fail('pattern.backstitch');
+      || (b.x1 === b.x2 && b.y1 === b.y2) || !validColor(p, b.color) || isBead(p.colors[b.color])) fail('pattern.backstitch');
     ids.add(`b:${b.id}`);
   }
   return p;
@@ -65,18 +67,20 @@ export function validateRevision(p) {
 export function createBlank(width, height, colors = [], metadata = {}) {
   validSize(width, height);
   const p = { ...clone(metadata), width, height, colors: clone(colors), cells: Array(width * height).fill(-1), halfStitches: [], backstitches: [] };
+  if(colors.some(isBead))p.formatVersion=2;
   validateRevision(p);
   return p;
 }
 
 export function counts(p) {
   validateRevision(p);
-  const byColor = p.colors.map((color, index) => ({ index, color, full: 0, half: 0, backstitch: 0, backstitchLength: 0, total: 0 }));
-  for (const index of p.cells) if (index >= 0) { byColor[index].full++; byColor[index].total++; }
+  const byColor = p.colors.map((color, index) => ({ index, color, full: 0, bead: 0, half: 0, backstitch: 0, backstitchLength: 0, total: 0 }));
+  for (const index of p.cells) if (index >= 0) { byColor[index][cellKind(p.colors[index])]++; byColor[index].total++; }
   for (const h of p.halfStitches ?? []) { byColor[h.color].half++; byColor[h.color].total++; }
   for (const b of p.backstitches ?? []) { byColor[b.color].backstitch++; byColor[b.color].total++; byColor[b.color].backstitchLength += Math.hypot(b.x2 - b.x1, b.y2 - b.y1); }
   const full = byColor.reduce((n, c) => n + c.full, 0), half = (p.halfStitches ?? []).length, backstitch = (p.backstitches ?? []).length;
-  return { full, half, backstitch, total: full + half + backstitch, byColor };
+  const bead=byColor.reduce((n,c)=>n+c.bead,0);
+  return { full, half, backstitch, bead, total: full + bead + half + backstitch, byColor };
 }
 
 export function primitiveKeys(p) {
@@ -120,6 +124,7 @@ export function replaceColor(p, from, to) {
   next.cells = next.cells.map(c => c === from ? to : c);
   next.halfStitches = (next.halfStitches ?? []).filter(h => !(to < 0 && h.color === from)).map(h => ({ ...h, color: h.color === from ? to : h.color }));
   next.backstitches = (next.backstitches ?? []).filter(b => !(to < 0 && b.color === from)).map(b => ({ ...b, color: b.color === from ? to : b.color }));
+  validateRevision(next);
   return next;
 }
 
@@ -179,7 +184,7 @@ function segmentIntersectsRect(b, r) {
   return true;
 }
 
-const identity = c => JSON.stringify([c.itemId ?? '', c.brand ?? '', c.range ?? '', c.code, c.hex, c.strands ?? 2, c.backStrands ?? 1, blendSignature(c)]);
+const identity = materialColorIdentity;
 function mergeColors(target, source, usedIndices) {
   const colors = clone(target), map = [];
   const symbols = new Set(colors.map(c => c.symbol).filter(Boolean));
@@ -208,7 +213,7 @@ export function pasteSelection(p, selection, x, y, { overwriteEmpty = false } = 
   const usedIndices = new Set(selection.cells.filter(c => c >= 0));
   for (const h of selection.halfStitches ?? []) usedIndices.add(h.color);
   for (const b of selection.backstitches ?? []) usedIndices.add(b.color);
-  const next = clone(p), merged = mergeColors(p.colors, selection.colors, usedIndices); next.colors = merged.colors;
+  const next = clone(p), merged = mergeColors(p.colors, selection.colors, usedIndices); next.colors = merged.colors;if(next.colors.some(isBead))next.formatVersion=2;
   for (let sy = 0; sy < selection.height; sy++) for (let sx = 0; sx < selection.width; sx++) {
     const color = selection.cells[sy * selection.width + sx];
     if (color >= 0 || overwriteEmpty) next.cells[(y + sy) * p.width + x + sx] = color < 0 ? -1 : merged.map[color];
