@@ -5,7 +5,7 @@ export function validateSessionWork(state, session) {
   if (session.work === undefined || session.work === null) return;
   const work = session.work;
   assert(work && typeof work === 'object' && !Array.isArray(work) && Object.keys(work).every(key => fields.has(key)), 'invalid_session_work');
-  oneOf(work.kind, ['full', 'half', 'backstitch'], 'kind');
+  oneOf(work.kind, ['full', 'half', 'backstitch', 'bead'], 'kind');
   assert(typeof work.count === 'number', 'invalid_session_work');
   integer(work.count, 'count', { min: 1, max: 10000000 });
   identifier(session.projectId); find(state, 'projects', session.projectId);
