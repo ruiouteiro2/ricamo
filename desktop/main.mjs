@@ -1,5 +1,7 @@
+import { initialWindowBounds } from './window-bounds.mjs';
+import { createExampleStudio } from './example-studio.mjs';
 import { ProjectTransferService } from './project-transfer.mjs';
-import { app, BrowserWindow, ipcMain, dialog, session, Menu, protocol } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog, session, Menu, protocol, screen } from 'electron';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, extname } from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -45,8 +47,10 @@ async function start() {
     const url = new URL(details.url);
     callback({ cancel: !['ricamo:', 'data:', 'blob:', 'devtools:'].includes(url.protocol) || (url.protocol === 'ricamo:' && url.host !== 'app') });
   });
-  window = new BrowserWindow({ width: 1440, height: 960, minWidth: 760, minHeight: 600, title: 'Ricamo', backgroundColor: '#f7f5f1', show: false,
+  window = new BrowserWindow({ ...initialWindowBounds(screen.getPrimaryDisplay().workArea), title: 'Ricamo', backgroundColor: '#f7f5f1', show: false,
     webPreferences: { preload: join(root, 'desktop', 'preload.cjs'), contextIsolation: true, sandbox: true, nodeIntegration: false, webSecurity: true, spellcheck: false, webviewTag: false } });
+  const examples = createExampleStudio({ owner: window, root });
+  handle('open-example', () => examples.open(repository.load().settings.language));
   window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   window.webContents.on('will-navigate', event => event.preventDefault());
   window.webContents.on('will-attach-webview', event => event.preventDefault());
@@ -81,10 +85,11 @@ async function start() {
   });
   handle('run-backup', () => backupManager.run());
   handle('command', (command, revision) => {
-    if (['attachment.add','project.package.import','pattern.createWithAsset'].includes(command?.type)) throw Object.assign(new Error(), { code: 'unauthorized_command' });
+    if (['attachment.add','project.package.import','pattern.createWithAsset','entity.saveWithAssets'].includes(command?.type)) throw Object.assign(new Error(), { code: 'unauthorized_command' });
     return repository.execute(command, revision);
   });
   handle('create-pattern-with-asset', (request, revision) => repository.createPatternWithAsset(request, revision));
+  handle('save-entity-with-assets', (request, revision) => repository.saveEntityWithAssets(request, revision));
   handle('import-asset', (asset, revision) => repository.importAsset(asset, revision));
   handle('get-asset', id => repository.getAsset(id));
   handle('save-file', async ({ name, data }) => {
