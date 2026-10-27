@@ -1,6 +1,7 @@
 import { add, subtract, assert, quantity, text, oneOf, integer, currency, date, find, optionalRef, recordId, put, audit, totalReserved } from './shared.mjs';
 import { addLot } from './inventory.mjs';
 import { confirmedConsumption } from './projects.mjs';
+import { fabricHeldPieces } from './fabric-state.mjs';
 
 export function savePurchase(state, p, ctx) {
   const id = recordId(state, 'purchases', p, ctx), existing = state.purchases.find(row => row.id === id);
@@ -60,11 +61,12 @@ export function shoppingNeeds(state, projectIds) {
     const lots = state.lots.filter(l => l.materialId === materialId && l.status === 'usable');
     const unknownStock = lots.some(l => l.quantity === null);
     const usableForGroup = add(...lots.filter(l => l.quantity !== null).map(lot => {
+      if (fabricHeldPieces(lot)) return 0;
       const outside = add(...state.reservations.filter(r => r.lotId === lot.id && !ids.has(r.projectId)).map(r => r.quantity));
       return Math.max(0, subtract(lot.quantity, outside));
     }));
     const reserved = add(...state.reservations.filter(r => r.materialId === materialId && ids.has(r.projectId)).map(r => r.quantity));
-    const free = add(...lots.filter(l => l.quantity !== null).map(lot => Math.max(0, subtract(lot.quantity, totalReserved(state, lot.id)))));
+    const free = add(...lots.filter(l => l.quantity !== null).map(lot => Math.max(0, subtract(lot.quantity, add(totalReserved(state, lot.id), fabricHeldPieces(lot))))));
     const shortfall = Math.max(0, subtract(remaining, usableForGroup));
     const ordered = add(...state.purchases.filter(p => p.materialId === materialId && ['ordered', 'partial'].includes(p.status) && (!p.projectIds.length || p.projectIds.some(id => ids.has(id)))).map(p => Math.max(0, subtract(p.quantity, p.received))));
     const packageCount = material.packageSize ? Math.ceil(shortfall / material.packageSize) : null;
