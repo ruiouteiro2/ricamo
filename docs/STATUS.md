@@ -6,7 +6,20 @@ The requested six-hour work window is 2026-10-27 08:53–14:53 UTC. Build an off
 
 Repository: main at https://github.com/ruiouteiro2/ricamo.git; author RuiOuteiro2. Host: Windows 10 Home x64 build 19045 with WSL; Node 24.22.1 on both systems. Windows Sandbox is unavailable. Tests in a clean Windows 11 environment remain unavailable and are not replaced by local-host evidence.
 
-## Current evidence — approximately 11:43 UTC
+## Current evidence — approximately 12:28 UTC
+
+Source version 0.2.0 is integrated; a new Windows installer is being built. The earlier 0.1.0 Windows evidence below does not validate this candidate.
+
+- 322 tests passed in the integrated Node run; four additional independent atomic-entity regressions subsequently passed separately. A sandbox-restricted attempt could not open the test preview server; the normal approved local-server run passed.
+- All 13 current native journey scripts passed across the aggregate run and continuation. New integrated evidence: `.runtime/work-companion-CLWqSp`, `work-review-SPGE8D`, `material-descriptors-YK7F2n`, `attachments-native-qywV1n`, `example-studio-C4BonS`, `planning-NfDMyj`, `data-exports-mpFTwD`, `project-transfer-F5GwI9`, `kits-cSJDs3` (each contains its result JSON). Actual SQLite/managed bytes, process restart, exports, cancellation and failure injection were exercised. These runs used sandboxed Linux Electron, not a Windows installer.
+- A merge error in the material attachment panel caused a blank material-detail page; the kit journey reproduced it. The corrected attachment dialog/list integration passed kits, descriptor and attachment journeys afterwards.
+- Scoped progress by colour/type, cursor/view acknowledgement, parked threads/bookmarks, explicit legacy association and historical marker isolation are integrated. Project packages now review marker consent, preserve required revisions, omit private marker notes by default, remap references and clear markers for new work. Package tests include identical revision IDs in different patterns and re-export.
+- Technical/bibliographic material descriptors and physical-lot annotations persist, search and round-trip through CSV. Distinct references A-1/A1/A_1/A 1/a1/001/1 remain distinct; tuple delimiter collisions no longer skip rows.
+- Atomic material/project/session saves prevent new orphan attachments: staged cancellation and rejected saves leave no metadata/BLOBs, and real storage faults roll back owner, initial lot and all originals together. Independent review verified existing domain guards/after-hooks and all four internal-command IPC exclusions.
+- Actual 150% display-scale smoke/restart passed on the Linux display: initial outer bounds fit the reported work area. Native Windows scale validation remains pending.
+- The browser suite and exact packaged Windows performance/upgrade checks are in progress. Library metadata and partial stocktake extensions remain isolated drafts, not completed source features.
+
+## Historical evidence — approximately 11:43 UTC
 
 The mission is ongoing. Source integration is ahead of the last packaged Windows artifact; later features require package revalidation.
 
