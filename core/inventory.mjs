@@ -1,5 +1,6 @@
 import { add, subtract, assert, quantity, text, identifier, oneOf, integer, currency, date, stringList, jsonObject, find, optionalRef, recordId, put, movement, totalReserved, activeProject, audit } from './shared.mjs';
 import { fabricHeldPieces } from './fabric-state.mjs';
+import { toolHeldQuantity } from './tool-state.mjs';
 
 export const UNITS = ['m', 'cm', 'mm', 'g', 'kg', 'piece', 'skein', 'spool', 'pack', 'm2', 'strand-m', 'custom'];
 export const LOT_STATUSES = ['usable', 'blocked', 'damaged', 'unverified', 'transformed'];
@@ -213,11 +214,11 @@ export function inventorySummary(state, materialId, projectIds) {
   const eligible = add(...lots.filter(l => l.status === 'usable' && l.quantity !== null).map(l => l.quantity));
   const reserved = add(...lots.map(l => totalReserved(state, l.id)));
   const ownReserved = projectIds ? add(...lots.map(l => totalReserved(state, l.id, projectIds))) : 0;
-  const conflicts = lots.map(l => ({ lotId: l.id, quantity: Math.max(0, subtract(totalReserved(state, l.id), l.status === 'usable' ? (l.quantity ?? 0) : 0)), projectIds: state.reservations.filter(r => r.lotId === l.id && r.quantity > 0).map(r => r.projectId) })).filter(c => c.quantity > 0);
+  const conflicts = lots.map(l => ({ lotId: l.id, quantity: Math.max(0, subtract(add(totalReserved(state, l.id), toolHeldQuantity(l)), l.status === 'usable' ? (l.quantity ?? 0) : 0)), projectIds: state.reservations.filter(r => r.lotId === l.id && r.quantity > 0).map(r => r.projectId) })).filter(c => c.quantity > 0);
   // Available is summed per lot, so an over-reserved lot cannot hide free material in a different lot.
   const regionHeld = add(...lots.map(fabricHeldPieces));
-  const available = add(...lots.filter(l => l.status === 'usable' && l.quantity !== null).map(l => Math.max(0, subtract(l.quantity, add(totalReserved(state, l.id), fabricHeldPieces(l))))));
-  return { physical: unknown ? null : knownPhysical, knownPhysical, eligible, reserved, ownReserved, available, regionHeld, unknown, estimated: lots.some(l => l.confidence === 'estimated'), conflicts };
+  const available = add(...lots.filter(l => l.status === 'usable' && l.quantity !== null).map(l => Math.max(0, subtract(l.quantity, add(totalReserved(state, l.id), fabricHeldPieces(l), toolHeldQuantity(l))))));
+  return { physical: unknown ? null : knownPhysical, knownPhysical, eligible, reserved, ownReserved, available, regionHeld, toolHeld: add(...lots.map(toolHeldQuantity)), unknown, estimated: lots.some(l => l.confidence === 'estimated'), conflicts };
 }
 
 export function saveLocation(state, p, ctx) {
