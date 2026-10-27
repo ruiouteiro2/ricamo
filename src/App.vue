@@ -1,4 +1,5 @@
 <script setup>
+import { patternLibrarySearch } from '../core/pattern-library.mjs';
 import { materialSearchDescriptors } from './material-descriptors.mjs';
 import { APP_VERSION } from '../core/version.mjs';
 import { ref, computed, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue';
@@ -29,7 +30,7 @@ function draftStatus(event){pendingDraft.value=event.detail?.pending===true;if(w
 function requestClose(){const event=new CustomEvent('ricamo:before-close',{cancelable:true});if(window.dispatchEvent(event))windowControls?.finishClose().catch(()=>{});}
 const results=computed(()=>{
   const query=normalize(search.value);if(query.length<2)return [];
-  return [...state.value.materials.map(row=>({...row,page:'material',area:'materials'})),...state.value.projects.map(row=>({...row,page:'project',area:'projects'})),...state.value.patterns.map(row=>({...row,page:'pattern',area:'patterns'})),...state.value.locations.map(row=>({...row,page:'locations',area:'locations'}))].filter(row=>normalize([row.id,row.name,row.brand,row.code,row.notes,...(row.tags||[]),row.page==='material'?materialSearchDescriptors(row):''].join(' ')).includes(query)).sort((a,b)=>Number(b.code===search.value)-Number(a.code===search.value)).slice(0,8);
+  return [...state.value.materials.map(row=>({...row,page:'material',area:'materials'})),...state.value.projects.map(row=>({...row,page:'project',area:'projects'})),...state.value.patterns.map(row=>({...row,page:'pattern',area:'patterns'})),...state.value.locations.map(row=>({...row,page:'locations',area:'locations'}))].filter(row=>normalize([row.id,row.name,row.brand,row.code,row.notes,...(row.tags||[]),row.page==='material'?materialSearchDescriptors(row):row.page==='pattern'?patternLibrarySearch(row):''].join(' ')).includes(query)).sort((a,b)=>Number(b.code===search.value)-Number(a.code===search.value)).slice(0,8);
 });
 function choose(result){navigate(result.page,result.id);search.value='';}
 function shortcut(event){if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();searchInput.value?.focus();}if(event.key==='Escape')search.value='';}
