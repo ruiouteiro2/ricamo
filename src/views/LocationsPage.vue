@@ -3,7 +3,7 @@ import InventoryLabels from '../components/InventoryLabels.vue';
 import AttachmentEditorDialog from '../components/AttachmentEditorDialog.vue';
 import AttachmentList from '../components/AttachmentList.vue';
 import { computed, ref } from 'vue';
-import { Archive, Boxes, ChevronRight, FolderOpen, MapPin, Package, Pencil, Plus, Search, Printer, ArrowLeft } from '@lucide/vue';
+import { Archive, Boxes, ChevronRight, FolderOpen, MapPin, Package, Pencil, Plus, Search, Printer, ChevronLeft } from '@lucide/vue';
 import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
 import EntityForm from '../components/EntityForm.vue';
@@ -70,9 +70,10 @@ async function printLabel() {
 </script>
 
 <template>
+  <section class="page">
   <template v-if="labelMode">
     <PageHeader class="label-preview-heading" :eyebrow="t('locations')" :title="t('storageLabel')" :description="t('labelPrintHelp')">
-      <button class="button" @click="labelMode = null"><ArrowLeft :size="16" />{{ t('back') }}</button>
+      <button class="button" @click="labelMode = null"><ChevronLeft :size="16" />{{ t('back') }}</button>
       <button class="button" :disabled="busy || !labelDimensionsValid" @click="pdfLabels=true">{{t('downloadLabels')}}</button><button class="button primary" :disabled="busy || !labelDimensionsValid" @click="printLabel"><Printer :size="16" />{{ t('print') }}</button>
     </PageHeader>
     <p v-if="error" class="notice error" role="alert">{{ error }}</p>
@@ -119,6 +120,8 @@ async function printLabel() {
   </template>
 <InventoryLabels v-if="pdfLabels&&labelMode" :location-ids="[labelMode.id]" :initial-width="Number(labelWidth)" :initial-height="Number(labelHeight)" @close="pdfLabels=false"/>
 <AttachmentEditorDialog v-if="documentsId" type="location.attach" :owner-id="documentsId" :attachment-ids="locationById.get(documentsId)?.attachments||[]" :title="t('locationDocuments')" accept="image/png,image/jpeg,image/webp,image/gif,application/pdf" @close="documentsId=null" @saved="documentsId=null;notify()"/>
+
+  </section>
 </template>
 
 <style scoped>
