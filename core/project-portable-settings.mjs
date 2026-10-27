@@ -1,3 +1,4 @@
+import {FABRIC_TYPES,purchaseUrl} from './pattern-fabric.mjs';
 import {validateFabricGeometry} from './fabric-geometry.mjs';
 import { forecastSettings, validateForecastSettings } from './project-forecast.mjs';
 import { assert, quantity, integer, oneOf, identifier, text, date } from './shared.mjs';
@@ -11,13 +12,16 @@ function margins(value) { return numbers(value, sides); }
 /** Mechanical values only: never clone free-form settings into an export. */
 export function portableFabricSettings(value) {
   const result = numbers(value, fabricNumbers);
+  if(value.type!==undefined)result.type=oneOf(value.type,FABRIC_TYPES,'fabricType');
+  for(const key of ['brand','range','code','colorName','productId'])if(value[key]!==undefined)result[key]=text(value[key],key,{max:300});
+  if(value.url!==undefined)result.url=purchaseUrl(value.url);
   if (value.countMeaning !== undefined) result.countMeaning = oneOf(value.countMeaning, ['stitches', 'threads'], 'countMeaning');
   if (value.margins !== undefined) result.margins = margins(value.margins);
   return result;
 }
 export function portableThreadSettings(value) {
   const result = numbers(value, threadNumbers);
-  if (value.colorStrands !== undefined) { object(value.colorStrands); result.colorStrands = Object.fromEntries(Object.entries(value.colorStrands).filter(([key]) => /^(?:[0-9]|[1-7][0-9])$/.test(key)).map(([key, strands]) => [key, integer(strands, 'strands', { min: 1, max: 100 })])); }
+  if (value.colorStrands !== undefined) { object(value.colorStrands); result.colorStrands = Object.fromEntries(Object.entries(value.colorStrands).filter(([key]) => /^(?:0|[1-9][0-9]{0,2})$/.test(key)&&Number(key)<500).map(([key, strands]) => [key, integer(strands, 'strands', { min: 1, max: 100 })])); }
   return result;
 }
 export function portablePlanningSettings(settings, { includePrivateNotes = false, includeRecipient = false } = {}) {
