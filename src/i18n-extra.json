@@ -1206,5 +1206,61 @@
   "allProjects": [
     "Tutti i progetti",
     "All projects"
+  ],
+  "automaticBackups": [
+    "Copie automatiche",
+    "Automatic backups"
+  ],
+  "enableAutomaticBackup": [
+    "Crea copie locali automaticamente",
+    "Create local backups automatically"
+  ],
+  "backupInterval": [
+    "Intervallo",
+    "Interval"
+  ],
+  "backupRetention": [
+    "Copie da conservare (1–100)",
+    "Copies to retain (1–100)"
+  ],
+  "localBackup": [
+    "Ultima copia locale",
+    "Last local backup"
+  ],
+  "externalBackup": [
+    "Ultima copia nella seconda cartella",
+    "Last backup in the second folder"
+  ],
+  "noBackupFolder": [
+    "Nessuna seconda cartella selezionata",
+    "No second folder selected"
+  ],
+  "chooseBackupFolder": [
+    "Scegli seconda cartella",
+    "Choose second folder"
+  ],
+  "disconnectBackupFolder": [
+    "Scollega cartella",
+    "Disconnect folder"
+  ],
+  "backupNow": [
+    "Crea copia adesso",
+    "Back up now"
+  ],
+  "sameDiskBackupHelp": [
+    "Una copia sullo stesso disco non protegge da un guasto del disco. Scegli un dispositivo esterno per una seconda copia. I file già salvati restano nella cartella quando la scolleghi.",
+    "A copy on the same disk does not protect against disk failure. Choose an external device for a second copy. Previously saved files remain in a folder when you disconnect it."
+  ],
+  "externalBackupFailed": [
+    "La copia locale è stata salvata, ma la seconda cartella non è disponibile. Ricollega il dispositivo e riprova.",
+    "The local backup was saved, but the second folder is unavailable. Reconnect the device and try again."
+  ],
+  "backupStorageFailed": [
+    "La copia non è stata completata. Controlla lo spazio disponibile e i permessi della cartella, poi riprova. Le copie precedenti sono conservate.",
+    "The backup did not complete. Check free space and folder permissions, then try again. Previous backups are retained."
+  ],
+  "manualBackupDestination": [
+    "Ultima esportazione manuale",
+    "Last manual backup destination"
   ]
 }
