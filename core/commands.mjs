@@ -3,6 +3,8 @@ import { saveMaterial, archiveMaterial, duplicateMaterial, mergeMaterial, addLot
 import { saveProject, duplicateProject, closeProject, saveNeed, saveTask, saveSession, updateProgress, saveProjectView } from './projects.mjs';
 import { savePurchase, receivePurchase, generatePurchases } from './purchasing.mjs';
 import { cutFabric, openKit } from './fabric.mjs';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 
 export { DomainError };
 export { inventorySummary } from './inventory.mjs';
@@ -58,10 +60,12 @@ export function applyCommand(state, command, context = {}) {
   const operationId = identifier(command.operationId, 'operationId');
   const payload = command.payload ?? {};
   assert(payload && typeof payload === 'object' && !Array.isArray(payload), 'invalid_payload');
-  const signature = stableStringify({ type: command.type, payload });
+  const canonical = stableStringify({ type: command.type, payload });
+  const signature = `sha256:${bytesToHex(sha256(utf8ToBytes(canonical)))}`;
   const previous = state.operations.find(operation => operation.id === operationId);
   if (previous) {
-    assert(previous.signature === signature, 'idempotency_conflict', { operationId });
+    // Backups made before compact signatures remain replay-compatible.
+    assert(previous.signature === signature || previous.signature === canonical, 'idempotency_conflict', { operationId });
     return structuredClone(state);
   }
   const handler = Object.hasOwn(handlers, command.type) ? handlers[command.type] : context.handlers && Object.hasOwn(context.handlers, command.type) ? context.handlers[command.type] : null;
