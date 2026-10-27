@@ -6,7 +6,7 @@ import {t,number,errorText} from '../i18n';
 const props=defineProps({impact:{type:Object,required:true},busy:Boolean,stale:Boolean,error:String}),emit=defineEmits(['back','confirm','refresh']);
 const carry=ref(false);watch(()=>props.impact,()=>carry.value=false);
 const amount=(value,unit='')=>value===null||value===undefined?t('unknown'):`${number(value,6)} ${unit}`.trim();
-const stitches=value=>value?t('revisionCounts',{full:number(value.full),half:number(value.half),back:number(value.backstitch??value.back)}):t('unknown');
+const stitches=value=>value?[t('revisionCounts',{full:number(value.full),half:number(value.half),back:number(value.backstitch??value.back)}),value.bead?t('procurementRevisionBeads',{count:number(value.bead)}):null,value.attachment?t('procurementRevisionAttachments',{count:number(value.attachment)}):null].filter(Boolean).join(' · '):t('unknown');
 const dimension=(value,a,b)=>value?`${number(value[a],3)} × ${number(value[b],3)} cm`:t('unknown');
 const identity=row=>[row.color.brand,row.color.range,row.color.code,row.name].filter(Boolean).join(' · ');
 </script>
