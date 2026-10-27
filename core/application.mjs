@@ -1,3 +1,4 @@
+import { threadCatalogueHandlers, validateThreadCatalogues } from './thread-catalogues.mjs';
 import { catalogueReferenceHandlers, validateCatalogueReferences } from './catalogue-references.mjs';
 import { documentOwnerHandlers } from './owner-documents.mjs';
 import { stockCountHandlers } from './stock-count.mjs';
@@ -24,6 +25,7 @@ import { toolActivityHandlers, validateToolActivity } from './tool-activity.mjs'
 
 export { createState };
 const handlers = {
+  ...threadCatalogueHandlers,
   ...catalogueReferenceHandlers,
   ...documentOwnerHandlers,
   ...stockCountHandlers,
@@ -129,6 +131,7 @@ export function validateApplicationState(state) {
   validateState(state);
   validatePatternLibrary(state);
   validateCatalogueReferences(state);
+  validateThreadCatalogues(state);
   validateMaterialDescriptors(state);
   validateKitWorkflows(state);
   validateWorkCompanion(state);
