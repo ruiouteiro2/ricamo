@@ -1492,8 +1492,8 @@
     "Rapid entry"
   ],
   "rapidEntryHelp": [
-    "Inserisci fino a 200 codici della stessa marca e gamma. Scegli per ogni riga se registrare un lotto o solo la voce di catalogo. I duplicati richiedono una scelta esplicita.",
-    "Enter up to 200 codes from the same brand and range. Choose a stock lot or catalogue entry for each row. Duplicates require an explicit decision."
+    "Inserisci fino a 200 codici della stessa marca e dello stesso tipo. Scegli per ogni riga se registrare un lotto o solo la voce di catalogo. I duplicati richiedono una scelta esplicita.",
+    "Enter up to 200 codes from the same brand and type. Choose a stock lot or catalogue entry for each row. Duplicates require an explicit decision."
   ],
   "pasteCodes": [
     "Incolla una lista di codici",
@@ -1692,8 +1692,8 @@
     "Code A–Z"
   ],
   "brandAZ": [
-    "Marca e gamma A–Z",
-    "Brand and range A–Z"
+    "Marca e tipo A–Z",
+    "Brand and type A–Z"
   ],
   "error.inventory_batch_limit": [
     "Inserisci da 1 a 200 righe. Per le etichette, il totale massimo è 500.",
@@ -1716,8 +1716,8 @@
     "Choose an action for each duplicate code."
   ],
   "error.rapid_target_mismatch": [
-    "Il materiale scelto non corrisponde a marca, gamma e codice.",
-    "The selected material does not match the brand, range and code."
+    "Il materiale scelto non corrisponde a marca, tipo e codice.",
+    "The selected material does not match the brand, type and code."
   ],
   "error.rapid_attach_requires_lot": [
     "Aggiungere a un materiale esistente richiede un nuovo lotto.",
@@ -2728,8 +2728,8 @@
     "Create all as new references"
   ],
   "packageMaterialHelp": [
-    "Abbina solo riferimenti con codice, marca, gamma, unità e conversione compatibili. Gli abbinamenti ambigui o con conversione sconosciuta richiedono una scelta. Non vengono create scorte.",
-    "Match only references with compatible code, brand, range, unit and conversion. Ambiguous matches or unknown conversion require a decision. No stock is created."
+    "Abbina solo riferimenti con codice, marca, tipo, unità e conversione compatibili. Gli abbinamenti ambigui o con conversione sconosciuta richiedono una scelta. Non vengono create scorte.",
+    "Match only references with compatible code, brand, type, unit and conversion. Ambiguous matches or unknown conversion require a decision. No stock is created."
   ],
   "packageMatchAction": [
     "Destinazione del riferimento",
@@ -3624,8 +3624,8 @@
     "Measured sessions include their source revisions, even when progress history is excluded."
   ],
   "standaloneBindingsDetached": [
-    "Rimossi {count} collegamenti all’inventario dal file autonomo. Le stime cercheranno corrispondenze univoche per marca, gamma e codice (o nome, se manca il codice) nel tuo catalogo. Nessuna scorta è stata modificata.",
-    "Removed {count} inventory links from this standalone file. Estimates will look for unique brand, range and code matches (or name when no code is supplied) in your catalogue. No stock was changed."
+    "Rimossi {count} collegamenti all’inventario dal file autonomo. Le stime cercheranno corrispondenze univoche per marca, tipo e codice (o nome, se manca il codice) nel tuo catalogo. Nessuna scorta è stata modificata.",
+    "Removed {count} inventory links from this standalone file. Estimates will look for unique brand, type and code matches (or name when no code is supplied) in your catalogue. No stock was changed."
   ],
   "packageUnresolved": [
     "Controlla {count} riferimenti per continuare",
@@ -5072,8 +5072,8 @@
     "Fixed colours occupy palette slots even when no stitch uses them. Unused colours create no consumption. Excluded colours cannot be used. No equivalence between brands is assumed."
   ],
   "generationColourSearch": [
-    "Cerca marca, gamma, codice o nome",
-    "Search brand, range, code or name"
+    "Cerca marca, tipo, codice o nome",
+    "Search brand, type, code or name"
   ],
   "generationColourChoice": [
     "Colore della tavolozza",
@@ -5564,8 +5564,8 @@
     "Invalid catalogue. Use the JSON template and keep codes as strings."
   ],
   "thread_catalogue_duplicate_color": [
-    "Marca, gamma e codice devono identificare un solo colore nella versione.",
-    "Brand, range and code must identify a single colour in each version."
+    "Marca, tipo e codice devono identificare un solo colore nella versione.",
+    "Brand, type and code must identify a single colour in each version."
   ],
   "thread_catalogue_confirmation": [
     "Conferma origine, condizioni e uso locale prima di importare.",
@@ -5640,16 +5640,16 @@
     "No unique local material: original stock and units are undetermined."
   ],
   "threadSearchColors": [
-    "Cerca marca, gamma, codice o nome",
-    "Search brand, range, code or name"
+    "Cerca marca, tipo, codice o nome",
+    "Search brand, type, code or name"
   ],
   "thread_substitution_apply": [
     "Impossibile modificare questa bozza. Chiudi il confronto e controlla gli avvisi nell’editor.",
     "This draft could not be changed. Close the comparison and check the editor warnings."
   ],
   "threadCatalogueColorLimit": [
-    "Primi 60 risultati; cerca marca, gamma, codice o nome per trovare altri colori.",
-    "First 60 matches; search brand, range, code or name to find other colours."
+    "Primi 60 risultati; cerca marca, tipo, codice o nome per trovare altri colori.",
+    "First 60 matches; search brand, type, code or name to find other colours."
   ],
   "packageCatalogueProjectionHelp": [
     "Per i cataloghi versionati vengono condivisi solo i riferimenti della paletta e delle ricette. Catalogo completo e opzioni di generazione basate sugli indici sono esclusi: per riprodurre la generazione servono catalogo e impostazioni originali. Il backup completo conserva entrambi.",
