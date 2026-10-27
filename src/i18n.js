@@ -23,6 +23,12 @@ export function t(key, values = {}) {
   const text = entry ? entry[language.value === 'en' ? 1 : 0] : key;
   return text.replace(/\{(\w+)\}/g, (_, name) => String(values[name] ?? ''));
 }
+// Only apply to developer-authored labels, never to user names, notes or values.
+export function localizeSystemText(value) {
+  if (typeof value !== 'string') return value;
+  const pair = Object.values({ ...words, ...additional }).find(entry => entry.includes(value));
+  return pair ? pair[language.value === 'en' ? 1 : 0] : value;
+}
 export function number(value, digits = 2) {
   if (value === null || value === undefined || !Number.isFinite(value)) return t('unknown');
   return new Intl.NumberFormat(language.value === 'en' ? 'en-GB' : 'it-IT', { maximumFractionDigits: digits }).format(value);
