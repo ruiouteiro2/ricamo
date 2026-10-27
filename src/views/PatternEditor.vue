@@ -5,7 +5,8 @@ import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
 import AppDialog from '../components/AppDialog.vue';
 import FormField from '../components/FormField.vue';
-import { state, dispatch, navigate, notify, assetUrl } from '../state';
+import ReferenceReader from '../components/ReferenceReader.vue';
+import { state, dispatch, navigate, notify } from '../state';
 import { storage } from '../storage';
 import { t, language, number, errorText } from '../i18n';
 import { dmcPalette } from '../engine/adapter.mjs';
@@ -21,7 +22,7 @@ const chosenRevisionId = ref('');
 const persisted = computed(() => pattern.value?.revisions.find(r => r.id === (project.value?.revisionId || chosenRevisionId.value || pattern.value.currentRevisionId)));
 const draft = shallowRef(null), history = shallowRef([]), future = shallowRef([]), dirty = ref(false), error = ref(''), working = ref(false);
 const canvas = ref(), stage = ref(), zoom = ref(12), grid = ref(true), symbols = ref(false), monochrome = ref(false), selected = ref(0), highlight = ref(false), tool = ref('pan');
-const cursor = reactive({ x: 0, y: 0 }), selection = ref(null), clipboard = shallowRef(null), dialog = ref(''), name = ref(''), referenceUrl = ref('');
+const cursor = reactive({ x: 0, y: 0 }), selection = ref(null), clipboard = shallowRef(null), dialog = ref(''), name = ref('');
 const viewport = reactive({ left: 0, top: 0, width: 900, height: 520 });
 const resizeForm = reactive({ width: 100, height: 100, offsetX: 0, offsetY: 0 });
 const exportForm = reactive({ kind: 'pdf', locale: language.value, paper: 'a4', monochrome: false, progress: true });
@@ -35,7 +36,6 @@ const selectedColor = computed(() => draft.value?.colors[selected.value]);
 const totalWidth = computed(() => (draft.value?.width ?? 1) * zoom.value), totalHeight = computed(() => (draft.value?.height ?? 1) * zoom.value);
 const tools = computed(() => progressMode.value ? [ ['pan',Move],['mark',Check],['unmark',Eraser],['select',MousePointer2] ] : [ ['pan',Move],['paint',Pencil],['erase',Eraser],['fill',PaintBucket],['line',Minus],['rectangle',Square],['half',Slash],['backstitch',Slash],['select',MousePointer2] ]);
 const blockedWork = computed(() => progressMode.value && ['completed', 'archived'].includes(project.value?.status));
-const referenceAsset = computed(() => state.value.attachments.find(a => a.id === pattern.value?.sourceAttachmentId));
 const impact = computed(() => { try { return draft.value ? resizeImpact(draft.value, resizeForm.width, resizeForm.height, resizeForm) : null; } catch { return null; } });
 
 function draw() {
@@ -60,7 +60,7 @@ function saveViewSoon() {
 watch([() => props.id, () => props.projectId, () => persisted.value?.id], async () => {
   if (!pattern.value) return;
   error.value = ''; selected.value = 0; selection.value = null; dirty.value = false; history.value = []; future.value = []; progressHistory.value = []; progressFuture.value = [];
-  if (pattern.value.kind === 'reference') { draft.value = null; if (pattern.value.sourceAttachmentId) try { referenceUrl.value = await assetUrl(pattern.value.sourceAttachmentId); } catch (caught) { error.value = errorText(caught); } return; }
+  if (pattern.value.kind === 'reference') { draft.value = null; return; }
   if (!persisted.value) { draft.value = null; return; }
   draft.value = structuredClone(persisted.value); name.value = persisted.value.name || t('revision'); revisionNotes.value = draft.value.notes || ''; tool.value = progressMode.value ? 'mark' : 'pan';
   await nextTick();
@@ -217,7 +217,6 @@ async function exportPattern() {
     await storage.saveFile({ name: `${fileName}.${exportForm.kind === 'native' ? 'ricamopattern' : exportForm.kind}`, data }); dialog.value = ''; notify();
   } catch (caught) { error.value = errorText(caught); } finally { working.value = false; }
 }
-async function downloadReference() { try { const data = await storage.getAsset(referenceAsset.value.id); await storage.saveFile({ name: referenceAsset.value.name, data }); } catch (caught) { error.value = errorText(caught); } }
 async function createProject() { if (dirty.value) { error.value = t('saveBeforeProject'); return; } try { const id = crypto.randomUUID(); await dispatch('project.save', { id, name: pattern.value.name, patternId: pattern.value.id, revisionId: persisted.value?.id, status: 'preparing' }); navigate('project', id); } catch (caught) { error.value = errorText(caught); } }
 function beforeUnload(event) { if (dirty.value) { event.preventDefault(); event.returnValue = ''; } }
 function beforeNavigate(event) { if (dirty.value && !allowLeave) { event.preventDefault(); pendingNavigation = event.detail; dialog.value = 'discard'; } }
@@ -234,9 +233,9 @@ onBeforeUnmount(() => { window.removeEventListener('beforeunload', beforeUnload)
     <button class="button text" @click="navigate(projectId ? 'project' : 'patterns', projectId || null)"><ArrowLeft :size="16" />{{ projectId ? t('project') : t('patterns') }}</button>
     <EmptyState v-if="!pattern" :icon="FileImage" :title="t('noResults')" />
     <template v-else>
-      <PageHeader :eyebrow="progressMode ? t('work') : t('patterns')" :title="pattern.name" :description="progressMode ? t('progressDoesNotConsume') : t('editorHelp')"><span v-if="dirty" class="badge warning">{{ t('unsaved') }}</span><button v-if="!progressMode" class="button" @click="createProject">{{ t('createProject') }}</button><button v-if="draft" class="button" @click="dialog = 'export'"><Download :size="16" />{{ t('export') }}</button><button v-if="!progressMode && draft" class="button primary" :disabled="!dirty || working" @click="openSave"><Save :size="16" />{{ t('newRevision') }}</button></PageHeader>
+      <PageHeader :eyebrow="progressMode ? t('work') : t('patterns')" :title="pattern.name" :description="pattern.kind === 'reference' ? t('referenceEditorHelp') : progressMode ? t('progressDoesNotConsume') : t('editorHelp')"><span v-if="dirty" class="badge warning">{{ t('unsaved') }}</span><button v-if="!progressMode" class="button" @click="createProject">{{ t('createProject') }}</button><button v-if="draft" class="button" @click="dialog = 'export'"><Download :size="16" />{{ t('export') }}</button><button v-if="!progressMode && draft" class="button primary" :disabled="!dirty || working" @click="openSave"><Save :size="16" />{{ t('newRevision') }}</button></PageHeader>
       <p v-if="error" role="alert" class="notice error">{{ error }}</p><p v-if="blockedWork" class="notice warning">{{ t('reopenToProgress') }}</p>
-      <template v-if="pattern.kind === 'reference'"><p class="notice">{{ t('referenceHelp') }}</p><button class="button" @click="downloadReference"><Download :size="16" />{{ t('saveReference') }}</button><div class="panel" style="margin-top:20px"><img v-if="referenceAsset?.mime.startsWith('image/')" :src="referenceUrl" :alt="pattern.name" style="max-width:100%;display:block;margin:auto" /><template v-else><p class="notice">{{ t('pdfReferenceHelp') }}</p><iframe :src="referenceUrl" :title="pattern.name" sandbox="" style="width:100%;height:65vh;border:0" /></template></div></template>
+      <ReferenceReader v-if="pattern.kind === 'reference'" :pattern-id="pattern.id" :project-id="projectId" />
       <template v-else-if="draft">
         <div class="toolbar"><select v-if="!progressMode" :value="persisted?.id" :aria-label="t('revision')" @change="changeRevision"><option v-for="r in pattern.revisions" :key="r.id" :value="r.id">{{ r.name || t('revision') }} · {{ r.createdAt?.slice(0,10) }}</option></select><span class="badge">{{ draft.width }} × {{ draft.height }} {{ t('stitches') }}</span><span class="badge">{{ number(metrics.full,0) }} {{ t('fullCrosses') }} · {{ number(metrics.half,0) }} {{ t('half') }} · {{ number(metrics.backstitch,0) }} {{ t('backstitch') }}</span><span v-if="progressMode" class="badge green">{{ completed.size }} / {{ metrics.total }} {{ t('completedPrimitives') }}</span></div>
         <div class="editor-tools" role="toolbar" :aria-label="t('drawingTools')"><button v-for="[key, icon] in tools" :key="key" class="icon-button" :class="{selected:tool === key}" :aria-label="t(key)" :title="t(key)" :aria-pressed="tool === key" :disabled="blockedWork && key !== 'pan' && key !== 'select'" @click="tool = key"><component :is="icon" :size="19" /></button><button class="icon-button" :disabled="progressMode ? !progressHistory.length || working : !history.length" :aria-label="t('undo')" :title="t('undo')" @click="undo"><Undo2 :size="18" /></button><button class="icon-button" :disabled="progressMode ? !progressFuture.length || working : !future.length" :aria-label="t('redo')" :title="t('redo')" @click="redo"><Redo2 :size="18" /></button><label class="checkbox-label"><input v-model="grid" type="checkbox" />{{ t('grid') }}</label><label class="checkbox-label"><input v-model="symbols" type="checkbox" />{{ t('symbols') }}</label><label class="checkbox-label"><input v-model="monochrome" type="checkbox" />{{ t('monochrome') }}</label><button class="button small" @click="fit"><Maximize :size="14" />{{ t('fit') }}</button><label class="sr-only" for="pattern-zoom">{{ t('zoom') }}</label><input id="pattern-zoom" v-model.number="zoom" type="range" min="1" max="36" step="0.5" style="width:110px" /><span class="muted">{{ number(zoom / 12 * 100,0) }}%</span></div>
