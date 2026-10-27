@@ -900,8 +900,8 @@
     "Custom colour"
   ],
   "paletteLimit": [
-    "Una revisione può contenere al massimo 80 colori. Rimuovi un colore inutilizzato prima di aggiungerne un altro.",
-    "A revision can contain up to 80 colours. Remove an unused colour before adding another."
+    "La tavolozza può contenere fino a 500 colori.",
+    "The palette can contain up to 500 colours."
   ],
   "paletteEditHelp": [
     "Cambiare simbolo non cambia il materiale. Sostituire un colore modifica i punti interi, i mezzi punti e i segmenti che lo usano.",
@@ -5770,5 +5770,293 @@
   "revision_progress_unavailable": [
     "Non ci sono punti con corrispondenza dimostrata da trasferire.",
     "There are no stitches with proven correspondence to carry."
+  ],
+  "print_document_limit": [
+    "Il documento supera i limiti di stampa (200 pagine, 64 MB o 128 milioni di pixel a 96 dpi). Stampa la pagina corrente o esporta il PDF.",
+    "The document exceeds print limits (200 pages, 64 MB or 128 million pixels at 96 dpi). Print the current page or export the PDF."
+  ],
+  "print_document_invalid": [
+    "Impossibile preparare questo documento per la stampa. Il file originale è conservato.",
+    "This document could not be prepared for printing. The original file is preserved."
+  ],
+  "print_document_busy": [
+    "Attendi la chiusura della stampa in corso.",
+    "Wait for the current print dialog to close."
+  ],
+  "print_failed": [
+    "La stampante non ha accettato il documento. Verifica le impostazioni e riprova.",
+    "The printer did not accept the document. Check the settings and try again."
+  ],
+  "referencePrintTitle": [
+    "Stampa il riferimento",
+    "Print reference"
+  ],
+  "referencePrintHelp": [
+    "L’anteprima mostra la prima pagina selezionata. Il PDF mantiene le dimensioni originali; scegli A4 o Letter per adattarlo. Nella finestra di stampa usa scala 100% per conservare le misure. I simboli sono quelli presenti nel file originale.",
+    "The preview shows the first selected page. PDF pages keep their original dimensions; choose A4 or Letter to fit them. Use 100% scaling in the print dialog to preserve measurements. Symbols are those already present in the original file."
+  ],
+  "printPaper": [
+    "Formato carta",
+    "Paper size"
+  ],
+  "printOriginalPaper": [
+    "Dimensioni del PDF originale",
+    "Original PDF dimensions"
+  ],
+  "printAppearance": [
+    "Aspetto",
+    "Appearance"
+  ],
+  "printOriginalColors": [
+    "Colori originali",
+    "Original colors"
+  ],
+  "printGrayscale": [
+    "Scala di grigi",
+    "Grayscale"
+  ],
+  "referencePrintAnnotations": [
+    "Includi annotazioni e pagine delle note",
+    "Include annotations and note pages"
+  ],
+  "referencePrintPreview": [
+    "Anteprima di stampa · pagina {page}",
+    "Print preview · page {page}"
+  ],
+  "fabricType_aida": [
+    "Aida",
+    "Aida"
+  ],
+  "fabricType_linen": [
+    "Lino",
+    "Linen"
+  ],
+  "fabricType_evenweave": [
+    "Tela a trama regolare / Lugana",
+    "Evenweave / Lugana"
+  ],
+  "fabricType_canvas": [
+    "Canvas / canovaccio",
+    "Canvas"
+  ],
+  "fabricType_hardanger": [
+    "Hardanger",
+    "Hardanger"
+  ],
+  "fabricType_afghan": [
+    "Afghan",
+    "Afghan"
+  ],
+  "fabricType_band": [
+    "Bordi e bande da ricamo",
+    "Embroidery bands"
+  ],
+  "fabricType_other": [
+    "Altro tessuto da ricamo",
+    "Other embroidery fabric"
+  ],
+  "fabricCatalogueSearch": [
+    "Cerca tessuto o colore",
+    "Find fabric or colour"
+  ],
+  "fabricCatalogueSearchHint": [
+    "Marca, nome, colore o codice",
+    "Brand, name, colour or code"
+  ],
+  "fabricCatalogueProduct": [
+    "Tessuto e colore · Casa Cenina",
+    "Fabric and colour · Casa Cenina"
+  ],
+  "fabricCustom": [
+    "Imposta il tuo tessuto",
+    "Enter your own fabric"
+  ],
+  "fabricCatalogueRefine": [
+    "{count} risultati. Affina la ricerca per vedere il tessuto desiderato.",
+    "{count} results. Refine your search to find the fabric you need."
+  ],
+  "fabricCountMeaningHelp": [
+    "Aida: punti per pollice. Lino e tele regolari: fili per pollice, con il numero di fili attraversati da ogni punto.",
+    "Aida: stitches per inch. Linen and evenweave: threads per inch, with the number of fabric threads covered by each stitch."
+  ],
+  "fabricCatalogueHelp": [
+    "I nomi e i codici dei colori sono quelli del catalogo. Verifica colore reale, taglio e disponibilità sulla pagina del prodotto. Modificare la trama rimuove il collegamento al prodotto selezionato.",
+    "Colour names and codes come from the catalogue. Check the actual colour, cut size and availability on the product page. Changing the weave removes the selected product link."
+  ],
+  "buyAtCasaCenina": [
+    "Acquista su Casa Cenina",
+    "Buy at Casa Cenina"
+  ],
+  "buyFabric": [
+    "Acquista questo tessuto",
+    "Buy this fabric"
+  ],
+  "fabricOverSummary": [
+    "su {x} × {y} fili",
+    "over {x} × {y} threads"
+  ],
+  "patternSupplies": [
+    "Tessuto, misure e materiali",
+    "Fabric, size and materials"
+  ],
+  "patternSuppliesHelp": [
+    "I materiali richiesti sono separati dalle scorte. Una quantità vuota è da verificare; non significa zero. I collegamenti aprono il sito nel browser.",
+    "Required materials are separate from your stock. A blank quantity needs checking; it does not mean zero. Links open the shop in your browser."
+  ],
+  "purchaseLinks": [
+    "Acquisto",
+    "Purchase"
+  ],
+  "purchaseLinkUnverified": [
+    "Collegamento prodotto non verificato",
+    "Product link not verified"
+  ],
+  "patternSuppliesApply": [
+    "Aggiungi i materiali richiesti al progetto",
+    "Add required materials to project"
+  ],
+  "fabricBrowseCategories": [
+    "Esplora le categorie di tessuti",
+    "Browse fabric categories"
+  ],
+  "fabricCoverageHelp": [
+    "Queste categorie sono state verificate sul sito. La selezione locale non comprende ogni variante delle pagine non accessibili; apri la categoria per consultare il catalogo aggiornato.",
+    "These categories were verified on the site. The local selection does not include every variant on inaccessible pages; open the category to browse the current catalogue."
+  ],
+  "patternSourceLink": [
+    "Pagina dello schema su Casa Cenina",
+    "Pattern page at Casa Cenina"
+  ],
+  "patternRequiredMaterials": [
+    "Lista dei materiali dello schema",
+    "Pattern materials list"
+  ],
+  "patternRequiredMaterialsHelp": [
+    "Inserisci i codici e le quantità indicati nella legenda originale. Confezioni, grammi e singole perline restano unità distinte.",
+    "Enter the codes and quantities from the original legend. Packs, grams and individual beads remain distinct units."
+  ],
+  "nightingalePreset": [
+    "Carica i materiali di Nightingale MD185",
+    "Load Nightingale MD185 supplies"
+  ],
+  "nightingalePresetHelp": [
+    "Sostituisce questa bozza con la lista verificata dello schema, compresa la correzione 10101: una confezione. Non contiene il disegno: importa il tuo PDF o la tua immagine originale.",
+    "Replaces this draft with the verified materials list, including the 10101 correction: one pack. It contains no chart: import your own original PDF or image."
+  ],
+  "pattern_fabric_invalid": [
+    "Controlla tipo e trama del tessuto.",
+    "Check the fabric type and count."
+  ],
+  "pattern_fabric_over": [
+    "Quando la trama è espressa in punti per pollice, usa un punto per casella.",
+    "When the count is stitches per inch, use one stitch per grid cell."
+  ],
+  "pattern_fabric_size": [
+    "Queste misure richiedono una griglia fuori dal limite di 1–500 punti per lato. Riduci le misure o cambia la trama.",
+    "These measurements need a grid outside the 1–500 stitches per side limit. Reduce the size or change the fabric count."
+  ],
+  "purchase_link_invalid": [
+    "Usa un collegamento HTTPS valido a Casa Cenina, senza credenziali.",
+    "Use a valid HTTPS Casa Cenina link without credentials."
+  ],
+  "pattern_supplies_invalid": [
+    "Controlla le misure e la lista dei materiali.",
+    "Check the measurements and materials list."
+  ],
+  "pattern_supplies_missing": [
+    "Salva prima la lista dei materiali dello schema.",
+    "Save the pattern materials list first."
+  ],
+  "pattern_supplies_ambiguous": [
+    "Ci sono più materiali identici in inventario. Uniscili o aggiungi il fabbisogno manualmente.",
+    "Several inventory materials have the same identity. Merge them or add the requirement manually."
+  ],
+  "printChartPreview": [
+    "Anteprima delle pagine dello schema",
+    "Chart page preview"
+  ],
+  "printChartPreviewHelp": [
+    "La griglia, i simboli e la divisione in pagine corrispondono al PDF. Il PDF include anche copertina, mappa, legenda e collegamenti ai prodotti verificati.",
+    "The grid, symbols and page divisions match the PDF. The PDF also includes a cover, page map, legend and verified product links."
+  ],
+  "chartStyle": [
+    "Aspetto dello schema",
+    "Chart style"
+  ],
+  "chartStyleColor": [
+    "Colori con simboli",
+    "Colour with symbols"
+  ],
+  "chartStyleSymbols": [
+    "Bianco con simboli neri",
+    "White with black symbols"
+  ],
+  "generationExcludeHelp": [
+    "Facoltativo: escludi i fili che non vuoi usare. Per conservare più dettagli, lascia disponibile l'intera tavolozza.",
+    "Optional: exclude threads you do not want to use. Keep the whole palette available to preserve more detail."
+  ],
+  "generationActualSize": [
+    "Griglia {columns} × {rows}: dimensioni effettive {width} × {height} cm, arrotondate a punti interi.",
+    "Grid {columns} × {rows}: actual size {width} × {height} cm, rounded to whole stitches."
+  ],
+  "generationGridAdvanced": [
+    "Griglia in punti · impostazioni avanzate",
+    "Stitch grid · advanced settings"
+  ],
+  "generationFidelityHelp": [
+    "La modalità dettagliata usa fino a 500 colori e conserva le piccole aree per impostazione iniziale. La fedeltà dipende dalla griglia e dai colori disponibili: aumenta le dimensioni o scegli un tessuto più fitto per conservare più dettagli.",
+    "Detailed mode allows up to 500 colours and keeps small areas by default. Fidelity depends on the grid and available thread colours: increase the dimensions or choose a finer fabric to retain more detail."
+  ],
+  "protectionKeyboard": [
+    "Proteggi una zona usando le coordinate",
+    "Protect an area using coordinates"
+  ],
+  "protectionDragHelp": [
+    "Se la pulizia elimina dettagli importanti, attiva la protezione e trascina un rettangolo sull'immagine: ad esempio un viso, un occhio o una scritta. Poi genera di nuovo.",
+    "If cleanup removes important details, enable protection and drag a rectangle on the image, such as a face, an eye or lettering. Then generate again."
+  ],
+  "protectionCleanupOff": [
+    "Pulizia disattivata: le piccole aree sono già conservate. La protezione serve solo quando attivi la pulizia nelle regolazioni.",
+    "Cleanup is off: small areas are already preserved. Protection is only needed when cleanup is enabled in image adjustments."
+  ],
+  "protectionDraw": [
+    "Disegna una zona protetta",
+    "Draw a protected area"
+  ],
+  "protectionClear": [
+    "Rimuovi tutte le protezioni",
+    "Clear all protected areas"
+  ],
+  "generationChartStyle": [
+    "Aspetto dell'anteprima",
+    "Preview appearance"
+  ],
+  "generationColorSymbols": [
+    "Colori e simboli",
+    "Colours and symbols"
+  ],
+  "generationWhiteSymbols": [
+    "Bianco e simboli",
+    "White and symbols"
+  ],
+  "generationReadSymbols": [
+    "Leggi i simboli",
+    "Read symbols"
+  ],
+  "generationChartPreview": [
+    "Anteprima della griglia con simboli",
+    "Generated chart with symbols"
+  ],
+  "generationChartHelp": [
+    "Questa è la griglia generata, con gli stessi colori e simboli del PDF. Scorri o ingrandisci per leggere i dettagli; Adatta mostra il disegno intero.",
+    "This is the generated stitch grid, with the same colours and symbols as the PDF. Scroll or zoom to read details; Fit shows the whole design."
+  ],
+  "printDocument": [
+    "Stampa",
+    "Print"
+  ],
+  "printHandedOff": [
+    "Documento inviato alla finestra di stampa.",
+    "Document handed to the print system."
   ]
 }
