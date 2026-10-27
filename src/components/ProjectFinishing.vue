@@ -1,0 +1,9 @@
+<script setup>
+import {computed,ref} from 'vue';
+import {dispatch,notify} from '../state';
+import {t,date} from '../i18n';
+import EntityForm from './EntityForm.vue';
+const props=defineProps({project:Object});const form=ref(null),details=computed(()=>props.project.settings.finishing||{});
+function edit(){const operation=crypto.randomUUID();form.value={title:t('finishingDetails'),fields:[{key:'finishedDate',label:t('finishedDate'),type:'date'},{key:'deliveredDate',label:t('deliveredDate'),type:'date'},{key:'description',label:t('finishDescription'),type:'textarea',wide:true,max:10000},{key:'careInstructions',label:t('careInstructions'),type:'textarea',wide:true,max:10000},{key:'recipientNotes',label:t('deliveryNotes'),type:'textarea',wide:true,max:10000}],initial:details.value,submit:draft=>dispatch('project.finishing',{...draft,projectId:props.project.id},operation)};}
+</script>
+<template><section class="panel"><div class="panel-heading"><h2>{{t('finishingDetails')}}</h2><button class="button small" @click="edit">{{t('edit')}}</button></div><div class="panel-body"><p class="field-help">{{t('finishingMetadataHelp')}}</p><div v-if="details.finishedDate" class="stat-row"><span>{{t('finishedDate')}}</span><strong>{{date(details.finishedDate)}}</strong></div><div v-if="details.deliveredDate" class="stat-row"><span>{{t('deliveredDate')}}</span><strong>{{date(details.deliveredDate)}}</strong></div><template v-for="[key,label] in [['description','finishDescription'],['careInstructions','careInstructions'],['recipientNotes','deliveryNotes']]" :key="key"><template v-if="details[key]"><h3>{{t(label)}}</h3><p style="white-space:pre-wrap">{{details[key]}}</p></template></template></div></section><EntityForm v-if="form" :title="form.title" :fields="form.fields" :initial="form.initial" :submit="form.submit" :help="t('finishingMetadataHelp')" wide @close="form=null" @saved="form=null;notify()"/></template>
