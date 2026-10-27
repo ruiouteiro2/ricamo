@@ -97,7 +97,7 @@ export function locate(id) {
   return names.join(' / ') || '—';
 }
 export const categories = ['thread', 'fabric', 'tool', 'storage', 'preparation', 'stabilizer', 'embellishment', 'finishing', 'kit', 'reference', 'other'];
-export const units = ['m', 'strand-m', 'cm', 'mm', 'g', 'kg', 'piece', 'skein', 'spool', 'pack', 'm2', 'custom'];
+export const units = ['m', 'strand-m', 'cm', 'mm', 'g', 'kg', 'piece', 'skein', 'spool', 'ball', 'cone', 'pack', 'm2', 'custom'];
 export function statusText(value) { return t(({ preparing: 'preparationStatus', active: 'in_progress', partial: 'partially_received' })[value] || value); }
 
 // Add to src/state.js. Keeps normal queue/adoption/stale-state and close-guard behavior.
