@@ -1,3 +1,4 @@
+import { importProjectPackage } from './project-package.mjs';
 import { applyCommand, createState, validateState } from './commands.mjs';
 import { assert, text, identifier, find, put, stringList } from './shared.mjs';
 import { saveMaterial, addLot, saveLocation } from './inventory.mjs';
@@ -8,9 +9,12 @@ import { referenceHandlers, validateReferenceData } from './references.mjs';
 import { inventoryWorkflowHandlers, validateInventoryWorkflowState } from './inventory-workflows.mjs';
 import { fabricPlanningHandlers, validateFabricPlanning } from './fabric-planning.mjs';
 import { draftHandlers, validatePatternDraft } from './drafts.mjs';
+import { toolActivityHandlers, validateToolActivity } from './tool-activity.mjs';
 
 export { createState };
 const handlers = {
+  'project.package.import': importProjectPackage,
+  ...toolActivityHandlers,
   ...draftHandlers,
   ...inventoryWorkflowHandlers,
   ...fabricPlanningHandlers,
@@ -121,6 +125,7 @@ export function validateApplicationState(state) {
   validateState(state);
   validateInventoryWorkflowState(state);
   validateFabricPlanning(state);
+  validateToolActivity(state);
   const seenAttachments = new Set();
   for (const attachment of state.attachments) {
     identifier(attachment.id);
