@@ -2218,5 +2218,597 @@
   "image_animation_too_large": [
     "L’animazione supera 200 fotogrammi o 100 milioni di pixel complessivi. Esporta un singolo fotogramma.",
     "The animation exceeds 200 frames or 100 million total frame pixels. Export a single frame."
+  ],
+  "toolActivity": [
+    "Prestiti e manutenzione",
+    "Loans and maintenance"
+  ],
+  "toolOwnedHelp": [
+    "Le scorte comprendono anche gli strumenti prestati o in manutenzione. Rientri e assegnazioni non cambiano ciò che possiedi.",
+    "Owned stock includes tools on loan or in maintenance. Returns and assignments do not change what you own."
+  ],
+  "toolMetric_physical": [
+    "Di proprietà",
+    "Owned"
+  ],
+  "toolMetric_reserved": [
+    "Assegnati",
+    "Assigned"
+  ],
+  "toolMetric_loaned": [
+    "In prestito",
+    "On loan"
+  ],
+  "toolMetric_maintenance": [
+    "In manutenzione",
+    "Held for maintenance"
+  ],
+  "toolTab_loans": [
+    "Prestiti",
+    "Loans"
+  ],
+  "toolTab_maintenance": [
+    "Manutenzione",
+    "Maintenance"
+  ],
+  "toolTab_availability": [
+    "Disponibilità",
+    "Availability"
+  ],
+  "toolTab_history": [
+    "Storico prestiti",
+    "Loan history"
+  ],
+  "toolOpenLoans": [
+    "Prestiti da chiudere",
+    "Outstanding loans"
+  ],
+  "toolNewLoan": [
+    "Registra un prestito",
+    "Record a loan"
+  ],
+  "toolRecipient": [
+    "A chi è prestato",
+    "Borrower"
+  ],
+  "toolLoanDate": [
+    "Data del prestito",
+    "Loan date"
+  ],
+  "toolDueDate": [
+    "Data prevista",
+    "Due date"
+  ],
+  "toolLoanHelp": [
+    "Registra un prestito reale e scrivi il destinatario. La quantità rimane nelle scorte di proprietà, ma non è disponibile per altri usi.",
+    "Record an actual loan and enter the borrower. The quantity stays in owned stock but becomes unavailable for other uses."
+  ],
+  "toolNoLoans": [
+    "Nessun prestito in corso",
+    "No outstanding loans"
+  ],
+  "toolOutstanding": [
+    "Da restituire",
+    "Outstanding"
+  ],
+  "toolOriginallyLoaned": [
+    "Prestati inizialmente: {quantity}",
+    "Originally loaned: {quantity}"
+  ],
+  "toolNoDueDate": [
+    "Nessuna scadenza",
+    "No due date"
+  ],
+  "toolOverdue": [
+    "Scaduto",
+    "Overdue"
+  ],
+  "toolReturn": [
+    "Registra il rientro",
+    "Record return"
+  ],
+  "toolReturnDate": [
+    "Data del rientro",
+    "Return date"
+  ],
+  "toolReturnFor": [
+    "Registra il rientro da {recipient}",
+    "Record return from {recipient}"
+  ],
+  "toolReturnHelp": [
+    "Indica soltanto la quantità effettivamente restituita. Il rientro libera la disponibilità; non crea una nuova entrata di magazzino.",
+    "Enter only the quantity actually returned. Returning releases availability; it does not create a stock receipt."
+  ],
+  "toolEditLoan": [
+    "Modifica i dati del prestito",
+    "Edit loan details"
+  ],
+  "toolEditFor": [
+    "Modifica il prestito a {recipient}",
+    "Edit loan to {recipient}"
+  ],
+  "toolAmendHelp": [
+    "Destinatario, scadenza e note possono essere corretti. I valori precedenti rimangono nello storico; la quantità prestata non cambia.",
+    "Borrower, due date and notes can be corrected. Previous values remain in history; the loaned quantity stays unchanged."
+  ],
+  "toolRecordLoss": [
+    "Registra perdita o scarto",
+    "Record loss or disposal"
+  ],
+  "toolLossFor": [
+    "Registra perdita nel prestito a {recipient}",
+    "Record loss in loan to {recipient}"
+  ],
+  "toolLossDate": [
+    "Data della perdita o dello scarto",
+    "Loss or disposal date"
+  ],
+  "toolLossHelp": [
+    "Conferma una perdita o uno scarto reale. La quantità sarà tolta dal prestito e dalle scorte una sola volta. Se una conta o un movimento ha già registrato la perdita, collega quel movimento per evitare una seconda sottrazione.",
+    "Confirm an actual loss or disposal. The quantity leaves the loan and stock exactly once. If a count or movement already recorded the loss, link that adjustment to avoid removing it twice."
+  ],
+  "toolLossStockMode": [
+    "Effetto sulle scorte",
+    "Stock effect"
+  ],
+  "toolNewStockLoss": [
+    "Registra ora la variazione fisica",
+    "Record the physical stock loss now"
+  ],
+  "toolAlreadyCounted": [
+    "Perdita già registrata nelle scorte",
+    "Loss already recorded in stock"
+  ],
+  "toolExistingAdjustment": [
+    "Conta o perdita già registrata",
+    "Existing count or loss"
+  ],
+  "toolReconcileHelp": [
+    "Sono disponibili soltanto riduzioni dello stesso lotto non ancora attribuite a prestiti.",
+    "Only stock reductions from this lot that have not already been allocated to loans are available."
+  ],
+  "toolNoRecordedLoss": [
+    "Non esistono riduzioni disponibili da collegare. Registra una nuova perdita soltanto se non è già inclusa nelle scorte attuali.",
+    "No stock reductions are available to link. Record a new loss only if it is not already reflected in current stock."
+  ],
+  "toolConfirmActualLoss": [
+    "Confermo che questa quantità è stata realmente persa o scartata.",
+    "I confirm that this quantity was actually lost or discarded."
+  ],
+  "toolNewMaintenance": [
+    "Registra manutenzione",
+    "Record maintenance"
+  ],
+  "toolWorkDescription": [
+    "Intervento",
+    "Work description"
+  ],
+  "toolMaintenanceMode": [
+    "Stato dell’intervento",
+    "Work status"
+  ],
+  "toolWorkInProgress": [
+    "Da completare",
+    "In progress"
+  ],
+  "toolWorkCompleted": [
+    "Completato",
+    "Completed"
+  ],
+  "toolHoldDuringMaintenance": [
+    "Rendi indisponibile questa quantità fino al completamento.",
+    "Hold this quantity unavailable until the work is completed."
+  ],
+  "toolStartDate": [
+    "Data di inizio",
+    "Start date"
+  ],
+  "toolCompletionDate": [
+    "Data di completamento",
+    "Completion date"
+  ],
+  "toolReplacementParts": [
+    "Ricambi e materiali utilizzati — note",
+    "Replacement parts and materials — notes"
+  ],
+  "toolMaintenanceHelp": [
+    "Registra un intervento in corso o già concluso. La riserva di manutenzione è esplicita e non consuma strumenti. I ricambi descritti nelle note non vengono sottratti automaticamente dall’inventario.",
+    "Record ongoing or completed work. A maintenance hold is explicit and does not consume tools. Replacement parts described in notes are not automatically deducted from inventory."
+  ],
+  "toolCompleteMaintenance": [
+    "Completa la manutenzione",
+    "Complete maintenance"
+  ],
+  "toolCompleteHelp": [
+    "Il completamento libera l’eventuale quantità trattenuta. Registra il costo effettivo nella valuta dell’intervento; le scorte fisiche rimangono invariate.",
+    "Completion releases any maintenance hold. Record the actual cost in the work’s currency; physical stock remains unchanged."
+  ],
+  "toolHolding": [
+    "Indisponibile per manutenzione",
+    "Held for maintenance"
+  ],
+  "toolNotHolding": [
+    "Senza blocco di disponibilità",
+    "No availability hold"
+  ],
+  "toolAvailabilityHelp": [
+    "Disponibile = proprietà utilizzabile − assegnazioni ai progetti − prestiti non restituiti − manutenzione con blocco. Una conta o una perdita possono evidenziare un conflitto: le assegnazioni e i prestiti vengono conservati.",
+    "Available = usable owned stock − project assignments − outstanding loans − active maintenance holds. A count or loss may reveal a conflict: assignments and loans are preserved."
+  ],
+  "toolProjectAssignments": [
+    "Assegnazioni ai progetti",
+    "Project assignments"
+  ],
+  "toolAssignmentHelp": [
+    "Per assegnare o liberare strumenti usa Riserva nella scheda del materiale o del progetto. Chiudere un progetto libera solo le sue assegnazioni, non i prestiti a persone.",
+    "Use Reserve on the material or project page to assign or release tools. Closing a project releases its assignments, not loans to people."
+  ],
+  "toolDueReminders": [
+    "Scadenze registrate",
+    "Recorded due dates"
+  ],
+  "toolConflictHelp": [
+    "Gli impegni superano le scorte utilizzabili di {quantity} {unit}. Verifica la conta e riconcilia esplicitamente prestiti o assegnazioni; nessun impegno è stato eliminato.",
+    "Commitments exceed usable stock by {quantity} {unit}. Check the count and explicitly reconcile loans or assignments; no commitments have been removed."
+  ],
+  "toolUnknownStock": [
+    "La quantità fisica è sconosciuta. Verificala prima di creare nuovi prestiti o blocchi di manutenzione.",
+    "Physical quantity is unknown. Verify it before creating new loans or maintenance holds."
+  ],
+  "toolHistoryHelp": [
+    "Prestiti, rientri parziali, perdite e correzioni dei dati rimangono nello storico. Le perdite sono collegate al movimento fisico corrispondente.",
+    "Loans, partial returns, losses and metadata corrections remain in history. Losses link to the corresponding physical stock movement."
+  ],
+  "toolClosedLoan": [
+    "Prestito chiuso",
+    "Closed loan"
+  ],
+  "toolOpenLoan": [
+    "Prestito aperto",
+    "Open loan"
+  ],
+  "toolReturnedQuantity": [
+    "Quantità restituita",
+    "Quantity returned"
+  ],
+  "toolLostQuantity": [
+    "Quantità persa o scartata",
+    "Quantity lost or discarded"
+  ],
+  "toolEvent_return": [
+    "Rientro",
+    "Return"
+  ],
+  "toolEvent_loss": [
+    "Perdita",
+    "Loss"
+  ],
+  "toolEvent_discard": [
+    "Scarto",
+    "Disposal"
+  ],
+  "toolEvent_amend": [
+    "Dati corretti",
+    "Details corrected"
+  ],
+  "tool_date_only": [
+    "Usa una data completa senza orario.",
+    "Use a complete calendar date without a time."
+  ],
+  "tool_future_event": [
+    "Non puoi registrare un evento fisico nel futuro. Usa la data prevista per una scadenza.",
+    "A physical event cannot be recorded in the future. Use the due date for a future deadline."
+  ],
+  "tool_date_order": [
+    "La data non può precedere l’inizio del prestito o dell’intervento.",
+    "The date cannot precede the start of the loan or maintenance work."
+  ],
+  "tool_whole_pieces": [
+    "Gli strumenti contati in pezzi richiedono quantità intere.",
+    "Tools counted as pieces require whole quantities."
+  ],
+  "tool_reusable_required": [
+    "Prestiti e manutenzione richiedono un materiale riutilizzabile.",
+    "Loans and maintenance require a reusable material."
+  ],
+  "tool_insufficient_available": [
+    "Quantità non disponibile. Restano {available} unità libere da assegnazioni, prestiti e manutenzione.",
+    "That quantity is unavailable. {available} units remain free of assignments, loans and maintenance holds."
+  ],
+  "tool_loan_not_found": [
+    "Il prestito non è stato trovato in questo lotto.",
+    "The loan was not found in this lot."
+  ],
+  "tool_maintenance_not_found": [
+    "L’intervento non è stato trovato in questo lotto.",
+    "The maintenance record was not found in this lot."
+  ],
+  "tool_history_limit": [
+    "È stato raggiunto il limite dello storico per questo lotto. I dati esistenti restano conservati.",
+    "The history limit for this lot has been reached. Existing records are preserved."
+  ],
+  "tool_exceeds_outstanding": [
+    "La quantità supera quella ancora da restituire.",
+    "The quantity exceeds the outstanding loan amount."
+  ],
+  "tool_confirm_loss": [
+    "Conferma esplicitamente che la quantità è stata realmente persa o scartata.",
+    "Explicitly confirm that the quantity was actually lost or discarded."
+  ],
+  "tool_loss_already_allocated": [
+    "Il movimento non è disponibile oppure la sua quantità è già attribuita a un altro prestito.",
+    "The adjustment is unavailable or its quantity has already been allocated to another loan."
+  ],
+  "tool_maintenance_completed": [
+    "Questo intervento è già stato completato.",
+    "This maintenance record is already completed."
+  ],
+  "tool_cost_currency_changed": [
+    "Mantieni la valuta originale dell’intervento per registrarne il costo.",
+    "Keep the maintenance record’s original currency when recording its cost."
+  ],
+  "tool_activity_managed": [
+    "Usa le azioni Prestiti e manutenzione per modificare questi dati. Un lotto trasformato non può essere riattivato modificandone lo stato.",
+    "Use Loans and maintenance to change these records. A transformed lot cannot be reactivated by editing its status."
+  ],
+  "tool_transfer_held": [
+    "Non spostare o dividere un lotto con prestiti o manutenzioni ancora in corso. Riconcilia prima questi impegni.",
+    "A lot with outstanding loans or maintenance holds cannot be moved or split. Reconcile those commitments first."
+  ],
+  "tool_activity_transform": [
+    "Questo lotto conserva uno storico di strumenti. La trasformazione fisica richiede una riconciliazione separata.",
+    "This lot retains tool history. Physical transformation requires separate reconciliation."
+  ],
+  "tool_loss_reversal_dependency": [
+    "Questa perdita è collegata a un prestito. Non può essere annullata separatamente. Se lo strumento è stato ritrovato, registra un’entrata fisica motivata.",
+    "This loss is linked to a loan and cannot be reversed independently. If the tool was found, record an explained physical receipt."
+  ],
+  "tool_duplicate_id": [
+    "Lo storico contiene identificatori duplicati. Nessun dato è stato modificato.",
+    "History contains duplicate identifiers. No data has changed."
+  ],
+  "tool_activity_version": [
+    "La versione dello storico strumenti non è supportata.",
+    "The tool history version is unsupported."
+  ],
+  "tool_invalid_event": [
+    "Un evento nello storico non è coerente con il prestito o l’intervento.",
+    "A history event is inconsistent with its loan or maintenance record."
+  ],
+  "tool_loss_reference": [
+    "La perdita non corrisponde a un movimento fisico valido di questo lotto.",
+    "The loss does not match a valid physical movement for this lot."
+  ],
+  "tool_invalid_closed_state": [
+    "Lo stato del prestito non corrisponde ai rientri e alle perdite registrati.",
+    "The loan status does not reconcile with recorded returns and losses."
+  ],
+  "toolRemindersTitle": [
+    "Da ricordare",
+    "Reminders"
+  ],
+  "toolDueSoon": [
+    "Nei prossimi giorni",
+    "Due soon"
+  ],
+  "exportProjectPackage": [
+    "Esporta progetto",
+    "Export project"
+  ],
+  "importProjectPackage": [
+    "Importa progetto",
+    "Import project"
+  ],
+  "projectPackageHelp": [
+    "Trasferisci un progetto con il suo schema, fabbisogni e progresso. Il pacchetto non è un backup completo dell’atelier.",
+    "Transfer a project with its pattern, requirements and progress. This package is not a complete studio backup."
+  ],
+  "packagePrivacy": [
+    "Scegli cosa condividere",
+    "Choose what to share"
+  ],
+  "package_includeRecipient": [
+    "Includi il destinatario",
+    "Include recipient"
+  ],
+  "package_includePrivateNotes": [
+    "Includi note private, descrizioni, etichette, campi personali e budget",
+    "Include private notes, descriptions, tags, custom fields and budget"
+  ],
+  "package_includeSessions": [
+    "Includi date e durata delle sessioni",
+    "Include session dates and durations"
+  ],
+  "package_includeSessionNotes": [
+    "Includi anche le note delle sessioni",
+    "Also include session notes"
+  ],
+  "package_includeHistory": [
+    "Includi lo storico del progresso e le revisioni necessarie",
+    "Include progress history and required revisions"
+  ],
+  "packagePrivacyHelp": [
+    "Nomi del progetto, schemi e materiali, scadenze e impostazioni tecniche sono inclusi. Le opzioni private sono disattivate inizialmente. Le annotazioni di testo e i segnalibri richiedono le note private.",
+    "Project, pattern and material names, deadlines and technical settings are included. Private options start disabled. Text annotations and bookmarks require private notes."
+  ],
+  "packageFiles": [
+    "File e fotografie",
+    "Files and photographs"
+  ],
+  "packageFilesHelp": [
+    "Seleziona ogni file facoltativo. Un originale necessario a uno schema di riferimento è sempre incluso. I file conservano i metadati originali.",
+    "Select each optional file. An original required by a reference pattern is always included. Files retain their original metadata."
+  ],
+  "noPackageFiles": [
+    "Nessun file associato a questo progetto.",
+    "No files associated with this project."
+  ],
+  "requiredReferenceFile": [
+    "Originale necessario",
+    "Required original"
+  ],
+  "packageManifest": [
+    "Contenuto del pacchetto",
+    "Package contents"
+  ],
+  "package_count_materials": [
+    "Riferimenti di catalogo",
+    "Catalogue references"
+  ],
+  "package_count_patterns": [
+    "Schemi",
+    "Patterns"
+  ],
+  "package_count_revisions": [
+    "Revisioni pubblicate",
+    "Published revisions"
+  ],
+  "package_count_needs": [
+    "Fabbisogni",
+    "Requirements"
+  ],
+  "package_count_tasks": [
+    "Passaggi",
+    "Tasks"
+  ],
+  "package_count_sessions": [
+    "Sessioni",
+    "Sessions"
+  ],
+  "package_count_attachments": [
+    "File inclusi",
+    "Included files"
+  ],
+  "package_count_history": [
+    "Voci dello storico",
+    "History entries"
+  ],
+  "packageNoStock": [
+    "Nessuna scorta fisica, riserva, movimento o prestito viene trasferito. Il materiale già presente nel catalogo locale non viene sovrascritto.",
+    "No physical stock, reservations, movements or loans are transferred. Existing local catalogue materials are never overwritten."
+  ],
+  "projectPackageFile": [
+    "Pacchetto progetto (.ricamoproject)",
+    "Project package (.ricamoproject)"
+  ],
+  "importedProjectName": [
+    "Nome del progetto importato",
+    "Imported project name"
+  ],
+  "packageProgress": [
+    "{count} punti o elementi completati · progresso manuale {percent}%",
+    "{count} completed stitches or elements · manual progress {percent}%"
+  ],
+  "packageFabricPlan": [
+    "Le specifiche del tessuto sono conservate come piano. Scegli un tessuto fisico locale dopo l’importazione.",
+    "Fabric specifications are retained as a plan. Select a local physical fabric after import."
+  ],
+  "packageRepeated": [
+    "Questo pacchetto è già stato importato nell’atelier.",
+    "This package has already been imported into this studio."
+  ],
+  "packageAllowRepeat": [
+    "Voglio creare un’altra copia del progetto",
+    "I want to create another project copy"
+  ],
+  "packageResetProgress": [
+    "Riparti da zero: azzera progresso, passaggi completati, annotazioni del progetto, sessioni e storico",
+    "Start from zero: reset progress, completed tasks, project annotations, sessions and history"
+  ],
+  "packageImportStatus": [
+    "Il nuovo progetto sarà in preparazione. Il progresso trasferito viene conservato salvo scelta di ripartire da zero.",
+    "The new project starts in preparation. Transferred progress is retained unless you choose to start from zero."
+  ],
+  "packageMaterialReview": [
+    "Controlla i riferimenti di catalogo",
+    "Review catalogue references"
+  ],
+  "packageCreateAll": [
+    "Crea tutti come nuovi riferimenti",
+    "Create all as new references"
+  ],
+  "packageMaterialHelp": [
+    "Abbina solo riferimenti con codice, marca, gamma, unità e conversione compatibili. Gli abbinamenti ambigui o con conversione sconosciuta richiedono una scelta. Non vengono create scorte.",
+    "Match only references with compatible code, brand, range, unit and conversion. Ambiguous matches or unknown conversion require a decision. No stock is created."
+  ],
+  "packageMatchAction": [
+    "Destinazione del riferimento",
+    "Reference destination"
+  ],
+  "packageUnknownConversion": [
+    "Conversione da verificare",
+    "Conversion needs review"
+  ],
+  "packageChooseMatch": [
+    "Scegli una destinazione",
+    "Choose a destination"
+  ],
+  "packageCreateMaterial": [
+    "Crea riferimento di catalogo",
+    "Create catalogue reference"
+  ],
+  "packageUseExisting": [
+    "Usa riferimento locale",
+    "Use local reference"
+  ],
+  "downloadProjectPackage": [
+    "Scarica pacchetto progetto",
+    "Download project package"
+  ],
+  "refreshPackagePreview": [
+    "Controlla di nuovo il file",
+    "Review file again"
+  ],
+  "confirmProjectImport": [
+    "Importa nuovo progetto",
+    "Import new project"
+  ],
+  "error.project_package_assets": [
+    "Il pacchetto contiene file mancanti o non pertinenti.",
+    "The package contains missing or unrelated files."
+  ],
+  "error.project_package_integrity": [
+    "Il contenuto del pacchetto non corrisponde ai suoi controlli di integrità.",
+    "Package contents do not match their integrity checks."
+  ],
+  "error.project_package_invalid": [
+    "Il pacchetto progetto non è valido.",
+    "The project package is invalid."
+  ],
+  "error.project_package_version": [
+    "Questa versione del pacchetto non è supportata.",
+    "This package version is unsupported."
+  ],
+  "error.project_package_bounds": [
+    "Il pacchetto supera i limiti: 8MB di dati strutturati, 1000 file e 256MB complessivi.",
+    "The package exceeds limits: 8MB of structured data,1000 files and256MB total."
+  ],
+  "error.project_package_stock": [
+    "Un pacchetto progetto non può contenere scorte o movimenti fisici.",
+    "A project package cannot contain physical stock or movements."
+  ],
+  "error.project_package_history": [
+    "Lo storico del progetto non è valido o supera1000 voci.",
+    "Project history is invalid or exceeds1000 entries."
+  ],
+  "error.project_package_privacy": [
+    "Le opzioni di riservatezza dichiarate non corrispondono al contenuto.",
+    "Declared privacy options do not match the contents."
+  ],
+  "error.project_package_duplicate": [
+    "Questo pacchetto è già stato importato. Conferma esplicitamente una seconda copia.",
+    "This package was already imported. Explicitly confirm a second copy."
+  ],
+  "error.project_package_material_review": [
+    "Controlla ogni abbinamento di materiale, comprese le conversioni sconosciute.",
+    "Review every material match, including unknown conversions."
+  ],
+  "error.invalid_project_token": [
+    "L’anteprima è scaduta o è già stata utilizzata. Controlla di nuovo il file.",
+    "The preview expired or was already used. Review the file again."
+  ],
+  "error.project_package_operation": [
+    "Identificativo dell’importazione non valido.",
+    "Invalid import operation identifier."
   ]
 }
