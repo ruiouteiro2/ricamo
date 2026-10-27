@@ -26,5 +26,6 @@ contextBridge.exposeInMainWorld('ricamo', Object.freeze({
   },
   inspectRestore: text => ipcRenderer.invoke('ricamo:inspect-restore', text),
   restore: (token, revision) => ipcRenderer.invoke('ricamo:restore', token, revision),
+  openPurchaseLink: url => ipcRenderer.invoke('ricamo:open-purchase-link', url),
   print: () => ipcRenderer.invoke('ricamo:print'),
 }));
