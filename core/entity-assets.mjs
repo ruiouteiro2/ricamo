@@ -1,3 +1,4 @@
+import { DOCUMENT_OWNERS, validateDocumentIntent } from './owner-documents.mjs';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 import { assert, assertSafeJson, identifier } from './shared.mjs';
@@ -5,7 +6,7 @@ import { boundedBytes, detectFile, safeDisplayName } from './files.mjs';
 
 export const ASSET_BATCH_COUNT = 20;
 export const ASSET_BATCH_BYTES = 100 * 1024 * 1024;
-const OWNER_TYPES = new Set(['material.save', 'material.createWithLot', 'project.save', 'session.save']);
+const OWNER_TYPES = new Set(['material.save', 'material.createWithLot', 'project.save', 'session.save', ...Object.keys(DOCUMENT_OWNERS)]);
 
 /** Capture immutable, bounded originals before hashing or awaiting a transaction. */
 export function captureAssetBatch(files) {
@@ -23,6 +24,7 @@ function validateOwner(owner) {
   assert(owner && typeof owner === 'object' && !Array.isArray(owner) && OWNER_TYPES.has(owner.type), 'invalid_asset_owner');
   assert(owner.payload && typeof owner.payload === 'object' && !Array.isArray(owner.payload), 'invalid_payload');
   assertSafeJson(owner);
+  if (DOCUMENT_OWNERS[owner.type]) validateDocumentIntent(owner.payload);
   if (owner.type === 'material.createWithLot') assert(owner.payload.material && typeof owner.payload.material === 'object' && !Array.isArray(owner.payload.material), 'invalid_payload');
   return owner;
 }
@@ -73,7 +75,7 @@ export function saveEntityWithAssets(state, payload, context, { saveAttachment, 
     else saveAttachment(state, asset, context);
   }
   assert(Object.hasOwn(ownerHandlers, owner.type), 'invalid_asset_owner');
-  const collection = owner.type.startsWith('material.') ? 'materials' : owner.type.startsWith('project.') ? 'projects' : 'sessions';
+  const collection = DOCUMENT_OWNERS[owner.type] || (owner.type.startsWith('material.') ? 'materials' : owner.type.startsWith('project.') ? 'projects' : 'sessions');
   const entity = owner.type === 'material.createWithLot' ? owner.payload.material : owner.payload;
   const existingOwner = state[collection].find(row => row.id === entity.id);
   const savedPayload = structuredClone(owner.payload), savedEntity = owner.type === 'material.createWithLot' ? savedPayload.material : savedPayload;
