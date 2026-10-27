@@ -2,8 +2,9 @@
  * sizes are pixels. The caller controls the bounded canvas backing store. */
 export function drawPattern(canvas, revision, options = {}) {
   const cell = options.cellSize ?? 12, offsetX = options.offsetX ?? 0, offsetY = options.offsetY ?? 0;
-  const width = Math.max(1, Math.min(2400, Math.ceil(options.width ?? revision.width * cell)));
-  const height = Math.max(1, Math.min(2400, Math.ceil(options.height ?? revision.height * cell)));
+  const cap = Math.min(4096, options.maxDimension ?? 2400);
+  const width = Math.max(1, Math.min(cap, Math.ceil(options.width ?? revision.width * cell)));
+  const height = Math.max(1, Math.min(cap, Math.ceil(options.height ?? revision.height * cell)));
   if (canvas.width !== width) canvas.width = width;
   if (canvas.height !== height) canvas.height = height;
   const ctx = canvas.getContext('2d');
