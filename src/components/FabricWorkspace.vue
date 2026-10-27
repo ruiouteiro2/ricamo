@@ -9,6 +9,11 @@ import {projectFabricConfig} from '../../core/design-size.mjs';
 import DesignSizeSummary from './DesignSizeSummary.vue';
 import AppDialog from './AppDialog.vue';
 import FormField from './FormField.vue';
+import FabricGeometryEditor from './FabricGeometryEditor.vue';
+import FabricGeometrySummary from './FabricGeometrySummary.vue';
+import {fabricGeometryKnown,shapePoints} from '../../core/fabric-geometry.mjs';
+import {fabricGeometryPdf} from '../fabric-geometry-pdf.mjs';
+import {storage} from '../storage';
 const props = defineProps({ lotId: { type: String, required: true }, projectId: String });
 const emit = defineEmits(['close']);
 const focusedId = ref(props.lotId), tab = ref('plan'), stage = ref(''), busy = ref(false), error = ref(null), selectedRegionId = ref(''), targetRegion = ref(null), targetCut = ref(null), reason = ref('');
@@ -42,8 +47,13 @@ const preview = computed(() => {
   if (!simulation.value || simulation.value.error) return null;
   return previewFabricCut(lot.value, { ...draft, discardRemnants: draft.discardRemnants.filter(key => simulation.value.rectangles.some(row => row.key === key)) });
 });
-const manual = computed(() => lot.value?.properties.irregular || lot.value?.properties.defects || lot.value?.properties.unusableBorder);
-const canCut = computed(() => available.value && preview.value && !lot.value.properties.irregular && (!manual.value || draft.manualConfirmed));
+const manual = computed(() => lot.value && !fabricGeometryKnown(lot.value));
+const metadataDimensions=computed(()=>{try{return {width:toCentimetres(metadata.width,metadata.unit),height:toCentimetres(metadata.height,metadata.unit)}}catch{return{width:0,height:0}}});
+const wholeReserved=computed(()=>state.value.reservations.filter(row=>row.lotId===focusedId.value).reduce((sum,row)=>sum+row.quantity,0));
+const geometryRequest=computed(()=>{try{const width=toCentimetres(draft.width,draft.unit),height=toCentimetres(draft.height,draft.unit);return{xCm:toCentimetres(draft.x,draft.unit),yCm:toCentimetres(draft.y,draft.unit),widthCm:draft.rotated?height:width,heightCm:draft.rotated?width:height}}catch{return null}});
+const measuredPoints=shape=>shapePoints(shape).map(([x,y])=>`${x-lot.value.properties.geometry.offsetXCm},${y-lot.value.properties.geometry.offsetYCm}`).join(' ');
+async function exportGeometry(){busy.value=true;error.value=null;try{await storage.saveFile({name:'Ricamo-fabric-geometry.pdf',data:await fabricGeometryPdf(lot.value,{locale:state.value.settings.language,wholeReserved:wholeReserved.value})})}catch(e){error.value=e}finally{busy.value=false}}
+const canCut = computed(() => available.value && preview.value && !lot.value.properties.irregular && !lot.value.properties.geometry?.outline && (!manual.value || draft.manualConfirmed));
 const dependencies = computed(() => targetCut.value ? fabricCutDependencies(state.value, targetCut.value.id) : []);
 const stageTitle = computed(() => stage.value === 'cut' ? t('confirmPhysicalCut') : stage.value === 'undo' ? t('fabricUndoCut') : stage.value === 'release' ? t('fabricReleaseRegion') : t('fabricWorkspace'));
 let operationId = crypto.randomUUID(), commandSignature = '';
@@ -69,7 +79,7 @@ function changeMetadataUnit(event) {
 }
 function useDesign() {
   if (!fit.value?.cutWidthCm) return;
-  selectedRegionId.value = ''; Object.assign(draft, { unit: 'cm', x: String(fit.value.usable.xCm), y: String(fit.value.usable.yCm), width: String(Math.ceil(fit.value.cutWidthCm * 1e6) / 1e6), height: String(Math.ceil(fit.value.cutHeightCm * 1e6) / 1e6), rotated: false, discardRemnants: [] }); newOperation();
+  selectedRegionId.value = ''; Object.assign(draft, { unit: 'cm', x: String(fit.value.position?.xCm??fit.value.usable.xCm), y: String(fit.value.position?.yCm??fit.value.usable.yCm), width: String(Math.ceil(fit.value.cutWidthCm * 1e6) / 1e6), height: String(Math.ceil(fit.value.cutHeightCm * 1e6) / 1e6), rotated: false, discardRemnants: [] }); newOperation();
 }
 function loadRegion(region) {
   selectedRegionId.value = region.id; Object.assign(draft, { unit: 'cm', x: String(region.xCm), y: String(region.yCm), width: String(region.widthCm), height: String(region.heightCm), rotated: false, projectId: region.projectId, manualConfirmed: region.manualConfirmed, notes: region.notes, discardRemnants: [] }); tab.value = 'plan'; error.value = null; newOperation();
@@ -97,7 +107,7 @@ function beginUndo(cut) { targetCut.value = cut; stage.value = 'undo'; reason.va
 function confirmUndo() { return run('fabric.cut.reverse', { cutId: targetCut.value.id, reason: reason.value }, () => { stage.value = ''; tab.value = 'history'; }); }
 function editMetadata() {
   const p = lot.value.properties;
-  Object.assign(metadata, { width: p.widthCm ?? '', height: p.heightCm ?? '', unit: 'cm', countX: p.countX ?? '', countY: p.countY ?? '', countMeaning: p.countMeaning || 'stitches', irregular: p.irregular === true, defects: p.defects || '', geometryNotes: p.geometryNotes || '', washState: p.washState || 'unknown', usableMargins: Object.fromEntries(sides.map(side => [side, p.usableMargins?.[side] ?? 0])) });
+  Object.assign(metadata, { width: p.widthCm ?? '', height: p.heightCm ?? '', unit: 'cm', countX: p.countX ?? '', countY: p.countY ?? '', countMeaning: p.countMeaning || 'stitches', irregular: p.irregular === true, defects: p.defects || '', geometryNotes: p.geometryNotes || '', geometry:p.geometry?JSON.parse(JSON.stringify(p.geometry)):null, washState: p.washState || 'unknown', usableMargins: Object.fromEntries(sides.map(side => [side, p.usableMargins?.[side] ?? 0])) });
   error.value = null; tab.value = 'details'; newOperation();
 }
 function saveMetadata() { return run('fabric.plan.save', { ...metadata, lotId: focusedId.value }, () => { tab.value = 'plan'; }); }
@@ -127,8 +137,8 @@ function releaseCutReservation(cut) { const reservation = cutReservation(cut); i
     <template v-else>
       <nav class="tabs" :aria-label="t('fabricWorkspace')"><button :class="{selected:tab==='plan'}" @click="tab='plan'">{{ t('fabricPlan') }}</button><button :class="{selected:tab==='details'}" :disabled="!available || regions.length>0" @click="editMetadata">{{ t('fabricPieceDetails') }}</button><button :class="{selected:tab==='history'}" @click="tab='history'">{{ t('fabricCutHistory') }} · {{ cuts.length }}</button></nav>
       <template v-if="tab==='plan'">
-        <p class="notice">{{ t('fabricPlanHelp') }}</p>
-        <p v-if="manual" class="notice warning">{{ t('fabricManualHelp') }}</p>
+        <p class="notice">{{ t('fabricPlanHelp') }}</p><FabricGeometrySummary :lot="lot" :request="geometryRequest" :whole-reserved="wholeReserved"/><button class="button small" :disabled="busy" @click="exportGeometry">{{t('fabricGeometryPdf')}}</button>
+        <p v-if="lot.properties.irregular||lot.properties.geometry?.outline" class="notice warning">{{t('fabricOutlineCutManual')}}</p><p v-if="manual" class="notice warning">{{ t('fabricManualHelp') }}</p>
         <p v-if="!available" class="notice warning">{{ t('fabric_piece_unavailable') }}</p>
         <div v-if="available" class="form-grid">
           <FormField :label="t('project')" wide v-slot="{id}"><select :id="id" v-model="draft.projectId" :disabled="!!selectedRegionId"><option value="">{{ t('none') }}</option><option v-for="project in projects" :key="project.id" :value="project.id">{{ project.name }}</option></select></FormField>
@@ -144,7 +154,7 @@ function releaseCutReservation(cut) { const reservation = cutReservation(cut); i
         </div>
         <p v-if="simulation?.error" class="notice warning" role="status">{{ translateError(simulation.error) }}</p>
         <div v-if="preview" class="form-section">
-          <svg class="fabric-map" role="img" :aria-label="t('fabricDiagramHelp')" :viewBox="`0 0 ${preview.widthCm} ${preview.heightCm}`"><rect class="fabric-whole" x="0" y="0" :width="preview.widthCm" :height="preview.heightCm" /><rect class="fabric-usable" :x="preview.usable.xCm" :y="preview.usable.yCm" :width="preview.usable.widthCm" :height="preview.usable.heightCm" /><rect v-for="region in regions" :key="region.id" class="fabric-region" :x="region.xCm" :y="region.yCm" :width="region.widthCm" :height="region.heightCm" /><rect class="fabric-request" :x="preview.requested.xCm" :y="preview.requested.yCm" :width="preview.requested.widthCm" :height="preview.requested.heightCm" /></svg>
+          <svg class="fabric-map" role="img" :aria-label="t('fabricDiagramHelp')" :viewBox="`0 0 ${preview.widthCm} ${preview.heightCm}`"><rect class="fabric-whole" x="0" y="0" :width="preview.widthCm" :height="preview.heightCm" /><rect class="fabric-usable" :x="preview.usable.xCm" :y="preview.usable.yCm" :width="preview.usable.widthCm" :height="preview.usable.heightCm" /><polygon v-for="(shape,index) in lot.properties.geometry?.defects??[]" :key="`defect-${index}`" :points="measuredPoints(shape)" fill="var(--danger)" fill-opacity=".4"/><rect v-for="region in regions" :key="region.id" class="fabric-region" :x="region.xCm" :y="region.yCm" :width="region.widthCm" :height="region.heightCm" /><rect class="fabric-request" :x="preview.requested.xCm" :y="preview.requested.yCm" :width="preview.requested.widthCm" :height="preview.requested.heightCm" /></svg>
           <p class="field-help">{{ t('fabricDiagramHelp') }}</p><div class="stat-row"><span>{{ t(manual?'fabricBoundingArea':'fabricTotalArea') }}</span><strong>{{ number(preview.totalAreaCm2) }} cm²</strong></div>
           <h3>{{ t('fabricRemnants') }}</h3><p class="field-help">{{ t('fabricWasteHelp') }}</p>
           <label v-for="rect in preview.rectangles.filter(row=>row.role==='remnant')" :key="rect.key" class="checkbox-label fabric-remnant"><input v-model="draft.discardRemnants" type="checkbox" :value="rect.key" />{{ t('fabricDiscardSide', { side: t(`fabricSide_${rect.key}`) }) }} · {{ number(rect.widthCm) }} × {{ number(rect.heightCm) }} cm</label>
@@ -162,7 +172,7 @@ function releaseCutReservation(cut) { const reservation = cutReservation(cut); i
           <FormField v-for="side in sides" :key="side" :label="t('fabricUnusableEdge',{side:t(`fabricSide_${side}`)})" v-slot="{id}"><input :id="id" v-model="metadata.usableMargins[side]" inputmode="decimal" /></FormField>
           <FormField :label="t('fabricWashState')" v-slot="{id}"><select :id="id" v-model="metadata.washState"><option v-for="value in ['unknown','unwashed','prewashed']" :key="value" :value="value">{{ t(`fabricWash_${value}`) }}</option></select></FormField>
           <label class="checkbox-label"><input v-model="metadata.irregular" type="checkbox" />{{ t('irregularFabric') }}</label>
-          <FormField :label="t('fabricDefects')" wide v-slot="{id}"><textarea :id="id" v-model="metadata.defects" maxlength="4000" /></FormField><FormField :label="t('fabricGeometryNotes')" wide v-slot="{id}"><textarea :id="id" v-model="metadata.geometryNotes" maxlength="4000" /></FormField>
+          <FabricGeometryEditor v-model="metadata.geometry" :width="metadataDimensions.width" :height="metadataDimensions.height"/><FormField :label="t('fabricDefects')" wide v-slot="{id}"><textarea :id="id" v-model="metadata.defects" maxlength="4000" /></FormField><FormField :label="t('fabricGeometryNotes')" wide v-slot="{id}"><textarea :id="id" v-model="metadata.geometryNotes" maxlength="4000" /></FormField>
         </div><div class="actions fabric-actions"><button class="button primary" :disabled="busy" @click="saveMetadata">{{ t('save') }}</button><button class="button" :disabled="busy" @click="tab='plan'">{{ t('cancel') }}</button></div>
       </template>
       <template v-else>
