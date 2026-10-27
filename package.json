@@ -1,6 +1,6 @@
 {
   "name": "ricamo",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Offline embroidery studio, inventory and project companion",
   "author": "RuiOuteiro2",
   "license": "MIT",
@@ -15,7 +15,7 @@
     "test:e2e": "node tests/run-browser.mjs",
     "package:win": "npm run build && electron-builder --win nsis --x64 --publish never",
     "package:dir": "npm run build && electron-builder --dir --publish never",
-    "test:desktop": "npm run build && npm run test:desktop:smoke && npm run test:desktop:documents && npm run test:desktop:drafts && npm run test:desktop:projects && npm run test:desktop:export-cancel && npm run test:desktop:kits",
+    "test:desktop": "npm run build && npm run test:desktop:smoke && npm run test:desktop:documents && npm run test:desktop:drafts && npm run test:desktop:projects && npm run test:desktop:export-cancel && npm run test:desktop:kits && npm run test:desktop:planning && npm run test:desktop:example && npm run test:desktop:data && npm run test:desktop:work && npm run test:desktop:work-empty && npm run test:desktop:materials && npm run test:desktop:attachments",
     "test:desktop:smoke": "node tests/desktop-smoke.mjs",
     "test:desktop:documents": "node tests/desktop-documents.mjs",
     "test:desktop:drafts": "node tests/desktop-drafts.mjs",
@@ -25,7 +25,14 @@
     "test:desktop:projects": "node tests/desktop-projects.mjs",
     "test:desktop:export-cancel": "node tests/desktop-export-cancel.mjs",
     "test:desktop:kits": "node tests/desktop-kits.mjs",
-    "test:desktop:kit-scale": "node tests/desktop-kit-scale.mjs"
+    "test:desktop:kit-scale": "node tests/desktop-kit-scale.mjs",
+    "test:desktop:example": "node tests/desktop-example.mjs",
+    "test:desktop:planning": "node tests/desktop-planning.mjs",
+    "test:desktop:data": "node tests/desktop-data-exports.mjs",
+    "test:desktop:work": "node tests/desktop-work-companion.mjs",
+    "test:desktop:work-empty": "node tests/desktop-work-empty-palette.mjs",
+    "test:desktop:materials": "node tests/desktop-material-descriptors.mjs",
+    "test:desktop:attachments": "node tests/desktop-attachments.mjs"
   },
   "dependencies": {
     "@lucide/vue": "1.62.0",
