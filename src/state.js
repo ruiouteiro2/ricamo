@@ -70,3 +70,19 @@ export function locate(id) {
 export const categories = ['thread', 'fabric', 'tool', 'storage', 'preparation', 'stabilizer', 'embellishment', 'finishing', 'kit', 'reference', 'other'];
 export const units = ['m', 'strand-m', 'cm', 'mm', 'g', 'kg', 'piece', 'skein', 'spool', 'pack', 'm2', 'custom'];
 export function statusText(value) { return t(({ preparing: 'preparationStatus', active: 'in_progress', partial: 'partially_received' })[value] || value); }
+
+// Add to src/state.js. Keeps normal queue/adoption/stale-state and close-guard behavior.
+export function importProjectPackage(token, decisions) {
+  const operation = async () => {
+    saving.value = true;
+    try {
+      const result = await storage.importProject(token, decisions, state.value.revision);
+      adopt(result.state);
+      return result;
+    } catch (error) {
+      if (error.code === 'stale_revision') adopt(await storage.load());
+      throw error;
+    } finally { saving.value = false; }
+  };
+  const result = queue.then(operation, operation); queue = result.catch(() => {}); return result;
+}
