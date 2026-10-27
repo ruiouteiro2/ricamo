@@ -1,3 +1,4 @@
+import {applyPatternSupplies} from './pattern-supplies.mjs';
 import { threadCatalogueHandlers, validateThreadCatalogues } from './thread-catalogues.mjs';
 import { catalogueReferenceHandlers, validateCatalogueReferences } from './catalogue-references.mjs';
 import { documentOwnerHandlers } from './owner-documents.mjs';
@@ -47,6 +48,7 @@ const handlers = {
     saveMaterial(state, { ...payload.material, id }, context);
     if (payload.lot) addLot(state, { ...payload.lot, materialId: id }, context);
   },
+  'project.supplies.apply': applyPatternSupplies,
   'pattern.save': (state, p, ctx) => {
     const id = p.id ? identifier(p.id) : ctx.id();
     const existing = state.patterns.find(item => item.id === id);
