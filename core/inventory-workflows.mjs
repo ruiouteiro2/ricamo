@@ -104,12 +104,15 @@ export function validateInventoryWorkflowState(state) {
     assert(new Set(category.fields).size === category.fields.length, 'invalid_custom_fields');
     for (const field of category.fields) { text(field, 'field', { required: true, max: 200 }); assert(!['__proto__','prototype','constructor'].includes(field), 'invalid_custom_fields'); }
   }
-  for (const material of state.materials) {
-    const fields = material.properties.custom;
-    if (fields === undefined) continue;
-    assert(fields && typeof fields === 'object' && !Array.isArray(fields), 'invalid_custom_fields');
-    assert(Object.keys(fields).length <= 100, 'invalid_custom_fields');
-    for (const [key,value] of Object.entries(fields)) { text(key,'field',{required:true,max:200}); assert(typeof value==='string','invalid_custom_fields'); text(value,'value',{max:1000}); }
-  }
+  for (const material of state.materials) validateCustomProperties(material.properties);
   return state;
+}
+
+/** Shared by persisted-state validation and CSV preflight; native descriptors never replace custom fields. */
+export function validateCustomProperties(properties) {
+  const fields = properties.custom;
+  if (fields === undefined) return;
+  assert(fields && typeof fields === 'object' && !Array.isArray(fields), 'invalid_custom_fields');
+  assert(Object.keys(fields).length <= 100, 'invalid_custom_fields');
+  for (const [key,value] of Object.entries(fields)) { text(key,'field',{required:true,max:200}); assert(typeof value==='string','invalid_custom_fields'); text(value,'value',{max:1000}); }
 }
