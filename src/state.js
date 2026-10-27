@@ -1,6 +1,7 @@
 import { shallowRef, ref } from 'vue';
 import { storage } from './storage';
 import { createState } from '../core/application.mjs';
+import { boundedBytes, detectFile } from '../core/files.mjs';
 import { language, t, errorText } from './i18n';
 
 export const state = shallowRef(createState());
@@ -52,6 +53,7 @@ export async function assetUrl(id) {
   const metadata = state.value.attachments.find(row => row.id === id);
   if (!metadata) throw Object.assign(new Error(), { code: 'file_not_found' });
   const data = await storage.getAsset(id);
+  if (detectFile(boundedBytes(data)) !== metadata.mime) throw Object.assign(new Error(), { code: 'invalid_file_type' });
   const url = URL.createObjectURL(new Blob([data], { type: metadata.mime })); urls.set(id, url); return url;
 }
 export async function restoreBackup(token) {
