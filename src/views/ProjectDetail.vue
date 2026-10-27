@@ -1,4 +1,5 @@
 <script setup>
+import { localDate } from '../../core/calendar.mjs';
 import { ref, computed, onBeforeUnmount } from 'vue';
 import { ArrowLeft, Pencil, Copy, Check, Plus, Play, Pause, Clock3, ImagePlus, Flower2, Archive, RotateCcw, FileText } from '@lucide/vue';
 import { state, dispatch, navigate, notify, statusText, importAsset, assetUrl } from '../state';
@@ -12,7 +13,9 @@ import AppDialog from '../components/AppDialog.vue';
 import EmptyState from '../components/EmptyState.vue';
 import ProjectMaterials from '../components/ProjectMaterials.vue';
 import PatternThumbnail from '../components/PatternThumbnail.vue';
+import ProjectTransfer from '../components/ProjectTransfer.vue';
 import PatternEditor from './PatternEditor.vue';
+const showTransfer=ref(false);
 const props = defineProps({ id: String });
 const project = computed(() => state.value.projects.find(row => row.id === props.id));
 const tab = ref('overview'), form = ref(null), closing = ref(null), error = ref(''), busy = ref(false);
@@ -50,7 +53,7 @@ function addTask(existing) {
 }
 async function toggleTask(task) {try{await dispatch('task.save',{id:task.id,done:!task.done});}catch(caught){error.value=errorText(caught);}}
 function addSession(existing, timer = false) {
-  form.value={title:t('addSession'),fields:[{key:'durationMinutes',label:t('minutes'),type:'number',required:true},{key:'date',label:t('date'),type:'date',required:true},{key:'notes',label:t('notes'),type:'textarea',wide:true}],initial:existing||{durationMinutes:timer?Math.round(elapsed.value/600)/100:'',date:new Date().toISOString().slice(0,10),notes:''},help:timer?t('timerHelp'):'',submit:async draft=>{
+  form.value={title:t('addSession'),fields:[{key:'durationMinutes',label:t('minutes'),type:'number',required:true},{key:'date',label:t('date'),type:'date',required:true},{key:'notes',label:t('notes'),type:'textarea',wide:true}],initial:existing||{durationMinutes:timer?Math.round(elapsed.value/600)/100:'',date:localDate(),notes:''},help:timer?t('timerHelp'):'',submit:async draft=>{
     await dispatch('session.save',{...draft,projectId:props.id,source:timer?'timer':existing?.source||'manual'});
     if(timer){elapsed.value=0;localStorage.removeItem(`ricamo-timer-${props.id}`);}
   }};
@@ -73,7 +76,7 @@ onBeforeUnmount(stopTimer);
 <template>
   <div v-if="project" class="page">
     <button class="button text small" style="margin-bottom:16px" @click="navigate('projects')"><ArrowLeft :size="15" />{{ t('projects') }}</button>
-    <PageHeader :eyebrow="`${t(project.technique)} · ${statusText(project.status)}`" :title="project.name" :description="project.recipient ? `${t('recipient')}: ${project.recipient}` : ''"><button class="button" @click="editProject"><Pencil :size="15" />{{ t('edit') }}</button><button class="button" @click="duplicate"><Copy :size="15" />{{ t('duplicate') }}</button><button v-if="!closed" class="button primary" @click="tab='work'"><Play :size="15" />{{ t('work') }}</button><button v-else class="button primary" @click="reopen"><RotateCcw :size="15" />{{ t('reopenProject') }}</button></PageHeader>
+    <PageHeader :eyebrow="`${t(project.technique)} · ${statusText(project.status)}`" :title="project.name" :description="project.recipient ? `${t('recipient')}: ${project.recipient}` : ''"><button class="button" @click="showTransfer=true">{{ t('exportProjectPackage') }}</button><button class="button" @click="editProject"><Pencil :size="15" />{{ t('edit') }}</button><button class="button" @click="duplicate"><Copy :size="15" />{{ t('duplicate') }}</button><button v-if="!closed" class="button primary" @click="tab='work'"><Play :size="15" />{{ t('work') }}</button><button v-else class="button primary" @click="reopen"><RotateCcw :size="15" />{{ t('reopenProject') }}</button></PageHeader>
     <p v-if="error" role="alert" class="notice error">{{ error }}</p>
     <nav class="tabs" :aria-label="t('project')"><button v-for="item in ['overview','materials','work','journal','finishing']" :key="item" :class="{selected:tab===item}" :aria-current="tab===item?'page':undefined" @click="tab=item">{{ t(item) }}</button></nav>
     <div v-if="tab==='overview'" class="two-columns"><div class="stack">
@@ -90,6 +93,7 @@ onBeforeUnmount(stopTimer);
     <section v-if="tab==='journal'" class="panel"><div class="panel-heading"><h2>{{ t('sessions') }} · {{ number(minutes) }} {{ t('minutes') }}</h2><button class="button primary small" @click="addSession()"><Plus :size="15" />{{ t('addSession') }}</button></div><div v-if="sessions.length" class="table-wrap"><table><thead><tr><th>{{ t('date') }}</th><th>{{ t('minutes') }}</th><th>{{ t('notes') }}</th><th /></tr></thead><tbody><tr v-for="session in sessions" :key="session.id"><td>{{ date(session.date) }}</td><td>{{ number(session.durationMinutes) }}</td><td style="white-space:pre-wrap">{{ session.notes }}</td><td><button class="icon-button" :aria-label="t('edit')" @click="addSession(session)"><Pencil :size="16" /></button></td></tr></tbody></table></div><EmptyState v-else :icon="Clock3" :title="t('empty')" :description="t('timerHelp')" compact /></section>
     <section v-if="tab==='finishing'" class="panel"><div class="panel-heading"><h2>{{ t('finishing') }}</h2><button class="button small" @click="addTask()"><Plus :size="15" />{{ t('addTask') }}</button></div><div class="panel-body"><p class="notice">{{ t('completeHelp') }}</p><div v-for="task in tasks.filter(row=>row.stage==='finishing')" :key="task.id" class="task-row"><input :id="`finish-${task.id}`" type="checkbox" :checked="task.done" @change="toggleTask(task)" /><label :for="`finish-${task.id}`">{{ task.title }}</label><button class="icon-button" :aria-label="t('edit')" @click="addTask(task)"><Pencil :size="15" /></button></div><div class="actions" style="margin-top:24px;flex-wrap:wrap"><button v-if="!closed" class="button primary" @click="closing='completed'"><Check :size="16" />{{ t('completeProject') }}</button><button v-if="project.status!=='archived'" class="button" @click="closing='archived'"><Archive :size="16" />{{ t('archive') }}</button><button v-if="closed" class="button" @click="reopen"><RotateCcw :size="16" />{{ t('reopenProject') }}</button><button class="button" @click="duplicate"><Copy :size="16" />{{ t('duplicate') }}</button></div></div></section>
     <input ref="imageInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple class="sr-only" :aria-label="t('addPhoto')" @change="addImage" />
+    <ProjectTransfer v-if="showTransfer" :project-id="id" @close="showTransfer=false" />
     <EntityForm v-if="form" :title="form.title" :fields="form.fields" :initial="form.initial" :submit="form.submit" :wide="form.wide" :help="form.help" @close="form=null" @saved="form=null;notify()" />
     <AppDialog v-if="closing" :title="closing==='completed'?t('completeProject'):t('archive')" :busy="busy" @close="closing=null"><p>{{ t('completeHelp') }}</p><p v-if="tasks.some(row=>!row.done)" class="notice warning">{{ t('unfinishedTasks') }}: {{ tasks.filter(row=>!row.done).length }}</p><template #footer><button class="button" :disabled="busy" @click="closing=null">{{ t('cancel') }}</button><button class="button primary" :disabled="busy" @click="finish">{{ t('confirm') }}</button></template></AppDialog>
   </div>
