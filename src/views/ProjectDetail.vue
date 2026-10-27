@@ -1,4 +1,6 @@
 <script setup>
+import RevisionImpact from '../components/RevisionImpact.vue';
+import {projectRevisionImpact} from '../../core/revision-impact.mjs';
 import { studioStorageKey } from '../example-mode.mjs';
 import { localDate } from '../../core/calendar.mjs';
 import { ref, computed, onBeforeUnmount } from 'vue';
@@ -39,16 +41,22 @@ const pattern = computed(() => state.value.patterns.find(row => row.id === proje
 const revision = computed(() => pattern.value?.revisions.find(row => row.id === project.value?.revisionId));
 const costs = computed(() => costTotals(state.value, props.id));
 const closed = computed(() => ['completed','archived'].includes(project.value?.status));
-const addingPhotos = ref(false), sessionPhotos = ref([]);
+const addingPhotos = ref(false), sessionPhotos = ref([]), revisionReview=ref(null), revisionError=ref('');
+function refreshRevisionReview(){try{revisionReview.value={...revisionReview.value,impact:projectRevisionImpact(state.value,revisionReview.value.payload),operationId:crypto.randomUUID()};revisionError.value='';}catch(caught){revisionError.value=errorText(caught);}}
+async function applyRevision(carryProgress){busy.value=true;revisionError.value='';try{const review=revisionReview.value,impact=review.impact;await dispatch('project.save',{...review.payload,acceptRevisionChange:true,revisionReview:{stateRevision:impact.stateRevision,patternId:impact.before.patternId,revisionId:impact.before.revisionId,carryProgress}},review.operationId);revisionReview.value=null;form.value=null;notify();}catch(caught){revisionError.value=errorText(caught);}finally{busy.value=false;}}
+
 function editProject() {
   const current = project.value;
   form.value = {title:t('edit'),wide:true,fields:[...projectFields(project.value.currency),
-    {key:'useLatestRevision',label:t('useLatestRevision'),type:'checkbox',wide:true,when:draft=>Boolean(draft.patternId)},
-    {key:'acceptRevisionChange',label:t('acceptRevisionChange'),type:'checkbox',wide:true,when:draft=>Boolean((current.completed.length || current.manualPercent || current.referenceData?.annotations?.length || current.referenceData?.bookmarks?.length || current.view?.markers?.length) && (draft.patternId!==current.patternId || draft.useLatestRevision))}],
+    {key:'useLatestRevision',label:t('useLatestRevision'),type:'checkbox',wide:true,when:draft=>Boolean(draft.patternId)}],
   initial:{...current,status:closed.value?'idea':current.status,budgetDisplay:current.budget===null?'':current.budget/100,useLatestRevision:false,acceptRevisionChange:false},submit:async draft=>{
-    const payload=projectPayload(draft);
-    if (payload.patternId !== current.patternId || payload.useLatestRevision) payload.revisionId=state.value.patterns.find(row=>row.id===payload.patternId)?.currentRevisionId || null;
-    delete payload.useLatestRevision;
+    const submitted=projectPayload(draft),actual=state.value.projects.find(row=>row.id===props.id);
+    const payload=Object.fromEntries(['id','name','technique','status','patternId','recipient','dueDate','priority','budget','notes'].map(key=>[key,submitted[key]]));
+    payload.patternId=payload.patternId||null;
+    payload.revisionId=payload.patternId===actual.patternId&&!draft.useLatestRevision?actual.revisionId:state.value.patterns.find(row=>row.id===payload.patternId)?.currentRevisionId||null;
+    if(payload.patternId!==actual.patternId||payload.revisionId!==actual.revisionId){
+      form.value.initial=draft;revisionError.value='';revisionReview.value={payload,impact:projectRevisionImpact(state.value,payload),operationId:crypto.randomUUID()};return false;
+    }
     await dispatch('project.save',payload);
   }};
 }
@@ -94,7 +102,8 @@ onBeforeUnmount(stopTimer);
     <ProjectFinishing v-if="tab==='finishing'" :project="project"/><section v-if="tab==='finishing'" class="panel"><div class="panel-heading"><h2>{{ t('finishing') }}</h2><button class="button small" @click="addTask()"><Plus :size="15" />{{ t('addTask') }}</button></div><div class="panel-body"><p class="notice">{{ t('completeHelp') }}</p><div v-for="task in tasks.filter(row=>row.stage==='finishing')" :key="task.id" class="task-row"><input :id="`finish-${task.id}`" type="checkbox" :checked="task.done" @change="toggleTask(task)" /><label :for="`finish-${task.id}`">{{ task.title }}</label><button class="icon-button" :aria-label="t('edit')" @click="addTask(task)"><Pencil :size="15" /></button></div><div class="actions" style="margin-top:24px;flex-wrap:wrap"><button v-if="!closed" class="button primary" @click="closing='completed'"><Check :size="16" />{{ t('completeProject') }}</button><button v-if="project.status!=='archived'" class="button" @click="closing='archived'"><Archive :size="16" />{{ t('archive') }}</button><button v-if="closed" class="button" @click="reopen"><RotateCcw :size="16" />{{ t('reopenProject') }}</button><button class="button" @click="duplicate"><Copy :size="16" />{{ t('duplicate') }}</button></div></div></section>
     <AttachmentEditorDialog v-if="addingPhotos" type="project.save" :owner-id="id" :attachment-ids="project.attachments" :title="t('photos')" @close="addingPhotos=false" @saved="addingPhotos=false;notify()"/>
     <ProjectTransfer v-if="showTransfer" :project-id="id" @close="showTransfer=false" />
-    <EntityForm v-if="form" :title="form.title" :fields="form.fields" :initial="form.initial" :submit="form.submit" :wide="form.wide" :help="form.help" @close="form=null;sessionPhotos=[]" @saved="form=null;sessionPhotos=[];notify()"><template v-if="form.session" #default="{busy}"><AttachmentList :ids="form.initial.attachments||[]"/><StagedAttachments v-model="sessionPhotos" :disabled="busy"/></template></EntityForm>
+    <EntityForm v-if="form && !revisionReview" :title="form.title" :fields="form.fields" :initial="form.initial" :submit="form.submit" :wide="form.wide" :help="form.help" @close="form=null;sessionPhotos=[]" @saved="form=null;sessionPhotos=[];notify()"><template v-if="form.session" #default="{busy}"><AttachmentList :ids="form.initial.attachments||[]"/><StagedAttachments v-model="sessionPhotos" :disabled="busy"/></template></EntityForm>
+    <RevisionImpact v-if="revisionReview" :impact="revisionReview.impact" :busy="busy" :stale="state.revision!==revisionReview.impact.stateRevision" :error="revisionError" @back="revisionReview=null" @refresh="refreshRevisionReview" @confirm="applyRevision"/>
     <AppDialog v-if="closing" :title="closing==='completed'?t('completeProject'):t('archive')" :busy="busy" @close="closing=null"><p>{{ t('completeHelp') }}</p><p v-if="tasks.some(row=>!row.done)" class="notice warning">{{ t('unfinishedTasks') }}: {{ tasks.filter(row=>!row.done).length }}</p><template #footer><button class="button" :disabled="busy" @click="closing=null">{{ t('cancel') }}</button><button class="button primary" :disabled="busy" @click="finish">{{ t('confirm') }}</button></template></AppDialog>
   </div>
   <div v-else class="page"><EmptyState :title="t('noResults')"><button class="button" @click="navigate('projects')">{{ t('back') }}</button></EmptyState></div>
