@@ -1,9 +1,11 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { Upload, AlertTriangle } from '@lucide/vue';
+import { Download, Upload, AlertTriangle } from '@lucide/vue';
 import { state, dispatch, notify } from '../state';
 import { t, language, errorText } from '../i18n';
 import { parseCsv, detectDelimiter, guessMapping, previewInventory, CSV_FIELDS, CSV_PRIMARY_FIELDS } from '../../core/csv.mjs';
+import { storage } from '../storage';
+import { inventoryCsvTemplate } from '../../core/csv-template.mjs';
 import { digestBytes } from '../../core/files.mjs';
 import AppDialog from './AppDialog.vue';
 import FormField from './FormField.vue';
@@ -21,10 +23,12 @@ function decode(){let value;try{value=new TextDecoder(encoding.value,{fatal:true
 function parse(){try{rows.value=parseCsv(decode(),delimiter.value);mapping.value=guessMapping(rows.value[0]||[]);error.value='';page.value=0;}catch(caught){error.value=errorText(caught);}}
 async function fileChosen(event){const file=event.target.files?.[0];if(!file)return;try{if(file.size>10*1024*1024)throw Object.assign(new Error(),{code:'file_too_large'});bytes=new Uint8Array(await file.arrayBuffer());digest.value=await digestBytes(bytes);fileName.value=file.name;if(bytes[0]===255&&bytes[1]===254)encoding.value='utf-16le';else if(bytes[0]===254&&bytes[1]===255)encoding.value='utf-16be';else encoding.value='utf-8';delimiter.value=detectDelimiter(decode());parse();}catch(caught){error.value=errorText(caught);}}
 async function commit(){if(busy.value||invalid.value.length||!selected.value.length)return;busy.value=true;try{await dispatch('inventory.import',{digest:digest.value,allowRepeat:allowRepeat.value,createLocations:true,rows:preview.value.map(row=>({...row,lot:row.lot?{...row.lot,locationName:row.locationText}:null}))});notify();emit('close');}catch(caught){error.value=errorText(caught);}finally{busy.value=false;}}
+async function downloadTemplate(locale){if(busy.value)return;busy.value=true;error.value='';try{if(await storage.saveFile({name:'ricamo-inventory-template-'+locale+'.csv',data:inventoryCsvTemplate(locale)}))notify()}catch(caught){error.value=errorText(caught)}finally{busy.value=false}}
 </script>
 <template>
   <AppDialog :title="t('importCsv')" wide :busy="busy" @close="emit('close')">
     <p class="notice">{{ t('importHelp') }}</p><p v-if="error" class="notice error" role="alert">{{ error }}</p>
+<details class="form-section"><summary>{{t('csvTemplates')}}</summary><p class="field-help">{{t('csvTemplateHelp')}}</p><p class="field-help">{{t('csvTemplateValues')}}</p><div class="actions"><button v-for="locale in ['it','en']" :key="locale" class="button small" :disabled="busy" @click="downloadTemplate(locale)"><Download :size="15"/>{{locale==='it'?'Italiano':'English'}} · CSV</button></div></details>
     <FormField :label="t('chooseFile')" v-slot="{id}"><input :id="id" type="file" accept=".csv,.tsv,text/csv,text/tab-separated-values" @change="fileChosen" /></FormField>
     <template v-if="rows.length">
       <div class="form-grid form-section"><FormField :label="t('delimiter')" v-slot="{id}"><select :id="id" v-model="delimiter" @change="parse"><option value=";">;</option><option value=",">,</option><option :value="'\t'">Tab</option></select></FormField><FormField :label="t('decimal')" v-slot="{id}"><select :id="id" v-model="decimal"><option value=",">1,5</option><option value=".">1.5</option></select></FormField><FormField :label="t('encoding')" v-slot="{id}"><select :id="id" v-model="encoding" @change="parse"><option value="utf-8">UTF-8</option><option value="utf-16le">UTF-16 LE</option><option value="utf-16be">UTF-16 BE</option><option value="windows-1252">Windows-1252</option></select></FormField></div>
