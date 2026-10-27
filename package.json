@@ -12,9 +12,20 @@
     "build": "vite build",
     "start": "electron .",
     "test": "node --test --test-isolation=none tests/*.test.mjs",
-    "test:e2e": "playwright test",
+    "test:e2e": "node tests/run-browser.mjs",
     "package:win": "npm run build && electron-builder --win nsis --x64 --publish never",
-    "package:dir": "npm run build && electron-builder --dir --publish never"
+    "package:dir": "npm run build && electron-builder --dir --publish never",
+    "test:desktop": "npm run build && npm run test:desktop:smoke && npm run test:desktop:documents && npm run test:desktop:drafts && npm run test:desktop:projects && npm run test:desktop:export-cancel && npm run test:desktop:kits",
+    "test:desktop:smoke": "node tests/desktop-smoke.mjs",
+    "test:desktop:documents": "node tests/desktop-documents.mjs",
+    "test:desktop:drafts": "node tests/desktop-drafts.mjs",
+    "test:performance": "npm run build && node tests/performance.mjs",
+    "test:performance:domain": "node tests/domain-performance.mjs",
+    "icons:build": "node build/generate-icon.mjs",
+    "test:desktop:projects": "node tests/desktop-projects.mjs",
+    "test:desktop:export-cancel": "node tests/desktop-export-cancel.mjs",
+    "test:desktop:kits": "node tests/desktop-kits.mjs",
+    "test:desktop:kit-scale": "node tests/desktop-kit-scale.mjs"
   },
   "dependencies": {
     "@lucide/vue": "1.62.0",
@@ -59,7 +70,9 @@
           ]
         }
       ],
-      "signAndEditExecutable": false
+      "icon": "build/icon.ico",
+      "signExecutable": false,
+      "requestedExecutionLevel": "asInvoker"
     },
     "nsis": {
       "oneClick": false,
@@ -74,6 +87,7 @@
       ],
       "displayLanguageSelector": true,
       "artifactName": "Ricamo-${version}-Windows-x64-Setup.${ext}"
-    }
+    },
+    "copyright": "Copyright © 2026 RuiOuteiro2"
   }
 }
