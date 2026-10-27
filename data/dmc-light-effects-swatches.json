@@ -1,0 +1,877 @@
+{
+  "schemaVersion": 1,
+  "brand": "DMC",
+  "range": "Light Effects",
+  "retrievedAt": "2026-10-27T18:23:46.776Z",
+  "sourcePage": "https://www.dmc.com/GB/en-GB/products/mouline-stranded-thread/mouline-light-effect",
+  "sourceApi": "https://www.dmc.com/GB/en-GB/api/quilt/products/mouline-light-effect/product_data",
+  "method": "Arithmetic mean of encoded sRGB pixels in the central 80% of the official code-specific photographic swatch; pixels with alpha below 250 excluded. Display approximation only: not measured physical colour or manufacturer-declared RGB. 5x5 block means provide a descriptive variation check; maximum pairwise RGB distance >=65 flags broad photographic variation, not a definitive multicolour classification.",
+  "limitations": "Metallic reflection, pearlescence, fluorescence, glow-in-the-dark behaviour and variegation cannot be represented faithfully by one average RGB. No image content is redistributed.",
+  "colours": [
+    {
+      "code": "E130",
+      "name": "Metallic Winter Sparkle",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/a9418168cb4bcbc6c1f1f85b90d2560a",
+      "sha256": "16c0b193efb2b9118dde362c18429ad45201ad8b6c6a1f92ad67994806f1a01b",
+      "bytes": 36404,
+      "hex": "#5D3A41",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        60,
+        52,
+        48
+      ],
+      "maxBlockMeanDistanceRgb": 44,
+      "broadVariation": false,
+      "multicolourObserved": true,
+      "variationNote": "Multiple distinct coloured fibres visibly present; one average cannot represent this multicolour appearance.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/a9418168cb4bcbc6c1f1f85b90d2560a",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced; multicolour mean"
+      }
+    },
+    {
+      "code": "E135",
+      "name": "Metallic Spring Sparkle",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/6cc660a93a12cc3135da52bc291de10e",
+      "sha256": "2d657f27cc17e7b3804c8f2b1a69325418ca36cbce3ebfa556811d89dfd54a7d",
+      "bytes": 39561,
+      "hex": "#7C8C61",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        69,
+        53,
+        62
+      ],
+      "maxBlockMeanDistanceRgb": 65,
+      "broadVariation": true,
+      "multicolourObserved": true,
+      "variationNote": "Multiple distinct coloured fibres visibly present; one average cannot represent this multicolour appearance.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/6cc660a93a12cc3135da52bc291de10e",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced; multicolour mean"
+      }
+    },
+    {
+      "code": "E155",
+      "name": "Metallic Mauve",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/b0391bbe7006095345d08e38665a6074",
+      "sha256": "4e78dc53286e4fd7eaa1796b7b4defaa63ce6ec41ef86f124a62da930c14fbe3",
+      "bytes": 31268,
+      "hex": "#9F7CAE",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        46,
+        59,
+        45
+      ],
+      "maxBlockMeanDistanceRgb": 48,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/b0391bbe7006095345d08e38665a6074",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E168",
+      "name": "Metallic Town Mouse Grey",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/771e36629a4865e66a76bb0ab29deb1c",
+      "sha256": "c0e92a3b7ac78ec92b28537b271489cbf457dc62c4b205d15890e72f6c3deb45",
+      "bytes": 21550,
+      "hex": "#D0CCB9",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        37,
+        40,
+        48
+      ],
+      "maxBlockMeanDistanceRgb": 71,
+      "broadVariation": true,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/771e36629a4865e66a76bb0ab29deb1c",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E211",
+      "name": "Pearlescent Light Parma Violet",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/192dc091b064ab3058a66e5ece76ae7a",
+      "sha256": "80f1fa6d8a2da67cfe82f2d60fc778eaa441f179d34e3ef7dc3a43cefbb6e247",
+      "bytes": 25465,
+      "hex": "#B5A7D0",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        24,
+        31,
+        18
+      ],
+      "maxBlockMeanDistanceRgb": 17,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/192dc091b064ab3058a66e5ece76ae7a",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E301",
+      "name": "Metallic Squirrel",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/123f512572d5cce4aec126b0229efbac",
+      "sha256": "eca7f6c1f7c75db753b455025f2d1b5c9d1a9d1629350a859ed47325ef4bcdcb",
+      "bytes": 30949,
+      "hex": "#AC6158",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        43,
+        47,
+        39
+      ],
+      "maxBlockMeanDistanceRgb": 24,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/123f512572d5cce4aec126b0229efbac",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E310",
+      "name": "Black",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/34b9c226c5328c81e68eb9b95308e8d1",
+      "sha256": "ea9318d4711dfc9be4b02e33c490fed71cf34d2ba483d670792830bd71fd1087",
+      "bytes": 23116,
+      "hex": "#1D1D1E",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        33,
+        31,
+        31
+      ],
+      "maxBlockMeanDistanceRgb": 45,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/34b9c226c5328c81e68eb9b95308e8d1",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E316",
+      "name": "Metallic Heather",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/bf60144a67f65a63a463b955e1660942",
+      "sha256": "92dcdd0fb0ad9bb8ea7a1ae0187109ae7d2a38d672aa04de20556660fa9811fe",
+      "bytes": 27493,
+      "hex": "#B05770",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        43,
+        62,
+        55
+      ],
+      "maxBlockMeanDistanceRgb": 96,
+      "broadVariation": true,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/bf60144a67f65a63a463b955e1660942",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E317",
+      "name": "Metallic Steel",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/12a7df42cadc239735134745503ab0b3",
+      "sha256": "6fadeacc17ca67b9189c10396edb75f909b40984ceb9ac3a79cd4384e325d83e",
+      "bytes": 30884,
+      "hex": "#46505C",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        62,
+        63,
+        65
+      ],
+      "maxBlockMeanDistanceRgb": 122,
+      "broadVariation": true,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/12a7df42cadc239735134745503ab0b3",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E321",
+      "name": "Metallic Carmine Red",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/4fe19f107e95ec388fd4a410496cd71f",
+      "sha256": "5107dd356e4942ff7b701a1ec247485cde761af42388ef4d4e7577e245cc634e",
+      "bytes": 28650,
+      "hex": "#8B1825",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        66,
+        43,
+        44
+      ],
+      "maxBlockMeanDistanceRgb": 126,
+      "broadVariation": true,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/4fe19f107e95ec388fd4a410496cd71f",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E334",
+      "name": "Light Indigo",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/4bccdb5e9941d2ba9b4d6db0c216e0d6",
+      "sha256": "8bdab3b521b45b13fc927a77c1f6aa5c88aa115ea15158ed9b8897bb62bcd5a1",
+      "bytes": 29567,
+      "hex": "#317599",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        68,
+        59,
+        52
+      ],
+      "maxBlockMeanDistanceRgb": 114,
+      "broadVariation": true,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/4bccdb5e9941d2ba9b4d6db0c216e0d6",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E3685",
+      "name": "Metallic Bramble",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/732ce6005dc5416e755159748ce677ce",
+      "sha256": "cb303c92aa291b4ccaa0bf82418f715aecbcf6cfff16e60b3e4188d5fdde92e9",
+      "bytes": 22233,
+      "hex": "#53172F",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        59,
+        17,
+        31
+      ],
+      "maxBlockMeanDistanceRgb": 51,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/732ce6005dc5416e755159748ce677ce",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E3747",
+      "name": "Pearlescent Ice Blue",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/e26a6da95f5f380711ae823de265272b",
+      "sha256": "9ff5d352cd164016c68bd3b03dde0f9d2272e4adf1911762701ea5f533ee715a",
+      "bytes": 19301,
+      "hex": "#A3AEBF",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        29,
+        27,
+        19
+      ],
+      "maxBlockMeanDistanceRgb": 38,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/e26a6da95f5f380711ae823de265272b",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E3821",
+      "name": "Yellow Mango",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/9a1d1fd9d3fdf561f39ba455ecff1b9e",
+      "sha256": "bb18402c165e2c4946961058fb9994612a16c9e78d8492b05abecb1074c740de",
+      "bytes": 24891,
+      "hex": "#AD9C53",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        57,
+        66,
+        72
+      ],
+      "maxBlockMeanDistanceRgb": 201,
+      "broadVariation": true,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/9a1d1fd9d3fdf561f39ba455ecff1b9e",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E3837",
+      "name": "Metallic Purple",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/a65c26327ff352e51e9611b6ddfaa29a",
+      "sha256": "fcc341c46d5adb314735f4ac468f1f068ce290cffaa3b35d1aa72533c36009df",
+      "bytes": 29490,
+      "hex": "#71448C",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        64,
+        65,
+        62
+      ],
+      "maxBlockMeanDistanceRgb": 101,
+      "broadVariation": true,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/a65c26327ff352e51e9611b6ddfaa29a",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E3843",
+      "name": "Metallic Pool Blue",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/7cf9b9fb07c82849fb0f1db4142273ad",
+      "sha256": "fb27136704bdff561bc4584332970edb2abf77983fca569d141e7e77bcb2ffe9",
+      "bytes": 30556,
+      "hex": "#264785",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        27,
+        52,
+        54
+      ],
+      "maxBlockMeanDistanceRgb": 79,
+      "broadVariation": true,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/7cf9b9fb07c82849fb0f1db4142273ad",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E3849",
+      "name": "Metallic Turquoise Green",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/4d125c7131680b2bbf80ac26575f013f",
+      "sha256": "c06f187bc3a508f3eda98038e0f207d000780be097fa7f7093dc8e972e369668",
+      "bytes": 31060,
+      "hex": "#2F8C8B",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        64,
+        63,
+        62
+      ],
+      "maxBlockMeanDistanceRgb": 93,
+      "broadVariation": true,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/4d125c7131680b2bbf80ac26575f013f",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E3852",
+      "name": "Metallic Glitz",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/af032416ca199ff3cee37a6ff2dc0f59",
+      "sha256": "411c8c70cf8e0ede3a22297d5049e518e552d54ff16dc308b0abc316d51452f5",
+      "bytes": 28010,
+      "hex": "#B79B33",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        54,
+        64,
+        46
+      ],
+      "maxBlockMeanDistanceRgb": 72,
+      "broadVariation": true,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/af032416ca199ff3cee37a6ff2dc0f59",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E415",
+      "name": "Metallic Chrome",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/8f16b4c0833ac2d7496b8cefdc4a7fc7",
+      "sha256": "19ab7f989b72215e08da0c405ec681a01fefd105e9a9baf779fa6241c4158778",
+      "bytes": 26501,
+      "hex": "#888C90",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        57,
+        56,
+        56
+      ],
+      "maxBlockMeanDistanceRgb": 101,
+      "broadVariation": true,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/8f16b4c0833ac2d7496b8cefdc4a7fc7",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E436",
+      "name": "Metallic Teddy",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/0196847d582f817e45eadc69069e3aed",
+      "sha256": "63a6c953b78c9ed5b1587c0f2a8cee3ffa4de3b870270f47b3add5d20b828104",
+      "bytes": 35808,
+      "hex": "#A68159",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        54,
+        56,
+        56
+      ],
+      "maxBlockMeanDistanceRgb": 46,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/0196847d582f817e45eadc69069e3aed",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E5200",
+      "name": "Pearlescent White Light",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/65df71cb72a8a26d013b8c39c5bdba6f",
+      "sha256": "8dc7a950caa7184d0e89021d68fb8187ffd39a2a89e608923a1a3ee3360299dc",
+      "bytes": 19343,
+      "hex": "#BFC8D5",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        13,
+        11,
+        9
+      ],
+      "maxBlockMeanDistanceRgb": 22,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/65df71cb72a8a26d013b8c39c5bdba6f",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E677",
+      "name": "Metallic Sand",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/1c4c45e8c367267955a9a25f36d1c3f9",
+      "sha256": "5d2f186bba05945eb4019b92d7a81a4d62c2412b4dc11f4e11ca91f139929229",
+      "bytes": 31295,
+      "hex": "#AF996D",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        38,
+        42,
+        57
+      ],
+      "maxBlockMeanDistanceRgb": 62,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/1c4c45e8c367267955a9a25f36d1c3f9",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E699",
+      "name": "Metallic Candied Fruit",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/0ca375020feb44dcc02a3883c20698ff",
+      "sha256": "bc65cd2bdcefd934cf37c79bd3eac9d2d96fd4f2a8e5b8b55c94f5d4b4081fd5",
+      "bytes": 39579,
+      "hex": "#135E3F",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        37,
+        65,
+        55
+      ],
+      "maxBlockMeanDistanceRgb": 43,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/0ca375020feb44dcc02a3883c20698ff",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E703",
+      "name": "Metallic Spring Green",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/22de655b1ab58e67955939e1182d1ecc",
+      "sha256": "3c90248384143c33861bab13203ac5246eed49142cc855dd10edc7b2e1490d4c",
+      "bytes": 36446,
+      "hex": "#62863A",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        65,
+        61,
+        62
+      ],
+      "maxBlockMeanDistanceRgb": 110,
+      "broadVariation": true,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/22de655b1ab58e67955939e1182d1ecc",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E718",
+      "name": "Metallic Rose Magenta",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/670e7b04e1220475218146585c170e7b",
+      "sha256": "14da00ce634f688ace60d19e572406f8b426ab4c0baa30bf24a1a71ad3bd57fe",
+      "bytes": 34246,
+      "hex": "#712761",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        52,
+        37,
+        48
+      ],
+      "maxBlockMeanDistanceRgb": 44,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/670e7b04e1220475218146585c170e7b",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E746",
+      "name": "Pearlescent Vanilla",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/50e50f0845681593038fd19962f7ef91",
+      "sha256": "3f906d45267980a1c90ee673c5914c4d2d52635751ca0aae6fd997def2c0a870",
+      "bytes": 21490,
+      "hex": "#F1E2B7",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        11,
+        11,
+        24
+      ],
+      "maxBlockMeanDistanceRgb": 29,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/50e50f0845681593038fd19962f7ef91",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E747",
+      "name": "Pearlescent Blue Sea Mist",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/277cd0d2860cdde876b3130514ad3d1a",
+      "sha256": "4e2b5b0011610207f0b76bfe0c8a296caf970cb48b188b767c16073f9f38ef88",
+      "bytes": 25427,
+      "hex": "#A2D0DB",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        35,
+        17,
+        13
+      ],
+      "maxBlockMeanDistanceRgb": 54,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/277cd0d2860cdde876b3130514ad3d1a",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E815",
+      "name": "Metallic Black Cherry",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/35804ed75f20a5774c61911c5949fc74",
+      "sha256": "8bd67bebdd0eb725f8ee62d02ef9c911e7240a41b2a0c6fdc184c85d9ce5fdb2",
+      "bytes": 32634,
+      "hex": "#71132B",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        61,
+        23,
+        31
+      ],
+      "maxBlockMeanDistanceRgb": 51,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/35804ed75f20a5774c61911c5949fc74",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E818",
+      "name": "Pearlescent Powder Pink",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/8dd37d1bcbf72dd0097d93973f0d953d",
+      "sha256": "79a3f9b4a391371600cb6b9934113020d73787191f59c24d44073f69af4c532c",
+      "bytes": 20514,
+      "hex": "#F6D3D9",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        9,
+        15,
+        12
+      ],
+      "maxBlockMeanDistanceRgb": 24,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/8dd37d1bcbf72dd0097d93973f0d953d",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E825",
+      "name": "Metallic Gentian Blue",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/7fba95ed4461fe1d5df9d95a99406ba7",
+      "sha256": "4153145b275e2f88267497cb6713f97c654ed71994d35d3f70841c36a07d63a9",
+      "bytes": 36145,
+      "hex": "#04367D",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        8,
+        39,
+        56
+      ],
+      "maxBlockMeanDistanceRgb": 74,
+      "broadVariation": true,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/7fba95ed4461fe1d5df9d95a99406ba7",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E898",
+      "name": "Metallic Ferret",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/cce19be3ee91860e97e31ca93c6ecca7",
+      "sha256": "3c7ad000d566dabaec22d8e79133d02edc458e9d9f28e2adde71fe8c5d6e19eb",
+      "bytes": 33153,
+      "hex": "#492C25",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        56,
+        36,
+        29
+      ],
+      "maxBlockMeanDistanceRgb": 43,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/cce19be3ee91860e97e31ca93c6ecca7",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E940",
+      "name": "Glow in the Dark",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/92796f2b495dbe8bde38d9cfac3fb995",
+      "sha256": "58944719b3d4312de60ccdce6646c56de5a0c349df3e60b93fd012b87e727465",
+      "bytes": 12483,
+      "hex": "#C6C9C3",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        12,
+        12,
+        12
+      ],
+      "maxBlockMeanDistanceRgb": 44,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/92796f2b495dbe8bde38d9cfac3fb995",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E966",
+      "name": "Pearlescent Soft Green",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/6ad0386dbf859f010677d15f7b50f6d2",
+      "sha256": "5ca9750d73c71a07ea7db8f4f75bef1f0fc0eabf78f2643d90b6a0b2675699b2",
+      "bytes": 16058,
+      "hex": "#BFCDC2",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        23,
+        18,
+        22
+      ],
+      "maxBlockMeanDistanceRgb": 53,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/6ad0386dbf859f010677d15f7b50f6d2",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E967",
+      "name": "Pearlescent Flamingo",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/1317630d9475f9e4b7166cc9af2b2c3d",
+      "sha256": "ee3e2ec2cd6beefb0fcac1360cf31eaded15a5380394a05f37ca6f0981aeee68",
+      "bytes": 25178,
+      "hex": "#F1AAA3",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        15,
+        27,
+        27
+      ],
+      "maxBlockMeanDistanceRgb": 66,
+      "broadVariation": true,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/1317630d9475f9e4b7166cc9af2b2c3d",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E980",
+      "name": "Neon Yellow",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/b0fabc300bde6f027f8c6ed30dbd22a2",
+      "sha256": "4b506a1c3cbb9e7da007903a825bd54e7330b8e97bf699783b3c059e575fec5c",
+      "bytes": 16008,
+      "hex": "#C1DC02",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        17,
+        12,
+        4
+      ],
+      "maxBlockMeanDistanceRgb": 43,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/b0fabc300bde6f027f8c6ed30dbd22a2",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    },
+    {
+      "code": "E990",
+      "name": "Neon Green",
+      "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/a01b4a08e5a9281741d6ee0fc3e25c36",
+      "sha256": "084499423e308c2aa45a59812bfc856b3e93cf8021b4053b163d82a4feb7ed07",
+      "bytes": 24186,
+      "hex": "#7FECA1",
+      "imageWidth": 200,
+      "imageHeight": 200,
+      "pixelStdDevRgb": [
+        46,
+        10,
+        21
+      ],
+      "maxBlockMeanDistanceRgb": 33,
+      "broadVariation": false,
+      "multicolourObserved": false,
+      "variationNote": "Photographic variation includes fibre highlights/shadows and may include iridescence; not a physical spectral measurement.",
+      "rgbSource": {
+        "kind": "approximate",
+        "sourceUrl": "https://quilt-public-production.s3.eu-west-1.amazonaws.com/public_images/a01b4a08e5a9281741d6ee0fc3e25c36",
+        "label": "Approximate RGB averaged from official DMC photographic swatch; metallic/pearlescent/glow effects are not reproduced"
+      }
+    }
+  ],
+  "visualReview": "All 36 official photographic patches reviewed together against derived swatches. All are usable as approximate representative RGB only. E130 and E135 visibly combine strongly different colours; a single mean especially understates these effects. No physical thread was measured."
+}
