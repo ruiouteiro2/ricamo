@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
-import { Plus, ArrowUpRight, Package, FolderHeart, Grid2X2, ShoppingBag, MoveRight, Activity, Flower2 } from '@lucide/vue';
+import { Plus, ChevronRight, Package, FolderHeart, Grid2X2, ShoppingBag, Activity, Flower2 } from '@lucide/vue';
 import { state, navigate, statusText } from '../state';
 import { t, number, date } from '../i18n';
 import { projectProgress } from '../../core/projects.mjs';
@@ -28,7 +28,7 @@ function revision(project) { return state.value.patterns.find(row => row.id === 
 <template>
   <div class="page">
     <PageHeader :eyebrow="t('welcome')" :title="t('home')"><button class="button primary" @click="navigate('projects', 'new')"><Plus :size="16" />{{ t('newProject') }}</button></PageHeader>
-    <StudioWelcome v-if="firstStudio && !exampleMode"/><ExampleGuide v-if="exampleMode"/><section v-if="!firstStudio && !exampleMode" class="hero"><div><p class="eyebrow">RICAMO · {{ t('studio') }}</p><h1>{{ t('today') }}</h1><p>{{ t('homeBody') }}</p><button class="button" @click="navigate(projects.length ? 'project' : 'materials', projects[0]?.id || 'new')">{{ projects.length ? t('inProgress') : t('addMaterial') }}<MoveRight :size="16" /></button></div><div class="hero-art" aria-hidden="true"><div class="thread-hoop"><Flower2 :stroke-width=".7" /></div></div></section>
+    <StudioWelcome v-if="firstStudio && !exampleMode"/><ExampleGuide v-if="exampleMode"/><section v-if="!firstStudio && !exampleMode" class="hero"><div><p class="eyebrow">RICAMO · {{ t('studio') }}</p><h1>{{ t('today') }}</h1><p>{{ t('homeBody') }}</p><button class="button" @click="navigate(projects.length ? 'project' : 'materials', projects[0]?.id || 'new')">{{ projects.length ? t('inProgress') : t('addMaterial') }}<ChevronRight :size="16" /></button></div><div class="hero-art" aria-hidden="true"><div class="thread-hoop"><Flower2 :stroke-width=".7" /></div></div></section>
     <div class="metrics">
       <div class="metric"><div class="metric-top">{{ t('materials') }}<Package :size="18" /></div><div class="metric-value">{{ number(state.materials.filter(row => !row.archived).length, 0) }}</div><span class="metric-caption">{{ t('materialCount') }}</span></div>
       <div class="metric"><div class="metric-top">{{ t('projects') }}<FolderHeart :size="18" /></div><div class="metric-value">{{ number(state.projects.filter(row => !['completed','archived'].includes(row.status)).length, 0) }}</div><span class="metric-caption">{{ t('inProgress') }}</span></div>
@@ -36,7 +36,7 @@ function revision(project) { return state.value.patterns.find(row => row.id === 
       <div class="metric"><div class="metric-top">{{ t('shopping') }}<ShoppingBag :size="18" /></div><div class="metric-value">{{ number(shortages.length, 0) }}</div><span class="metric-caption">{{ t('shortage') }}</span></div>
     </div>
     <div class="two-columns"><div class="stack">
-      <section><div class="split-heading"><h2>{{ t('inProgress') }}</h2><button class="button text small" @click="navigate('projects')">{{ t('viewAll') }}<ArrowUpRight :size="14" /></button></div>
+      <section><div class="split-heading"><h2>{{ t('inProgress') }}</h2><button class="button text small" @click="navigate('projects')">{{ t('viewAll') }}<ChevronRight :size="14" /></button></div>
         <div v-if="projects.length" class="project-grid" style="grid-template-columns:repeat(auto-fit,minmax(210px,1fr))"><button v-for="project in projects" :key="project.id" class="project-card" @click="navigate('project',project.id)"><div class="project-cover"><PatternThumbnail v-if="revision(project)" :revision="revision(project)" :label="project.name" /><Flower2 v-else :size="62" :stroke-width=".7" /></div><div class="project-card-body"><span class="badge accent">{{ statusText(project.status) }}</span><h3>{{ project.name }}</h3><p>{{ t(project.technique) }}</p><div class="progress-track"><div class="progress-fill" :style="{width: projectProgress(state, project.id).percent + '%'}" /></div><div class="progress-label"><span>{{ t('progress') }}</span><span>{{ number(projectProgress(state,project.id).percent,0) }}%</span></div></div></button></div>
         <div v-else class="panel"><EmptyState :icon="FolderHeart" :title="t('noProjects')" :description="t('noProjectsBody')" compact><button class="button primary" @click="navigate('projects','new')"><Plus :size="16" />{{ t('newProject') }}</button></EmptyState></div>
       </section>
