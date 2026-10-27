@@ -7,12 +7,13 @@ import AppDialog from '../components/AppDialog.vue';
 import FormField from '../components/FormField.vue';
 import PatternThumbnail from '../components/PatternThumbnail.vue';
 import GeneratorQuality from '../components/GeneratorQuality.vue';
-import { state, dispatch, navigate, notify, importAsset, normalize } from '../state';
+import { state, dispatch, navigate, notify, createPatternWithAsset, normalize } from '../state';
 import { detectFile, digestBytes } from '../../core/files.mjs';
 import { t, number, date, errorText } from '../i18n';
 import { dmcPalette, inventoryPalette, preferredInventoryPalette, validateSettings, DEFAULT_SETTINGS, importLegacy } from '../engine/adapter.mjs';
 import { createBlank, validateRevision } from '../../core/pattern.mjs';
 import { drawPattern } from '../pattern-render.mjs';
+import {prepareStandalonePattern} from '../../core/pattern-import.mjs';
 
 const search = ref(''), filter = ref('active'), dialog = ref(''), error = ref(''), busy = ref(false);
 const imageInput = ref(), referenceInput = ref(), nativeInput = ref(), sourceCanvas = ref(), resultCanvas = ref();
@@ -21,7 +22,7 @@ const sourceFile = shallowRef(null);
 const settings = reactive({ ...DEFAULT_SETTINGS }), adjustments = reactive({ x: 0, y: 0, width: 100, height: 100, rotation: 0, flipX: false, flipY: false, brightness: 100, contrast: 100 });
 const protectedRegions=ref([]),protection=reactive({x:1,y:1,width:3,height:3}),protectionReset=ref(false),preferenceTolerance=ref(6);
 const keepRatio = ref(true), taskId = ref(null), pendingInput = ref(null), previewVersion = ref('');
-let worker, timeout, sourceToken = 0;
+let worker, timeout, sourceToken = 0, creationAttempt;
 const patterns = computed(() => state.value.patterns.filter(p => filter.value === 'all' || (filter.value === 'archived' ? p.archived : !p.archived)).filter(p => normalize([p.name, p.notes, ...(p.tags ?? [])].join(' ')).includes(normalize(search.value))).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)));
 const fingerprint = () => JSON.stringify({ settings, adjustments, paletteKind: paletteKind.value, preferenceTolerance:preferenceTolerance.value,protectedRegions:protectedRegions.value,inventory:paletteKind.value==='catalogue'?null:{materials:state.value.materials,lots:state.value.lots,reservations:state.value.reservations},source: sourceAsset.value?.digest });
 const stalePreview = computed(() => Boolean(generated.value) && previewVersion.value !== fingerprint());
@@ -67,7 +68,7 @@ function addProtection(){error.value='';const r={x:protection.x-1,y:protection.y
 
 watch(generated, async value => { await nextTick(); if (value && resultCanvas.value) { const cellSize = Math.min(440 / value.width, 300 / value.height); drawPattern(resultCanvas.value, value, { cellSize, width: value.width * cellSize, height: value.height * cellSize }); } });
 function cancelGeneration() { taskId.value = null; worker?.terminate(); worker = null; clearTimeout(timeout); busy.value = false; }
-function closeDialog() { cancelGeneration(); dialog.value = ''; error.value = ''; bitmap.value?.close(); bitmap.value = null; sourceFile.value = null; sourceAsset.value = null; sourceToken++; }
+function closeDialog() { cancelGeneration(); dialog.value = ''; error.value = ''; bitmap.value?.close(); bitmap.value = null; sourceFile.value = null; sourceAsset.value = null; creationAttempt = null; sourceToken++; }
 function startBlank() { error.value = ''; title.value = ''; Object.assign(settings, DEFAULT_SETTINGS, { width: 60, height: 60 }); dialog.value = 'blank'; }
 async function chooseImage(event) {
   const file = event.target.files?.[0]; event.target.value = ''; if (!file) return;
@@ -116,12 +117,18 @@ async function saveNew() {
     let revision;
     if (dialog.value === 'blank') revision = createBlank(settings.width, settings.height, dmcPalette.colors.filter(c => ['310', 'B5200', '321', '700', '444', '820'].includes(c.code)).map((c, i) => ({ ...c, brand: 'DMC', symbol: 'ABCDEF'[i], strands: 2 })), { settings: { ...settings }, provenance: { source: 'blank' } });
     else { if (!generated.value || stalePreview.value) throw Error('stale_preview'); revision = structuredClone(generated.value); }
-    revision.id = crypto.randomUUID(); revision.name = t('initialRevision');
+    revision.name = t('initialRevision');
+    let id;
     if (dialog.value === 'image') {
-      const asset = await importAsset(sourceFile.value); sourceAsset.value = asset;
-      revision.provenance.source = { ...revision.provenance.source, attachmentId: asset.id };
+      const pattern = { name: title.value.trim(), kind: 'structured', revision };
+      const fingerprint = JSON.stringify(pattern);
+      if (creationAttempt?.fingerprint !== fingerprint) creationAttempt = { fingerprint, operationId: crypto.randomUUID() };
+      const result = await createPatternWithAsset(sourceFile.value, pattern, creationAttempt.operationId);
+      id = result.patternId;
+    } else {
+      id = crypto.randomUUID(); revision.id = crypto.randomUUID();
+      await dispatch('pattern.save', { id, name: title.value.trim(), sourceAttachmentId: null, revision });
     }
-    const id = crypto.randomUUID(); await dispatch('pattern.save', { id, name: title.value.trim(), sourceAttachmentId: dialog.value === 'image' ? sourceAsset.value.id : null, revision });
     closeDialog(); notify(t('patternSaved')); navigate('pattern', id);
   } catch (caught) { error.value = patternError(caught); }
   finally { busy.value = false; }
@@ -129,7 +136,7 @@ async function saveNew() {
 async function reference(event) {
   const file = event.target.files?.[0]; event.target.value = ''; if (!file || busy.value) return;
   busy.value = true; error.value = '';
-  try { const asset = await importAsset(file), id = crypto.randomUUID(); await dispatch('pattern.save', { id, name: file.name.replace(/\.[^.]+$/, ''), kind: 'reference', sourceAttachmentId: asset.id }); navigate('pattern', id); notify(); }
+  try { const result = await createPatternWithAsset(file, { name: file.name.replace(/\.[^.]+$/, ''), kind: 'reference' }); navigate('pattern', result.patternId); notify(); }
   catch (caught) { error.value = errorText(caught); } finally { busy.value = false; }
 }
 async function importNative(event) {
@@ -140,7 +147,7 @@ async function importNative(event) {
     const data = JSON.parse(await file.text()); let revision, name;
     if (data.format === 'ricamo-pattern' && data.version === 1) { revision = structuredClone(data.revision); validateRevision(revision); name = data.name; }
     else { revision = importLegacy(data); name = data.title; }
-    pendingInput.value = { revision, name: typeof name === 'string' ? name : file.name };
+    pendingInput.value = { ...prepareStandalonePattern(revision), name: typeof name === 'string' ? name : file.name };
     title.value = pendingInput.value.name; dialog.value = 'native';
   } catch (caught) { error.value = errorText(caught); } finally { busy.value = false; }
 }
@@ -193,7 +200,7 @@ onBeforeUnmount(() => { cancelGeneration(); bitmap.value?.close(); sourceToken++
         <div class="form-grid form-section"><div><h3>{{ t('sourcePreview') }}</h3><canvas ref="sourceCanvas" role="img" :aria-label="t('sourcePreview')" style="max-width:100%;height:auto" /></div><div><h3>{{ t('preview') }}</h3><canvas v-if="generated" ref="resultCanvas" role="img" :aria-label="t('preview')" style="max-width:100%;height:auto;image-rendering:pixelated" /><p v-else class="muted">{{ t('generatePreviewHelp') }}</p><p v-if="stalePreview" class="notice warning">{{ t('stalePreview') }}</p></div></div>
         <GeneratorQuality v-if="generated && !stalePreview" :revision="generated" /><p class="notice">{{ t('transparentHelp') }}</p><p v-if="busy" role="status" class="notice">{{ t('generating') }}</p>
       </template>
-      <template v-if="dialog === 'native' && pendingInput"><p class="notice">{{ pendingInput.revision.width }} × {{ pendingInput.revision.height }} {{ t('stitches') }} · {{ pendingInput.revision.colors.length }} {{ t('colors') }}. {{ t('nativeImportHelp') }}</p><PatternThumbnail :revision="pendingInput.revision" :label="title" /></template>
+      <template v-if="dialog === 'native' && pendingInput"><p class="notice">{{ pendingInput.revision.width }} × {{ pendingInput.revision.height }} {{ t('stitches') }} · {{ pendingInput.revision.colors.length }} {{ t('colors') }}. {{ t('nativeImportHelp') }}</p><p v-if="pendingInput.detachedBindings" class="notice">{{t('standaloneBindingsDetached',{count:pendingInput.detachedBindings})}}</p><PatternThumbnail :revision="pendingInput.revision" :label="title" /></template>
       <template #footer><button v-if="busy && taskId" class="button" @click="cancelGeneration">{{ t('cancelGeneration') }}</button><button v-else class="button" :disabled="busy" @click="closeDialog">{{ t('cancel') }}</button><button v-if="dialog === 'image'" class="button" :disabled="busy" @click="generate">{{ t('generate') }}</button><button class="button primary" :disabled="busy || !title.trim() || (dialog === 'image' && (!generated || stalePreview))" @click="dialog === 'native' ? confirmImport() : saveNew()">{{ t('save') }}</button></template>
     </AppDialog>
   </section>
