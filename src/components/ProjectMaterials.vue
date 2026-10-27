@@ -8,12 +8,13 @@ import { shoppingNeeds } from '../../core/purchasing.mjs';
 import { fabricSize } from '../../core/fabric.mjs';
 import { fabricProjectFit } from '../../core/fabric-planning.mjs';
 import FabricWorkspace from './FabricWorkspace.vue';
+import ThreadEstimateSettings from './ThreadEstimateSettings.vue';
 import EntityForm from './EntityForm.vue';
 import EmptyState from './EmptyState.vue';
 import FormField from './FormField.vue';
 const props = defineProps({ project: Object });
 const form = ref(null), error = ref(''), busy = ref(false);
-const fabricWorkspace = ref(false);
+const fabricWorkspace = ref(false),threadSettings=ref(false);
 const needs = computed(() => shoppingNeeds(state.value, [props.project.id]));
 const reservations = computed(() => state.value.reservations.filter(row => row.projectId === props.project.id && row.quantity > 0));
 const material = id => state.value.materials.find(row => row.id === id);
@@ -66,18 +67,18 @@ function configureFabric() {
     await dispatch('project.save',{id:props.project.id,fabricLotId:draft.fabricLotId,settings:{...props.project.settings,fabric}});
   }};
 }
-async function estimate() {busy.value=true;error.value='';try{await dispatch('project.estimate',{projectId:props.project.id});notify();}catch(caught){error.value=errorText(caught);}finally{busy.value=false;}}
 </script>
 <template>
   <div class="stack">
     <p v-if="error" class="notice error" role="alert">{{ error }}</p>
-    <section class="panel"><div class="panel-heading"><h2>{{ t('materials') }}</h2><div class="actions"><button v-if="revision && !closed" class="button small" :disabled="busy" @click="estimate"><Calculator :size="15" />{{ t('estimateMaterials') }}</button><button v-if="!closed" class="button small primary" @click="openNeed()"><Plus :size="15" />{{ t('addNeed') }}</button></div></div>
-      <div v-if="needs.length" class="table-wrap"><table><thead><tr><th>{{ t('materials') }}</th><th>{{ t('planned') }}</th><th>{{ t('consumed') }}</th><th>{{ t('available') }}</th><th>{{ t('shortage') }}</th><th /></tr></thead><tbody><tr v-for="row in needs" :key="row.materialId"><td><button class="cell-title" @click="navigate('material',row.materialId)">{{ material(row.materialId)?.name }}</button><span class="cell-subtitle">{{ material(row.materialId)?.code }} · {{ t(row.unit) }}</span></td><td><button class="button text small" :disabled="closed" @click="openNeed(row)">{{ number(row.planned) }}</button></td><td>{{ number(row.allocations[0]?.consumed) }}</td><td>{{ number(row.eligibleForGroup) }}<span v-if="row.estimatedStock" class="cell-subtitle">{{ t('estimated') }}</span><span v-if="row.unknownStock" class="cell-subtitle">+ {{ t('unknown') }}</span></td><td><span class="badge" :class="row.shortfall===null || row.shortfall>0?'warning':'green'">{{ number(row.shortfall) }}</span></td><td><button v-if="!closed" class="button small" @click="reserve(row.materialId)"><LockKeyhole :size="14" />{{ t('reserve') }}</button></td></tr></tbody></table></div>
+    <section class="panel"><div class="panel-heading"><h2>{{ t('materials') }}</h2><div class="actions"><button v-if="revision && !closed" class="button small" :disabled="busy" @click="threadSettings=true"><Calculator :size="15" />{{ t('estimateMaterials') }}</button><button v-if="!closed" class="button small primary" @click="openNeed()"><Plus :size="15" />{{ t('addNeed') }}</button></div></div>
+      <div v-if="needs.length" class="table-wrap"><table><thead><tr><th>{{ t('materials') }}</th><th>{{ t('planned') }}</th><th>{{ t('consumed') }}</th><th>{{ t('available') }}</th><th>{{ t('shortage') }}</th><th /></tr></thead><tbody><tr v-for="row in needs" :key="row.materialId"><td><button class="cell-title" @click="navigate('material',row.materialId)">{{ material(row.materialId)?.name }}</button><span class="cell-subtitle">{{ material(row.materialId)?.code }} · {{ t(row.unit) }}</span></td><td><button class="button text small" :disabled="closed" @click="openNeed(row)">{{ number(row.planned) }}</button></td><td>{{ number(row.allocations[0]?.consumed) }}</td><td>{{ number(row.eligibleForGroup) }}<span v-if="row.estimatedStock" class="cell-subtitle">{{ t('estimated') }}</span><span v-if="row.unknownStock" class="cell-subtitle">+ {{ t('unknown') }}</span></td><td><span class="badge" :class="row.shortfall===null || row.shortfall>0?'warning':'green'">{{ row.shortfall===null?t('unknown'):number(row.shortfall) }}</span></td><td><button v-if="!closed" class="button small" @click="reserve(row.materialId)"><LockKeyhole :size="14" />{{ t('reserve') }}</button></td></tr></tbody></table></div>
       <EmptyState v-else :icon="Package" :title="t('empty')" :description="t('aggregateHelp')" compact />
       <div class="panel-body"><p class="field-help">{{ t('aggregateHelp') }}</p><p v-if="revision" class="field-help" style="margin-top:8px">{{ t('estimateHelp') }}</p><button v-if="needs.length && !closed" class="button" style="margin-top:16px" :disabled="busy" @click="shopping"><ShoppingBag :size="16" />{{ t('shopping') }}</button></div>
     </section>
     <section class="panel"><div class="panel-heading"><h2>{{ t('reserved') }}</h2><button v-if="!closed" class="button small" @click="reserve()"><Plus :size="14" />{{ t('reserve') }}</button></div><div class="panel-body"><p v-if="!reservations.length" class="muted">{{ t('empty') }}</p><div v-for="row in reservations" :key="row.id" class="stat-row"><span>{{ material(row.materialId)?.name }}<small class="cell-subtitle">{{ lot(row.lotId)?.lotCode }} · {{ locate(lot(row.lotId)?.locationId) }}</small></span><span>{{ number(row.quantity) }} {{ t(row.unit) }} <button class="button text small" @click="release(row)">{{ t('release') }}</button></span></div></div></section>
     <section class="panel"><div class="panel-heading"><h2>{{ t('fabric') }}</h2><div class="actions"><button v-if="project.fabricLotId" class="button small" @click="fabricWorkspace=true">{{ t('fabricWorkspace') }}</button><button class="button small" :disabled="closed" @click="configureFabric">{{ t('edit') }}</button></div></div><div class="panel-body"><template v-if="size"><div class="stat-row"><span>{{ t('designSize') }}</span><strong>{{ number(size.widthCm) }} × {{ number(size.heightCm) }} cm</strong></div><div class="stat-row"><span>{{ t('cutSize') }}</span><strong>{{ number(size.cutWidthCm) }} × {{ number(size.cutHeightCm) }} cm</strong></div><p v-if="fit" class="notice" :class="fit.fits?'success':'warning'"><AlertCircle :size="16" />{{ fit.fits===true?t('fabricFits'):fit.fits===false?t('fabricDoesNotFit'):t('fabricUnknown') }}</p></template><p v-else class="field-help">{{ t('fabricPlanningHelp') }}</p></div></section>
+    <ThreadEstimateSettings v-if="threadSettings" :project="project" @close="threadSettings=false" />
     <FabricWorkspace v-if="fabricWorkspace && project.fabricLotId" :lot-id="project.fabricLotId" :project-id="project.id" @close="fabricWorkspace=false" />
     <EntityForm v-if="form" :title="form.title" :fields="form.fields" :initial="form.initial" :help="form.help" :submit="form.submit" wide @close="form=null" @saved="form=null;notify()" />
   </div>
