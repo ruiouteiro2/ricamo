@@ -92,6 +92,8 @@ test('geometric estimates scale by actual strands and do not invent unknown pack
   assert.ok(two.filamentMetres>0);assert.ok(Math.abs(four.filamentMetres-2*two.filamentMetres)<.000002);
   assert.equal(estimateForMaterial(two,{unit:'m',strands:null}),null);
   assert.equal(estimateForMaterial(two,{unit:'strand-m'}),two.filamentMetres);
-  let state=createState();state=executeCommand(state,command('pattern.save',{id:'pattern',name:'P',revision}));state=executeCommand(state,command('project.save',{id:'project',name:'W',patternId:'pattern'}));state=executeCommand(state,command('project.estimate',{projectId:'project'}));
+  let state=createState();state=executeCommand(state,command('pattern.save',{id:'pattern',name:'P',revision}));state=executeCommand(state,command('project.save',{id:'project',name:'W',patternId:'pattern'}));
+  const before=JSON.stringify(state);assert.throws(()=>executeCommand(state,command('project.estimate',{projectId:'project'})),{code:'fabric_count_unknown'});assert.equal(JSON.stringify(state),before);
+  state=executeCommand(state,command('project.save',{id:'project',settings:{fabric:{countX:14,countY:14}}}));state=executeCommand(state,command('project.estimate',{projectId:'project'}));
   assert.equal(state.needs.length,1);assert.equal(state.lots.length,0);assert.equal(state.reservations.length,0);assert.equal(state.needs[0].source,'pattern');
 });
