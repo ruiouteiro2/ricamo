@@ -95,7 +95,7 @@ test('legacy import preserves geometry and code strings, rejects future and spec
 test('blank and validation keep empty cells distinct from first palette entry', () => {
   const p = blank(); assert.equal(counts(p).total, 0); assert.deepEqual(primitiveKeys(p), []);
   throwsCode(() => validateRevision({ ...p, cells: [0] }), 'pattern.cells');
-  throwsCode(() => validateRevision({ ...p, formatVersion: 2 }), 'pattern.version');
+  throwsCode(() => validateRevision({ ...p, formatVersion: 3 }), 'pattern.version');
   throwsCode(() => validateRevision({ ...p, colors: [colors[0], { ...colors[1], symbol: 'A' }] }), 'pattern.symbol');
   assert.equal(createBlank(1, 1).cells[0], -1);
 });
