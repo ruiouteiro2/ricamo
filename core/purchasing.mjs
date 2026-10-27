@@ -2,6 +2,7 @@ import { add, subtract, assert, quantity, text, oneOf, integer, currency, date, 
 import { addLot } from './inventory.mjs';
 import { confirmedConsumption } from './projects.mjs';
 import { fabricHeldPieces } from './fabric-state.mjs';
+import { toolHeldQuantity } from './tool-state.mjs';
 
 export function savePurchase(state, p, ctx) {
   const id = recordId(state, 'purchases', p, ctx), existing = state.purchases.find(row => row.id === id);
@@ -63,16 +64,18 @@ export function shoppingNeeds(state, projectIds) {
     const usableForGroup = add(...lots.filter(l => l.quantity !== null).map(lot => {
       if (fabricHeldPieces(lot)) return 0;
       const outside = add(...state.reservations.filter(r => r.lotId === lot.id && !ids.has(r.projectId)).map(r => r.quantity));
-      return Math.max(0, subtract(lot.quantity, outside));
+      return Math.max(0, subtract(lot.quantity, add(outside, toolHeldQuantity(lot))));
     }));
     const reserved = add(...state.reservations.filter(r => r.materialId === materialId && ids.has(r.projectId)).map(r => r.quantity));
-    const free = add(...lots.filter(l => l.quantity !== null).map(lot => Math.max(0, subtract(lot.quantity, add(totalReserved(state, lot.id), fabricHeldPieces(lot))))));
+    const free = add(...lots.filter(l => l.quantity !== null).map(lot => Math.max(0, subtract(lot.quantity, add(totalReserved(state, lot.id), fabricHeldPieces(lot), toolHeldQuantity(lot))))));
     const shortfall = Math.max(0, subtract(remaining, usableForGroup));
+    const uncertainShortfall = unknownDemand || (unknownStock && shortfall > 0);
+    const estimatedStock = lots.some(l => l.quantity !== null && l.confidence === 'estimated');
     const ordered = add(...state.purchases.filter(p => p.materialId === materialId && ['ordered', 'partial'].includes(p.status) && (!p.projectIds.length || p.projectIds.some(id => ids.has(id)))).map(p => Math.max(0, subtract(p.quantity, p.received))));
-    const packageCount = material.packageSize ? Math.ceil(shortfall / material.packageSize) : null;
+    const packageCount = !uncertainShortfall && material.packageSize ? Math.ceil(shortfall / material.packageSize) : null;
     return { materialId, unit: material.unit, allocations, planned: unknownDemand ? null : add(...rows.map(r => r.quantity)), remaining: unknownDemand ? null : remaining, knownRemaining: remaining,
-      eligibleForGroup: usableForGroup, reserved, free, shortfall: unknownDemand ? null : shortfall, knownShortfall: shortfall, unknownDemand, unknownStock,
-      ordered, toOrder: unknownDemand ? null : Math.max(0, subtract(shortfall, ordered)), packageCount, purchaseQuantity: packageCount === null ? shortfall : quantity(packageCount * material.packageSize),
+      eligibleForGroup: usableForGroup, reserved, free, shortfall: uncertainShortfall ? null : shortfall, knownShortfall: shortfall, unknownDemand, unknownStock, estimatedStock,
+      ordered, toOrder: unknownDemand || (uncertainShortfall && shortfall > ordered) ? null : Math.max(0, subtract(shortfall, ordered)), packageCount, purchaseQuantity: uncertainShortfall ? null : packageCount === null ? shortfall : quantity(packageCount * material.packageSize),
     };
   });
 }
@@ -85,10 +88,10 @@ export function generatePurchases(state, p, ctx) {
   const existingRows = state.purchases.filter(row => row.source === 'project' && row.status === 'to_buy' && [...row.projectIds].sort().join('|') === groupKey);
   for (const row of existingRows) {
     const need = summary.find(n => n.materialId === row.materialId);
-    if (!need || (!need.unknownDemand && need.toOrder <= 0)) { row.status = 'cancelled'; row.updatedAt = ctx.now; }
+    if (!need || need.toOrder === null || need.toOrder <= 0) { row.status = 'cancelled'; row.updatedAt = ctx.now; }
   }
   for (const need of summary) {
-    if (need.unknownDemand || need.toOrder <= 0) continue;
+    if (need.toOrder === null || need.toOrder <= 0) continue;
     const material = find(state, 'materials', need.materialId);
     const amount = material.packageSize ? quantity(Math.ceil(need.toOrder / material.packageSize) * material.packageSize) : need.toOrder;
     const existing = state.purchases.find(row => row.materialId === material.id && row.source === 'project' && row.status === 'to_buy' && [...row.projectIds].sort().join('|') === groupKey);
