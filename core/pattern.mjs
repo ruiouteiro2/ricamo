@@ -1,3 +1,4 @@
+import { validateThreadColor, blendSignature } from './thread-recipes.mjs';
 /** Immutable, bounded geometry for Ricamo's version-one structured revisions.
  * Cells are whole crosses; half stitches and backstitches remain distinct.
  * The caller assigns revision identities and persists named/autosaved revisions.
@@ -29,6 +30,7 @@ export function validateColors(colors, { allowEmpty = true } = {}) {
       if (typeof color.symbol !== 'string' || !color.symbol.trim() || color.symbol.length > 4 || symbols.has(color.symbol)) fail('pattern.symbol', { index });
       symbols.add(color.symbol);
     }
+    validateThreadColor(color);
     if (color.strands !== undefined && !integer(color.strands, 1, 12)) fail('pattern.strands', { index });
   }
   return colors;
@@ -172,7 +174,7 @@ function segmentIntersectsRect(b, r) {
   return true;
 }
 
-const identity = c => JSON.stringify([c.itemId ?? '', c.brand ?? '', c.range ?? '', c.code, c.hex, c.strands ?? 2]);
+const identity = c => JSON.stringify([c.itemId ?? '', c.brand ?? '', c.range ?? '', c.code, c.hex, c.strands ?? 2, c.backStrands ?? 1, blendSignature(c)]);
 function mergeColors(target, source, usedIndices) {
   const colors = clone(target), map = [];
   const symbols = new Set(colors.map(c => c.symbol).filter(Boolean));
