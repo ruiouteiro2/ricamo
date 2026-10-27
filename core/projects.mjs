@@ -23,7 +23,7 @@ export function saveProject(state, p, ctx) {
     assert(!state.reservations.some(r => r.projectId === id && r.quantity > 0), 'close_project_first');
   }
   const designChanged = existing && (existing.patternId !== patternId || existing.revisionId !== revisionId);
-  if (designChanged && existing.completed.length) assert(p.acceptRevisionChange === true, 'revision_change_confirmation');
+  if (designChanged && (existing.completed.length || existing.manualPercent || existing.referenceData?.annotations?.length || existing.referenceData?.bookmarks?.length)) assert(p.acceptRevisionChange === true, 'revision_change_confirmation');
   const project = {
     id, name: text(source.name, 'name', { required: true, max: 300 }),
     technique: text(source.technique ?? 'cross_stitch', 'technique', { required: true, max: 100 }),
@@ -36,10 +36,11 @@ export function saveProject(state, p, ctx) {
     completed: designChanged ? [] : (existing?.completed ?? []),
     manualPercent: designChanged ? 0 : (existing?.manualPercent ?? 0),
     view: existing?.view ?? {}, progressHistory: existing?.progressHistory ?? [],
+    ...(!designChanged && existing?.referenceData ? { referenceData: existing.referenceData } : {}),
     createdAt: existing?.createdAt ?? ctx.now, updatedAt: ctx.now,
   };
   if (designChanged) {
-    project.progressHistory.push({ patternId: existing.patternId, revisionId: existing.revisionId, completed: [...existing.completed], manualPercent: existing.manualPercent, savedAt: ctx.now });
+    project.progressHistory.push({ patternId: existing.patternId, revisionId: existing.revisionId, completed: [...existing.completed], manualPercent: existing.manualPercent, savedAt: ctx.now, ...(existing.referenceData ? { referenceData: existing.referenceData } : {}) });
   }
   if (project.fabricLotId) assert(find(state, 'materials', find(state, 'lots', project.fabricLotId).materialId).category === 'fabric', 'not_fabric');
   put(state, 'projects', project);
