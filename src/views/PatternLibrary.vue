@@ -7,6 +7,7 @@ import AppDialog from '../components/AppDialog.vue';
 import FormField from '../components/FormField.vue';
 import PatternThumbnail from '../components/PatternThumbnail.vue';
 import { state, dispatch, navigate, notify, importAsset, normalize } from '../state';
+import { detectFile, digestBytes } from '../../core/files.mjs';
 import { t, number, date, errorText } from '../i18n';
 import { dmcPalette, inventoryPalette, DEFAULT_SETTINGS, importLegacy } from '../engine/adapter.mjs';
 import { createBlank, validateRevision } from '../../core/pattern.mjs';
@@ -15,11 +16,12 @@ import { drawPattern } from '../pattern-render.mjs';
 const search = ref(''), filter = ref('active'), dialog = ref(''), error = ref(''), busy = ref(false);
 const imageInput = ref(), referenceInput = ref(), nativeInput = ref(), sourceCanvas = ref(), resultCanvas = ref();
 const title = ref(''), sourceAsset = ref(null), bitmap = ref(null), generated = shallowRef(null), paletteKind = ref('catalogue');
+const sourceFile = shallowRef(null);
 const settings = reactive({ ...DEFAULT_SETTINGS }), adjustments = reactive({ x: 0, y: 0, width: 100, height: 100, rotation: 0, flipX: false, flipY: false, brightness: 100, contrast: 100 });
 const keepRatio = ref(true), taskId = ref(null), pendingInput = ref(null), previewVersion = ref('');
 let worker, timeout, sourceToken = 0;
 const patterns = computed(() => state.value.patterns.filter(p => filter.value === 'all' || (filter.value === 'archived' ? p.archived : !p.archived)).filter(p => normalize([p.name, p.notes, ...(p.tags ?? [])].join(' ')).includes(normalize(search.value))).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)));
-const fingerprint = () => JSON.stringify({ settings, adjustments, paletteKind: paletteKind.value, source: sourceAsset.value?.id });
+const fingerprint = () => JSON.stringify({ settings, adjustments, paletteKind: paletteKind.value, source: sourceAsset.value?.digest });
 const stalePreview = computed(() => Boolean(generated.value) && previewVersion.value !== fingerprint());
 const current = pattern => pattern.revisions?.find(r => r.id === pattern.currentRevisionId);
 const validDimensions = () => {
@@ -58,23 +60,26 @@ function drawSource() {
 watch(adjustments, () => { resizeFrom('width'); drawSource(); });
 watch(generated, async value => { await nextTick(); if (value && resultCanvas.value) { const cellSize = Math.min(440 / value.width, 300 / value.height); drawPattern(resultCanvas.value, value, { cellSize, width: value.width * cellSize, height: value.height * cellSize }); } });
 function cancelGeneration() { taskId.value = null; worker?.terminate(); worker = null; clearTimeout(timeout); busy.value = false; }
-function closeDialog() { cancelGeneration(); dialog.value = ''; error.value = ''; bitmap.value?.close(); bitmap.value = null; sourceToken++; }
+function closeDialog() { cancelGeneration(); dialog.value = ''; error.value = ''; bitmap.value?.close(); bitmap.value = null; sourceFile.value = null; sourceAsset.value = null; sourceToken++; }
 function startBlank() { error.value = ''; title.value = ''; Object.assign(settings, DEFAULT_SETTINGS, { width: 60, height: 60 }); dialog.value = 'blank'; }
 async function chooseImage(event) {
   const file = event.target.files?.[0]; event.target.value = ''; if (!file) return;
   const token = ++sourceToken; error.value = ''; busy.value = true;
+  let decoded;
   try {
     if (!/^image\/(png|jpeg|webp|gif)$/.test(file.type) || file.size > 25 * 1024 * 1024) throw Object.assign(Error(), { code: 'invalid_file' });
-    const decoded = await createImageBitmap(file, { imageOrientation: 'from-image' });
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const mime = detectFile(bytes), digest = await digestBytes(bytes);
+    decoded = await createImageBitmap(file, { imageOrientation: 'from-image' });
     if (decoded.width * decoded.height > 40_000_000 || decoded.width > 20000 || decoded.height > 20000) { decoded.close(); throw Object.assign(Error(), { code: 'file_too_large' }); }
     if (token !== sourceToken) { decoded.close(); return; }
-    const asset = await importAsset(file);
-    bitmap.value?.close(); bitmap.value = decoded; sourceAsset.value = asset; title.value = file.name.replace(/\.[^.]+$/, '');
+    bitmap.value?.close(); bitmap.value = decoded; sourceFile.value = file;
+    sourceAsset.value = { id: null, name: file.name, mime, digest, size: bytes.length }; title.value = file.name.replace(/\.[^.]+$/, '');
     Object.assign(adjustments, { x: 0, y: 0, width: 100, height: 100, rotation: 0, flipX: false, flipY: false, brightness: 100, contrast: 100 });
     Object.assign(settings, DEFAULT_SETTINGS); keepRatio.value = true; resizeFrom('width'); generated.value = null; dialog.value = 'image';
     await nextTick(); drawSource();
   } catch (caught) { error.value = errorText(caught); }
-  finally { if (token === sourceToken) busy.value = false; }
+  finally { if (decoded && decoded !== bitmap.value) decoded.close(); if (token === sourceToken) busy.value = false; }
 }
 function generate() {
   if (busy.value) return;
@@ -104,6 +109,10 @@ async function saveNew() {
     if (dialog.value === 'blank') revision = createBlank(settings.width, settings.height, dmcPalette.colors.filter(c => ['310', 'B5200', '321', '700', '444', '820'].includes(c.code)).map((c, i) => ({ ...c, brand: 'DMC', symbol: 'ABCDEF'[i], strands: 2 })), { settings: { ...settings }, provenance: { source: 'blank' } });
     else { if (!generated.value || stalePreview.value) throw Error('stale_preview'); revision = structuredClone(generated.value); }
     revision.id = crypto.randomUUID(); revision.name = t('initialRevision');
+    if (dialog.value === 'image') {
+      const asset = await importAsset(sourceFile.value); sourceAsset.value = asset;
+      revision.provenance.source = { ...revision.provenance.source, attachmentId: asset.id };
+    }
     const id = crypto.randomUUID(); await dispatch('pattern.save', { id, name: title.value.trim(), sourceAttachmentId: dialog.value === 'image' ? sourceAsset.value.id : null, revision });
     closeDialog(); notify(t('patternSaved')); navigate('pattern', id);
   } catch (caught) { error.value = patternError(caught); }
