@@ -10,7 +10,7 @@ const root=fileURLToPath(new URL('../',import.meta.url));mkdirSync(join(root,'.r
 let seed=createState();seed=executeCommand(seed,{type:'category.save',payload:{id:'reference',name:'Reference books',fields:['Shelf']},operationId:'seed-category'});seed.settings.language='en';let repository=new Repository(join(data,'ricamo.sqlite'));repository.restore({state:seed,assets:[]},0);repository.close();
 const env={...process.env,RICAMO_DATA_DIR:data};delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_OPTIONS;
 const packaged=Boolean(process.env.RICAMO_EXECUTABLE),executable=resolve(process.env.RICAMO_EXECUTABLE||join(root,'node_modules/electron/dist',process.platform==='win32'?'electron.exe':'electron'));
-const app=await _electron.launch({executablePath:executable,args:[...(process.env.RICAMO_TEST_NO_SANDBOX==='1'?['--no-sandbox']:[]),...(packaged?[]:[root])],env,timeout:60000});let page,result={data,executable,checks:[]};const errors=[],requests=[];
+const app=await _electron.launch({ chromiumSandbox: true,executablePath:executable,args:[...(packaged?[]:[root])],env,timeout:60000});let page,result={data,executable,checks:[]};const errors=[],requests=[];
 try{
  page=await app.firstWindow();page.setDefaultTimeout(20000);page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(/^https?:/.test(request.url()))requests.push(request.url())});await expect(page.locator('.sidebar')).toBeVisible();
  const load=async()=>{const response=await page.evaluate(()=>window.ricamo.load());assert.equal(response.ok,true);return response.value};
