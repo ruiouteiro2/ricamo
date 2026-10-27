@@ -1,0 +1,90 @@
+import { _electron as electron, expect } from '@playwright/test';
+import { jsPDF } from 'jspdf';
+import { mkdirSync, mkdtempSync, writeFileSync, readFileSync, existsSync, renameSync } from 'node:fs';
+import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import assert from 'node:assert/strict';
+
+const root = fileURLToPath(new URL('../', import.meta.url));
+mkdirSync(join(root, '.runtime'), { recursive: true });
+const data = mkdtempSync(join(root, '.runtime', 'documents-'));
+const environment = { ...process.env, RICAMO_DATA_DIR: data };
+delete environment.ELECTRON_RUN_AS_NODE; delete environment.NODE_OPTIONS;
+const executable = process.env.RICAMO_EXECUTABLE || join(root, 'node_modules/electron/dist', process.platform === 'win32' ? 'electron.exe' : 'electron');
+const args = [...(process.env.RICAMO_TEST_NO_SANDBOX === '1' ? ['--no-sandbox'] : []), ...(process.env.RICAMO_EXECUTABLE ? [] : [root])];
+const pdf = new jsPDF(); pdf.text('Reference page one', 20, 30); pdf.addPage(); pdf.setFillColor(170, 55, 99); pdf.rect(30, 60, 110, 70, 'F'); pdf.text('Reference page two', 20, 30);
+const original = join(data, 'Two pages.pdf'); writeFileSync(original, new Uint8Array(pdf.output('arraybuffer')));
+const app = await electron.launch({ executablePath: resolve(executable), args, env: environment, timeout: 40000 });
+const page = await app.firstWindow(), errors = [], requests = [];
+page.on('pageerror', error => errors.push(error.message));
+page.on('request', request => { if (/^https?:/.test(request.url())) requests.push(request.url()); });
+const load = async () => { const result = await page.evaluate(() => window.ricamo.load()); assert.equal(result.ok, true); return result.value; };
+try {
+  await expect(page.locator('h1').first()).toBeVisible();
+  await page.locator('.topbar').getByRole('combobox').selectOption('en');
+  await page.locator('.sidebar').getByRole('button', { name: 'Patterns', exact: true }).click();
+  await page.locator('input[type=file][accept^="application/pdf"]').setInputFiles(original);
+  await expect(page.getByRole('button', { name: 'Next page', exact: true })).toBeEnabled();
+  await page.getByRole('button', { name: 'Next page', exact: true }).click();
+  await expect(page.getByRole('spinbutton', { name: 'Page', exact: true })).toHaveValue('2');
+  await page.waitForFunction(() => { const c = document.querySelector('canvas[role=img]'); if (!c?.width) return false; const pixels = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; for (let i = 0; i < pixels.length; i += 4) if (pixels[i] > 140 && pixels[i + 1] < 90 && pixels[i + 2] < 140) return true; return false; });
+  await page.getByRole('button', { name: 'Add note', exact: true }).click();
+  await page.getByRole('dialog').getByRole('textbox', { name: /^Notes/ }).fill('Count twice before cutting.');
+  await page.getByRole('dialog').getByRole('button', { name: 'Save', exact: true }).click();
+  await expect(page.getByText('Count twice before cutting.', { exact: true })).toBeVisible();
+  let state = await load(); const referenceId = state.patterns[0].id;
+  assert.equal(state.patterns[0].referenceData.annotations[0].page, 2);
+  assert.equal(state.movements.length, 0);
+  const output = join(data, 'Annotated reference.pdf');
+  // Automate only the native destination selection; rendering, file IPC, writes,
+  // SQLite, worker, validation and exports remain the real packaged implementation.
+  await app.evaluate(({ dialog }, path) => { dialog.showSaveDialog = async () => ({ canceled: false, filePath: path }); }, output);
+  await page.getByRole('button', { name: 'Export with annotations', exact: true }).click();
+  await page.getByRole('dialog').getByRole('checkbox').check();
+  await page.getByRole('dialog').getByRole('button', { name: 'Export', exact: true }).click();
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  await expect.poll(() => existsSync(output), { timeout: 30000 }).toBe(true);
+  assert.equal(readFileSync(output).subarray(0, 5).toString(), '%PDF-');
+  assert.ok(readFileSync(output).length > 10000);
+  await page.reload(); await expect(page.locator('h1').first()).toBeVisible();
+  await page.locator('.sidebar').getByRole('button', { name: 'Patterns', exact: true }).click();
+  await page.getByRole('button', { name: 'Two pages', exact: true }).click();
+  await expect(page.getByRole('spinbutton', { name: 'Page', exact: true })).toHaveValue('2');
+  await expect(page.getByText('Count twice before cutting.', { exact: true })).toBeVisible();
+
+  await page.locator('.sidebar').getByRole('button', { name: 'Patterns', exact: true }).click();
+  const imageData = await page.evaluate(() => { const canvas = document.createElement('canvas'); canvas.width = 16; canvas.height = 12; const c = canvas.getContext('2d'); c.fillStyle = '#dd2233'; c.fillRect(0, 0, 8, 12); c.fillStyle = '#102050'; c.fillRect(8, 0, 8, 12); c.clearRect(0, 0, 4, 4); return canvas.toDataURL().split(',')[1]; });
+  const source = join(data, 'Transparent source.png'); writeFileSync(source, Buffer.from(imageData, 'base64'));
+  await page.locator('input[type=file][accept^="image/png"]').setInputFiles(source);
+  await page.getByRole('dialog').getByRole('textbox', { name: /^Name/ }).fill('Real engine in Electron');
+  await page.getByRole('dialog').getByRole('button', { name: 'Generate pattern', exact: true }).click();
+  await expect(page.getByRole('dialog').getByRole('button', { name: 'Save', exact: true })).toBeEnabled();
+  await page.getByRole('dialog').getByRole('button', { name: 'Save', exact: true }).click();
+  await expect(page.locator('.editor-stage canvas')).toBeVisible();
+  state = await load(); const generated = state.patterns.find(row => row.kind === 'structured'); const revision = generated.revisions[0];
+  assert.ok(revision.cells.some(value => value === -1)); assert.ok(revision.cells.some(value => value >= 0));
+  assert.match(revision.provenance.originalSha256, /^[a-f0-9]{64}$/);
+  assert.equal(state.attachments.length, 2); assert.equal(state.movements.length, 0);
+  await page.screenshot({ path: join(data, 'generated-pattern.png'), fullPage: true });
+
+  await page.locator('.sidebar').getByRole('button', { name: 'Settings', exact: true }).click();
+  await page.getByRole('spinbutton', { name: 'Copies to retain (1–100)', exact: true }).fill('2');
+  await page.locator('form').getByRole('button', { name: 'Save', exact: true }).click();
+  const external = join(data, 'External test'); mkdirSync(external);
+  await app.evaluate(({ dialog }, path) => { dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [path] }); }, external);
+  await page.getByRole('button', { name: 'Choose second folder', exact: true }).click();
+  await page.getByRole('button', { name: 'Back up now', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Back up now', exact: true })).toBeEnabled();
+  let status = await page.evaluate(() => window.ricamo.backupStatus());
+  assert.equal(status.value.retention, 2); assert.ok(existsSync(status.value.lastLocal.destination)); assert.ok(existsSync(status.value.lastExternal.destination));
+  renameSync(external, `${external} disconnected`);
+  await page.getByRole('button', { name: 'Back up now', exact: true }).click();
+  await expect(page.getByText(/The local backup was saved, but the second folder is unavailable/)).toBeVisible();
+  status = await page.evaluate(() => window.ricamo.backupStatus());
+  assert.equal(status.value.lastError.code, 'external_backup_failed'); assert.ok(existsSync(status.value.lastLocal.destination));
+  state = await load(); assert.equal(state.patterns.find(row => row.id === referenceId).referenceData.annotations.length, 1);
+  assert.deepEqual(errors, []); assert.deepEqual(requests, []);
+  const report = { platform: process.platform, executable, data, referenceId, generatedPatternId: generated.id, cells: revision.cells.length, emptyCells: revision.cells.filter(value => value < 0).length, pdfBytes: readFileSync(output).length, backups: status.value, errors, requests, nativeDestinationSelectionAutomated: true };
+  writeFileSync(join(data, 'result.json'), JSON.stringify(report, null, 2)); console.log(JSON.stringify(report));
+} catch (error) { await page.screenshot({ path: join(data, 'failure.png'), fullPage: true }).catch(() => {}); throw error; }
+finally { await app.close(); }
