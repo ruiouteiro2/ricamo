@@ -1,24 +1,44 @@
 import { DatabaseSync } from 'node:sqlite';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, existsSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { executeCommand, createState, validateApplicationState } from '../core/application.mjs';
 import { DomainError } from '../core/commands.mjs';
-import { detectFile, safeDisplayName } from '../core/files.mjs';
+import { detectFile, safeDisplayName, boundedBytes } from '../core/files.mjs';
 import { createBackup } from '../core/backup.mjs';
 
 export class Repository {
   constructor(path) {
+    // Inspect an existing file without journal changes or schema writes, including
+    // future data versions that this application must never downgrade.
+    if (path !== ':memory:' && existsSync(path)) {
+      const probe = new DatabaseSync(path, { readOnly: true });
+      try {
+        const version = probe.prepare('PRAGMA user_version').get().user_version;
+        if (version > 1) throw new DomainError('unsupported_schema');
+        const tables = probe.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").all();
+        if (tables.some(row => row.name === 'application_state')) {
+          const row = probe.prepare('SELECT revision,data FROM application_state WHERE id=1').get();
+          if (!row) throw new DomainError('invalid_storage');
+          const state = JSON.parse(row.data);
+          validateApplicationState(state);
+          if (row.revision !== state.revision) throw new DomainError('invalid_revision');
+        } else if (tables.length || version !== 0) throw new DomainError('unsupported_schema');
+      } finally { probe.close(); }
+    }
     if (path !== ':memory:') mkdirSync(dirname(path), { recursive: true });
     this.db = new DatabaseSync(path);
-    this.db.exec('PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;');
+    try {
     const version = this.db.prepare('PRAGMA user_version').get().user_version;
-    if (version > 1) { this.db.close(); throw new DomainError('unsupported_schema'); }
+    if (version > 1) throw new DomainError('unsupported_schema');
+    if (version === 1) validateApplicationState(this.load());
+    this.db.exec('PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;');
     this.db.exec(`CREATE TABLE IF NOT EXISTS application_state (id INTEGER PRIMARY KEY CHECK(id=1), revision INTEGER NOT NULL, data TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS assets (id TEXT PRIMARY KEY, data BLOB NOT NULL);
       PRAGMA user_version=1;`);
     this.db.prepare('INSERT OR IGNORE INTO application_state(id,revision,data) VALUES(1,0,?)').run(JSON.stringify(createState()));
     validateApplicationState(this.load());
+    } catch (error) { this.db.close(); throw error; }
   }
   load() { return JSON.parse(this.db.prepare('SELECT data FROM application_state WHERE id=1').get().data); }
   execute(command, expectedRevision, asset = null) {
@@ -37,7 +57,7 @@ export class Repository {
     } catch (error) { this.db.exec('ROLLBACK'); throw error; }
   }
   importAsset({ name, data, operationId }, expectedRevision) {
-    const bytes = new Uint8Array(data);
+    const bytes = boundedBytes(data);
     const mime = detectFile(bytes), digest = createHash('sha256').update(bytes).digest('hex');
     const state = this.load();
     const existing = state.attachments.find(item => item.digest === digest);
