@@ -1,18 +1,21 @@
 <script setup>
+import MaterialDescriptors from '../components/MaterialDescriptors.vue';
+import { lotDescriptorInitial, lotDescriptorFields, lotDescriptorProperties } from '../material-descriptors.mjs';
 import { computed, ref, watch } from 'vue';
-import { ArrowLeft, Plus, Pencil, Copy, Archive, Package, ArrowRightLeft, CircleAlert, Scissors, ImagePlus, Download, RotateCcw, Heart } from '@lucide/vue';
+import { ArrowLeft, Plus, Pencil, Copy, Archive, Package, ArrowRightLeft, CircleAlert, Scissors, ImagePlus, RotateCcw, Heart } from '@lucide/vue';
 import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
 import EntityForm from '../components/EntityForm.vue';
 import InventoryLabels from '../components/InventoryLabels.vue';
 import { categoryLabel } from '../inventory-categories.mjs';
 import MaterialForm from '../components/MaterialForm.vue';
+import AttachmentEditorDialog from '../components/AttachmentEditorDialog.vue';
+import AttachmentList from '../components/AttachmentList.vue';
 import FabricWorkspace from '../components/FabricWorkspace.vue';
 import KitHistory from '../components/KitHistory.vue';
 import KitOpening from '../components/KitOpening.vue';
 import ToolActivity from '../components/ToolActivity.vue';
-import { state, dispatch, navigate, notify, locate, importAsset, assetUrl } from '../state';
-import { storage } from '../storage';
+import { state, dispatch, navigate, notify, locate } from '../state';
 import { t, number, date, money, errorText } from '../i18n';
 import { inventorySummary } from '../../core/inventory.mjs';
 import { quantity } from '../../core/shared.mjs';
@@ -28,8 +31,8 @@ const history = computed(() => movements.value.slice((historyPage.value - 1) * h
 const reservations = computed(() => state.value.reservations.filter(row => row.materialId === props.id && row.quantity > 0));
 const projects = computed(() => state.value.projects.filter(row => !['completed', 'archived'].includes(row.status)));
 const labeling = ref(null);
-const editing = ref(false), modal = ref(null), pageError = ref(''), busy = ref(false), photos = ref([]);
-const attachmentInput = ref();
+const editing = ref(false), modal = ref(null), pageError = ref(''), busy = ref(false);
+const addingAttachments = ref(false);
 const categoryName = computed(() => categoryLabel(material.value?.category || 'other'));
 const stockKinds = computed(() => ['receipt', ...(material.value?.reusable ? [] : ['consume']), 'count', 'transfer', 'loss', 'discard', 'return']);
 const projectOptions = computed(() => projects.value.map(row => ({ value: row.id, label: row.name })));
@@ -37,17 +40,6 @@ const locationOptions = computed(() => state.value.locations.map(row => ({ value
 const currentLot = computed(() => modal.value?.lotId ? state.value.lots.find(row => row.id === modal.value.lotId) : null);
 const modalOperation = ref('');
 watch(() => props.id, () => { modal.value = null; editing.value = false; pageError.value = ''; historyPage.value = 1; });
-let attachmentRequest = 0;
-watch(() => material.value?.attachments.join('|'), async () => {
-  const request = ++attachmentRequest, rows = [];
-  for (const id of material.value?.attachments || []) {
-    const metadata = state.value.attachments.find(row => row.id === id);
-    if (!metadata) continue;
-    try { rows.push({ ...metadata, url: metadata.mime.startsWith('image/') ? await assetUrl(id) : null }); }
-    catch { rows.push({ ...metadata, unavailable: true }); }
-  }
-  if (request === attachmentRequest) photos.value = rows;
-}, { immediate: true });
 function lotName(lot) { return lot ? [lot.lotCode || lot.id.slice(0, 8), locate(lot.locationId)].join(' · ') : '—'; }
 function lotReserved(lotId) { return state.value.reservations.filter(row => row.lotId === lotId).reduce((sum, row) => sum + row.quantity, 0); }
 function projectName(id) { return state.value.projects.find(row => row.id === id)?.name || '—'; }
@@ -61,36 +53,23 @@ async function duplicate() {
   catch (error) { pageError.value = errorText(error); }
   finally { busy.value = false; }
 }
-async function addPhotos(event) {
-  busy.value = true; pageError.value = '';
-  try {
-    const ids = [...material.value.attachments];
-    for (const file of event.target.files) { const asset = await importAsset(file); if (!ids.includes(asset.id)) ids.push(asset.id); }
-    await dispatch('material.save', { id: props.id, attachments: ids }); notify();
-  } catch (error) { pageError.value = errorText(error); }
-  finally { busy.value = false; event.target.value = ''; }
-}
-async function downloadAttachment(attachment) {
-  try { await storage.saveFile({ name: attachment.name, data: await storage.getAsset(attachment.id) }); }
-  catch (error) { pageError.value = errorText(error); }
-}
 const formConfig = computed(() => {
   if (!modal.value) return null;
   const mode = modal.value.kind, lot = currentLot.value;
-  if (mode === 'lot') return { title: t('addLot'), help: t('unknownHint'), initial: { quantity: '', confidence: 'exact', status: 'usable', locationId: '', lotCode: '', cost: '', currency: state.value.settings.currency, widthCm: '', heightCm: '', notes: '', ...modal.value.initial }, fields: [
+  if (mode === 'lot') return { title: t('addLot'), help: t('unknownHint'), initial: { quantity: '', confidence: 'exact', status: 'usable', locationId: '', lotCode: '', cost: '', currency: state.value.settings.currency, widthCm: '', heightCm: '', notes: '', ...lotDescriptorInitial(material.value.category), ...modal.value.initial }, fields: [
     { key: 'quantity', type: 'number' }, { key: 'confidence', type: 'select', required: true, options: ['exact', 'estimated'] },
     { key: 'locationId', label: t('location'), type: 'select', options: locationOptions.value }, { key: 'lotCode' },
     { key: 'status', type: 'select', required: true, options: ['usable', 'blocked', 'damaged', 'unverified'] }, { key: 'acquiredAt', label: t('acquiredAt'), type: 'date' },
     ...(material.value.category === 'fabric' ? [{ key: 'widthCm', label: t('fabricWidthCm'), type: 'number' }, { key: 'heightCm', label: t('fabricHeightCm'), type: 'number' }, { key: 'irregular', label: t('irregularFabric'), type: 'checkbox' }] : []),
-    { key: 'cost', type: 'number', help: t('lotCostHelp') }, { key: 'currency', max: 3 }, { key: 'supplierId', label: t('supplier'), type: 'select', options: state.value.suppliers.map(row => ({ value: row.id, label: row.name })) }, { key: 'notes', type: 'textarea', wide: true },
+    ...lotDescriptorFields(material.value.category), { key: 'cost', type: 'number', help: t('lotCostHelp') }, { key: 'currency', max: 3 }, { key: 'supplierId', label: t('supplier'), type: 'select', options: state.value.suppliers.map(row => ({ value: row.id, label: row.name })) }, { key: 'notes', type: 'textarea', wide: true },
   ], submit: async draft => {
     const { widthCm, heightCm, irregular, ...rest } = draft;
-    await dispatch('lot.add', { ...rest, materialId: props.id, quantity: optionalNumber(draft.quantity), cost: cost(draft.cost), currency: draft.currency.toUpperCase(), properties: material.value.category === 'fabric' ? { widthCm: optionalNumber(widthCm), heightCm: optionalNumber(heightCm), irregular: Boolean(irregular) } : {} }, modalOperation.value);
+    await dispatch('lot.add', { ...rest, materialId: props.id, quantity: optionalNumber(draft.quantity), cost: cost(draft.cost), currency: draft.currency.toUpperCase(), properties: { ...lotDescriptorProperties(draft), ...(material.value.category === 'fabric' ? { widthCm: optionalNumber(widthCm), heightCm: optionalNumber(heightCm), irregular: Boolean(irregular) } : {}) } }, modalOperation.value);
   } };
-  if (mode === 'lotEdit') return { title: t('editLot'), help: t('lotEditHelp'), initial: { status: lot.status, confidence: lot.confidence, lotCode: lot.lotCode, notes: lot.notes, widthCm: lot.properties.widthCm ?? '', heightCm: lot.properties.heightCm ?? '', irregular: lot.properties.irregular || false }, fields: [
+  if (mode === 'lotEdit') return { title: t('editLot'), help: t('lotEditHelp'), initial: { ...lotDescriptorInitial(material.value.category,lot.properties), status: lot.status, confidence: lot.confidence, lotCode: lot.lotCode, notes: lot.notes, widthCm: lot.properties.widthCm ?? '', heightCm: lot.properties.heightCm ?? '', irregular: lot.properties.irregular || false }, fields: [
     { key: 'lotCode' }, { key: 'status', type: 'select', required: true, options: ['usable', 'blocked', 'damaged', 'unverified'] }, { key: 'confidence', type: 'select', required: true, options: lot.quantity === null ? ['unknown'] : ['exact','estimated'] },
-    ...(material.value.category === 'fabric' ? [{ key: 'widthCm', label: t('fabricWidthCm'), type: 'number' }, { key: 'heightCm', label: t('fabricHeightCm'), type: 'number' }, { key: 'irregular', label: t('irregularFabric'), type: 'checkbox' }] : []), { key: 'notes', type: 'textarea', wide: true },
-  ], submit: async draft => { const { widthCm, heightCm, irregular, ...rest } = draft; await dispatch('lot.save', { id: lot.id, ...rest, properties: { ...lot.properties, ...(material.value.category === 'fabric' ? { widthCm: optionalNumber(widthCm), heightCm: optionalNumber(heightCm), irregular: Boolean(irregular) } : {}) } }, modalOperation.value); } };
+    ...(material.value.category === 'fabric' ? [{ key: 'widthCm', label: t('fabricWidthCm'), type: 'number' }, { key: 'heightCm', label: t('fabricHeightCm'), type: 'number' }, { key: 'irregular', label: t('irregularFabric'), type: 'checkbox' }] : []), ...lotDescriptorFields(material.value.category,lot.properties), { key: 'notes', type: 'textarea', wide: true },
+  ], submit: async draft => { const { widthCm, heightCm, irregular, ...rest } = draft; await dispatch('lot.save', { id: lot.id, ...rest, properties: { ...lotDescriptorProperties(draft,lot.properties), ...(material.value.category === 'fabric' ? { widthCm: optionalNumber(widthCm), heightCm: optionalNumber(heightCm), irregular: Boolean(irregular) } : {}) } }, modalOperation.value); } };
   if (mode === 'stock') return { title: t('movement'), help: t('stockMovementHelp'), initial: { kind: modal.value.initial.kind || 'receipt', quantity: '', projectId: '', toLocationId: '', reason: '', cost: '' }, fields: [
     { key: 'kind', label: t('type'), type: 'select', required: true, options: stockKinds.value }, { key: 'quantity', type: 'number', help: t('movementQuantityHelp') },
     { key: 'projectId', label: t('project'), type: 'select', options: projectOptions.value, when: draft => draft.kind === 'consume' },
@@ -114,6 +93,7 @@ function openKit(lot) { openModal('kit', lot.id); }
 
 <template>
   <div v-if="material" class="page">
+    <AttachmentEditorDialog v-if="addingAttachments" type="material.save" :owner-id="id" :attachment-ids="material.attachments" :title="t('photosAndFiles')" accept="image/png,image/jpeg,image/webp,image/gif,application/pdf" @close="addingAttachments=false" @saved="addingAttachments=false;notify()"/>
     <button class="button text" @click="navigate('materials')"><ArrowLeft :size="16" />{{ t('materials') }}</button>
     <PageHeader :eyebrow="categoryName" :title="material.name" :description="[material.brand, material.range, material.code].filter(Boolean).join(' · ')">
       <button class="button" :disabled="busy" @click="duplicate"><Copy :size="16" />{{ t('duplicate') }}</button>
@@ -138,7 +118,7 @@ function openKit(lot) { openModal('kit', lot.id); }
           <EmptyState v-if="!lots.length" compact :icon="Package" :title="t('noLots')" :description="t('noLotsHelp')"><button class="button primary" :disabled="material.archived" @click="openModal('lot')">{{ t('addLot') }}</button></EmptyState>
           <div v-else class="table-wrap"><table><thead><tr><th>{{ t('lot') }}</th><th>{{ t('quantity') }}</th><th>{{ t('status') }}</th><th>{{ t('more') }}</th></tr></thead><tbody>
             <tr v-for="lot in lots" :key="lot.id">
-              <td><strong>{{ lot.lotCode || lot.id.slice(0, 8) }}</strong><span class="cell-subtitle">{{ locate(lot.locationId) }}</span><span v-if="material.category === 'fabric'" class="cell-subtitle">{{ number(lot.properties.widthCm) }} × {{ number(lot.properties.heightCm) }} cm <span v-if="lot.properties.irregular">· {{ t('irregularFabric') }}</span></span><span v-if="lot.sourceLotId" class="cell-subtitle">{{ t('cutFrom') }} {{ state.lots.find(row => row.id === lot.sourceLotId)?.lotCode || lot.sourceLotId.slice(0,8) }}</span></td>
+              <td><strong>{{ lot.lotCode || lot.id.slice(0, 8) }}</strong><span class="cell-subtitle">{{ locate(lot.locationId) }}</span><span v-if="material.category === 'fabric'" class="cell-subtitle">{{ number(lot.properties.widthCm) }} × {{ number(lot.properties.heightCm) }} cm <span v-if="lot.properties.irregular">· {{ t('irregularFabric') }}</span></span><span v-if="lot.sourceLotId" class="cell-subtitle">{{ t('cutFrom') }} {{ state.lots.find(row => row.id === lot.sourceLotId)?.lotCode || lot.sourceLotId.slice(0,8) }}</span><MaterialDescriptors :properties="lot.properties" :category="material.category" scope="lot" readonly /></td>
               <td>{{ lot.confidence === 'estimated' ? '≈ ' : '' }}{{ number(lot.quantity) }}<span class="cell-subtitle">{{ t(`unit_${material.unit}`) }}</span><span v-if="lotReserved(lot.id)" class="cell-subtitle">{{ t('reserved') }}: {{ number(lotReserved(lot.id)) }}</span><span v-if="lot.cost !== null" class="cell-subtitle">{{ money(lot.cost, lot.currency) }}</span></td>
               <td><span class="badge" :class="{ green: lot.status === 'usable', warning: ['blocked','unverified'].includes(lot.status), danger: lot.status === 'damaged' }">{{ t(lot.status) }}</span></td>
               <td><button v-if="material.reusable" class="button text small" @click="openModal('toolActivity',lot.id)">{{ t('toolActivity') }}</button><button class="button text small" @click="labeling = { lotIds: [lot.id] }">{{ t('lotLabel') }}</button><div v-if="lot.status !== 'transformed'" class="actions"><button class="icon-button" :aria-label="`${t('editLot')}: ${lotName(lot)}`" @click="openModal('lotEdit', lot.id)"><Pencil :size="16" /></button><button class="icon-button" :aria-label="`${t('movement')}: ${lotName(lot)}`" @click="openModal('stock', lot.id)"><ArrowRightLeft :size="17" /></button><button class="button small" :disabled="!projects.length" @click="openModal('reserve', lot.id)">{{ t('reserve') }}</button></div><div v-if="material.category === 'fabric' && material.unit === 'piece'" class="actions"><button class="button text small" @click="openCut(lot)"><Scissors :size="14" />{{ t('fabricWorkspace') }}</button></div><button v-if="material.category === 'kit' && material.unit === 'piece' && lot.status === 'usable' && lot.quantity >= 1" class="button text small" @click="openKit(lot)">{{ t('openKit') }}</button></td>
@@ -150,8 +130,8 @@ function openKit(lot) { openModal('kit', lot.id); }
       </div>
       <aside class="stack">
         <KitHistory v-if="material.category==='kit'&&material.unit==='piece'" :material-id="material.id" />
-        <section class="panel"><div class="panel-heading"><h2>{{ t('details') }}</h2><span class="swatch" :style="{ backgroundColor: material.color || undefined }"><Heart v-if="material.favorite" :size="17" /></span></div><div class="panel-body"><p class="field-help">{{ t('quantityHelp') }}</p><div v-for="[label, value] in [[t('brand'),material.brand],[t('range'),material.range],[t('code'),material.code],[t('minimum'),material.minimum === null ? '' : number(material.minimum)],[t('packageSize'),material.packageSize === null ? '' : number(material.packageSize)],[t('strands'),material.strands],[t('composition'),material.properties.composition]]" :key="label" class="stat-row"><span>{{ label }}</span><span>{{ value || '—' }}</span></div><div v-for="[field,value] in Object.entries(material.properties.custom || {})" :key="field" class="stat-row"><span>{{ field }}</span><span>{{ value || '—' }}</span></div><div v-if="material.tags.length" class="actions form-section"><span v-for="tag in material.tags" :key="tag" class="badge">{{ tag }}</span></div><div v-if="material.properties.care" class="form-section"><h3>{{ t('careInstructions') }}</h3><p>{{ material.properties.care }}</p></div><div v-if="material.notes" class="form-section"><h3>{{ t('notes') }}</h3><p>{{ material.notes }}</p></div></div></section>
-        <section class="panel"><div class="panel-heading"><h2>{{ t('photosAndFiles') }}</h2><button class="icon-button" :disabled="busy" :aria-label="t('addAttachment')" @click="attachmentInput.click()"><ImagePlus :size="18" /></button><input ref="attachmentInput" class="sr-only" type="file" accept="image/png,image/jpeg,image/webp,image/gif,application/pdf" multiple @change="addPhotos" /></div><div class="panel-body"><p v-if="!photos.length" class="field-help">{{ t('photoHelp') }}</p><div v-else class="attachment-list"><div v-for="photo in photos" :key="photo.id" class="attachment"><img v-if="photo.url" :src="photo.url" :alt="photo.name" /><span v-else class="badge">{{ photo.unavailable ? t('fileUnavailable') : 'PDF' }}</span><small>{{ photo.name }}</small><button class="button text small" @click="downloadAttachment(photo)"><Download :size="14" />{{ t('export') }}</button></div></div></div></section>
+        <section class="panel"><div class="panel-heading"><h2>{{ t('details') }}</h2><span class="swatch" :style="{ backgroundColor: material.color || undefined }"><Heart v-if="material.favorite" :size="17" /></span></div><div class="panel-body"><p class="field-help">{{ t('quantityHelp') }}</p><div v-for="[label, value] in [[t('brand'),material.brand],[t('range'),material.range],[t('code'),material.code],[t('minimum'),material.minimum === null ? '' : number(material.minimum)],[t('packageSize'),material.packageSize === null ? '' : number(material.packageSize)],[t('strands'),material.strands],[t('composition'),material.properties.composition]]" :key="label" class="stat-row"><span>{{ label }}</span><span>{{ value || '—' }}</span></div><div v-for="[field,value] in Object.entries(material.properties.custom || {})" :key="field" class="stat-row"><span>{{ field }}</span><span>{{ value || '—' }}</span></div><MaterialDescriptors :properties="material.properties" :category="material.category" readonly /><p v-if="material.description" class="form-section">{{ material.description }}</p><div v-if="material.tags.length" class="actions form-section"><span v-for="tag in material.tags" :key="tag" class="badge">{{ tag }}</span></div><div v-if="material.properties.care" class="form-section"><h3>{{ t('careInstructions') }}</h3><p>{{ material.properties.care }}</p></div><div v-if="material.notes" class="form-section"><h3>{{ t('notes') }}</h3><p>{{ material.notes }}</p></div></div></section>
+        <section class="panel"><div class="panel-heading"><h2>{{ t('photosAndFiles') }}</h2><button class="icon-button" :disabled="busy" :aria-label="t('addAttachment')" @click="addingAttachments=true"><ImagePlus :size="18" /></button></div><div class="panel-body"><p v-if="!material.attachments.length" class="field-help">{{ t('photoHelp') }}</p><AttachmentList :ids="material.attachments"/></div></section>
       </aside>
     </div>
     <InventoryLabels v-if="labeling" v-bind="labeling" @close="labeling = null" />
