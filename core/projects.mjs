@@ -1,3 +1,4 @@
+import {resetWorkView,workMarkers} from './work-companion.mjs';
 import {normalizeProjectSettings} from './thread-estimate-history.mjs';
 import { validateSessionWorkAssignment, validateSessionWork } from './session-work.mjs';
 import { add, subtract, assert, quantity, text, oneOf, integer, currency, date, stringList, jsonObject, find, optionalRef, recordId, put, activeProject, audit } from './shared.mjs';
@@ -25,7 +26,7 @@ export function saveProject(state, p, ctx) {
     assert(!state.reservations.some(r => r.projectId === id && r.quantity > 0), 'close_project_first');
   }
   const designChanged = existing && (existing.patternId !== patternId || existing.revisionId !== revisionId);
-  if (designChanged && (existing.completed.length || existing.manualPercent || existing.referenceData?.annotations?.length || existing.referenceData?.bookmarks?.length)) assert(p.acceptRevisionChange === true, 'revision_change_confirmation');
+  if (designChanged && (existing.completed.length || existing.manualPercent || existing.referenceData?.annotations?.length || existing.referenceData?.bookmarks?.length || workMarkers(existing.view).length)) assert(p.acceptRevisionChange === true, 'revision_change_confirmation');
   const project = {
     id, name: text(source.name, 'name', { required: true, max: 300 }),
     technique: text(source.technique ?? 'cross_stitch', 'technique', { required: true, max: 100 }),
@@ -37,7 +38,7 @@ export function saveProject(state, p, ctx) {
     settings: normalizeProjectSettings(source.settings,{state}), tags: stringList(source.tags), attachments: stringList(source.attachments, 'attachments'),
     completed: designChanged ? [] : (existing?.completed ?? []),
     manualPercent: designChanged ? 0 : (existing?.manualPercent ?? 0),
-    view: existing?.view ?? {}, progressHistory: existing?.progressHistory ?? [],
+    view: designChanged ? resetWorkView(existing.view) : existing?.view ?? {}, progressHistory: existing?.progressHistory ?? [],
     ...(!designChanged && existing?.referenceData ? { referenceData: existing.referenceData } : {}),
     createdAt: existing?.createdAt ?? ctx.now, updatedAt: ctx.now,
   };
@@ -145,7 +146,7 @@ export function updateProgress(state, p, ctx) {
   const project = activeProject(state, p.projectId), revision = projectRevision(state, project);
   if (revision) {
     assert(p.manualPercent === undefined, 'structured_progress_required');
-    assert(p.revisionId === undefined || p.revisionId === project.revisionId, 'stale_revision');
+    assert((p.patternId === undefined || p.patternId === project.patternId) && (p.revisionId === undefined || p.revisionId === project.revisionId), 'stale_revision');
     assert(Array.isArray(p.completed) && p.completed.length <= 1_000_000, 'invalid_progress');
     const valid = validProgressKeys(revision);
     assert(p.completed.every(key => typeof key === 'string' && valid.has(key)), 'invalid_progress');
@@ -163,6 +164,7 @@ export function updateProgress(state, p, ctx) {
 
 export function saveProjectView(state, p, ctx) {
   const project = find(state, 'projects', p.projectId);
+  assert(project.view.workVersion !== 1, 'work_view_command_required');
   project.view = jsonObject(p.view, 'view');
   project.updatedAt = ctx.now;
 }
