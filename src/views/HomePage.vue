@@ -10,6 +10,10 @@ import { localDate } from '../../core/calendar.mjs';
 import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
 import PatternThumbnail from '../components/PatternThumbnail.vue';
+import StudioWelcome from '../components/StudioWelcome.vue';
+import ExampleGuide from '../components/ExampleGuide.vue';
+import { exampleMode } from '../example-mode.mjs';
+const firstStudio = computed(() => !state.value.materials.length && !state.value.projects.length && !state.value.patterns.length);
 const projects = computed(() => state.value.projects.filter(row => !['completed', 'archived'].includes(row.status)).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 3));
 const shortages = computed(() => shoppingNeeds(state.value).filter(row => row.shortfall > 0));
 const today = ref(localDate());
@@ -24,7 +28,7 @@ function revision(project) { return state.value.patterns.find(row => row.id === 
 <template>
   <div class="page">
     <PageHeader :eyebrow="t('welcome')" :title="t('home')"><button class="button primary" @click="navigate('projects', 'new')"><Plus :size="16" />{{ t('newProject') }}</button></PageHeader>
-    <section class="hero"><div><p class="eyebrow">RICAMO · {{ t('studio') }}</p><h1>{{ t('today') }}</h1><p>{{ t('homeBody') }}</p><button class="button" @click="navigate(projects.length ? 'project' : 'materials', projects[0]?.id || 'new')">{{ projects.length ? t('inProgress') : t('addMaterial') }}<MoveRight :size="16" /></button></div><div class="hero-art" aria-hidden="true"><div class="thread-hoop"><Flower2 :stroke-width=".7" /></div></div></section>
+    <StudioWelcome v-if="firstStudio && !exampleMode"/><ExampleGuide v-if="exampleMode"/><section v-if="!firstStudio && !exampleMode" class="hero"><div><p class="eyebrow">RICAMO · {{ t('studio') }}</p><h1>{{ t('today') }}</h1><p>{{ t('homeBody') }}</p><button class="button" @click="navigate(projects.length ? 'project' : 'materials', projects[0]?.id || 'new')">{{ projects.length ? t('inProgress') : t('addMaterial') }}<MoveRight :size="16" /></button></div><div class="hero-art" aria-hidden="true"><div class="thread-hoop"><Flower2 :stroke-width=".7" /></div></div></section>
     <div class="metrics">
       <div class="metric"><div class="metric-top">{{ t('materials') }}<Package :size="18" /></div><div class="metric-value">{{ number(state.materials.filter(row => !row.archived).length, 0) }}</div><span class="metric-caption">{{ t('materialCount') }}</span></div>
       <div class="metric"><div class="metric-top">{{ t('projects') }}<FolderHeart :size="18" /></div><div class="metric-value">{{ number(state.projects.filter(row => !['completed','archived'].includes(row.status)).length, 0) }}</div><span class="metric-caption">{{ t('inProgress') }}</span></div>
