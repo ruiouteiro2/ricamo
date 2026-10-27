@@ -8,6 +8,7 @@ import MaterialForm from '../components/MaterialForm.vue';
 import CategoryManager from '../components/CategoryManager.vue';
 import InventoryBulkForm from '../components/InventoryBulkForm.vue';
 import InventoryRapidForm from '../components/InventoryRapidForm.vue';
+import StockCountDialog from '../components/StockCountDialog.vue';
 import InventoryLabels from '../components/InventoryLabels.vue';
 import KitLibrary from '../components/KitLibrary.vue';
 import InventorySavedViews from '../components/InventorySavedViews.vue';
@@ -101,7 +102,7 @@ function workflowSaved(){workflow.value='';selected.value=[];}
       <select v-model="sort" :aria-label="t('sort')"><option value="nameAZ">{{ t('nameAZ') }}</option><option value="recent">{{ t('recent') }}</option><option value="nameZA">{{ t('nameZA') }}</option><option value="codeAZ">{{ t('codeAZ') }}</option><option value="brandAZ">{{ t('brandAZ') }}</option></select>
       <button class="button small" :disabled="preferenceBusy" @click="rememberFilters">{{ t('rememberFilters') }}</button>
     </div>
-    <details class="form-section"><summary>{{ t('inventoryWorkflows') }}</summary><div class="actions form-section"><button class="button" @click="workflow = 'rapid'">{{ t('rapidEntry') }}</button><button class="button" @click="workflow = 'collections'">{{ t('kitCollections') }}</button><button class="button" @click="workflow = 'categories'">{{ t('manageCategories') }}</button></div></details>
+    <details class="form-section"><summary>{{ t('inventoryWorkflows') }}</summary><div class="actions form-section"><button class="button" @click="workflow='count'">{{ t('stockCountTitle') }}</button><button class="button" @click="workflow = 'rapid'">{{ t('rapidEntry') }}</button><button class="button" @click="workflow = 'collections'">{{ t('kitCollections') }}</button><button class="button" @click="workflow = 'categories'">{{ t('manageCategories') }}</button></div></details>
     <p v-if="preferenceError" role="alert" class="notice error">{{ preferenceError }}</p>
     <section class="panel">
       <div class="panel-body"><details><summary>{{ t('moreInventoryFilters') }}</summary><div class="form-grid"><label>{{ t('stockFilter') }}<select v-model="stock"><option value="">{{ t('all') }}</option><option value="positive">{{ t('knownPositiveStock') }}</option><option value="zero">{{ t('knownZeroStock') }}</option><option value="unknown">{{ t('unknown') }}</option></select></label><label>{{ t('reservationFilter') }}<select v-model="reservation"><option value="">{{ t('all') }}</option><option value="reserved">{{ t('reserved') }}</option><option value="unreserved">{{ t('notReserved') }}</option><option value="conflict">{{ t('conflict') }}</option></select></label><label>{{ t('project') }}<select v-model="project"><option value="">{{ t('all') }}</option><option v-for="row in state.projects" :key="row.id" :value="row.id">{{ row.name }}</option></select></label><label>{{ t('lotStatusFilter') }}<select v-model="lotStatus"><option value="">{{ t('all') }}</option><option v-for="status in ['usable','blocked','damaged','unverified','transformed']" :key="status" :value="status">{{ t(status) }}</option></select></label></div><p class="field-help">{{ t('projectFilterHelp') }}</p></details><InventorySavedViews :current="currentView()" @apply="applyView" /></div>
@@ -129,6 +130,7 @@ function workflowSaved(){workflow.value='';selected.value=[];}
     <KitLibrary v-if="workflow==='collections'||workflow==='collectionSelection'" :selected-material-ids="workflow==='collectionSelection'?selected:[]" @close="workflow=''" />
     <CategoryManager v-if="workflow==='categories'" @close="workflow=''" />
     <InventoryBulkForm v-if="workflow==='bulk'" :ids="selected" @close="workflow=''" @saved="workflowSaved" />
+    <StockCountDialog v-if="workflow==='count'" :material-ids="selected" :initial-location="location" :initial-category="category" @close="workflow=''" @saved="workflowSaved"/>
     <InventoryRapidForm v-if="workflow==='rapid'" @close="workflow=''" @saved="workflowSaved" />
     <InventoryLabels v-if="workflow==='labels'" :material-ids="selected" @close="workflow=''" />
     <MaterialForm v-if="adding" @close="closeForm" @saved="created" />
