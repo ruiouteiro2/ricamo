@@ -17,8 +17,8 @@ const en = key => dictionary[key][1];
 const environment = { ...process.env, RICAMO_DATA_DIR: data };
 delete environment.ELECTRON_RUN_AS_NODE; delete environment.NODE_OPTIONS;
 const executable = process.env.RICAMO_EXECUTABLE || join(root, 'node_modules/electron/dist', process.platform === 'win32' ? 'electron.exe' : 'electron');
-const args = [...(process.env.RICAMO_TEST_NO_SANDBOX === '1' ? ['--no-sandbox'] : []), ...(process.env.RICAMO_EXECUTABLE ? [] : [root])];
-const launch = () => electron.launch({ executablePath: resolve(executable), args, env: environment, timeout: 40000 });
+const args = [...(process.env.RICAMO_EXECUTABLE ? [] : [root])];
+const launch = () => electron.launch({ chromiumSandbox: true, executablePath: resolve(executable), args, env: environment, timeout: 40000 });
 const { repo: source, asset, revision } = projectPackageFixture();
 let packageText;
 try {
