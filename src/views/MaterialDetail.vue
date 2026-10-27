@@ -1,4 +1,5 @@
 <script setup>
+import CatalogueReferenceUsage from '../components/CatalogueReferenceUsage.vue';
 import MaterialDescriptors from '../components/MaterialDescriptors.vue';
 import { lotDescriptorInitial, lotDescriptorFields, lotDescriptorProperties } from '../material-descriptors.mjs';
 import { computed, ref, watch } from 'vue';
@@ -7,6 +8,7 @@ import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
 import EntityForm from '../components/EntityForm.vue';
 import InventoryLabels from '../components/InventoryLabels.vue';
+import StockCountDialog from '../components/StockCountDialog.vue';
 import { categoryLabel } from '../inventory-categories.mjs';
 import MaterialForm from '../components/MaterialForm.vue';
 import AttachmentEditorDialog from '../components/AttachmentEditorDialog.vue';
@@ -30,7 +32,7 @@ const historyPages = computed(() => Math.max(1, Math.ceil(movements.value.length
 const history = computed(() => movements.value.slice((historyPage.value - 1) * historySize, historyPage.value * historySize));
 const reservations = computed(() => state.value.reservations.filter(row => row.materialId === props.id && row.quantity > 0));
 const projects = computed(() => state.value.projects.filter(row => !['completed', 'archived'].includes(row.status)));
-const labeling = ref(null);
+const labeling = ref(null), counting=ref(false);
 const editing = ref(false), modal = ref(null), pageError = ref(''), busy = ref(false);
 const addingAttachments = ref(false);
 const categoryName = computed(() => categoryLabel(material.value?.category || 'other'));
@@ -93,9 +95,10 @@ function openKit(lot) { openModal('kit', lot.id); }
 
 <template>
   <div v-if="material" class="page">
+    <StockCountDialog v-if="counting" :material-ids="[id]" @close="counting=false" @saved="counting=false"/>
     <AttachmentEditorDialog v-if="addingAttachments" type="material.save" :owner-id="id" :attachment-ids="material.attachments" :title="t('photosAndFiles')" accept="image/png,image/jpeg,image/webp,image/gif,application/pdf" @close="addingAttachments=false" @saved="addingAttachments=false;notify()"/>
     <button class="button text" @click="navigate('materials')"><ArrowLeft :size="16" />{{ t('materials') }}</button>
-    <PageHeader :eyebrow="categoryName" :title="material.name" :description="[material.brand, material.range, material.code].filter(Boolean).join(' · ')">
+    <PageHeader :eyebrow="categoryName" :title="material.name" :description="[material.brand, material.range, material.code].filter(Boolean).join(' · ')"><button class="button" @click="counting=true">{{ t('stockCountTitle') }}</button>
       <button class="button" :disabled="busy" @click="duplicate"><Copy :size="16" />{{ t('duplicate') }}</button>
       <button class="button" :disabled="material.archived" @click="openModal('merge')">{{ t('mergeMaterial') }}</button>
       <button class="button" @click="openModal('archive')"><Archive :size="16" />{{ t(material.archived ? 'restore' : 'archive') }}</button>
@@ -104,7 +107,7 @@ function openKit(lot) { openModal('kit', lot.id); }
     </PageHeader>
     <p v-if="pageError" class="notice error" role="alert">{{ pageError }}</p>
     <p v-if="material.archived" class="notice">{{ t('archivedMaterialHelp') }}</p>
-    <div v-if="summary.conflicts.length" class="notice error" role="alert"><CircleAlert :size="18" /><div><strong>{{ t('conflict') }}</strong><p v-for="conflict in summary.conflicts" :key="conflict.lotId">{{ lotName(lots.find(lot => lot.id === conflict.lotId)) }}: {{ number(conflict.quantity) }} {{ t(`unit_${material.unit}`) }} · {{ conflict.projectIds.map(projectName).join(', ') }}</p><p>{{ t('reservationConflictHelp') }}</p></div></div>
+    <div v-if="summary.conflicts.length" class="notice error" role="alert"><CircleAlert :size="18" /><div><strong>{{ t('conflict') }}</strong><p v-for="conflict in summary.conflicts" :key="conflict.lotId">{{ lotName(lots.find(lot => lot.id === conflict.lotId)) }}: {{ number(conflict.quantity) }} {{ t(`unit_${material.unit}`) }} · {{ conflict.projectIds.map(projectName).join(', ') }}</p><p>{{ t('reservationConflictHelp') }}</p><button class="button small" @click="counting=true">{{ t('stockCountTitle') }}</button></div></div>
     <div class="metrics">
       <div class="metric"><div class="metric-top">{{ t('physical') }}<Package :size="18" /></div><div class="metric-value">{{ summary.estimated ? '≈ ' : '' }}{{ number(summary.physical) }}</div><div class="metric-caption">{{ t(`unit_${material.unit}`) }}<span v-if="summary.unknown"> · {{ t('knownAtLeast') }} {{ number(summary.knownPhysical) }}</span></div></div>
       <div class="metric"><div class="metric-top">{{ t('eligible') }}</div><div class="metric-value">{{ number(summary.eligible) }}</div><div class="metric-caption">{{ t('eligibleHelpShort') }}</div></div>
@@ -113,6 +116,7 @@ function openKit(lot) { openModal('kit', lot.id); }
     </div>
     <div class="two-columns">
       <div class="stack">
+        <CatalogueReferenceUsage v-if="material.category==='reference'" :material-id="id"/>
         <section class="panel">
           <div class="panel-heading"><h2>{{ t('lots') }}</h2><button class="button small" :disabled="material.archived" @click="openModal('lot')"><Plus :size="15" />{{ t('addLot') }}</button></div>
           <EmptyState v-if="!lots.length" compact :icon="Package" :title="t('noLots')" :description="t('noLotsHelp')"><button class="button primary" :disabled="material.archived" @click="openModal('lot')">{{ t('addLot') }}</button></EmptyState>
