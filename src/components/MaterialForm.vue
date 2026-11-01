@@ -33,6 +33,7 @@ if (!props.material) {
   draft.brand = props.context.brand || (activeGroup.value.children.length === 1 ? activeGroup.value.children[0].brand : '');
   draft.unit = draft.category === 'thread' ? 'm' : 'piece';
 }
+const brandLabel = brand => activeGroup.value.children.find(child => child.brand === brand)?.label || brand;
 const brandOptions = computed(() => groupId.value === 'accessories' ? catalogueFacets.value.brands : activeGroup.value.children.map(child => child.brand).filter(Boolean));
 watch(groupId, () => {
   draft.category = activeGroup.value.category;
@@ -75,8 +76,8 @@ async function confirmDuplicate() {
   } catch (caught) { duplicateError.value = errorText(caught); }
   finally { busy.value = false; }
 }
-const threadFamilies = computed(() => ['mouline', 'special', 'silk', 'wool', 'spool', 'pearl', ...(['dmc', 'anchor'].includes(draft.brand.trim().toLowerCase()) ? ['alsace'] : [])]);
-const threadFamily = ref(draft.properties.threadFamily || 'mouline');
+const threadFamilies = computed(() => draft.brand.trim().toLowerCase() === 'madeira' ? ['spool'] : ['mouline', 'special', 'silk', 'wool', 'spool', 'pearl', ...(['dmc', 'anchor'].includes(draft.brand.trim().toLowerCase()) ? ['alsace'] : [])]);
+const threadFamily = ref(threadFamilies.value.includes(draft.properties.threadFamily) ? draft.properties.threadFamily : threadFamilies.value[0]);
 const usageStatus = ref('new');
 function familyOf(product) {
   const range = String(product.range || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
@@ -93,7 +94,7 @@ function familyLabel(family) {
 }
 watch(() => [threadFamily.value, draft.brand], ([value]) => {
   if (draft.category !== 'thread') return;
-  if (!threadFamilies.value.includes(value)) { threadFamily.value = 'mouline'; return; }
+  if (!threadFamilies.value.includes(value)) { threadFamily.value = threadFamilies.value[0]; return; }
   draft.properties.threadFamily = value;
   if (draft.properties.product && draft.properties.product.brand === draft.brand && familyOf(draft.properties.product) === value) return;
   draft.range = familyLabel(value);
@@ -243,7 +244,7 @@ async function save() {
         <div class="form-grid">
           <FormField v-if="!context.groupId" :label="t('category')" required v-slot="{ id }"><select :id="id" v-model="groupId"><option v-for="group in INVENTORY_GROUPS" :key="group.id" :value="group.id">{{ t(group.labelKey) }}</option></select></FormField>
           <FormField v-if="draft.category !== 'thread'" :label="t('name')" required wide v-slot="{ id }"><input :id="id" v-model="draft.name" required maxlength="300" /></FormField>
-          <FormField :label="t('brand')" :required="groupId !== 'accessories'" v-slot="{ id }"><output v-if="context.brand" :id="id" class="notice">{{ draft.brand }}</output><select v-else :id="id" v-model="draft.brand" :required="groupId !== 'accessories'"><option value="">{{ t('allBrands') }}</option><option v-if="draft.brand && !brandOptions.includes(draft.brand)" :value="draft.brand">{{ draft.brand }}</option><option v-for="brand in brandOptions" :key="brand" :value="brand">{{ brand }}</option></select></FormField>
+          <FormField :label="t('brand')" :required="groupId !== 'accessories'" v-slot="{ id }"><output v-if="context.brand" :id="id" class="notice">{{ brandLabel(draft.brand) }}</output><select v-else :id="id" v-model="draft.brand" :required="groupId !== 'accessories'"><option value="">{{ t('allBrands') }}</option><option v-if="draft.brand && !brandOptions.includes(draft.brand)" :value="draft.brand">{{ draft.brand }}</option><option v-for="brand in brandOptions" :key="brand" :value="brand">{{ brandLabel(brand) }}</option></select></FormField>
           <FormField v-if="draft.category === 'thread'" :label="t('addMaterialType')" required v-slot="{ id }"><select :id="id" v-model="threadFamily" required><option v-for="family in threadFamilies" :key="family" :value="family">{{ familyLabel(family) }}</option></select></FormField>
           <FormField v-else-if="groupId === 'accessories'" :label="t('addMaterialType')" v-slot="{ id }"><output v-if="context.section" :id="id" class="notice">{{ t(activeGroup.children.find(child => child.id === accessoryId).labelKey) }}</output><select v-else :id="id" v-model="accessoryId"><option v-for="child in activeGroup.children" :key="child.id" :value="child.id">{{ t(child.labelKey) }}</option></select></FormField>
           <FormField v-else :label="t('addMaterialType')" v-slot="{ id }"><input :id="id" v-model="draft.range" maxlength="200" /></FormField>
