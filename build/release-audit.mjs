@@ -16,7 +16,7 @@ const local=path=>relative(root,path).replaceAll('\\','/');
 const internal=path=>join(...path.split('/'));
 const read=path=>extractFile(asar,internal(path));
 async function hashFile(path){const hash=createHash('sha256');for await(const chunk of createReadStream(path))hash.update(chunk);return hash.digest('hex')}
-const entries=listPackage(asar).map(path=>path.replace(/^\//,''));
+const entries=listPackage(asar).map(path=>path.replaceAll('\\','/').replace(/^\/+/,''));
 const files=entries.filter(path=>!statFile(asar,internal(path)).files);
 const packaged=JSON.parse(read('package.json'));
 assert.equal(packaged.name,manifest.name);assert.equal(packaged.version,manifest.version);assert.equal(packaged.main,manifest.main);
