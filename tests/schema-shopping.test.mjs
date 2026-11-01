@@ -40,3 +40,5 @@ test('reserved stock is protected and incompatible package measures require veri
 test('numeric pattern revisions estimate packs explicitly, not chart-cover pixels',()=>{
  let s=createState();const revision=createBlank(10,10,[{brand:'DMC',range:'Mouliné',code:'310',name:'Black',hex:'#000000',rgb:[0,0,0]}],{id:'numeric',settings:{strands:2,fabric:{type:'aida',countX:14,countY:14,countMeaning:'stitches',overX:1,overY:1}}});revision.cells.fill(0);s=run(s,'pattern.save',{id:'numeric',name:'Numeric',revision});const source=schemaSupplySource(s,selection('numeric'));assert.equal(source.estimated,true);assert.equal(source.requirements[0].unit,'skein');assert.equal(source.requirements[0].quantity,1);
 });
+
+test('removing a selection preserves existing cancellable orders and stock',()=>{let s=seed();s=run(s,'schema.purchaseMissing',selection('a'));const before=structuredClone(s);s=run(s,'schema.unselectShopping',selection('a'));assert.deepEqual(s.settings.preferences.schemaShopping,[]);assert.deepEqual(s.purchases,before.purchases);assert.deepEqual(s.lots,before.lots);});
