@@ -1,4 +1,5 @@
 <script setup>
+import SchemaShopping from '../components/SchemaShopping.vue';
 import { computed, ref, reactive, watch } from 'vue';
 import { ChevronRight, CheckCircle2, Search, ExternalLink } from '@lucide/vue';
 import PageHeader from '../components/PageHeader.vue';
@@ -53,6 +54,7 @@ async function source(item) { error.value = ''; try { await openPurchaseLink(ite
             <p v-if="item.stitchesWidth" class="field-help">{{ item.stitchesWidth }} × {{ item.stitchesHeight }} {{ t('chartStitches') }}</p>
             <label class="checkbox-label" :for="`owned-${item.id}`"><input :id="`owned-${item.id}`" type="checkbox" :checked="record(item).owned" :disabled="busy[item.id]" @change="update(item, { owned: $event.target.checked }, $event.target)" />{{ t('chartOwned') }}</label>
             <label :for="`state-${item.id}`">{{ t('status') }}</label><select :id="`state-${item.id}`" :value="record(item).status" :disabled="busy[item.id]" @change="update(item, { status: $event.target.value }, $event.target)"><option v-for="value in CHART_STATUSES" :key="value" :value="value">{{ t(`chartStatus_${value}`) }}</option></select>
+            <SchemaShopping kind="chart" :id="item.id"/>
             <button class="button text small" @click="source(item)"><ExternalLink :size="14" />Casa Cenina</button>
           </div>
         </article>
