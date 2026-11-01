@@ -78,7 +78,7 @@ export function previewSchemaPurchases(state,selection){
   }
   const suppressed=matches.some(m=>m.properties.restockSuppressed===true);
   const missing=unknown?null:Math.max(0,subtract(row.required,add(available,pending)));
-  const toBuy=missing===null?null:['skein','spool','pack','piece','cone','ball'].includes(row.unit)?Math.ceil(missing-1e-12):missing;
+  const toBuy=missing===null?null:['skein','spool','pack','piece','cone','ball'].includes(row.unit)?Math.max(0,Math.ceil(missing-1e-12)):missing;
   return {...row,key,matches:matches.map(m=>m.id),available:unknown?null:available,pending,toBuy,suppressed};
  });
  return {source,selected,selections,rows,issues};
