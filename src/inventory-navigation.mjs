@@ -5,7 +5,7 @@ export const FABRIC_BRANDS = ['Zweigart', 'Permin of Copenhagen', 'Anchor', 'DMC
   'Picture This Plus', 'Polstitches Designs', 'R & R Reproductions', 'Weeks Dye Works', 'xJuDesign'];
 const brandChild = brand => ({ id: brand.toLowerCase().replace(/[^a-z0-9]+/g, '-'), label: brand, brand });
 export const INVENTORY_GROUPS = [
-  { id: 'threads', category: 'thread', labelKey: 'inventoryThreads', children: ['DMC','Anchor','Profilo','P&G','Madeira'].map(brand => ({ ...brandChild(brand), label: brand === 'Madeira' ? 'Metallici Madeira' : brand, ...(brand === 'P&G' ? { reference: { name: 'Filo rame verniciato', source: 'Tombolo e Disegni', url: 'https://www.tombolodisegnishop.it/prodotto/filo-rame-verniciato-030/' } } : {}) })) },
+  { id: 'threads', category: 'thread', labelKey: 'inventoryThreads', children: ['DMC','Anchor','Profilo','P&G','Madeira'].map(brand => ({ ...brandChild(brand), label: brand === 'Madeira' ? 'Metallici Madeira' : brand, ...(brand === 'DMC' ? { reference: { name: 'DMC Diamant', source: 'DMC', family: 'diamant', url: 'https://www.dmc.com/IT/it/products/metallic-thread/diamant' } } : {}), ...(brand === 'P&G' ? { reference: { name: 'Filo rame verniciato', source: 'Tombolo e Disegni', url: 'https://www.tombolodisegnishop.it/prodotto/filo-rame-verniciato-030/' } } : {}) })) },
   { id: 'beads', category: 'embellishment', labelKey: 'inventoryBeads', children: ['Mill Hill'].map(brandChild) },
   { id: 'fabrics', category: 'fabric', labelKey: 'inventoryFabrics', children: FABRIC_BRANDS.map(brandChild) },
   { id: 'accessories', category: 'tool', labelKey: 'inventoryAccessories', children: [
