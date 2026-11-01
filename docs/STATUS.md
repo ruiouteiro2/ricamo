@@ -1,5 +1,11 @@
 # Ricamo delivery evidence
 
+## Refined thread and pearl icons - 2026-11-01
+
+The shared thread icon now depicts a coloured skein with individual wrapped strands, a cream/gold paper band and a loose thread end. The bead icon is a cluster of three dimensional ivory pearls with highlights and soft shading. Both remain local SVGs with unique per-instance gradient IDs and scale with the existing cards. Fabric and accessory artwork is unchanged.
+
+Validation: production build passed. An isolated headless Edge render found both updated icons with no page errors. Full category cards and enlarged icon details were visually inspected from ignored `.runtime/refined-*.png` screenshots. No functional data changes or desktop rebuild were made.
+
 ## Brand-only category pages and material icons - 2026-11-01
 
 Parent category pages now show only the brand/subcategory cards with their contextual Add buttons, title and breadcrumbs. Product lists, summary cards and filters appear only after opening a leaf brand/subcategory. Parent-page description and global import/add actions are hidden. The complete-inventory shortcut is removed from the root navigation. This supersedes the previous parent-page aggregate-list layout; brand-specific list controls remain available.
