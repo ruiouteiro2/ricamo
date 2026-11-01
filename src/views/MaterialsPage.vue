@@ -1,4 +1,5 @@
 <script setup>
+import { CHART_CATALOGUE } from '../../core/chart-collection.mjs';
 import { INVENTORY_GROUPS, parseInventoryRoute, inventoryRoute, inventoryContext, matchesInventorySection } from '../inventory-navigation.mjs';
 import { materialSearchDescriptors } from '../material-descriptors.mjs';
 import { computed, ref, watch } from 'vue';
@@ -29,11 +30,11 @@ const adding = ref(props.initialAction === 'new' || route.value.id === 'new'), w
 const section = computed(() => parseInventoryRoute(route.value.id));
 const addContext = ref({});
 const tileLabel = tile => tile.labelKey ? t(tile.labelKey) : tile.label;
-const tiles = computed(() => section.value.group ? section.value.group.children : INVENTORY_GROUPS);
-function openTile(tile) { navigate('materials', section.value.group ? inventoryRoute(section.value.group.id, tile.id) : inventoryRoute(tile.id)); }
+const tiles = computed(() => section.value.group ? section.value.group.children : [...INVENTORY_GROUPS, { id: 'charts', labelKey: 'patterns' }]);
+function openTile(tile) { if (tile.id === 'charts') { navigate('materialCharts'); return; } navigate('materials', section.value.group ? inventoryRoute(section.value.group.id, tile.id) : inventoryRoute(tile.id)); }
 function addTo(group = section.value.group, child = section.value.child) { addContext.value = inventoryContext(group, child); adding.value = true; }
-function addToTile(tile) { addTo(section.value.group || tile, section.value.group ? tile : null); }
-function tileCount(tile) { return state.value.materials.filter(material => !material.archived && matchesInventorySection(material, section.value.group?.id || tile.id, section.value.group ? tile.id : '')).length; }
+function addToTile(tile) { if (tile.id === 'charts') { navigate('materialCharts'); return; } addTo(section.value.group || tile, section.value.group ? tile : null); }
+function tileCount(tile) { if (tile.id === 'charts') return CHART_CATALOGUE.items.length; return state.value.materials.filter(material => !material.archived && matchesInventorySection(material, section.value.group?.id || tile.id, section.value.group ? tile.id : '')).length; }
 let remembered = state.value.settings.preferences?.materialFilters || {};
 try { remembered = JSON.parse(sessionStorage.getItem('ricamo:material-view') || 'null') || remembered; } catch { /* Invalid view preferences never replace application data. */ }
 const search = ref(remembered.search || ''), category = ref(remembered.category || ''), location = ref(remembered.location || ''), filter = ref(remembered.filter || 'active'), sort = ref(remembered.sort || 'nameAZ'), page = ref(remembered.page || 1);
@@ -118,7 +119,7 @@ function workflowSaved(){workflow.value='';selected.value=[];}
     </nav>
     <section v-if="!section.showList" class="inventory-category-grid" :class="{ 'inventory-subcategory-grid': section.group }" :aria-label="t(section.group ? 'inventorySubcategories' : 'inventoryCategories')">
       <article v-for="tile in tiles" :key="tile.id" class="panel inventory-category-card">
-        <button class="inventory-category-link" @click="openTile(tile)"><InventoryCategoryIcon :group="section.group?.id || tile.id" :size="32" /><h2>{{ tileLabel(tile) }}</h2><span class="muted">{{ number(tileCount(tile), 0) }} {{ t('materials').toLowerCase() }}</span><ChevronRight :size="20" /></button>
+        <button class="inventory-category-link" @click="openTile(tile)"><InventoryCategoryIcon :group="section.group?.id || tile.id" :size="32" /><h2>{{ tileLabel(tile) }}</h2><span class="muted">{{ number(tileCount(tile), 0) }} {{ t(tile.id === 'charts' ? 'patterns' : 'materials').toLowerCase() }}</span><ChevronRight :size="20" /></button>
         <div class="panel-body"><button class="button" @click="addToTile(tile)"><Plus :size="16" />{{ t('add') }}</button></div>
       </article>
     </section>
