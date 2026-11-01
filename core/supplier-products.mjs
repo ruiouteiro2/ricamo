@@ -4,13 +4,17 @@ import dmc from '../src/engine/dmc.json' with {type:'json'};
 import acquired from '../data/supplier-catalogue.json' with {type:'json'};
 import supplement from '../data/casa-supplier-supplement.json' with {type:'json'};
 import anchor from '../data/anchor-stranded-palette.json' with {type:'json'};
+import madeira from '../data/madeira-metallic-catalogue.json' with {type:'json'};
 import lightEffects from '../data/dmc-light-effects-swatches.json' with {type:'json'};
 
 export const SUPPLIER_CATEGORIES=Object.freeze(['thread','fabric','embellishment','tool','preparation','stabilizer','finishing','storage','kit','reference']);
 export const SUPPLIERS=Object.freeze([
   {id:'casa-cenina',name:'Casa Cenina',hosts:['www.casacenina.it','casacenina.it'],home:'https://www.casacenina.it/'},
   {id:'tessiland',name:'Tessiland',hosts:['www.tessiland.com','tessiland.com'],home:'https://www.tessiland.com/it/'},
+  {id:'madeira',name:'Madeira',hosts:['www.madeira.com','madeira.com'],home:'https://www.madeira.com/it-it/',bundledOnly:true},
 ]);
+export const supplierName = id => SUPPLIERS.find(row=>row.id===id)?.name || id;
+export function supplierNameFromUrl(value) { const host = new URL(value).hostname; return SUPPLIERS.find(row=>row.hosts.includes(host))?.name || (LINK_HOSTS.has(host) && /(?:^|\.)casacenina\./.test(host) ? 'Casa Cenina' : host); }
 const anchorAliases=new Map([...(anchor.aliases??[]).map(row=>[row.from,row.to]),...anchor.colors.filter(row=>row.sourceLabel!==row.code).map(row=>[row.sourceLabel,row.code])]);
 const LINK_HOSTS=new Set([...SUPPLIERS.flatMap(row=>row.hosts),'www.casacenina.com','www.casacenina.fr','www.casacenina.es']);
 export function supplierUrl(value,{supplier=null}={}){
@@ -28,7 +32,7 @@ export function normalizeSupplierProduct(value){
   assert(value&&typeof value==='object'&&!Array.isArray(value),'supplier_product');assertSafeJson(value);
   assert(SUPPLIERS.some(row=>row.id===value.supplier),'supplier_product');assert(SUPPLIER_CATEGORIES.includes(value.category),'supplier_product');
   const id=bounded(value.id,200);assert(id,'supplier_product');const url=supplierUrl(value.url),sourceUrl=supplierUrl(value.sourceUrl??value.url);
-  const owner=value.supplier==='tessiland'?'tessiland':'casacenina';assert(new URL(url).hostname.includes(owner)&&new URL(sourceUrl).hostname.includes(owner),'supplier_product');
+  const owner=value.supplier==='madeira'?'madeira.com':value.supplier==='tessiland'?'tessiland':'casacenina';assert(new URL(url).hostname.includes(owner)&&new URL(sourceUrl).hostname.includes(owner),'supplier_product');
   assert(value.colorVariation===undefined||value.colorVariation===null||value.colorVariation==='multicolour','supplier_product');
   const result={id,colorVariation:value.colorVariation??null,supplier:value.supplier,category:value.category,type:bounded(value.type,100),brand:bounded(value.brand,200),range:bounded(value.range,200),code:bounded(value.code,200),name:bounded(value.name),colorName:bounded(value.colorName),hex:null,rgbSource:null,url,
     pack:{unit:null,lengthM:null,strands:null,divisible:null,pieces:null,weightG:null},beadSizeMm:number(value.beadSizeMm,{max:1000}),fabric:null,suitability:value.suitability?bounded(value.suitability,300):null,sourceUrl,retrievedAt:bounded(value.retrievedAt,40),verification:bounded(value.verification??'product-page',50)};
@@ -53,7 +57,7 @@ export function bundledSupplierProducts(){const legacy=[...CASA_CENINA.fabrics,.
  ...row,supplier:'casa-cenina',type:row.type??(row.category==='embellishment'?'bead':row.range==='Mouliné'?'mouline':row.brand==='Kreinik'?'metallic':'thread'),retrievedAt:CASA_CENINA.retrievedAt,
  pack:row.brand==='DMC'&&row.range==='Mouliné'?{unit:'skein',lengthM:8,strands:6,divisible:true}:row.category==='embellishment'?{unit:'pack'}:{},
  fabric:row.category==='fabric'&&row.countMeaning?{countX:row.count,countY:row.count,countMeaning:row.countMeaning,overX:row.over,overY:row.over}:null,
-})));return [...legacy,...[...acquired.products,...supplement.products].map(row=>normalizeSupplierProduct(supplierSwatch(row)))];}
+})));return [...legacy,...[...acquired.products,...supplement.products,...madeira.products].map(row=>normalizeSupplierProduct(supplierSwatch(row)))];}
 
 /** Catalogue pack facts are valid only for the exact saved material identity. */
 export function validateSupplierMaterial(material){
