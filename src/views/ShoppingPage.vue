@@ -209,7 +209,7 @@ if (route.value.page === 'shopping' && route.value.id) {
           <td><div class="actions"><button class="button small" @click="documentsId=order.id">{{ t('purchaseDocuments') }}</button><button class="icon-button" :aria-label="t('editNamedPurchase', { name: materialName(order.materialId) })" @click="openPurchase(order)"><Pencil :size="16" /></button><button v-if="order.status !== 'received'" class="icon-button" :disabled="busy" :aria-label="t(order.status === 'cancelled' ? 'includePurchase' : 'excludePurchase')" :title="t(order.status === 'cancelled' ? 'includePurchase' : 'excludePurchase')" @click="changeOrderStatus(order, order.status === 'cancelled' ? 'to_buy' : 'cancelled')"><RotateCcw v-if="order.status === 'cancelled'" :size="18" /><X v-else :size="18" /></button><button v-if="!['received','cancelled'].includes(order.status)" class="button small" @click="openReceive(order)"><PackageCheck :size="15" />{{ t('receive') }}</button></div></td>
         </tr>
       </tbody></table></div>
-      <EmptyState v-else-if="!matchingReplenishment.length" :icon="ShoppingBag" :title="state.purchases.length ? t('noResults') : t('emptyShopping')" :description="t('emptyShoppingBody')">
+      <EmptyState v-else :icon="ShoppingBag" :title="state.purchases.length ? t('noResults') : t('emptyShopping')" :description="t('emptyShoppingBody')">
         <button v-if="!state.materials.length" class="button primary" @click="navigate('materials')">{{ t('addMaterial') }}</button>
         <button v-else class="button primary" @click="openPurchase()">{{ t('newPurchase') }}</button>
       </EmptyState>
