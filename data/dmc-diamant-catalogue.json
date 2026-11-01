@@ -1,0 +1,432 @@
+{
+  "format": "ricamo-official-dmc-diamant",
+  "version": 1,
+  "retrievedAt": "2026-11-01T20:28:05.876116+00:00",
+  "sourceUrl": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+  "sourceSha256": "633db61ece8deccb7724305d4c10df25aee6136d847985d344601f3ab303e0c7",
+  "coverage": "14 Diamant SKU image references in the observed page; page selector says 11 options and body describes 13 colours. No availability claim.",
+  "products": [
+    {
+      "id": "dmc:diamant:D140",
+      "supplier": "dmc",
+      "category": "thread",
+      "type": "metallic",
+      "brand": "DMC",
+      "range": "Diamant",
+      "code": "D140",
+      "name": "DMC Diamant D140",
+      "colorName": "",
+      "hex": null,
+      "rgbSource": null,
+      "url": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "sourceUrl": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "retrievedAt": "2026-11-01T20:28:05.876116+00:00",
+      "verification": "manufacturer-product-page",
+      "pack": {
+        "unit": "spool",
+        "lengthM": 35,
+        "strands": 1,
+        "divisible": false
+      },
+      "suitability": "embroidery-declared"
+    },
+    {
+      "id": "dmc:diamant:D168",
+      "supplier": "dmc",
+      "category": "thread",
+      "type": "metallic",
+      "brand": "DMC",
+      "range": "Diamant",
+      "code": "D168",
+      "name": "DMC Diamant D168",
+      "colorName": "",
+      "hex": null,
+      "rgbSource": null,
+      "url": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "sourceUrl": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "retrievedAt": "2026-11-01T20:28:05.876116+00:00",
+      "verification": "manufacturer-product-page",
+      "pack": {
+        "unit": "spool",
+        "lengthM": 35,
+        "strands": 1,
+        "divisible": false
+      },
+      "suitability": "embroidery-declared"
+    },
+    {
+      "id": "dmc:diamant:D225",
+      "supplier": "dmc",
+      "category": "thread",
+      "type": "metallic",
+      "brand": "DMC",
+      "range": "Diamant",
+      "code": "D225",
+      "name": "DMC Diamant D225",
+      "colorName": "",
+      "hex": null,
+      "rgbSource": null,
+      "url": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "sourceUrl": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "retrievedAt": "2026-11-01T20:28:05.876116+00:00",
+      "verification": "manufacturer-product-page",
+      "pack": {
+        "unit": "spool",
+        "lengthM": 35,
+        "strands": 1,
+        "divisible": false
+      },
+      "suitability": "embroidery-declared"
+    },
+    {
+      "id": "dmc:diamant:D301",
+      "supplier": "dmc",
+      "category": "thread",
+      "type": "metallic",
+      "brand": "DMC",
+      "range": "Diamant",
+      "code": "D301",
+      "name": "DMC Diamant D301",
+      "colorName": "",
+      "hex": null,
+      "rgbSource": null,
+      "url": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "sourceUrl": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "retrievedAt": "2026-11-01T20:28:05.876116+00:00",
+      "verification": "manufacturer-product-page",
+      "pack": {
+        "unit": "spool",
+        "lengthM": 35,
+        "strands": 1,
+        "divisible": false
+      },
+      "suitability": "embroidery-declared"
+    },
+    {
+      "id": "dmc:diamant:D310",
+      "supplier": "dmc",
+      "category": "thread",
+      "type": "metallic",
+      "brand": "DMC",
+      "range": "Diamant",
+      "code": "D310",
+      "name": "DMC Diamant D310",
+      "colorName": "",
+      "hex": null,
+      "rgbSource": null,
+      "url": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "sourceUrl": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "retrievedAt": "2026-11-01T20:28:05.876116+00:00",
+      "verification": "manufacturer-product-page",
+      "pack": {
+        "unit": "spool",
+        "lengthM": 35,
+        "strands": 1,
+        "divisible": false
+      },
+      "suitability": "embroidery-declared"
+    },
+    {
+      "id": "dmc:diamant:D316",
+      "supplier": "dmc",
+      "category": "thread",
+      "type": "metallic",
+      "brand": "DMC",
+      "range": "Diamant",
+      "code": "D316",
+      "name": "DMC Diamant D316",
+      "colorName": "",
+      "hex": null,
+      "rgbSource": null,
+      "url": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "sourceUrl": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "retrievedAt": "2026-11-01T20:28:05.876116+00:00",
+      "verification": "manufacturer-product-page",
+      "pack": {
+        "unit": "spool",
+        "lengthM": 35,
+        "strands": 1,
+        "divisible": false
+      },
+      "suitability": "embroidery-declared"
+    },
+    {
+      "id": "dmc:diamant:D317",
+      "supplier": "dmc",
+      "category": "thread",
+      "type": "metallic",
+      "brand": "DMC",
+      "range": "Diamant",
+      "code": "D317",
+      "name": "DMC Diamant D317",
+      "colorName": "",
+      "hex": null,
+      "rgbSource": null,
+      "url": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "sourceUrl": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "retrievedAt": "2026-11-01T20:28:05.876116+00:00",
+      "verification": "manufacturer-product-page",
+      "pack": {
+        "unit": "spool",
+        "lengthM": 35,
+        "strands": 1,
+        "divisible": false
+      },
+      "suitability": "embroidery-declared"
+    },
+    {
+      "id": "dmc:diamant:D321",
+      "supplier": "dmc",
+      "category": "thread",
+      "type": "metallic",
+      "brand": "DMC",
+      "range": "Diamant",
+      "code": "D321",
+      "name": "DMC Diamant D321",
+      "colorName": "",
+      "hex": null,
+      "rgbSource": null,
+      "url": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "sourceUrl": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "retrievedAt": "2026-11-01T20:28:05.876116+00:00",
+      "verification": "manufacturer-product-page",
+      "pack": {
+        "unit": "spool",
+        "lengthM": 35,
+        "strands": 1,
+        "divisible": false
+      },
+      "suitability": "embroidery-declared"
+    },
+    {
+      "id": "dmc:diamant:D3821",
+      "supplier": "dmc",
+      "category": "thread",
+      "type": "metallic",
+      "brand": "DMC",
+      "range": "Diamant",
+      "code": "D3821",
+      "name": "DMC Diamant D3821",
+      "colorName": "",
+      "hex": null,
+      "rgbSource": null,
+      "url": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "sourceUrl": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "retrievedAt": "2026-11-01T20:28:05.876116+00:00",
+      "verification": "manufacturer-product-page",
+      "pack": {
+        "unit": "spool",
+        "lengthM": 35,
+        "strands": 1,
+        "divisible": false
+      },
+      "suitability": "embroidery-declared"
+    },
+    {
+      "id": "dmc:diamant:D3852",
+      "supplier": "dmc",
+      "category": "thread",
+      "type": "metallic",
+      "brand": "DMC",
+      "range": "Diamant",
+      "code": "D3852",
+      "name": "DMC Diamant D3852",
+      "colorName": "",
+      "hex": null,
+      "rgbSource": null,
+      "url": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "sourceUrl": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "retrievedAt": "2026-11-01T20:28:05.876116+00:00",
+      "verification": "manufacturer-product-page",
+      "pack": {
+        "unit": "spool",
+        "lengthM": 35,
+        "strands": 1,
+        "divisible": false
+      },
+      "suitability": "embroidery-declared"
+    },
+    {
+      "id": "dmc:diamant:D415",
+      "supplier": "dmc",
+      "category": "thread",
+      "type": "metallic",
+      "brand": "DMC",
+      "range": "Diamant",
+      "code": "D415",
+      "name": "DMC Diamant D415",
+      "colorName": "",
+      "hex": null,
+      "rgbSource": null,
+      "url": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "sourceUrl": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "retrievedAt": "2026-11-01T20:28:05.876116+00:00",
+      "verification": "manufacturer-product-page",
+      "pack": {
+        "unit": "spool",
+        "lengthM": 35,
+        "strands": 1,
+        "divisible": false
+      },
+      "suitability": "embroidery-declared"
+    },
+    {
+      "id": "dmc:diamant:D5200",
+      "supplier": "dmc",
+      "category": "thread",
+      "type": "metallic",
+      "brand": "DMC",
+      "range": "Diamant",
+      "code": "D5200",
+      "name": "DMC Diamant D5200",
+      "colorName": "",
+      "hex": null,
+      "rgbSource": null,
+      "url": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "sourceUrl": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "retrievedAt": "2026-11-01T20:28:05.876116+00:00",
+      "verification": "manufacturer-product-page",
+      "pack": {
+        "unit": "spool",
+        "lengthM": 35,
+        "strands": 1,
+        "divisible": false
+      },
+      "suitability": "embroidery-declared"
+    },
+    {
+      "id": "dmc:diamant:D699",
+      "supplier": "dmc",
+      "category": "thread",
+      "type": "metallic",
+      "brand": "DMC",
+      "range": "Diamant",
+      "code": "D699",
+      "name": "DMC Diamant D699",
+      "colorName": "",
+      "hex": null,
+      "rgbSource": null,
+      "url": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "sourceUrl": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "retrievedAt": "2026-11-01T20:28:05.876116+00:00",
+      "verification": "manufacturer-product-page",
+      "pack": {
+        "unit": "spool",
+        "lengthM": 35,
+        "strands": 1,
+        "divisible": false
+      },
+      "suitability": "embroidery-declared"
+    },
+    {
+      "id": "dmc:diamant:D898",
+      "supplier": "dmc",
+      "category": "thread",
+      "type": "metallic",
+      "brand": "DMC",
+      "range": "Diamant",
+      "code": "D898",
+      "name": "DMC Diamant D898",
+      "colorName": "",
+      "hex": null,
+      "rgbSource": null,
+      "url": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "sourceUrl": "https://www.dmc.com/IT/it/products/metallic-thread/diamant",
+      "retrievedAt": "2026-11-01T20:28:05.876116+00:00",
+      "verification": "manufacturer-product-page",
+      "pack": {
+        "unit": "spool",
+        "lengthM": 35,
+        "strands": 1,
+        "divisible": false
+      },
+      "suitability": "embroidery-declared"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "dmc:diamant:D140",
+      "variantId": 4677,
+      "sourceImageUrl": "https://dnwjchpclcsiy.cloudfront.net/images/transform/eyJyZXNpemVfdG9fZml0IjpbNTEyLG51bGxdfQ/eyJpZCI6IjAyMThkNDdiODYzYzI4NWE4OTk5MjlkNGMzZmQ4NWUyIiwic3RvcmFnZSI6InB1YmxpY19pbWFnZXMifQ?signature=65e48773a0e4b3d6ad1ec4214e0a0e2cb240235d489524e85fd8c6a3b045db76",
+      "previewSha256": "1eeaf1e633777e91bcb75d85e1e36dc02063a04f53cf371dc5f4f5052783bc20"
+    },
+    {
+      "id": "dmc:diamant:D168",
+      "variantId": 4787,
+      "sourceImageUrl": "https://dnwjchpclcsiy.cloudfront.net/images/transform/eyJyZXNpemVfdG9fZml0IjpbNTEyLG51bGxdfQ/eyJpZCI6IjM1MjE4NzgzNDUyYjg0MWYyYmRhOWMyMTNmZGQ5MTRkIiwic3RvcmFnZSI6InB1YmxpY19pbWFnZXMifQ?signature=e9e4d6a978452beb879885a82e58aa3df372cd6a7143c703bea542f307da4fad",
+      "previewSha256": "386e09a87e37721e19cb724564af1936edf5edc60289ec5d6a729a7cee72fc6f"
+    },
+    {
+      "id": "dmc:diamant:D225",
+      "variantId": 4883,
+      "sourceImageUrl": "https://dnwjchpclcsiy.cloudfront.net/images/transform/eyJyZXNpemVfdG9fZml0IjpbNTEyLG51bGxdfQ/eyJpZCI6ImRhZWQyN2JhYzQ0NzBmODI1ZDQ3ZDRmODU1OTJiNmU2Iiwic3RvcmFnZSI6InB1YmxpY19pbWFnZXMifQ?signature=33d1e8cfef19c1ab3cf02ad9111305f3964f049e7b1f5380265633f60f8b4046",
+      "previewSha256": "8b098ee5657b3bc7dc40d7a8bd32ebe5f3d67da4e8748ad6548876b0e6f18320"
+    },
+    {
+      "id": "dmc:diamant:D301",
+      "variantId": 4951,
+      "sourceImageUrl": "https://dnwjchpclcsiy.cloudfront.net/images/transform/eyJyZXNpemVfdG9fZml0IjpbNTEyLG51bGxdfQ/eyJpZCI6ImNkMTM4M2QyNWE1ZTc2NWFkYmVhMTE1ZTU3ZTQwMmQ1Iiwic3RvcmFnZSI6InB1YmxpY19pbWFnZXMifQ?signature=8da0d550a6bb70faf56aed5d8d8c0b724e84b1bff6753a12ce4d7ecddd7442bb",
+      "previewSha256": "cbf326d12c19f801beddd79f8eedc6f5c56af98a49990cafcdf9d90c27889078"
+    },
+    {
+      "id": "dmc:diamant:D310",
+      "variantId": 5014,
+      "sourceImageUrl": "https://dnwjchpclcsiy.cloudfront.net/images/transform/eyJyZXNpemVfdG9fZml0IjpbNTEyLG51bGxdfQ/eyJpZCI6ImQ0MWZmYjYxZmQyYzRmYWU5ZTcxNWM2ODAwODhiNjhjIiwic3RvcmFnZSI6InB1YmxpY19pbWFnZXMifQ?signature=8bb9e5338dc8101be632861dd68036a7d40c58cd07a28ca032807414c6f90dec",
+      "previewSha256": "5afabe717d15c282f4b1982a247918abdd80318f335f24b2715879e321d38390"
+    },
+    {
+      "id": "dmc:diamant:D316",
+      "variantId": 5094,
+      "sourceImageUrl": "https://dnwjchpclcsiy.cloudfront.net/images/transform/eyJyZXNpemVfdG9fZml0IjpbNTEyLG51bGxdfQ/eyJpZCI6ImU1MGJlMWZiMTE1YzJkYzRhNjZhNDA2ZTNlOTJkYmNlIiwic3RvcmFnZSI6InB1YmxpY19pbWFnZXMifQ?signature=6a811c1aa90fe5c61eb0cad319ff898c8062405b729727c2c575231494f80326",
+      "previewSha256": "4ab52d26d268f57ad9a4dd3cb6d716a6ee4aaac83a278c59ff9953e84ab9d19f"
+    },
+    {
+      "id": "dmc:diamant:D317",
+      "variantId": 5146,
+      "sourceImageUrl": "https://dnwjchpclcsiy.cloudfront.net/images/transform/eyJyZXNpemVfdG9fZml0IjpbNTEyLG51bGxdfQ/eyJpZCI6IjE4YzNmNTQ1ODAxZmM3Njc4YzcxY2IxM2JjY2JjOTliIiwic3RvcmFnZSI6InB1YmxpY19pbWFnZXMifQ?signature=c0339b5e059180a214a3f890ff0eca1774300b2c1245757982e17c354f4231ac",
+      "previewSha256": "c5e17c253087af01d05abd74bb8b66a894f89f9efffb48d79c187b44f426e1e0"
+    },
+    {
+      "id": "dmc:diamant:D321",
+      "variantId": 5181,
+      "sourceImageUrl": "https://dnwjchpclcsiy.cloudfront.net/images/transform/eyJyZXNpemVfdG9fZml0IjpbNTEyLG51bGxdfQ/eyJpZCI6Ijg4NjA0N2FiZjNjZGU4ZjgwYjNlNGNjOWZjYWU3ODg0Iiwic3RvcmFnZSI6InB1YmxpY19pbWFnZXMifQ?signature=6c356756fb145f9ff17c6fdaee407746224b3a8be1f2d2d4d5d943b9b53b23ae",
+      "previewSha256": "e3fc903609019301f116daea1249853deda52192165bf809da626b5f82fa5ce6"
+    },
+    {
+      "id": "dmc:diamant:D3821",
+      "variantId": 5225,
+      "sourceImageUrl": "https://dnwjchpclcsiy.cloudfront.net/images/transform/eyJyZXNpemVfdG9fZml0IjpbNTEyLG51bGxdfQ/eyJpZCI6IjRiNWY1YjQzYzdmZGUyMDQ0ODk0ZTVmN2E5OGQ5Mzk5Iiwic3RvcmFnZSI6InB1YmxpY19pbWFnZXMifQ?signature=c62944d77fa8f8c94f263c02c7d7855915512332d67f44d31d4ddd9dbdf69533",
+      "previewSha256": "c892aed153712bcfbcd31ee957a4bfb4ada9532032b8cf8dcd0c994ecfc25644"
+    },
+    {
+      "id": "dmc:diamant:D3852",
+      "variantId": 5265,
+      "sourceImageUrl": "https://dnwjchpclcsiy.cloudfront.net/images/transform/eyJyZXNpemVfdG9fZml0IjpbNTEyLG51bGxdfQ/eyJpZCI6ImY1MjJiOGM2ZjI4ZmIyNmVhN2ViZmU3YmY5YTE1NzY4Iiwic3RvcmFnZSI6InB1YmxpY19pbWFnZXMifQ?signature=37e99143ae827b85b6eca80988be006510a6dce9eb38068b92359dd9a33a8ccc",
+      "previewSha256": "e962cec3eb490a8b969eece8b77d1a123dcf06ea5ba27245bf72874cc4e9bc19"
+    },
+    {
+      "id": "dmc:diamant:D415",
+      "variantId": 5320,
+      "sourceImageUrl": "https://dnwjchpclcsiy.cloudfront.net/images/transform/eyJyZXNpemVfdG9fZml0IjpbNTEyLG51bGxdfQ/eyJpZCI6IjAwYzMxZTkxOGE5ZDYwNjM3NTNkZWViNWNjN2I4NGIwIiwic3RvcmFnZSI6InB1YmxpY19pbWFnZXMifQ?signature=cdd74d132ed07bf4f58092619d29f00b99414ea636418d7018c969cad92e06ce",
+      "previewSha256": "1caf7b5484a7f15e8596155559110b35be5bffef08c91b8b85011863d097c5e4"
+    },
+    {
+      "id": "dmc:diamant:D5200",
+      "variantId": 5361,
+      "sourceImageUrl": "https://dnwjchpclcsiy.cloudfront.net/images/transform/eyJyZXNpemVfdG9fZml0IjpbNTEyLG51bGxdfQ/eyJpZCI6IjExMDllMmY1YWExMTk3OGNmN2QxOTFmNTM4YjM0NmYwIiwic3RvcmFnZSI6InB1YmxpY19pbWFnZXMifQ?signature=51ce1f23d8a5715dd5a21b77def6982682588743ca31a202c4bf783dfdb354d6",
+      "previewSha256": "b9175156e572fab128e186099594d04318d9eb0578b27be80614869b4998681a"
+    },
+    {
+      "id": "dmc:diamant:D699",
+      "variantId": 5417,
+      "sourceImageUrl": "https://dnwjchpclcsiy.cloudfront.net/images/transform/eyJyZXNpemVfdG9fZml0IjpbNTEyLG51bGxdfQ/eyJpZCI6IjU5YTc4NmY2Mjg3MjA3MTcwZTlkMjI0MDgzMWMwNTJmIiwic3RvcmFnZSI6InB1YmxpY19pbWFnZXMifQ?signature=1205443db2c9e5029fd8c3d2f283be396f0527d117331d68b76ba9aa0d49a289",
+      "previewSha256": "6b87ecbdc75e4ff0e0696930851dd7c4f8342a666b82da2797e0e337dcf1e30e"
+    },
+    {
+      "id": "dmc:diamant:D898",
+      "variantId": 5468,
+      "sourceImageUrl": "https://dnwjchpclcsiy.cloudfront.net/images/transform/eyJyZXNpemVfdG9fZml0IjpbNTEyLG51bGxdfQ/eyJpZCI6Ijg1Yzg1MjdjZjRlMTUxZWUwNDBmNDUyMDA0YzRjODEyIiwic3RvcmFnZSI6InB1YmxpY19pbWFnZXMifQ?signature=45a0c3a4fa1fe5f67b1dfffa9372b971e208e1a5622b9761d9e8730fa7beabdf",
+      "previewSha256": "773b291e347bc3e8823254adb773d41647fb128516eb6d394b6377014a06888e"
+    }
+  ]
+}
