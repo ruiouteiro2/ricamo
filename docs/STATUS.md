@@ -1,5 +1,11 @@
 # Ricamo delivery evidence
 
+## Unified lineal category artwork - 2026-11-01
+
+All four category icons were redrawn as original local SVGs inspired by the rounded monochrome line style of the supplied [Sewing and Tailoring reference pack](https://www.flaticon.com/packs/sewing-and-tailoring). The shared set depicts a skein with band, three pearls, folded cloth with a stitched edge, and scissors with a needle. Consistent stroke widths replace the previous mixture of gradients and outline artwork. No reference-pack asset is shipped or loaded by the app.
+
+Validation: production build passed. An isolated headless Edge preview rendered all four icons without page errors; actual-size category cards and enlarged icon details were visually inspected. The local development server was restarted at 127.0.0.1:5173 because it was no longer running. No data changes or desktop package rebuild were made.
+
 ## Refined thread and pearl icons - 2026-11-01
 
 The shared thread icon now depicts a coloured skein with individual wrapped strands, a cream/gold paper band and a loose thread end. The bead icon is a cluster of three dimensional ivory pearls with highlights and soft shading. Both remain local SVGs with unique per-instance gradient IDs and scale with the existing cards. Fabric and accessory artwork is unchanged.
