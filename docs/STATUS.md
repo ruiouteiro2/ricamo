@@ -1,5 +1,11 @@
 # Ricamo delivery evidence
 
+## Minimum stock and automatic shopping - 2026-11-01
+
+Material creation now has eight fields, including a read-only minimum stock of 1; material edits through the same form also save a minimum of 1. Shopping automatically displays active materials whose known total physical quantity is below the minimum, including zero or no lots. Legacy records without a positive minimum use 1 for replenishment. Unknown quantities are excluded from automatic shortages. Reservations alone do not trigger physical replenishment. The derived list updates after consumption, stock counts and purchase receipts without adding orders as a side effect of viewing the page. Open purchases cover the suggested amount to avoid duplicate purchases; receiving enough stock removes the item. Italian and English labels describe the flow.
+
+Validation: production build and 35 domain/replenishment tests passed. An isolated headless Edge browser journey verified fixed minimum persistence, zero stock automatically visible in Shopping after reload, exclusion of unknown stock, one planned purchase with duplicate creation disabled, and receipt removing the replenishment entry. Existing catalogue/manual entry, size, decimal quantities and string codes remained covered. Browser testing used isolated storage; no desktop package was rebuilt.
+
 ## Simplified material creation - 2026-11-01
 
 The Add material dialog now exposes seven fields only: brand, type, colour code, thread size number, catalogue selection, quantity owned and status. Brand and type support catalogue suggestions and manual entry. Catalogue selection supplies the product identity, category, unit and package metadata; the quantity help shows the resulting unit. The material name is generated automatically. Existing material editing retains its detailed form. Italian and English labels and inventory empty-state guidance reflect the new entry flow.
