@@ -1,5 +1,11 @@
 # Ricamo delivery evidence
 
+## Summary cards above product lists - 2026-11-01
+
+The four inventory cards are now Materiali totali, Da rifornire, Da controllare and Utilizzati parzialmente, placed before the toolbar/product list. They appear for threads, beads, fabric and needles/pins/magnets (including the complete inventory view). Counts stay scoped to the current category/brand. Partly-used counts each active material once when it has an unexhausted, non-transformed lot marked partly used, including the previous package-condition descriptor. Its card filters the list, and Total materials restores the active view. The location card and More options section are removed; obsolete hidden advanced-filter preferences no longer filter the list.
+
+Validation: production build and both isolated headless Edge journeys for inventory categories and material actions passed. The category journey verifies the four labels, placement above the list, no More options, partial counts for DMC/threads, Mill Hill beads, Zweigart fabric and needles, partial filtering and total-view reset, plus category-specific counts and persistence. The four-card layout was visually inspected. Existing edit/remove/purchase actions remain covered. No desktop package was rebuilt.
+
 ## Scoped inventory counts and immediate lists - 2026-11-01
 
 Inventory statistics now derive only from the current category/brand list, including stock alerts, review counts and occupied locations. Category cards keep their independent counts. Category parent pages also display their own product list below compact subcategory cards, so opening Fili immediately shows the thread list as well as the DMC/Anchor/Profilo navigation. The Entry and organisation disclosure is removed. Additional filters and saved views move below the table under More options; statistics also follow the list.
