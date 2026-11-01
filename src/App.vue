@@ -10,6 +10,7 @@ import { windowControls, onCloseRequest } from './storage';
 import { exampleMode } from './example-mode.mjs';
 import ExampleBanner from './components/ExampleBanner.vue';
 const HomePage=defineAsyncComponent(()=>import('./views/HomePage.vue'));
+const ChartCataloguePage=defineAsyncComponent(()=>import('./views/ChartCataloguePage.vue'));
 const MaterialsPage=defineAsyncComponent(()=>import('./views/MaterialsPage.vue'));
 const MaterialDetail=defineAsyncComponent(()=>import('./views/MaterialDetail.vue'));
 const ProjectsPage=defineAsyncComponent(()=>import('./views/ProjectsPage.vue'));
@@ -21,10 +22,10 @@ const LocationsPage=defineAsyncComponent(()=>import('./views/LocationsPage.vue')
 const SettingsPage=defineAsyncComponent(()=>import('./views/SettingsPage.vue'));
 const DataCenterPage=defineAsyncComponent(()=>import('./views/DataCenterPage.vue'));
 const HelpPage=defineAsyncComponent(()=>import('./views/HelpPage.vue'));
-const views={home:HomePage,materials:MaterialsPage,material:MaterialDetail,projects:ProjectsPage,project:ProjectDetail,patterns:PatternLibrary,pattern:PatternEditor,shopping:ShoppingPage,locations:LocationsPage,settings:SettingsPage,dataCenter:DataCenterPage,help:HelpPage};
+const views={home:HomePage,materials:MaterialsPage,materialCharts:ChartCataloguePage,material:MaterialDetail,projects:ProjectsPage,project:ProjectDetail,patterns:PatternLibrary,pattern:PatternEditor,shopping:ShoppingPage,locations:LocationsPage,settings:SettingsPage,dataCenter:DataCenterPage,help:HelpPage};
 const navigation=[{page:'home',icon:House},{page:'materials',icon:Package},{page:'projects',icon:FolderHeart},{page:'patterns',icon:Grid2X2},{page:'shopping',icon:ShoppingBag}];
 const utility=[{page:'dataCenter',icon:DatabaseBackup},{page:'locations',icon:MapPin},{page:'settings',icon:Settings2},{page:'help',icon:BookOpen}];
-const current=computed(()=>({material:'materials',project:'projects',pattern:'patterns'})[route.value.page]||route.value.page);
+const current=computed(()=>({materialCharts:'materials',material:'materials',project:'projects',pattern:'patterns'})[route.value.page]||route.value.page);
 const search=ref(''),searchInput=ref(),languageError=ref(''),pendingDraft=ref(false);
 let unsubscribeClose;
 function draftStatus(event){pendingDraft.value=event.detail?.pending===true;if(windowControls?.setCloseGuard)windowControls.setCloseGuard(pendingDraft.value).catch(error=>{languageError.value=errorText(error);});}
