@@ -30,5 +30,5 @@ test('retailer component lists keep stated quantities, exact pack identity, and 
 test('quantities and units may be corrected without changing stock; malformed overrides reject atomically',()=>{
  let s=seed();const corrections=[{index:0,quantity:4,unit:'skein'}];s=run(s,'schema.purchaseMissing',{...selection('a'),corrections});assert.equal(s.purchases[0].quantity,3);assert.equal(s.lots[0].quantity,1);assert.equal(s.patterns[0].library.design.requirements[0].quantity,3);
  assert.throws(()=>run(s,'schema.purchaseMissing',{...selection('a'),corrections:[{index:500,quantity:3,unit:'skein'}]}));
- s=run(s,'pattern.archive',{id:'a'});assert.equal(s.patterns[0].archived,true);
+ s=run(s,'pattern.save',{id:'a',archived:true});assert.equal(s.patterns[0].archived,true);
 });
