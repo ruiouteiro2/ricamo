@@ -1,5 +1,5 @@
 import { add, subtract, assert, quantity, text, stringList, oneOf, integer, currency, date, find, optionalRef, recordId, put, audit, totalReserved } from './shared.mjs';
-import { addLot, inventorySummary } from './inventory.mjs';
+import { addLot, inventorySummary, archiveMaterial } from './inventory.mjs';
 import { confirmedConsumption } from './projects.mjs';
 import { fabricHeldPieces } from './fabric-state.mjs';
 import { toolHeldQuantity } from './tool-state.mjs';
@@ -18,6 +18,7 @@ export function savePurchase(state, p, ctx) {
   const projectIds = source.projectIds ?? [];
   assert(Array.isArray(projectIds) && projectIds.length <= 1000, 'invalid_list', { field: 'projectIds' });
   projectIds.forEach(id => find(state, 'projects', id));
+  material.properties.restockSuppressed = status === 'cancelled';
   put(state, 'purchases', {
     id, materialId: material.id, quantity: amount, unit: material.unit, received, status,
     projectIds: [...new Set(projectIds)], supplierId: optionalRef(state, 'suppliers', source.supplierId),
@@ -47,6 +48,25 @@ export function receivePurchase(state, p, ctx) {
   purchase.updatedAt = ctx.now;
 }
 
+/** Persist the inclusion choice and cancel open rows for this colour atomically. */
+export function setRestockChoice(state, p, ctx) {
+  assert(typeof p.enabled === 'boolean', 'invalid_boolean', { field: 'enabled' });
+  const material = find(state, 'materials', p.materialId);
+  material.properties.restockSuppressed = p.enabled === false;
+  material.updatedAt = ctx.now;
+  if (p.enabled === false) {
+    for (const order of state.purchases.filter(row => row.materialId === material.id && !['received', 'cancelled'].includes(row.status))) {
+      savePurchase(state, { ...order, status: 'cancelled' }, ctx);
+    }
+  }
+  audit(state, ctx, 'material', material.id, p.enabled === false ? 'restock-excluded' : 'restock-included');
+}
+
+export function removeMaterialFromInventory(state, p, ctx) {
+  setRestockChoice(state, { materialId: p.id, enabled: false }, ctx);
+  archiveMaterial(state, { id: p.id }, ctx);
+}
+
 /** Derived replenishment list: unknown physical stock is never treated as zero. */
 export function restockNeeds(state) {
   return state.materials.filter(material => !material.archived).flatMap(material => {
@@ -56,8 +76,9 @@ export function restockNeeds(state) {
     const shortfall = subtract(minimum, stock.physical);
     const pending = add(...state.purchases.filter(row => row.materialId === material.id &&
       ['to_buy', 'ordered', 'partial'].includes(row.status)).map(row => subtract(row.quantity, row.received)));
-    return [{ materialId: material.id, unit: material.unit, physical: stock.physical, minimum,
-      pending, toOrder: Math.max(0, subtract(shortfall, pending)), allocations: [] }];
+    const suppressed = material.properties.restockSuppressed === true;
+    return [{ suppressed, materialId: material.id, unit: material.unit, physical: stock.physical, minimum,
+      pending, toOrder: suppressed ? 0 : Math.max(0, subtract(shortfall, pending)), allocations: [] }];
   });
 }
 
