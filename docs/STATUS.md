@@ -1,5 +1,13 @@
 # Ricamo delivery evidence
 
+## Inventory row actions and purchase inclusion - 2026-11-01
+
+The inventory table omits Reserved and Location columns and exposes named pencil, trash and shopping-cart actions per material. The pencil opens the existing detailed material editor; the cart opens a purchase editor prefilled with that material, reusing an open order when present. Removing a material atomically archives it and cancels its open purchases while preserving lots, movements and receipts; the confirmation explains restoration through archived items.
+
+Automatic replenishment entries now support editing and persistent inclusion/exclusion. Excluding a colour atomically cancels its open purchase rows and records the exclusion, which survives reload without the zero-stock rule reactivating it. Inclusion re-enables the replenishment suggestion; explicitly restoring or saving an active order also re-enables the colour. Orders have direct cancel/restore controls, with cancelled orders accessible through the existing status filter. Editing covered automatic entries opens their current order instead of creating duplicates.
+
+Validation: production build, 37 targeted domain/replenishment tests and both isolated headless Edge browser journeys (`browser-material-actions.mjs`, `browser-material-entry.mjs`) passed. The actions journey covers removed columns, edit persistence, prefilled purchase creation, quantity edits, cancellation/restoration, exclusion persistence after reload, and inventory removal retaining history and cancelling open orders. The inventory row layout was visually inspected. The full 534-test run had 532 passes, one skip and one failure in tool-activity date error precedence. An untouched archive of HEAD cd0fbdc reproduced the same full-suite failure (532 tests: 530 passed, one skipped, one failed); that tool test passes alone on both versions. This is an existing suite interaction, not a clean full-suite pass. No desktop distribution was rebuilt.
+
 ## Anchor twisted-thread label - 2026-11-01
 
 Selecting Anchor replaces the Alsace twisted-cotton option label with Ritorto fiorentino. Switching brands updates both the visible option and manual saved range, while catalogue products retain their original identities. Catalogue range classification recognises Fiorentino wording. Validation: production build and the existing material-entry browser journey passed; an isolated browser check additionally verified Anchor/DMC/Anchor switching and the saved Fiorentino range after reload. No desktop package was rebuilt.
