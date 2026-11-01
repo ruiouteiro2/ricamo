@@ -1,5 +1,13 @@
 # Ricamo delivery evidence
 
+## Material entry choices and colour menus - 2026-11-01
+
+The Add material form now offers New, Partly used and Finished as the three usage states. Usage is persisted on the initial lot independently of operational usability; Finished sets physical quantity to zero and therefore appears in automatic replenishment. Typing zero also selects Finished. The saved usage state is displayed in material details; zero-quantity lots display Finished. Changing Finished back to another state clears the zero quantity for explicit entry.
+
+Brand and type use the shared styled select menus. Type has seven choices: stranded cotton, specialty stranded threads, silk, wool, spool, pearl cotton and Alsace twisted cotton. A range-name classification filters available catalogue entries while preserving their original supplier identity; the selected family is stored separately. The catalogue shows available indicative colour swatches in each option and the selected value; missing colours have an explicit unknown-colour treatment. Shared select styling uses rounded popup menus, highlighted selection, checkmarks and scrolling. Vue recognises the native selectedcontent element.
+
+Validation: production build and 35 domain/replenishment tests passed. The isolated `tests/browser-material-entry.mjs` journey passed in headless Microsoft Edge against the local development server: all three states and seven types, selected/menu colour previews, partial-state persistence after reload, Finished setting zero and appearing in Shopping, original DMC 310/E130 identities, speciality filtering, mobile overflow and no renderer errors. Open type, colour and mobile state menu screenshots were visually inspected under ignored `.runtime/`. Set `RICAMO_TEST_URL` and optionally `RICAMO_BROWSER_CHANNEL` to run the browser journey against a chosen local server/runtime. No desktop installer was rebuilt or tested for this change.
+
 ## Minimum stock and automatic shopping - 2026-11-01
 
 Material creation now has eight fields, including a read-only minimum stock of 1; material edits through the same form also save a minimum of 1. Shopping automatically displays active materials whose known total physical quantity is below the minimum, including zero or no lots. Legacy records without a positive minimum use 1 for replenishment. Unknown quantities are excluded from automatic shortages. Reservations alone do not trigger physical replenishment. The derived list updates after consumption, stock counts and purchase receipts without adding orders as a side effect of viewing the page. Open purchases cover the suggested amount to avoid duplicate purchases; receiving enough stock removes the item. Italian and English labels describe the flow.
