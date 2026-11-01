@@ -1,3 +1,4 @@
+import {supplierName} from '../core/supplier-products.mjs';
 import {purchaseUrl} from '../core/pattern-fabric.mjs';
 import {pdfText} from './pdf-font.mjs';
 
@@ -28,7 +29,7 @@ export function appendProcurementPages(doc,preview,{locale='it',margin=14}={}){
   line(`${en?'Required':'Fabbisogno'}: ${number(row.required)} ${unit(row.unit)} · ${en?'Available for this project':'Disponibile per questo progetto'}: ${number(row.stock.available)} ${unit(row.unit)} · ${en?'Missing':'Mancano'}: ${number(row.shortage)} ${unit(row.unit)}`,{size:8});
   if(row.stock.ownReserved)line(`${en?'Already reserved for this project':'Già riservato per questo progetto'}: ${number(row.stock.ownReserved)} ${unit(row.unit)}`,{size:8});
   if(row.stock.status==='untracked')line(en?'This material is not yet recorded in inventory.':'Questo materiale non è ancora registrato nell’inventario.',{size:8});
-  for(const offer of row.offers){const product=offer.product,supplier=product.supplier==='tessiland'?'Tessiland':'Casa Cenina';line(`${supplier} · ${en?'Total':'Totale'}: ${number(offer.packagesRequired)} ${unit(product.pack.unit??'pack')} · ${en?'To buy':'Da acquistare'}: ${number(offer.packagesMissing)} ${unit(product.pack.unit??'pack')}`,{url:product.url,size:8});}
+  for(const offer of row.offers){const product=offer.product,supplier=supplierName(product.supplier);line(`${supplier} · ${en?'Total':'Totale'}: ${number(offer.packagesRequired)} ${unit(product.pack.unit??'pack')} · ${en?'To buy':'Da acquistare'}: ${number(offer.packagesMissing)} ${unit(product.pack.unit??'pack')}`,{url:product.url,size:8});}
   if(!row.offers.length)line(en?'No verified purchase link for this material.':'Nessun collegamento di acquisto verificato per questo materiale.',{size:8});
   y+=3;
  }
