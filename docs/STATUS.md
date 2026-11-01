@@ -1,5 +1,13 @@
 # Ricamo delivery evidence
 
+## Thread brands and exclusive twisted types - Windows 0.6.4 - 2026-11-01
+
+Fili now has five brand pages: DMC, Anchor, Profilo, P&G and Madeira, each retaining scoped counts and contextual addition. The new-material form offers Ritorto d'Alsazia only for DMC and Ritorto fiorentino only for Anchor. Other brands and an unspecified brand show only the six common thread families. Changing from a selected twisted type to an unsupported brand resets the family to Moulin?, preventing a hidden incompatible selection from being saved. Existing stock and source catalogues are preserved; adding a brand page does not claim a newly sourced manufacturer product catalogue.
+
+Validation: four inventory-navigation unit tests passed; browser category and material-entry journeys passed. Updated category journeys verified both new brands, contextual creation/persistence and counts, DMC/Anchor exclusive labels, absence under Profilo/P&G/Madeira, and selection reset on brand change. The same category journey passed on the packaged Windows 0.6.4 executable, followed by smoke/reopen persistence. Native evidence: `.runtime/desktop-inventory-061-I3T3nc/result.json` and `.runtime/desktop-smoke-jJk9IL/result.json`. No renderer errors or remote requests; sandbox/context isolation active and Node integration disabled. All native checks used synthetic profiles.
+
+Installer: `release/Ricamo-0.6.4-Windows-x64-Setup.exe` (152,776,746 bytes), SHA-256 `34c8bc06a19154945ef8f9c45dd57bed6ff296a0abbf1bb2c8ebedcf77f32161`. Packaging and exact release audit passed with matching sources and zero dirty files before this evidence update. The installer remains unsigned; clean-PC installation and personal-profile upgrade were not exercised for this release.
+
 ## Offline commercial chart collection - Windows 0.6.3 - 2026-11-01
 
 Materials now has a fifth category, Schemi, leading to separate Mirabilia and Bella Filipina pages. The offline catalogue contains 482 dated Casa Cenina references (398 Mirabilia/Nora Corbett and 84 Bella Filipina), all with verified local cover previews and product names. All nine observed listing pages and all product-detail pages succeeded, including legacy Mirabilia URLs. Per-product provenance and original image hashes are stored in `data/pattern-catalogue.json`; preview bytes are embedded locally. These are product-cover references, not purchased chart files. See CHART-CATALOGUE-SOURCES.md for acquisition and attribution.
