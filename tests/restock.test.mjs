@@ -71,3 +71,17 @@ test('removing a thread archives it and cancels open purchases without erasing s
   assert.deepEqual(s.state.movements,history);assert.deepEqual(s.state.lots,lots);
   assert.deepEqual(restockNeeds(s.state),[]);
 });
+
+test('zero stock orders require an explicit action, skip unknown, excluded and covered stock, and retry safely',()=>{
+ const s=studio(0);
+ for(const [id,amount] of [['unknown',null],['owned',2],['excluded',0],['absent',undefined],['archived',0]]){
+  s.run('material.save',{id,name:id,category:'thread',unit:'skein',minimum:1});
+  if(amount!==undefined)s.run('lot.add',{materialId:id,quantity:amount});
+ }
+ s.run('purchase.restock',{materialId:'excluded',enabled:false});s.run('material.archive',{id:'archived'});
+ assert.equal(s.state.purchases.length,0);const lots=structuredClone(s.state.lots);
+ s.run('purchase.addZeroStock',{});assert.deepEqual(s.state.purchases.map(row=>row.materialId).sort(),['absent','thread']);
+ assert.ok(s.state.purchases.every(row=>row.quantity===1&&row.status==='to_buy'));assert.deepEqual(s.state.lots,lots);
+ const before=structuredClone(s.state);s.run('purchase.addZeroStock',{});assert.deepEqual(s.state.purchases,before.purchases);
+ const command={type:'purchase.addZeroStock',payload:{},operationId:'retry'};const next=applyCommand(s.state,command);assert.deepEqual(applyCommand(next,command),next);
+});
