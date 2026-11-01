@@ -1,5 +1,11 @@
 # Ricamo delivery evidence
 
+## Installed desktop upgrade - 2026-11-01
+
+At the user's explicit request, upgraded the existing per-user desktop installation from 0.6.12 to 0.6.14 using the generated NSIS installer in silent current-user mode (exit code 0). Ricamo closed normally before copying the entire local profile. A complete .ricamobackup was exported from the copied database and validated before installation; the recovery copy remains outside the repository under Desktop/Filo/Backup aggiornamenti. No inventory content is included in Git.
+
+Verified registry version 0.6.14 and an exact SHA-256 match between installed app.asar and the tested packaged app.asar. Post-install SQLite integrity_check was ok; application-state JSON/revision and every attachment BLOB digest matched the pre-upgrade copy exactly. Evidence: `.runtime/installed-upgrade-0614-verification.json`. Reopened the normal installed application with the production profile; its Ricamo window was present and process running. This verifies this specific existing-profile upgrade, not a clean-PC or offline installation scenario.
+
 ## Explicit zero-stock purchases and started thread groups - Windows 0.6.14 - 2026-11-01
 
 Shopping now has an explicit Add zero-stock items to purchases button. Opening the page or exhausting stock does not create an order or automatically display derived shortages as purchase rows. The button uses registered, non-archived materials with known physical total zero; unknown stock, positive physical stock, user-excluded materials and quantities already covered by open orders are skipped. New orders use minimum shortfall with existing pack rounding; no stock is invented or consumed. A second click/retry does not duplicate covered quantities. Existing order editing, cancellation and explicit restoration remain available. Inventory low-stock metrics remain informative; project-driven purchases still require their separate explicit action. This supersedes the earlier automatic replenishment display described in older entries.
