@@ -3,6 +3,7 @@ import { reactive, ref, computed, useId, watch, onBeforeUnmount } from 'vue';
 import { AlertTriangle } from '@lucide/vue';
 import AppDialog from './AppDialog.vue';
 import FormField from './FormField.vue';
+import ThreadReferenceLink from './ThreadReferenceLink.vue';
 import MaterialProductPicker from './MaterialProductPicker.vue';
 import {supplierLookup, supplierSearch, supplierFacets} from '../supplier-catalogues.mjs';
 import {supplierIdentity,supplierSwatch,SUPPLIER_CATEGORIES} from '../../core/supplier-products.mjs';
@@ -267,6 +268,7 @@ async function save() {
           <FormField :label="t('status')" v-slot="{ id }"><select :id="id" v-model="usageStatus"><option v-for="status in ['new','partial','finished']" :key="status" :value="status">{{ t(`entryStatus_${status}`) }}</option></select></FormField>
         </div>
         <p v-if="draft.brand === 'Madeira'" class="field-help">{{ t('madeiraCatalogueHelp') }} <button type="button" class="button text small" @click="openMadeiraCatalogue">{{ t('madeiraOfficialCatalogue') }}</button></p>
+        <ThreadReferenceLink :reference="activeGroup.children.find(child => child.brand === draft.brand)?.reference" />
         <p v-if="catalogueError" class="notice error" role="alert">{{ catalogueError }}</p>
       </template>
       <template v-else>
