@@ -75,7 +75,7 @@ async function confirmDuplicate() {
   } catch (caught) { duplicateError.value = errorText(caught); }
   finally { busy.value = false; }
 }
-const threadFamilies = ['mouline', 'special', 'silk', 'wool', 'spool', 'pearl', 'alsace'];
+const threadFamilies = computed(() => ['mouline', 'special', 'silk', 'wool', 'spool', 'pearl', ...(['dmc', 'anchor'].includes(draft.brand.trim().toLowerCase()) ? ['alsace'] : [])]);
 const threadFamily = ref(draft.properties.threadFamily || 'mouline');
 const usageStatus = ref('new');
 function familyOf(product) {
@@ -93,6 +93,7 @@ function familyLabel(family) {
 }
 watch(() => [threadFamily.value, draft.brand], ([value]) => {
   if (draft.category !== 'thread') return;
+  if (!threadFamilies.value.includes(value)) { threadFamily.value = 'mouline'; return; }
   draft.properties.threadFamily = value;
   if (draft.properties.product && draft.properties.product.brand === draft.brand && familyOf(draft.properties.product) === value) return;
   draft.range = familyLabel(value);
