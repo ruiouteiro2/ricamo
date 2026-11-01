@@ -1,3 +1,4 @@
+import { schemaShoppingHandlers, validateSchemaShopping } from './schema-shopping.mjs';
 import { materialEditHandlers } from './material-edit.mjs';
 import { chartCollectionHandlers, validateChartCollection } from './chart-collection.mjs';
 import { duplicateMaterials, duplicateMaterialHandlers } from './material-duplicates.mjs';
@@ -30,6 +31,7 @@ import { toolActivityHandlers, validateToolActivity } from './tool-activity.mjs'
 
 export { createState };
 const handlers = {
+  ...schemaShoppingHandlers,
   ...materialEditHandlers,
   ...chartCollectionHandlers,
   ...duplicateMaterialHandlers,
@@ -148,6 +150,7 @@ export function validateApplicationState(state) {
   validateWorkCompanion(state);
   validateInventoryWorkflowState(state);
   validateChartCollection(state);
+  validateSchemaShopping(state);
   validateFabricPlanning(state);
   validateToolActivity(state);
   validateThreadEstimateState(state);
