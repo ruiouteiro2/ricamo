@@ -1,3 +1,4 @@
+import { duplicateMaterials, duplicateMaterialHandlers } from './material-duplicates.mjs';
 import {applyProjectProcurement} from './pattern-procurement.mjs';
 import {applyPatternSupplies} from './pattern-supplies.mjs';
 import { threadCatalogueHandlers, validateThreadCatalogues } from './thread-catalogues.mjs';
@@ -27,6 +28,7 @@ import { toolActivityHandlers, validateToolActivity } from './tool-activity.mjs'
 
 export { createState };
 const handlers = {
+  ...duplicateMaterialHandlers,
   ...threadCatalogueHandlers,
   ...catalogueReferenceHandlers,
   ...documentOwnerHandlers,
@@ -46,6 +48,7 @@ const handlers = {
   'project.estimate': applyProjectThreadEstimate,
   'project.procurement.apply': applyProjectProcurement,
   'material.createWithLot': (state, payload, context) => {
+    assert(!duplicateMaterials(state, payload.material).length, 'material_duplicate');
     const id = payload.material.id || context.id();
     saveMaterial(state, { ...payload.material, id }, context);
     if (payload.lot) addLot(state, { ...payload.lot, materialId: id }, context);
