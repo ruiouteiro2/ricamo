@@ -82,6 +82,18 @@ export function restockNeeds(state) {
   });
 }
 
+/** Only an explicit command creates orders for known-zero registered inventory. */
+export function zeroStockPurchases(state) {
+  return restockNeeds(state).filter(row => row.physical === 0 && !row.suppressed && row.toOrder > 0);
+}
+export function addZeroStockPurchases(state, p, ctx) {
+  for (const need of zeroStockPurchases(state)) {
+    const material = find(state, 'materials', need.materialId);
+    const amount = material.packageSize ? quantity(Math.ceil(need.toOrder / material.packageSize) * material.packageSize) : need.toOrder;
+    savePurchase(state, { materialId: material.id, quantity: amount, source: 'manual', status: 'to_buy' }, ctx);
+  }
+}
+
 /** Aggregate demand once, and protect reservations belonging to projects outside the selected group. */
 export function shoppingNeeds(state, projectIds) {
   const ids = new Set(projectIds ?? state.projects.filter(p => !['completed', 'archived'].includes(p.status)).map(p => p.id));
