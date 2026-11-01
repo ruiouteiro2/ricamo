@@ -18,6 +18,7 @@ import { openPurchaseLink } from '../purchase-link.mjs';
 import { quantity } from '../../core/shared.mjs';
 import { materialEditSnapshot } from '../../core/material-edit.mjs';
 
+const spoolOnlyBrand = brand => ['madeira', 'p&g'].includes(String(brand || '').trim().toLowerCase());
 const props = defineProps({ material: Object, context: { type: Object, default: () => ({}) } });
 const emit = defineEmits(['close', 'saved']);
 const original = props.material ? JSON.parse(JSON.stringify(props.material)) : null;
@@ -35,7 +36,7 @@ const accessoryId = ref(props.context.section || (original ? accessorySection(dr
 if (!props.material) {
   draft.category = activeGroup.value.category;
   draft.brand = props.context.brand || (activeGroup.value.children.length === 1 ? activeGroup.value.children[0].brand : '');
-  draft.unit = draft.category === 'thread' ? (draft.brand === 'Madeira' ? 'spool' : 'm') : 'piece';
+  draft.unit = draft.category === 'thread' ? (spoolOnlyBrand(draft.brand) ? 'spool' : 'm') : 'piece';
 }
 const brandLabel = brand => activeGroup.value.children.find(child => child.brand === brand)?.label || brand;
 const brandOptions = computed(() => groupId.value === 'accessories' ? catalogueFacets.value.brands : activeGroup.value.children.map(child => child.brand).filter(Boolean));
@@ -43,7 +44,7 @@ watch(groupId, () => {
   draft.category = activeGroup.value.category;
   draft.brand = activeGroup.value.children.length === 1 ? activeGroup.value.children[0].brand : '';
   draft.range = ''; draft.code = ''; draft.name = ''; draft.color = ''; draft.properties = { custom: {} };
-  draft.unit = draft.category === 'thread' ? (draft.brand === 'Madeira' ? 'spool' : 'm') : 'piece';
+  draft.unit = draft.category === 'thread' ? (spoolOnlyBrand(draft.brand) ? 'spool' : 'm') : 'piece';
 });
 watch(accessoryId, () => {
   if (groupId.value !== 'accessories' || !draft.properties.product) return;
@@ -71,16 +72,16 @@ async function confirmDuplicate() {
   } catch (caught) { duplicateError.value = errorText(caught); }
   finally { busy.value = false; }
 }
-const threadFamilies = computed(() => draft.brand.trim().toLowerCase() === 'madeira' ? ['spool'] : ['mouline', 'special', 'silk', 'wool', 'spool', 'pearl', ...(draft.brand.trim().toLowerCase() === 'dmc' ? ['diamant'] : []), ...(['dmc', 'anchor'].includes(draft.brand.trim().toLowerCase()) ? ['alsace'] : [])]);
+const threadFamilies = computed(() => spoolOnlyBrand(draft.brand) ? ['spool'] : ['mouline', 'special', 'silk', 'wool', 'spool', 'pearl', ...(draft.brand.trim().toLowerCase() === 'dmc' ? ['diamant'] : []), ...(['dmc', 'anchor'].includes(draft.brand.trim().toLowerCase()) ? ['alsace'] : [])]);
 const savedFamily = original && draft.range ? familyOf(draft) : draft.properties.threadFamily || 'mouline';
 const threadFamily = ref(threadFamilies.value.includes(savedFamily) ? savedFamily : threadFamilies.value[0]);
 const usageStatus = ref(originalInventory?.usageStatus || 'new');
 if (originalInventory) stock.quantity = originalInventory.quantity ?? '';
 const displayProduct = computed(() => previewProduct.value || draft.properties.product);
 const quantityHelp = computed(() => `${t(`unit_${draft.unit}`)}. ${originalInventory?.quantity !== null && isEdit.value ? t('materialEditQuantityHelp') : t('unknownHint')}`);
-watch(() => draft.brand, (brand, previous) => { if (!isEdit.value && draft.category === 'thread' && (brand === 'Madeira' || previous === 'Madeira')) draft.unit = brand === 'Madeira' ? 'spool' : 'm'; });
+watch(() => draft.brand, (brand, previous) => { if (!isEdit.value && draft.category === 'thread' && (spoolOnlyBrand(brand) || spoolOnlyBrand(previous))) draft.unit = spoolOnlyBrand(brand) ? 'spool' : 'm'; });
 function familyOf(product) {
-  if (String(product.brand ?? draft.brand).trim().toLowerCase() === 'madeira') return 'spool';
+  if (spoolOnlyBrand(product.brand ?? draft.brand)) return 'spool';
   const range = String(product.range || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
   if (String(product.brand ?? draft.brand).trim().toLowerCase() === 'dmc' && range === 'diamant') return 'diamant';
   if (/alsac|fiorentin/.test(range)) return 'alsace';
@@ -96,13 +97,13 @@ function familyLabel(family) {
 }
 watch(() => [threadFamily.value, draft.brand], ([value]) => {
   if (draft.category !== 'thread') return;
-  if (!isEdit.value && (draft.brand === 'Madeira' || value === 'diamant')) draft.unit = 'spool';
+  if (!isEdit.value && (spoolOnlyBrand(draft.brand) || value === 'diamant')) draft.unit = 'spool';
   if (!threadFamilies.value.includes(value)) { threadFamily.value = threadFamilies.value[0]; return; }
   draft.properties.threadFamily = value;
   if (draft.properties.product && draft.properties.product.brand === draft.brand && familyOf(draft.properties.product) === value) return;
   draft.range = familyLabel(value);
 });
-watch(threadFamily, (value, previous) => { if (!isEdit.value && draft.category === 'thread' && previous === 'diamant' && value !== 'diamant' && !(draft.properties.product?.brand === draft.brand && familyOf(draft.properties.product) === value)) draft.unit = draft.brand === 'Madeira' ? 'spool' : 'm'; });
+watch(threadFamily, (value, previous) => { if (!isEdit.value && draft.category === 'thread' && previous === 'diamant' && value !== 'diamant' && !(draft.properties.product?.brand === draft.brand && familyOf(draft.properties.product) === value)) draft.unit = spoolOnlyBrand(draft.brand) ? 'spool' : 'm'; });
 watch(usageStatus, value => {
   if (value === 'finished') stock.quantity = '0';
   else if (String(stock.quantity).trim() === '0') stock.quantity = '';
@@ -190,7 +191,8 @@ function chooseProduct(product, { automatic = false } = {}){
   draft.properties.product=JSON.parse(JSON.stringify(product));
   if(!isEdit.value){
     if (!automatic) draft.unit=units.includes(product.pack.unit)?product.pack.unit:product.category==='thread'?'m':'piece';
-    if(product.brand==='Madeira'){draft.unit='spool';draft.properties.threadSize=product.range.match(/(\d+)$/)?.[1]||'';}
+    if(spoolOnlyBrand(product.brand))draft.unit='spool';
+    if(product.brand==='Madeira'){draft.properties.threadSize=product.range.match(/(\d+)$/)?.[1]||'';}
     draft.packageSize=draft.unit==='m'?product.pack.lengthM??'':'';
   }
   draft.strands=product.pack.strands??'';draft.divisible=product.pack.divisible===true;
@@ -229,7 +231,7 @@ async function save() {
       if (draft.properties.threadSize !== undefined) properties.threadSize = draft.properties.threadSize;
       if (draft.category === 'thread') properties.threadFamily = threadFamily.value;
       if (groupId.value === 'accessories') properties.inventorySection = accessoryId.value;
-      const candidate = { ...original, brand: draft.brand, range: draft.range || (draft.category === 'thread' ? familyLabel(threadFamily.value) : ''), code: draft.code, minimum: 1, properties };
+      const candidate = { ...original, brand: draft.brand, range: draft.brand.trim().toLowerCase() === 'p&g' && !displayProduct.value ? familyLabel('spool') : draft.range || (draft.category === 'thread' ? familyLabel(threadFamily.value) : ''), code: draft.code, minimum: 1, properties };
       const identityChanged = supplierIdentity(candidate) !== supplierIdentity(original);
       const selected = displayProduct.value;
       if (identityChanged || explicitCatalogue.value) {
