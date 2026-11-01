@@ -8,6 +8,7 @@ import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
 import InventoryCategoryIcon from '../components/InventoryCategoryIcon.vue';
 import AppDialog from '../components/AppDialog.vue';
+import ThreadReferenceLink from '../components/ThreadReferenceLink.vue';
 import MaterialForm from '../components/MaterialForm.vue';
 import InventoryBulkForm from '../components/InventoryBulkForm.vue';
 import InventoryLabels from '../components/InventoryLabels.vue';
@@ -120,10 +121,11 @@ function workflowSaved(){workflow.value='';selected.value=[];}
     <section v-if="!section.showList" class="inventory-category-grid" :class="{ 'inventory-subcategory-grid': section.group }" :aria-label="t(section.group ? 'inventorySubcategories' : 'inventoryCategories')">
       <article v-for="tile in tiles" :key="tile.id" class="panel inventory-category-card">
         <button class="inventory-category-link" @click="openTile(tile)"><InventoryCategoryIcon :group="section.group?.id || tile.id" :size="32" /><h2>{{ tileLabel(tile) }}</h2><span class="muted">{{ number(tileCount(tile), 0) }} {{ t(tile.id === 'charts' ? 'patterns' : 'materials').toLowerCase() }}</span><ChevronRight :size="20" /></button>
-        <div class="panel-body"><button class="button" @click="addToTile(tile)"><Plus :size="16" />{{ t('add') }}</button></div>
+        <div class="panel-body"><button class="button" @click="addToTile(tile)"><Plus :size="16" />{{ t('add') }}</button><ThreadReferenceLink :reference="tile.reference" /></div>
       </article>
     </section>
     <template v-if="section.showList">
+    <ThreadReferenceLink :reference="section.child?.reference" />
     <div v-if="showMetrics" class="metrics">
       <button class="metric" @click="filter = 'active'"><div class="metric-top">{{ t('inventoryTotalMaterials') }}<Package :size="18" /></div><div class="metric-value">{{ number(activeRows.length, 0) }}</div><div class="metric-caption">{{ t('materialCount') }}</div></button>
       <button class="metric" @click="filter = 'low'"><div class="metric-top">{{ t('lowStock') }}<CircleAlert :size="18" /></div><div class="metric-value">{{ number(lowCount, 0) }}</div><div class="metric-caption">{{ t('belowMinimum') }}</div></button>
