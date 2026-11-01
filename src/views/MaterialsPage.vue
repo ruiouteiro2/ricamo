@@ -1,4 +1,5 @@
 <script setup>
+import { INVENTORY_GROUPS, parseInventoryRoute, inventoryRoute, inventoryContext, matchesInventorySection } from '../inventory-navigation.mjs';
 import { materialSearchDescriptors } from '../material-descriptors.mjs';
 import { computed, ref, watch } from 'vue';
 import { Plus, Search, Package, CircleAlert, Download, ChevronLeft, ChevronRight, Heart, MapPin, Pencil, Trash2, ShoppingCart } from '@lucide/vue';
@@ -6,7 +7,6 @@ import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
 import AppDialog from '../components/AppDialog.vue';
 import MaterialForm from '../components/MaterialForm.vue';
-import CategoryManager from '../components/CategoryManager.vue';
 import InventoryBulkForm from '../components/InventoryBulkForm.vue';
 import InventoryRapidForm from '../components/InventoryRapidForm.vue';
 import StockCountDialog from '../components/StockCountDialog.vue';
@@ -28,6 +28,14 @@ async function removeMaterial() {
 function edited() { editing.value = null; notify(); }
 const props = defineProps({ initialAction: String });
 const adding = ref(props.initialAction === 'new' || route.value.id === 'new'), workflow = ref(''), selected = ref([]);
+const section = computed(() => parseInventoryRoute(route.value.id));
+const addContext = ref({});
+const tileLabel = tile => tile.labelKey ? t(tile.labelKey) : tile.label;
+const tiles = computed(() => section.value.group ? section.value.group.children : INVENTORY_GROUPS);
+function openTile(tile) { navigate('materials', section.value.group ? inventoryRoute(section.value.group.id, tile.id) : inventoryRoute(tile.id)); }
+function addTo(group = section.value.group, child = section.value.child) { addContext.value = inventoryContext(group, child); adding.value = true; }
+function addToTile(tile) { addTo(section.value.group || tile, section.value.group ? tile : null); }
+function tileCount(tile) { return state.value.materials.filter(material => !material.archived && matchesInventorySection(material, section.value.group?.id || tile.id, section.value.group ? tile.id : '')).length; }
 let remembered = state.value.settings.preferences?.materialFilters || {};
 try { remembered = JSON.parse(sessionStorage.getItem('ricamo:material-view') || 'null') || remembered; } catch { /* Invalid view preferences never replace application data. */ }
 const search = ref(remembered.search || ''), category = ref(remembered.category || ''), location = ref(remembered.location || ''), filter = ref(remembered.filter || 'active'), sort = ref(remembered.sort || 'nameAZ'), page = ref(remembered.page || 1);
@@ -37,6 +45,7 @@ function currentView() { return { search: search.value, category: category.value
 function applyView(view) { search.value=view.search||'';category.value=view.category||'';location.value=view.location||'';filter.value=view.filter||'active';sort.value=view.sort||'nameAZ';stock.value=view.stock||'';reservation.value=view.reservation||'';project.value=view.project||'';lotStatus.value=view.lotStatus||'';page.value=1;selected.value=[]; }
 watch([search, category, location, filter, sort, page, stock, reservation, project, lotStatus], () => { try { sessionStorage.setItem('ricamo:material-view', JSON.stringify(currentView())); } catch { /* Preference storage may be unavailable; inventory remains usable. */ } });
 async function rememberFilters() { preferenceBusy.value = true; preferenceError.value = ''; try { await dispatch('settings.save', { preferences: { ...state.value.settings.preferences, materialFilters: currentView() } }); notify(); } catch(error) { preferenceError.value = errorText(error); } finally { preferenceBusy.value = false; } }
+if (section.value.group) applyView({});
 const pageSize = 50;
 watch(() => props.initialAction, value => { if (value === 'new') adding.value = true; });
 watch(() => route.value.id, value => { if (value === 'new') adding.value = true; });
@@ -64,7 +73,8 @@ const filtered = computed(() => {
     if (filter.value === 'low' && !row.low) return false;
     if (filter.value === 'review' && !row.summary.unknown && !row.summary.conflicts.length) return false;
     if (filter.value === 'favorite' && !row.material.favorite) return false;
-    if (category.value && row.material.category !== category.value) return false;
+    if (!matchesInventorySection(row.material, section.value.group?.id, section.value.child?.id)) return false;
+    if (category.value && !matchesInventorySection(row.material, INVENTORY_GROUPS.find(group => group.category === category.value)?.id)) return false;
     if (location.value && !row.locationIds.includes(location.value)) return false;
     if(stock.value==='positive'&&!(row.summary.knownPhysical>0))return false;
     if(stock.value==='zero'&&(row.summary.unknown||row.summary.physical!==0))return false;
@@ -88,15 +98,38 @@ const reviewCount = computed(() => activeRows.value.filter(row => row.summary.un
 const locationCount = computed(() => new Set(state.value.lots.filter(row => row.status !== 'transformed' && row.locationId).map(row => row.locationId)).size);
 function clear() { applyView({}); }
 function closeForm() { adding.value = false; if (route.value.id === 'new') route.value = { ...route.value, id: null }; }
-function created(id) { closeForm(); notify(); navigate('material', id); }
+function created(id) {
+  const material = state.value.materials.find(item => item.id === id);
+  const context = addContext.value;
+  closeForm(); notify();
+  if (context.groupId) {
+    const group = INVENTORY_GROUPS.find(item => item.id === context.groupId);
+    const child = group.children.find(item => item.brand ? matchesInventorySection(material, group.id, item.id) : item.id === context.section);
+    navigate('materials', inventoryRoute(group.id, child?.id || 'all'));
+  } else navigate('material', id);
+}
 function workflowSaved(){workflow.value='';selected.value=[];}
 </script>
 <template>
   <div class="page">
-    <PageHeader :eyebrow="t('materials')" :title="t('inventoryTitle')" :description="t('inventorySubtitle')">
+    <PageHeader :eyebrow="t('materials')" :title="section.child ? tileLabel(section.child) : section.group ? tileLabel(section.group) : t('inventoryTitle')" :description="t('inventorySubtitle')">
       <button class="button" @click="navigate('settings')"><Download :size="16" />{{ t('inventoryDataTools') }}</button>
-      <button class="button primary" @click="adding = true"><Plus :size="17" />{{ t('addMaterial') }}</button>
+      <button class="button primary" @click="addTo()"><Plus :size="17" />{{ t('addMaterial') }}</button>
     </PageHeader>
+    <nav class="inventory-breadcrumb" :aria-label="t('inventoryNavigation')">
+      <button class="button text" @click="navigate('materials')">{{ t('materials') }}</button>
+      <template v-if="section.group"><ChevronRight :size="15" /><button class="button text" @click="navigate('materials', inventoryRoute(section.group.id))">{{ tileLabel(section.group) }}</button></template>
+      <template v-if="section.child"><ChevronRight :size="15" /><span>{{ tileLabel(section.child) }}</span></template>
+      <span v-else-if="section.showList">{{ t('all') }}</span>
+    </nav>
+    <section v-if="!section.showList" class="inventory-category-grid" :aria-label="t(section.group ? 'inventorySubcategories' : 'inventoryCategories')">
+      <article v-for="tile in tiles" :key="tile.id" class="panel inventory-category-card">
+        <button class="inventory-category-link" @click="openTile(tile)"><Package :size="30" /><h2>{{ tileLabel(tile) }}</h2><span class="muted">{{ number(tileCount(tile), 0) }} {{ t('materials').toLowerCase() }}</span><ChevronRight :size="20" /></button>
+        <div class="panel-body"><button class="button" @click="addToTile(tile)"><Plus :size="16" />{{ t('add') }}</button></div>
+      </article>
+    </section>
+    <div v-if="!section.showList" class="actions form-section"><button class="button" @click="navigate('materials', section.group ? inventoryRoute(section.group.id, 'all') : 'all')">{{ t('inventoryViewAll') }}</button></div>
+    <template v-if="section.showList">
     <div class="metrics">
       <div class="metric"><div class="metric-top">{{ t('materials') }}<Package :size="18" /></div><div class="metric-value">{{ number(activeRows.length, 0) }}</div><div class="metric-caption">{{ t('materialCount') }}</div></div>
       <button class="metric" @click="filter = 'low'"><div class="metric-top">{{ t('lowStock') }}<CircleAlert :size="18" /></div><div class="metric-value">{{ number(lowCount, 0) }}</div><div class="metric-caption">{{ t('belowMinimum') }}</div></button>
@@ -111,7 +144,7 @@ function workflowSaved(){workflow.value='';selected.value=[];}
       <select v-model="sort" :aria-label="t('sort')"><option value="nameAZ">{{ t('nameAZ') }}</option><option value="recent">{{ t('recent') }}</option><option value="nameZA">{{ t('nameZA') }}</option><option value="codeAZ">{{ t('codeAZ') }}</option><option value="brandAZ">{{ t('brandAZ') }}</option></select>
       <button class="button small" :disabled="preferenceBusy" @click="rememberFilters">{{ t('rememberFilters') }}</button>
     </div>
-    <details class="form-section"><summary>{{ t('inventoryWorkflows') }}</summary><div class="actions form-section"><button class="button" @click="workflow='count'">{{ t('stockCountTitle') }}</button><button class="button" @click="workflow = 'rapid'">{{ t('rapidEntry') }}</button><button class="button" @click="workflow = 'collections'">{{ t('kitCollections') }}</button><button class="button" @click="workflow = 'categories'">{{ t('manageCategories') }}</button></div></details>
+    <details class="form-section"><summary>{{ t('inventoryWorkflows') }}</summary><div class="actions form-section"><button class="button" @click="workflow='count'">{{ t('stockCountTitle') }}</button><button class="button" @click="workflow = 'rapid'">{{ t('rapidEntry') }}</button><button class="button" @click="workflow = 'collections'">{{ t('kitCollections') }}</button></div></details>
     <p v-if="preferenceError" role="alert" class="notice error">{{ preferenceError }}</p>
     <section class="panel">
       <div class="panel-body"><details><summary>{{ t('moreInventoryFilters') }}</summary><div class="form-grid"><label>{{ t('stockFilter') }}<select v-model="stock"><option value="">{{ t('all') }}</option><option value="positive">{{ t('knownPositiveStock') }}</option><option value="zero">{{ t('knownZeroStock') }}</option><option value="unknown">{{ t('unknown') }}</option></select></label><label>{{ t('reservationFilter') }}<select v-model="reservation"><option value="">{{ t('all') }}</option><option value="reserved">{{ t('reserved') }}</option><option value="unreserved">{{ t('notReserved') }}</option><option value="conflict">{{ t('conflict') }}</option></select></label><label>{{ t('project') }}<select v-model="project"><option value="">{{ t('all') }}</option><option v-for="row in state.projects" :key="row.id" :value="row.id">{{ row.name }}</option></select></label><label>{{ t('lotStatusFilter') }}<select v-model="lotStatus"><option value="">{{ t('all') }}</option><option v-for="status in ['usable','blocked','damaged','unverified','transformed']" :key="status" :value="status">{{ t(status) }}</option></select></label></div><p class="field-help">{{ t('projectFilterHelp') }}</p></details><InventorySavedViews :current="currentView()" @apply="applyView" /></div>
@@ -139,8 +172,8 @@ function workflowSaved(){workflow.value='';selected.value=[];}
         <div class="panel-heading"><small class="muted">{{ number(filtered.length, 0) }} {{ t('materials').toLowerCase() }} · {{ t('page') }} {{ page }} / {{ pageCount }}</small><div class="actions"><button class="icon-button" :disabled="page <= 1" :aria-label="t('previousPage')" @click="page--"><ChevronLeft :size="18" /></button><button class="icon-button" :disabled="page >= pageCount" :aria-label="t('nextPage')" @click="page++"><ChevronRight :size="18" /></button></div></div>
       </template>
     </section>
+    </template>
     <KitLibrary v-if="workflow==='collections'||workflow==='collectionSelection'" :selected-material-ids="workflow==='collectionSelection'?selected:[]" @close="workflow=''" />
-    <CategoryManager v-if="workflow==='categories'" @close="workflow=''" />
     <InventoryBulkForm v-if="workflow==='bulk'" :ids="selected" @close="workflow=''" @saved="workflowSaved" />
     <StockCountDialog v-if="workflow==='count'" :material-ids="selected" :initial-location="location" :initial-category="category" @close="workflow=''" @saved="workflowSaved"/>
     <InventoryRapidForm v-if="workflow==='rapid'" @close="workflow=''" @saved="workflowSaved" />
@@ -151,6 +184,6 @@ function workflowSaved(){workflow.value='';selected.value=[];}
       <p v-if="actionError" role="alert" class="notice error">{{ actionError }}</p>
       <template #footer><button class="button" :disabled="actionBusy" @click="deleting=null">{{ t('cancel') }}</button><button class="button primary" :disabled="actionBusy" @click="removeMaterial">{{ t('deleteThread') }}</button></template>
     </AppDialog>
-    <MaterialForm v-if="adding" @close="closeForm" @saved="created" />
+    <MaterialForm v-if="adding" :context="addContext" @close="closeForm" @saved="created" />
   </div>
 </template>
