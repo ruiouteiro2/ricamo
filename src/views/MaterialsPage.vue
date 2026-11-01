@@ -1,4 +1,5 @@
 <script setup>
+import { productPreview, productPreviewStyle } from '../product-previews.mjs';
 import { CHART_CATALOGUE } from '../../core/chart-collection.mjs';
 import { INVENTORY_GROUPS, parseInventoryRoute, inventoryRoute, inventoryContext, matchesInventorySection } from '../inventory-navigation.mjs';
 import { materialSearchDescriptors } from '../material-descriptors.mjs';
@@ -151,7 +152,7 @@ function workflowSaved(){workflow.value='';selected.value=[];}
           <table>
             <thead><tr><th><input type="checkbox" :checked="pageSelected" :indeterminate="!pageSelected && visible.some(row=>selected.includes(row.material.id))" :aria-label="t('selectVisibleMaterials')" @change="togglePage" /></th><th>{{ t('name') }}</th><th>{{ t('category') }}</th><th>{{ t('physical') }}</th><th>{{ t('available') }}</th><th><span class="sr-only">{{ t('status') }}</span></th><th>{{ t('actions') }}</th></tr></thead>
             <tbody><tr v-for="row in visible" :key="row.material.id"><td><input v-model="selected" :value="row.material.id" type="checkbox" :disabled="selected.length>=200 && !selected.includes(row.material.id)" :aria-label="t('selectMaterial',{name:row.material.name})" /></td>
-              <td><div class="material-cell"><span class="swatch" :style="{ backgroundColor: row.material.color || undefined }"><Package v-if="!row.material.color" :size="18" /></span><div><button class="cell-title" @click="navigate('material', row.material.id)">{{ row.material.name }} <Heart v-if="row.material.favorite" :size="12" /></button><span class="cell-subtitle">{{ [row.material.brand, row.material.range, row.material.code].filter(Boolean).join(' · ') || '—' }}</span></div></div></td>
+              <td><div class="material-cell"><span class="swatch" :style="{ backgroundColor: row.material.color || undefined, ...productPreviewStyle(row.material.properties?.product) }"><Package v-if="!row.material.color && !productPreview(row.material.properties?.product)" :size="18" /></span><div><button class="cell-title" @click="navigate('material', row.material.id)">{{ row.material.name }} <Heart v-if="row.material.favorite" :size="12" /></button><span class="cell-subtitle">{{ [row.material.brand, row.material.range, row.material.code].filter(Boolean).join(' · ') || '—' }}</span></div></div></td>
               <td>{{ categoryName(row.material.category) }}</td>
               <td>{{ row.summary.estimated ? '≈ ' : '' }}{{ number(row.summary.physical) }}<small v-if="row.summary.physical !== null" class="cell-subtitle">{{ t(`unit_${row.material.unit}`) }}</small><small v-else-if="row.summary.knownPhysical" class="cell-subtitle">{{ t('knownAtLeast') }} {{ number(row.summary.knownPhysical) }}</small></td>
               <td><strong>{{ number(row.summary.available) }}</strong><span v-if="row.summary.unknown" class="cell-subtitle">{{ t('plusUnknown') }}</span></td>
