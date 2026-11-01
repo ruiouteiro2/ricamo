@@ -3,7 +3,7 @@ import { afterKitCommand } from './kit-workflows.mjs';
 import { DomainError, assert, assertSafeJson, text, identifier, stableStringify, oneOf, jsonObject, stringList, recordId, put } from './shared.mjs';
 import { saveMaterial, archiveMaterial, duplicateMaterial, mergeMaterial, addLot, saveLot, stockMove, reverseMovement, setReservation, saveLocation, saveSupplier } from './inventory.mjs';
 import { saveProject, duplicateProject, closeProject, saveNeed, saveTask, saveSession, updateProgress, saveProjectView } from './projects.mjs';
-import { savePurchase, receivePurchase, generatePurchases } from './purchasing.mjs';
+import { savePurchase, receivePurchase, generatePurchases, setRestockChoice, removeMaterialFromInventory } from './purchasing.mjs';
 import { cutFabric, openKit } from './fabric.mjs';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
@@ -31,14 +31,14 @@ export function validateStateShape(state) {
 }
 
 const handlers = {
-  'material.save': saveMaterial, 'material.archive': archiveMaterial, 'material.duplicate': duplicateMaterial, 'material.merge': mergeMaterial,
+  'material.removeFromInventory': removeMaterialFromInventory, 'material.save': saveMaterial, 'material.archive': archiveMaterial, 'material.duplicate': duplicateMaterial, 'material.merge': mergeMaterial,
   'lot.add': addLot, 'lot.save': saveLot,
   'stock.move': stockMove, 'stock.reverse': reverseMovement, 'reservation.set': setReservation,
   'location.save': saveLocation, 'supplier.save': saveSupplier,
   'project.save': saveProject, 'project.duplicate': duplicateProject, 'project.close': closeProject,
   'project.progress': updateProgress, 'project.view': saveProjectView,
   'need.save': saveNeed, 'session.save': saveSession, 'task.save': saveTask,
-  'purchase.save': savePurchase, 'purchase.receive': receivePurchase, 'purchase.generate': generatePurchases,
+  'purchase.restock': setRestockChoice, 'purchase.save': savePurchase, 'purchase.receive': receivePurchase, 'purchase.generate': generatePurchases,
   'fabric.cut': cutFabric, 'kit.open': openKit,
   'settings.save': (state, p) => {
     if ('language' in p) state.settings.language = oneOf(p.language, ['it', 'en'], 'language');
