@@ -1,5 +1,11 @@
 # Ricamo delivery evidence
 
+## Simplified material creation - 2026-11-01
+
+The Add material dialog now exposes seven fields only: brand, type, colour code, thread size number, catalogue selection, quantity owned and status. Brand and type support catalogue suggestions and manual entry. Catalogue selection supplies the product identity, category, unit and package metadata; the quantity help shows the resulting unit. The material name is generated automatically. Existing material editing retains its detailed form. Italian and English labels and inventory empty-state guidance reflect the new entry flow.
+
+Validation: production build passed. An isolated Playwright journey in headless Microsoft Edge verified the seven-field form, DMC 310 selection, saved size 25, decimal quantity 12.5 and blocked status, persistence after reload, manual code `001`, unknown quantity versus zero, English labels and no renderer errors. Wide and 390 px screenshots were inspected under ignored `.runtime/add-material-*.png`; the mobile dialog had no horizontal overflow. This change was tested in the local browser; no new Windows package or desktop acceptance run was performed.
+
 ## Metric patterns and supplier materials 0.6.0 — 2026-10-27
 
 Image generation uses desired embroidery width in centimetres, source aspect ratio and the selected fabric density/over-one-or-two geometry. The visible actual size accounts for whole stitches; it does not infer a photographed object's dimensions. New patterns start with an editable 5 cm allowance on each side; existing records without an allowance retain zero. Fabric cut margins do not change grid dimensions. New preview requests replace obsolete work, retain the last successful result and block stale saves. Image bytes and generation settings survive SQLite reopen. Letter, letter/digit and special-symbol sets provide up to 500 unique legible one/two-character symbols using the bundled DejaVu font. White/colour composition and colour/symbol or monochrome previews are explicit.
