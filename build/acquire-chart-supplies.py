@@ -9,7 +9,12 @@ catalogue=json.loads((root/'data/pattern-catalogue.json').read_text(encoding='ut
 products=[]
 for file in ['supplier-catalogue.json','casa-supplier-supplement.json']:
  products+=json.loads((root/'data'/file).read_text(encoding='utf-8'))['products']
-idx={p['url']:p for p in products}
+legacy=json.loads((root/'data/casa-cenina-catalogue.json').read_text(encoding='utf-8'))
+for p in legacy['fabrics']+legacy['materials']:
+ products.append({**p,'pack':{'unit':'skein'} if p['brand']=='DMC' and p['range']=='Moulin\u00e9' else {'unit':'pack'} if p['category']=='embellishment' else {}})
+# Casa Cenina serves the same product paths on its localized domains.
+def key(url):return re.sub(r'^https://www\.casacenina\.(?:com|fr|es)/','https://www.casacenina.it/',url)
+idx={key(p['url']):p for p in products}
 result={'version':1,'source':'Casa Cenina component tables (retailer recommended purchasing quantities)','checkedAt':catalogue['checkedAt'],'charts':{}}
 for item in catalogue['items']:
  path=root/'.runtime/chart-catalogue'/(hashlib.sha256(item['sourceUrl'].encode()).hexdigest()+'.html')
@@ -35,7 +40,7 @@ for item in catalogue['items']:
    cell=field.find_parent('td');strong=cell.find('strong') if cell else None
    if strong:value=strong.get_text(' ',strip=True)
   qty=float(value.replace(',','.')) if value and re.fullmatch(r'\d+(?:[.,]\d+)?',value.strip()) else None
-  product=idx.get(url)
+  product=idx.get(key(url))
   rows.append({'name':name,'url':url,'quantity':qty,'productId':product['id'] if product else None,'category':product['category'] if product else 'other','brand':product['brand'] if product else '', 'range':product['range'] if product else '', 'code':product['code'] if product else '', 'unit':product.get('pack',{}).get('unit') if product else None})
  result['charts'][item['id']]={'sourceUrl':item['sourceUrl'],'htmlSha256':hashlib.sha256(raw).hexdigest(),'requirements':rows}
 (root/'data/chart-supplies.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
