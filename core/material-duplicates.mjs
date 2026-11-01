@@ -1,3 +1,4 @@
+import {setThreadCountUnit} from './thread-count-unit.mjs';
 import { supplierIdentity, supplierFold } from './supplier-products.mjs';
 import { assert, find, quantity } from './shared.mjs';
 import { addLot } from './inventory.mjs';
@@ -18,6 +19,7 @@ export const duplicateMaterialHandlers = {
   'material.addDuplicateStock': (state, payload, context) => {
     const target = find(state, 'materials', payload.materialId);
     assert(duplicateMaterials(state, payload.material).some(material => material.id === target.id), 'duplicate_target_changed');
+    if(payload.threadCountUnit===true&&target.unit!==payload.unit)setThreadCountUnit(state,{materialId:target.id,unit:payload.unit,preserveCounts:true},context);
     assert(payload.unit === target.unit, 'incompatible_units');
     const amount = quantity(payload.lot?.quantity, { positive: true });
     addLot(state, { ...payload.lot, id: undefined, materialId: target.id, quantity: amount }, context);
