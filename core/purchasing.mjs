@@ -1,5 +1,5 @@
 import { add, subtract, assert, quantity, text, stringList, oneOf, integer, currency, date, find, optionalRef, recordId, put, audit, totalReserved } from './shared.mjs';
-import { addLot } from './inventory.mjs';
+import { addLot, inventorySummary } from './inventory.mjs';
 import { confirmedConsumption } from './projects.mjs';
 import { fabricHeldPieces } from './fabric-state.mjs';
 import { toolHeldQuantity } from './tool-state.mjs';
@@ -45,6 +45,20 @@ export function receivePurchase(state, p, ctx) {
   purchase.received = add(alreadyReceived, amount);
   purchase.status = purchase.received === purchase.quantity ? 'received' : 'partial';
   purchase.updatedAt = ctx.now;
+}
+
+/** Derived replenishment list: unknown physical stock is never treated as zero. */
+export function restockNeeds(state) {
+  return state.materials.filter(material => !material.archived).flatMap(material => {
+    const stock = inventorySummary(state, material.id);
+    const minimum = Math.max(1, material.minimum ?? 1);
+    if (stock.physical === null || stock.physical >= minimum) return [];
+    const shortfall = subtract(minimum, stock.physical);
+    const pending = add(...state.purchases.filter(row => row.materialId === material.id &&
+      ['to_buy', 'ordered', 'partial'].includes(row.status)).map(row => subtract(row.quantity, row.received)));
+    return [{ materialId: material.id, unit: material.unit, physical: stock.physical, minimum,
+      pending, toOrder: Math.max(0, subtract(shortfall, pending)), allocations: [] }];
+  });
 }
 
 /** Aggregate demand once, and protect reservations belonging to projects outside the selected group. */
