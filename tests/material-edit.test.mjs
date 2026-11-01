@@ -16,3 +16,12 @@ test('unknown is preserved on metadata/status edits and one unknown lot can rece
  let state=fixture();state=run(state,'lot.add',{id:'unknown',materialId:'m',quantity:null});assert.equal(materialEditSnapshot(state,'m').quantity,null);let next=run(state,'material.saveInventory',payload(state,null,'partial'));assert.equal(next.lots.find(row=>row.id==='unknown').quantity,null);next=run(next,'material.saveInventory',payload(next,8,'new'));assert.equal(next.lots.find(row=>row.id==='unknown').quantity,5);assert.equal(next.lots.find(row=>row.id==='one').quantity,3);
  state=run(state,'lot.add',{id:'another',materialId:'m',quantity:null});const before=structuredClone(state);assert.throws(()=>run(state,'material.saveInventory',payload(state,9)),/material_edit_unknown_lots/);assert.deepEqual(state,before);
 });
+
+test('almost finished survives edits and does not consume stock',()=>{
+ const before=fixture();let state=run(before,'material.saveInventory',payload(before,3,'nearly_finished'));
+ assert.equal(state.lots[0].quantity,3);assert.equal(state.movements.length,before.movements.length);
+ assert.equal(state.lots[0].properties.usageStatus,'nearly_finished');assert.equal(state.lots[0].properties.details.packageCondition,'partial');
+ assert.equal(materialEditSnapshot(state,'m').usageStatus,'nearly_finished');
+ state=run(state,'material.saveInventory',payload(state,3,'new'));assert.equal(materialEditSnapshot(state,'m').usageStatus,'new');
+ state=run(state,'material.saveInventory',payload(state,0,'finished'));assert.equal(materialEditSnapshot(state,'m').usageStatus,'finished');
+});
