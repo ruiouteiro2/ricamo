@@ -1,0 +1,27 @@
+import {chromium,expect} from '@playwright/test';
+import assert from 'node:assert/strict';
+import {mkdir} from 'node:fs/promises';
+await mkdir('.runtime',{recursive:true});
+const browser=await chromium.launch({headless:true,...(process.env.RICAMO_BROWSER_CHANNEL?{channel:process.env.RICAMO_BROWSER_CHANNEL}:{})});
+const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
+const errors=[];page.on('pageerror',e=>errors.push(e.message));
+const dialog=page.getByRole('dialog');
+const nav=async name=>page.locator('.sidebar').getByRole('button',{name,exact:true}).click();
+const read=()=>page.evaluate(()=>new Promise((resolve,reject)=>{const opening=indexedDB.open('ricamo-studio',1);opening.onerror=()=>reject(opening.error);opening.onsuccess=()=>{const db=opening.result,request=db.transaction('state','readonly').objectStore('state').get('current');request.onsuccess=()=>{resolve(request.result);db.close()};request.onerror=()=>reject(request.error);};}));
+try {
+await page.goto(process.env.RICAMO_TEST_URL||'http://127.0.0.1:4173');await page.locator('.sidebar').waitFor();await nav('Materiali');await page.getByRole('button',{name:'Aggiungi materiale',exact:true}).first().click();
+await expect(dialog.getByLabel(/^Marca/).locator('option[value="DMC"]')).toBeAttached();await dialog.getByLabel(/^Marca/).selectOption('DMC');await dialog.getByLabel('Codice colore',{exact:true}).fill('310');await dialog.getByLabel('Quantit\u00e0 posseduta',{exact:true}).fill('0');await dialog.getByRole('button',{name:'Salva',exact:true}).click();await expect(dialog).toHaveCount(0);await nav('Materiali');
+const table=page.locator('.table-wrap table');await expect(table.getByRole('columnheader',{name:'Riservato',exact:true})).toHaveCount(0);await expect(table.getByRole('columnheader',{name:'Posizione',exact:true})).toHaveCount(0);
+await table.getByRole('button',{name:/^Modifica filo:/}).click();await dialog.getByLabel(/^Nome/).fill('Filo modificato');await dialog.getByRole('button',{name:'Salva',exact:true}).click();await expect(dialog).toHaveCount(0);await expect(table).toContainText('Filo modificato');assert.equal((await read()).materials[0].name,'Filo modificato');
+await table.getByRole('button',{name:/^Inserisci in Acquisti:/}).click();await expect(dialog).toBeVisible();await dialog.getByLabel(/^Quantit/).fill('2');await dialog.getByRole('button',{name:'Salva',exact:true}).click();await expect(dialog).toHaveCount(0);assert.equal((await read()).purchases[0].quantity,2);
+const auto=page.getByRole('region',{name:'Scorte da riassortire'});
+await auto.getByRole('button',{name:'Annulla acquisto',exact:true}).click();await expect(auto).toContainText('Escluso dagli acquisti');let state=await read();assert.equal(state.purchases[0].status,'cancelled');assert.equal(state.materials[0].properties.restockSuppressed,true);
+await page.reload();await page.locator('.sidebar').waitFor();await nav('Acquisti');await expect(auto).toContainText('Escluso dagli acquisti');await auto.getByRole('button',{name:'Includi negli acquisti',exact:true}).click();await expect(auto).toContainText('Da acquistare');
+await auto.getByRole('button',{name:/Modifica acquisto/}).click();await dialog.getByLabel(/^Quantit/).fill('3');await dialog.getByRole('button',{name:'Salva',exact:true}).click();await expect(dialog).toHaveCount(0);
+const orders=page.locator('table').filter({has:page.locator('caption').filter({hasText:'Lista e ordini'})});
+await orders.getByRole('button',{name:/Modifica acquisto/}).click();await dialog.getByLabel(/^Quantit/).fill('4');await dialog.getByRole('button',{name:'Salva',exact:true}).click();await expect(dialog).toHaveCount(0);state=await read();assert.equal(state.purchases.find(p=>p.status==='to_buy').quantity,4);assert.equal(state.purchases.length,2);
+await orders.getByRole('button',{name:'Annulla acquisto',exact:true}).click();await page.getByRole('combobox',{name:'Stato',exact:true}).selectOption('cancelled');await orders.getByRole('button',{name:'Includi negli acquisti',exact:true}).first().click();await page.getByRole('combobox',{name:'Stato',exact:true}).selectOption('open');await expect(orders).toContainText('Filo modificato');assert.equal((await read()).purchases.filter(p=>p.status==='to_buy').length,1);
+await nav('Materiali');await expect(table.getByRole('button',{name:/^Modifica filo:/})).toBeVisible();await page.screenshot({path:'.runtime/material-row-actions.png'});await table.getByRole('button',{name:/^Elimina filo:/}).click();await expect(dialog).toContainText('storico');await dialog.getByRole('button',{name:'Elimina filo',exact:true}).click();await expect(dialog).toHaveCount(0);await expect(page.getByRole('button',{name:/^Modifica filo:/})).toHaveCount(0);
+state=await read();assert.equal(state.materials[0].archived,true);assert.ok(state.purchases.every(p=>p.status==='cancelled'));assert.equal(state.lots.length,1);assert.ok(state.movements.length>0);await page.reload();await page.locator('.sidebar').waitFor();await nav('Acquisti');await expect(auto).toHaveCount(0);
+assert.deepEqual(errors,[]);console.log('PASS: inventory columns and icons, edit persistence, send-to-shopping, order edit/cancel/restore, persistent automatic exclusion, archive removal preserving history and cancelling open orders.');
+}catch(e){console.log('ERRORS',errors);console.log((await page.locator('body').innerText()).slice(-2200));await page.screenshot({path:'.runtime/material-actions-failure.png'});throw e;}finally{await browser.close()}
