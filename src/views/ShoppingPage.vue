@@ -1,11 +1,11 @@
 <script setup>
 import PurchaseDocuments from '../components/PurchaseDocuments.vue';
 import { computed, ref } from 'vue';
-import { ShoppingBag, Plus, Download, Search, Truck, Store, RefreshCw, Pencil, PackageCheck, ClipboardList } from '@lucide/vue';
+import { ShoppingBag, Plus, Download, Search, Truck, Store, RefreshCw, Pencil, PackageCheck, ClipboardList, X, RotateCcw } from '@lucide/vue';
 import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
 import EntityForm from '../components/EntityForm.vue';
-import { state, dispatch, navigate, normalize, locate, notify, statusText } from '../state';
+import { state, route, dispatch, navigate, normalize, locate, notify, statusText } from '../state';
 import { storage } from '../storage';
 import { t, number, money, date, language, errorText } from '../i18n';
 import { shoppingNeeds } from '../../core/commands.mjs';
@@ -91,8 +91,27 @@ function openPurchase(order = null, requirement = null) {
   const amount = requirement ? material?.packageSize ? Math.ceil(requirement.toOrder / material.packageSize) * material.packageSize : requirement.toOrder : 1;
   form.value = { kind: 'purchase', key: crypto.randomUUID(), operationId: crypto.randomUUID(), title: order ? 'editPurchase' : 'newPurchase', original: order,
     initial: order ? { ...order, unitPriceMajor: major(order.unitPrice), projectId: order.projectIds.length === 1 ? order.projectIds[0] : '' } : { materialId: requirement?.materialId || '', quantity: amount, status: 'to_buy', supplierId: '', priority: 'normal', unitPriceMajor: '', currency: state.value.settings.currency, projectId: projectId.value, expectedDate: '', notes: '' },
-    requirementProjects: requirement ? requirement.allocations.map(a => a.projectId) : null,
+    requirementProjects: requirement?.allocations?.length ? requirement.allocations.map(a => a.projectId) : null,
   };
+}
+function editRestock(need) {
+  const existing = state.value.purchases.find(row => row.materialId === need.materialId && !['received','cancelled'].includes(row.status));
+  if (existing) openPurchase(existing);
+  else openPurchase(null, { ...need, toOrder: need.toOrder || Math.max(1, need.minimum - need.physical) });
+}
+async function setIncluded(materialId, enabled) {
+  if (busy.value) return;
+  busy.value=true; error.value='';
+  try { await dispatch('purchase.restock', { materialId, enabled }); notify(); }
+  catch (caught) { error.value=errorText(caught); }
+  finally { busy.value=false; }
+}
+async function changeOrderStatus(order, nextStatus) {
+  if (busy.value) return;
+  busy.value=true; error.value='';
+  try { await dispatch('purchase.save', { ...order, status: nextStatus }); notify(); }
+  catch (caught) { error.value=errorText(caught); }
+  finally { busy.value=false; }
 }
 function openReceive(order) {
   const remaining = subtract(order.quantity, order.received);
@@ -147,6 +166,14 @@ async function printList() {
   error.value = '';
   try { await storage.print(); } catch (caught) { error.value = errorText(caught); }
 }
+if (route.value.page === 'shopping' && route.value.id) {
+  const material = materialById.value.get(route.value.id);
+  if (material && !material.archived) {
+    const existing = state.value.purchases.find(row => row.materialId === material.id && !['received','cancelled'].includes(row.status));
+    if (existing) openPurchase(existing);
+    else openPurchase(null, { materialId: material.id, toOrder: 1, allocations: [] });
+  }
+}
 </script>
 
 <template>
@@ -182,8 +209,8 @@ async function printList() {
           <td><button class="cell-title" @click="navigate('material', need.materialId)">{{ materialName(need.materialId) }}</button><span class="cell-subtitle">{{ materialCode(need.materialId) }}</span></td>
           <td>{{ number(need.physical) }}<span class="cell-subtitle">{{ t(`unit_${need.unit}`) }}</span></td>
           <td>{{ number(need.minimum) }}</td><td>{{ number(need.toOrder) }}</td>
-          <td><span class="badge warning">{{ t(need.toOrder > 0 ? 'to_buy' : 'restockCovered') }}</span></td>
-          <td><button class="button small" :disabled="!need.toOrder" @click="openPurchase(null, need)">{{ t('newPurchase') }}</button></td>
+          <td><span class="badge warning">{{ t(need.suppressed ? 'restockExcluded' : need.toOrder > 0 ? 'to_buy' : 'restockCovered') }}</span></td>
+          <td><div class="actions"><button class="icon-button" :disabled="busy" :aria-label="t('editNamedPurchase', { name: materialName(need.materialId) })" @click="editRestock(need)"><Pencil :size="18" /></button><button class="button small" :disabled="busy" @click="setIncluded(need.materialId, need.suppressed)"><RotateCcw v-if="need.suppressed" :size="16" /><X v-else :size="16" />{{ t(need.suppressed ? 'includePurchase' : 'excludePurchase') }}</button></div></td>
         </tr>
       </tbody></table></div>
     </section>
@@ -196,7 +223,7 @@ async function printList() {
           <td><span class="badge" :class="{ green: order.status === 'received', accent: order.status === 'ordered', warning: order.status === 'partial' }">{{ statusText(order.status) }}</span><span v-if="order.priority !== 'normal'" class="cell-subtitle">{{ t('priority') }}: {{ t(order.priority) }}</span></td>
           <td>{{ supplierById.get(order.supplierId)?.name || '—' }}</td>
           <td>{{ order.unitPrice === null ? t('unknown') : money(Math.round(order.quantity * order.unitPrice), order.currency) }}</td>
-          <td><div class="actions"><button class="button small" @click="documentsId=order.id">{{ t('purchaseDocuments') }}</button><button class="icon-button" :aria-label="t('editNamedPurchase', { name: materialName(order.materialId) })" @click="openPurchase(order)"><Pencil :size="16" /></button><button v-if="!['received','cancelled'].includes(order.status)" class="button small" @click="openReceive(order)"><PackageCheck :size="15" />{{ t('receive') }}</button></div></td>
+          <td><div class="actions"><button class="button small" @click="documentsId=order.id">{{ t('purchaseDocuments') }}</button><button class="icon-button" :aria-label="t('editNamedPurchase', { name: materialName(order.materialId) })" @click="openPurchase(order)"><Pencil :size="16" /></button><button v-if="order.status !== 'received'" class="icon-button" :disabled="busy" :aria-label="t(order.status === 'cancelled' ? 'includePurchase' : 'excludePurchase')" :title="t(order.status === 'cancelled' ? 'includePurchase' : 'excludePurchase')" @click="changeOrderStatus(order, order.status === 'cancelled' ? 'to_buy' : 'cancelled')"><RotateCcw v-if="order.status === 'cancelled'" :size="18" /><X v-else :size="18" /></button><button v-if="!['received','cancelled'].includes(order.status)" class="button small" @click="openReceive(order)"><PackageCheck :size="15" />{{ t('receive') }}</button></div></td>
         </tr>
       </tbody></table></div>
       <EmptyState v-else-if="!matchingReplenishment.length" :icon="ShoppingBag" :title="state.purchases.length ? t('noResults') : t('emptyShopping')" :description="t('emptyShoppingBody')">
