@@ -1,3 +1,4 @@
+import {supplierNameFromUrl} from '../core/supplier-products.mjs';
 import {isBead} from '../core/pattern-materials.mjs';
 import {purchaseUrl} from '../core/pattern-fabric.mjs';
 import {retailerPurchaseLinks} from '../core/retailer-catalogue.mjs';
@@ -41,7 +42,7 @@ export function appendPatternLegend(doc, revision, { locale = 'it', totals, marg
     }
     const components=isBead(color)?[color,...(color.attachmentThread?[color.attachmentThread]:[])]:[...threadComponents(color,'full',configuration,index),...threadComponents(color,'back',configuration,index)];
     const products=includePurchaseLinks?[...new Map(components.flatMap(component=>[...(component.product?[component.product]:[]),...retailerPurchaseLinks(component)]).map(product=>[product.url,product])).values()]:[];
-    for(const product of products){const url=purchaseUrl(product.url);if(y>bottom)newPage();doc.setFontSize(8);const supplier=new URL(url).hostname.includes('tessiland')?'Tessiland':'Casa Cenina';for(const line of doc.splitTextToSize(pdfText(doc,`${english?'Buy':'Acquista'}: ${supplier} · ${product.brand} ${product.code}`),width)){if(y>bottom)newPage();doc.textWithLink(line,margin+16,y,{url});y+=4.5;}}
+    for(const product of products){const url=purchaseUrl(product.url);if(y>bottom)newPage();doc.setFontSize(8);const supplier=supplierNameFromUrl(url);for(const line of doc.splitTextToSize(pdfText(doc,`${english?'Buy':'Acquista'}: ${supplier} · ${product.brand} ${product.code}`),width)){if(y>bottom)newPage();doc.textWithLink(line,margin+16,y,{url});y+=4.5;}}
     y += 5;
   }
 }
