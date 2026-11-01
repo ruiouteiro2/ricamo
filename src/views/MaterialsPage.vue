@@ -2,7 +2,7 @@
 import { INVENTORY_GROUPS, parseInventoryRoute, inventoryRoute, inventoryContext, matchesInventorySection } from '../inventory-navigation.mjs';
 import { materialSearchDescriptors } from '../material-descriptors.mjs';
 import { computed, ref, watch } from 'vue';
-import { Plus, Search, Package, CircleAlert, Download, ChevronLeft, ChevronRight, Heart, MapPin, Pencil, Trash2, ShoppingCart } from '@lucide/vue';
+import { Plus, Search, Package, CircleAlert, Download, ChevronLeft, ChevronRight, Heart, PackageOpen, Pencil, Trash2, ShoppingCart } from '@lucide/vue';
 import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
 import AppDialog from '../components/AppDialog.vue';
@@ -10,7 +10,6 @@ import MaterialForm from '../components/MaterialForm.vue';
 import InventoryBulkForm from '../components/InventoryBulkForm.vue';
 import InventoryLabels from '../components/InventoryLabels.vue';
 import KitLibrary from '../components/KitLibrary.vue';
-import InventorySavedViews from '../components/InventorySavedViews.vue';
 import { inventoryCategories as categoryOptions, categoryLabel as categoryName } from '../inventory-categories.mjs';
 import { state, route, navigate, notify, normalize, locate, dispatch } from '../state';
 import { t, number, errorText } from '../i18n';
@@ -37,17 +36,16 @@ function tileCount(tile) { return state.value.materials.filter(material => !mate
 let remembered = state.value.settings.preferences?.materialFilters || {};
 try { remembered = JSON.parse(sessionStorage.getItem('ricamo:material-view') || 'null') || remembered; } catch { /* Invalid view preferences never replace application data. */ }
 const search = ref(remembered.search || ''), category = ref(remembered.category || ''), location = ref(remembered.location || ''), filter = ref(remembered.filter || 'active'), sort = ref(remembered.sort || 'nameAZ'), page = ref(remembered.page || 1);
-const stock = ref(remembered.stock || ''), reservation = ref(remembered.reservation || ''), project = ref(remembered.project || ''), lotStatus = ref(remembered.lotStatus || '');
 const preferenceBusy = ref(false), preferenceError = ref('');
-function currentView() { return { search: search.value, category: category.value, location: location.value, filter: filter.value, sort: sort.value, page: page.value, stock:stock.value,reservation:reservation.value,project:project.value,lotStatus:lotStatus.value }; }
-function applyView(view) { search.value=view.search||'';category.value=view.category||'';location.value=view.location||'';filter.value=view.filter||'active';sort.value=view.sort||'nameAZ';stock.value=view.stock||'';reservation.value=view.reservation||'';project.value=view.project||'';lotStatus.value=view.lotStatus||'';page.value=1;selected.value=[]; }
-watch([search, category, location, filter, sort, page, stock, reservation, project, lotStatus], () => { try { sessionStorage.setItem('ricamo:material-view', JSON.stringify(currentView())); } catch { /* Preference storage may be unavailable; inventory remains usable. */ } });
+function currentView() { return { search: search.value, category: category.value, location: location.value, filter: filter.value, sort: sort.value, page: page.value }; }
+function applyView(view) { search.value=view.search||'';category.value=view.category||'';location.value=view.location||'';filter.value=view.filter||'active';sort.value=view.sort||'nameAZ';page.value=1;selected.value=[]; }
+watch([search, category, location, filter, sort, page], () => { try { sessionStorage.setItem('ricamo:material-view', JSON.stringify(currentView())); } catch { /* Preference storage may be unavailable; inventory remains usable. */ } });
 async function rememberFilters() { preferenceBusy.value = true; preferenceError.value = ''; try { await dispatch('settings.save', { preferences: { ...state.value.settings.preferences, materialFilters: currentView() } }); notify(); } catch(error) { preferenceError.value = errorText(error); } finally { preferenceBusy.value = false; } }
 if (section.value.group) applyView({});
 const pageSize = 50;
 watch(() => props.initialAction, value => { if (value === 'new') adding.value = true; });
 watch(() => route.value.id, value => { if (value === 'new') adding.value = true; });
-watch([search, category, location, filter, sort, stock, reservation, project, lotStatus], () => { page.value = 1; selected.value=[]; });
+watch([search, category, location, filter, sort], () => { page.value = 1; selected.value=[]; });
 const rows = computed(() => {
   const lots = new Map(), reservations = new Map(), projects = new Map(), lotsById = new Map(state.value.lots.map(row=>[row.id,row]));
   const link=(materialId,projectId)=>{if(!projectId)return;if(!projects.has(materialId))projects.set(materialId,new Set());projects.get(materialId).add(projectId);};
@@ -64,23 +62,21 @@ const rows = computed(() => {
     return { material, holdings, summary, locationIds, locationNames, projectIds:projects.get(material.id)||new Set(), search: normalize([material.id, material.name, material.brand, material.range, material.code, material.notes, ...material.tags, ...locationNames, ...holdings.flatMap(lot=>[lot.id,lot.lotCode,lot.notes]),materialSearchDescriptors(material,holdings)].join(' ')), low: material.minimum !== null && summary.available < material.minimum };
   });
 });
+function isPartiallyUsed(row) {
+  return row.holdings.some(lot => lot.status !== 'transformed' && lot.quantity !== 0 &&
+    (lot.properties?.usageStatus === 'partial' || lot.properties?.details?.packageCondition === 'partial'));
+}
+const showMetrics = computed(() => !section.value.group || ['threads','beads','fabrics'].includes(section.value.group.id) || section.value.child?.id === 'needles');
 const filtered = computed(() => {
   const query = normalize(search.value);
   return rows.value.filter(row => {
     if (filter.value === 'archived' ? !row.material.archived : row.material.archived) return false;
     if (filter.value === 'low' && !row.low) return false;
     if (filter.value === 'review' && !row.summary.unknown && !row.summary.conflicts.length) return false;
+    if (filter.value === 'partial' && !isPartiallyUsed(row)) return false;
     if (filter.value === 'favorite' && !row.material.favorite) return false;
     if (category.value && !matchesInventorySection(row.material, INVENTORY_GROUPS.find(group => group.category === category.value)?.id)) return false;
     if (location.value && !row.locationIds.includes(location.value)) return false;
-    if(stock.value==='positive'&&!(row.summary.knownPhysical>0))return false;
-    if(stock.value==='zero'&&(row.summary.unknown||row.summary.physical!==0))return false;
-    if(stock.value==='unknown'&&!row.summary.unknown)return false;
-    if(reservation.value==='reserved'&&row.summary.reserved<=0)return false;
-    if(reservation.value==='unreserved'&&row.summary.reserved>0)return false;
-    if(reservation.value==='conflict'&&!row.summary.conflicts.length)return false;
-    if(project.value&&!row.projectIds.has(project.value))return false;
-    if(lotStatus.value&&!row.holdings.some(lot=>lot.status===lotStatus.value))return false;
     return !query || row.search.includes(query);
   }).sort((a, b) => sort.value === 'recent' ? b.material.createdAt.localeCompare(a.material.createdAt) : sort.value === 'nameZA' ? b.material.name.localeCompare(a.material.name) : sort.value==='codeAZ' ? a.material.code.localeCompare(b.material.code) || a.material.name.localeCompare(b.material.name) : sort.value==='brandAZ' ? a.material.brand.localeCompare(b.material.brand)||a.material.range.localeCompare(b.material.range)||a.material.code.localeCompare(b.material.code) : a.material.name.localeCompare(b.material.name));
 });
@@ -92,7 +88,7 @@ function togglePage(){if(pageSelected.value)selected.value=selected.value.filter
 const activeRows = computed(() => rows.value.filter(row => !row.material.archived));
 const lowCount = computed(() => activeRows.value.filter(row => row.low).length);
 const reviewCount = computed(() => activeRows.value.filter(row => row.summary.unknown || row.summary.conflicts.length).length);
-const locationCount = computed(() => new Set(activeRows.value.flatMap(row => row.holdings).filter(lot => lot.status !== 'transformed' && lot.locationId).map(lot => lot.locationId)).size);
+const partialCount = computed(() => activeRows.value.filter(isPartiallyUsed).length);
 function clear() { applyView({}); }
 function closeForm() { adding.value = false; if (route.value.id === 'new') route.value = { ...route.value, id: null }; }
 function created(id) {
@@ -127,11 +123,17 @@ function workflowSaved(){workflow.value='';selected.value=[];}
     </section>
     <div v-if="!section.group && !section.showList" class="actions form-section"><button class="button" @click="navigate('materials', section.group ? inventoryRoute(section.group.id, 'all') : 'all')">{{ t('inventoryViewAll') }}</button></div>
     <template v-if="section.showList || section.group">
+    <div v-if="showMetrics" class="metrics">
+      <button class="metric" @click="filter = 'active'"><div class="metric-top">{{ t('inventoryTotalMaterials') }}<Package :size="18" /></div><div class="metric-value">{{ number(activeRows.length, 0) }}</div><div class="metric-caption">{{ t('materialCount') }}</div></button>
+      <button class="metric" @click="filter = 'low'"><div class="metric-top">{{ t('lowStock') }}<CircleAlert :size="18" /></div><div class="metric-value">{{ number(lowCount, 0) }}</div><div class="metric-caption">{{ t('belowMinimum') }}</div></button>
+      <button class="metric" @click="filter = 'review'"><div class="metric-top">{{ t('needsReview') }}<Search :size="18" /></div><div class="metric-value">{{ number(reviewCount, 0) }}</div><div class="metric-caption">{{ t('unknownOrConflicted') }}</div></button>
+      <button class="metric" @click="filter = 'partial'"><div class="metric-top">{{ t('inventoryPartiallyUsed') }}<PackageOpen :size="18" /></div><div class="metric-value">{{ number(partialCount, 0) }}</div><div class="metric-caption">{{ t('inventoryPartialHelp') }}</div></button>
+    </div>
     <div class="toolbar">
       <div class="toolbar-search"><Search :size="17" /><input v-model="search" :aria-label="t('searchMaterials')" :placeholder="t('searchMaterials')" /></div>
       <select v-model="category" :aria-label="t('category')"><option value="">{{ t('allCategories') }}</option><option v-for="option in categoryOptions" :key="option.value" :value="option.value">{{ option.label }}</option></select>
       <select v-model="location" :aria-label="t('location')"><option value="">{{ t('allLocations') }}</option><option v-for="item in state.locations" :key="item.id" :value="item.id">{{ locate(item.id) }}</option></select>
-      <select v-model="filter" :aria-label="t('status')"><option value="active">{{ t('active') }}</option><option value="low">{{ t('lowStock') }}</option><option value="review">{{ t('needsReview') }}</option><option value="favorite">{{ t('favorite') }}</option><option value="archived">{{ t('archived') }}</option></select>
+      <select v-model="filter" :aria-label="t('status')"><option value="active">{{ t('active') }}</option><option value="low">{{ t('lowStock') }}</option><option value="review">{{ t('needsReview') }}</option><option value="partial">{{ t('inventoryPartiallyUsed') }}</option><option value="favorite">{{ t('favorite') }}</option><option value="archived">{{ t('archived') }}</option></select>
       <select v-model="sort" :aria-label="t('sort')"><option value="nameAZ">{{ t('nameAZ') }}</option><option value="recent">{{ t('recent') }}</option><option value="nameZA">{{ t('nameZA') }}</option><option value="codeAZ">{{ t('codeAZ') }}</option><option value="brandAZ">{{ t('brandAZ') }}</option></select>
       <button class="button small" :disabled="preferenceBusy" @click="rememberFilters">{{ t('rememberFilters') }}</button>
     </div>
@@ -162,15 +164,6 @@ function workflowSaved(){workflow.value='';selected.value=[];}
         <div class="panel-heading"><small class="muted">{{ number(filtered.length, 0) }} {{ t('materials').toLowerCase() }} · {{ t('page') }} {{ page }} / {{ pageCount }}</small><div class="actions"><button class="icon-button" :disabled="page <= 1" :aria-label="t('previousPage')" @click="page--"><ChevronLeft :size="18" /></button><button class="icon-button" :disabled="page >= pageCount" :aria-label="t('nextPage')" @click="page++"><ChevronRight :size="18" /></button></div></div>
       </template>
     </section>
-    <details class="form-section"><summary>{{ t('more') }}</summary>
-      <div class="panel-body"><details><summary>{{ t('moreInventoryFilters') }}</summary><div class="form-grid"><label>{{ t('stockFilter') }}<select v-model="stock"><option value="">{{ t('all') }}</option><option value="positive">{{ t('knownPositiveStock') }}</option><option value="zero">{{ t('knownZeroStock') }}</option><option value="unknown">{{ t('unknown') }}</option></select></label><label>{{ t('reservationFilter') }}<select v-model="reservation"><option value="">{{ t('all') }}</option><option value="reserved">{{ t('reserved') }}</option><option value="unreserved">{{ t('notReserved') }}</option><option value="conflict">{{ t('conflict') }}</option></select></label><label>{{ t('project') }}<select v-model="project"><option value="">{{ t('all') }}</option><option v-for="row in state.projects" :key="row.id" :value="row.id">{{ row.name }}</option></select></label><label>{{ t('lotStatusFilter') }}<select v-model="lotStatus"><option value="">{{ t('all') }}</option><option v-for="status in ['usable','blocked','damaged','unverified','transformed']" :key="status" :value="status">{{ t(status) }}</option></select></label></div><p class="field-help">{{ t('projectFilterHelp') }}</p></details><InventorySavedViews :current="currentView()" @apply="applyView" /></div>
-    </details>
-    <div class="metrics">
-      <div class="metric"><div class="metric-top">{{ t('materials') }}<Package :size="18" /></div><div class="metric-value">{{ number(activeRows.length, 0) }}</div><div class="metric-caption">{{ t('materialCount') }}</div></div>
-      <button class="metric" @click="filter = 'low'"><div class="metric-top">{{ t('lowStock') }}<CircleAlert :size="18" /></div><div class="metric-value">{{ number(lowCount, 0) }}</div><div class="metric-caption">{{ t('belowMinimum') }}</div></button>
-      <button class="metric" @click="filter = 'review'"><div class="metric-top">{{ t('needsReview') }}<Search :size="18" /></div><div class="metric-value">{{ number(reviewCount, 0) }}</div><div class="metric-caption">{{ t('unknownOrConflicted') }}</div></button>
-      <div class="metric"><div class="metric-top">{{ t('locations') }}<MapPin :size="18" /></div><div class="metric-value">{{ number(locationCount, 0) }}</div><div class="metric-caption">{{ t('occupiedLocations') }}</div></div>
-    </div>
     </template>
     <KitLibrary v-if="workflow==='collections'||workflow==='collectionSelection'" :selected-material-ids="workflow==='collectionSelection'?selected:[]" @close="workflow=''" />
     <InventoryBulkForm v-if="workflow==='bulk'" :ids="selected" @close="workflow=''" @saved="workflowSaved" />
