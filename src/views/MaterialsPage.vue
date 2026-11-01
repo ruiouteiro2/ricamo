@@ -5,6 +5,7 @@ import { computed, ref, watch } from 'vue';
 import { Plus, Search, Package, CircleAlert, Download, ChevronLeft, ChevronRight, Heart, PackageOpen, Pencil, Trash2, ShoppingCart } from '@lucide/vue';
 import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
+import InventoryCategoryIcon from '../components/InventoryCategoryIcon.vue';
 import AppDialog from '../components/AppDialog.vue';
 import MaterialForm from '../components/MaterialForm.vue';
 import InventoryBulkForm from '../components/InventoryBulkForm.vue';
@@ -105,9 +106,9 @@ function workflowSaved(){workflow.value='';selected.value=[];}
 </script>
 <template>
   <div class="page">
-    <PageHeader :eyebrow="t('materials')" :title="section.child ? tileLabel(section.child) : section.group ? tileLabel(section.group) : t('inventoryTitle')" :description="t('inventorySubtitle')">
-      <button class="button" @click="navigate('settings')"><Download :size="16" />{{ t('inventoryDataTools') }}</button>
-      <button class="button primary" @click="addTo()"><Plus :size="17" />{{ t('addMaterial') }}</button>
+    <PageHeader :eyebrow="t('materials')" :title="section.child ? tileLabel(section.child) : section.group ? tileLabel(section.group) : t('inventoryTitle')" :description="!section.group || section.showList ? t('inventorySubtitle') : undefined">
+      <button v-if="!section.group || section.showList" class="button" @click="navigate('settings')"><Download :size="16" />{{ t('inventoryDataTools') }}</button>
+      <button v-if="!section.group || section.showList" class="button primary" @click="addTo()"><Plus :size="17" />{{ t('addMaterial') }}</button>
     </PageHeader>
     <nav class="inventory-breadcrumb" :aria-label="t('inventoryNavigation')">
       <button class="button text" @click="navigate('materials')">{{ t('materials') }}</button>
@@ -117,12 +118,11 @@ function workflowSaved(){workflow.value='';selected.value=[];}
     </nav>
     <section v-if="!section.showList" class="inventory-category-grid" :class="{ 'inventory-subcategory-grid': section.group }" :aria-label="t(section.group ? 'inventorySubcategories' : 'inventoryCategories')">
       <article v-for="tile in tiles" :key="tile.id" class="panel inventory-category-card">
-        <button class="inventory-category-link" @click="openTile(tile)"><Package :size="30" /><h2>{{ tileLabel(tile) }}</h2><span class="muted">{{ number(tileCount(tile), 0) }} {{ t('materials').toLowerCase() }}</span><ChevronRight :size="20" /></button>
+        <button class="inventory-category-link" @click="openTile(tile)"><InventoryCategoryIcon :group="section.group?.id || tile.id" :size="32" /><h2>{{ tileLabel(tile) }}</h2><span class="muted">{{ number(tileCount(tile), 0) }} {{ t('materials').toLowerCase() }}</span><ChevronRight :size="20" /></button>
         <div class="panel-body"><button class="button" @click="addToTile(tile)"><Plus :size="16" />{{ t('add') }}</button></div>
       </article>
     </section>
-    <div v-if="!section.group && !section.showList" class="actions form-section"><button class="button" @click="navigate('materials', section.group ? inventoryRoute(section.group.id, 'all') : 'all')">{{ t('inventoryViewAll') }}</button></div>
-    <template v-if="section.showList || section.group">
+    <template v-if="section.showList">
     <div v-if="showMetrics" class="metrics">
       <button class="metric" @click="filter = 'active'"><div class="metric-top">{{ t('inventoryTotalMaterials') }}<Package :size="18" /></div><div class="metric-value">{{ number(activeRows.length, 0) }}</div><div class="metric-caption">{{ t('materialCount') }}</div></button>
       <button class="metric" @click="filter = 'low'"><div class="metric-top">{{ t('lowStock') }}<CircleAlert :size="18" /></div><div class="metric-value">{{ number(lowCount, 0) }}</div><div class="metric-caption">{{ t('belowMinimum') }}</div></button>
