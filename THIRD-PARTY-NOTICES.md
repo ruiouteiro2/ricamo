@@ -107,3 +107,7 @@ License: GPL-2+
 ## Casa Cenina catalogue cover previews
 
 The offline chart catalogue includes 482 small cover previews attributed to Mirabilia/Nora Corbett and Bella Filipina, obtained from their public Casa Cenina catalogue pages on 2026-11-01. These images remain the property of their respective authors and publishers and are not licensed under this repository’s MIT license. They identify commercial products; no chart grids, instructions or purchased PDFs are included. Source URLs and image SHA-256 values are recorded in `data/pattern-catalogue.json`. See `docs/CHART-CATALOGUE-SOURCES.md`.
+
+## DMC Diamant catalogue photos
+
+The Diamant catalogue includes 14 small, unmodified product-photo previews referenced by the public official DMC product page on 2026-11-01. Images and DMC marks remain the property of their respective owners and are not covered by the repository MIT license. They identify commercial thread products; no embroidery designs or instructions are included. Source URLs, variant IDs and original image SHA-256 values are recorded in `data/dmc-diamant-catalogue.json`. See `docs/DMC-DIAMANT-SOURCES.md`.
