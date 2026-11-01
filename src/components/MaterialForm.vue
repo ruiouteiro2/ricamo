@@ -17,7 +17,7 @@ import { quantity } from '../../core/shared.mjs';
 const props = defineProps({ material: Object });
 const emit = defineEmits(['close', 'saved']);
 const formId = useId(), operationId = crypto.randomUUID(), materialId = props.material?.id || crypto.randomUUID();
-const draft = reactive({ name: '', category: 'thread', brand: '', range: '', code: '', unit: 'm', color: '#8b6477', tagsText: '', notes: '', minimum: '', packageSize: '', strands: '', divisible: false, reusable: false, favorite: false, properties: {}, attachments: [], ...JSON.parse(JSON.stringify(props.material || {})) });
+const draft = reactive({ name: '', category: 'thread', brand: '', range: '', code: '', unit: 'm', color: '#8b6477', tagsText: '', notes: '', minimum: 1, packageSize: '', strands: '', divisible: false, reusable: false, favorite: false, properties: {}, attachments: [], ...JSON.parse(JSON.stringify(props.material || {})) });
 draft.tagsText = (props.material?.tags || []).join(', ');
 const stock = reactive({ enabled: !props.material, quantity: '', confidence: 'exact', status: 'usable', locationId: '', lotCode: '', cost: '', currency: state.value.settings.currency, supplierId: '', widthCm: '', heightCm: '', properties: {} });
 const busy = ref(false), error = ref(''), photoFiles = ref([]);
@@ -119,7 +119,7 @@ async function save() {
     const properties = normalizeDescriptorProperties(JSON.parse(JSON.stringify(draft.properties)));
     properties.custom = Object.fromEntries(Object.entries(properties.custom || {}).map(([key,value]) => [key,String(value ?? '')]));
     for (const key of ['countX', 'countY']) if (key in properties) properties[key] = optionalNumber(properties[key], key);
-    const payload = { ...JSON.parse(JSON.stringify(draft)), name: isEdit.value ? draft.name : [draft.brand, draft.range, draft.code, draft.properties.threadSize].filter(value => String(value ?? '').trim()).join(' · '), id: materialId, tags: draft.tagsText.split(',').map(tag => tag.trim()).filter(Boolean), minimum: optionalNumber(draft.minimum, 'minimum'), packageSize: optionalNumber(draft.packageSize, 'packageSize'), strands: optionalNumber(draft.strands, 'strands'), properties };
+    const payload = { ...JSON.parse(JSON.stringify(draft)), name: isEdit.value ? draft.name : [draft.brand, draft.range, draft.code, draft.properties.threadSize].filter(value => String(value ?? '').trim()).join(' · '), id: materialId, tags: draft.tagsText.split(',').map(tag => tag.trim()).filter(Boolean), minimum: 1, packageSize: optionalNumber(draft.packageSize, 'packageSize'), strands: optionalNumber(draft.strands, 'strands'), properties };
     delete payload.tagsText;
     let lot = null;
     if (!isEdit.value && stock.enabled) {
@@ -146,6 +146,7 @@ async function save() {
           <FormField :label="t('addMaterialThickness')" v-slot="{ id }"><input :id="id" v-model="draft.properties.threadSize" maxlength="100" /></FormField>
           <FormField :label="t('addMaterialCatalogue')" :help="t('addMaterialCatalogueHelp')" wide v-slot="{ id, describedby }"><select :id="id" :value="draft.properties.product?.id || ''" :disabled="catalogueBusy" :aria-describedby="describedby" @change="selectCatalogue"><option value="">{{ catalogueBusy ? t('loading') : t('addMaterialCataloguePlaceholder') }}</option><option v-for="product in catalogueOptions" :key="product.id" :value="product.id">{{ [product.brand, product.range, product.code, product.colorName || product.name].filter(Boolean).join(' · ') }}</option></select></FormField>
           <FormField :label="t('addMaterialOwnedQuantity')" :help="`${t(`unit_${draft.unit}`)}. ${t('unknownHint')}`" v-slot="{ id, describedby }"><input :id="id" v-model="stock.quantity" inputmode="decimal" :aria-describedby="describedby" /></FormField>
+          <FormField :label="t('minimum')" :help="t('minimumStockHelp')" v-slot="{ id, describedby }"><input :id="id" value="1" readonly :aria-describedby="describedby" /></FormField>
           <FormField :label="t('status')" v-slot="{ id }"><select :id="id" v-model="stock.status"><option v-for="status in ['usable','blocked','damaged','unverified']" :key="status" :value="status">{{ t(status) }}</option></select></FormField>
         </div>
         <p v-if="catalogueError" class="notice error" role="alert">{{ catalogueError }}</p>
@@ -188,7 +189,7 @@ async function save() {
         <summary>{{ t('advanced') }}</summary>
         <section class="form-section"><h3>{{ t('materialCategoryDetails') }}</h3><p class="muted">{{ t('materialDescriptorHelp') }}</p><MaterialDescriptors :properties="draft.properties" :category="draft.category" /></section>
         <div class="form-grid">
-          <FormField :label="t('minimum')" v-slot="{ id }"><input :id="id" v-model="draft.minimum" inputmode="decimal" /></FormField>
+          <FormField :label="t('minimum')" v-slot="{ id }"><input :id="id" value="1" readonly /></FormField>
           <FormField :label="t('packageSize')" :help="t('packageSizeHelp')" v-slot="{ id, describedby }"><input :id="id" v-model="draft.packageSize" inputmode="decimal" :aria-describedby="describedby" /></FormField>
           <template v-if="draft.category === 'thread'">
             <FormField :label="t('threadType')" v-slot="{ id }"><select :id="id" v-model="draft.properties.threadType"><option value="">{{ t('unknown') }}</option><option v-for="type in ['cotton','pearl','silk','wool','rayon','polyester','metallic','variegated','ribbon','other']" :key="type" :value="type">{{ t(`thread_${type}`) }}</option></select></FormField>
