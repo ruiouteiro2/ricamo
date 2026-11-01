@@ -4,6 +4,10 @@ import additional from './i18n-extra.json';
 
 export const language = ref('it');
 const words = {
+  minimumStockHelp: ['Scorta minima fissa: 1. A zero il materiale compare automaticamente in Acquisti.', 'Fixed minimum stock: 1. At zero the material automatically appears in Shopping.'],
+  automaticRestock: ['Scorte da riassortire', 'Stock to replenish'],
+  automaticRestockHelp: ['I materiali sotto la scorta minima compaiono qui automaticamente. Dopo il rifornimento escono dalla lista. Le quantità sconosciute richiedono una verifica.', 'Materials below minimum stock appear here automatically and leave the list once replenished. Unknown quantities need checking.'],
+  restockCovered: ['Acquisto già previsto', 'Purchase already planned'],
   addMaterialType: ['Tipologia', 'Type'],
   addMaterialColorCode: ['Codice colore', 'Colour code'],
   addMaterialThickness: ['Numero spessore', 'Thread size number'],
