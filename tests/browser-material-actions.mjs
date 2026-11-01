@@ -6,7 +6,7 @@ const browser=await chromium.launch({headless:true,...(process.env.RICAMO_BROWSE
 const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
 const errors=[];page.on('pageerror',e=>errors.push(e.message));
 const dialog=page.getByRole('dialog');
-const nav=async name=>page.locator('.sidebar').getByRole('button',{name,exact:true}).click();
+const nav=async name=>{await page.locator('.sidebar').getByRole('button',{name,exact:true}).click();if(name==='Materiali')await page.getByRole('button',{name:'Vedi tutti i materiali',exact:true}).click();};
 const read=()=>page.evaluate(()=>new Promise((resolve,reject)=>{const opening=indexedDB.open('ricamo-studio',1);opening.onerror=()=>reject(opening.error);opening.onsuccess=()=>{const db=opening.result,request=db.transaction('state','readonly').objectStore('state').get('current');request.onsuccess=()=>{resolve(request.result);db.close()};request.onerror=()=>reject(request.error);};}));
 try {
 await page.goto(process.env.RICAMO_TEST_URL||'http://127.0.0.1:4173');await page.locator('.sidebar').waitFor();await nav('Materiali');await page.getByRole('button',{name:'Aggiungi materiale',exact:true}).first().click();
