@@ -1,5 +1,13 @@
 # Ricamo delivery evidence
 
+## Almost finished material status - Windows 0.6.13 - 2026-11-01
+
+Added Quasi terminato / Almost finished to the shared Add/Edit status selector, between partially used and finished. The persisted nearly_finished value survives edit readback; it uses the existing partial package condition and therefore remains included in partially used counts. Selecting this status does not consume stock or force a zero quantity. Finished/zero behavior remains unchanged.
+
+Validation: 556 isolated-process Node tests, 555 passed, one skipped, no failures. The new domain case checks persistence, reopening, status transitions and unchanged quantity/movement history. Browser and packaged Windows journeys created an almost-finished material, reopened it after reload in Edit material with that status selected, and passed existing cancellation, metadata retention, explicit count, automatic preview, finished/zero purchase, SQLite reopen and mobile checks. Evidence: `.runtime/nearly-finished-all-unit.log`, `.runtime/nearly-finished-browser.log`, `.runtime/nearly-finished-native.log`, `.runtime/simple-material-edit-tp2PHO/result.json`. Synthetic profiles only. No renderer errors or HTTP requests recorded; Electron security assertions passed.
+
+Installer: `release/Ricamo-0.6.13-Windows-x64-Setup.exe`, SHA-256 `968103664b08c14b1e31f6ea104015f657029d7bb03f3dec21b637f5cdcd3763`. Package/release audit passed with sourcesMatch true and dirtyFiles zero before this evidence update. Unsigned local build; clean-PC installation and personal-profile upgrade were not tested.
+
 ## P&G spool-only type - Windows 0.6.12 - 2026-11-01
 
 P&G now offers Rocchetto as its sole type in both new-material and simplified edit forms. Brand changes from an unsupported type reset to Rocchetto. New P&G records use spool units; existing lot units/history are retained when editing. Legacy generic P&G identities without a catalogue product use the spool range on explicit save. The exact user-selected reference remains `https://www.tombolodisegnishop.it/prodotto/filo-rame-verniciato-030/`, available on the brand card, material page and form. No new retailer variants or physical specifications were inferred from the reference URL.
