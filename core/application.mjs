@@ -1,3 +1,4 @@
+import { chartCollectionHandlers, validateChartCollection } from './chart-collection.mjs';
 import { duplicateMaterials, duplicateMaterialHandlers } from './material-duplicates.mjs';
 import {applyProjectProcurement} from './pattern-procurement.mjs';
 import {applyPatternSupplies} from './pattern-supplies.mjs';
@@ -28,6 +29,7 @@ import { toolActivityHandlers, validateToolActivity } from './tool-activity.mjs'
 
 export { createState };
 const handlers = {
+  ...chartCollectionHandlers,
   ...duplicateMaterialHandlers,
   ...threadCatalogueHandlers,
   ...catalogueReferenceHandlers,
@@ -143,6 +145,7 @@ export function validateApplicationState(state) {
   validateKitWorkflows(state);
   validateWorkCompanion(state);
   validateInventoryWorkflowState(state);
+  validateChartCollection(state);
   validateFabricPlanning(state);
   validateToolActivity(state);
   validateThreadEstimateState(state);
