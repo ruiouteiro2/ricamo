@@ -7,7 +7,7 @@ import { guardToolCommand, afterToolCommand } from './tool-activity.mjs';
 export function materialEditSnapshot(state, id) {
   const material = find(state, 'materials', id), lots = state.lots.filter(lot => lot.materialId === id && lot.status !== 'transformed');
   const amount = lots.some(lot => lot.quantity === null) ? null : add(...lots.map(lot => lot.quantity));
-  const usageStatus = amount === 0 ? 'finished' : lots.some(lot => lot.properties?.usageStatus === 'partial' || lot.properties?.details?.packageCondition === 'partial') ? 'partial' : 'new';
+  const usageStatus = amount === 0 ? 'finished' : lots.some(lot => lot.quantity !== 0 && lot.properties?.usageStatus === 'nearly_finished') ? 'nearly_finished' : lots.some(lot => lot.properties?.usageStatus === 'partial' || lot.properties?.details?.packageCondition === 'partial') ? 'partial' : 'new';
   return { quantity: amount, usageStatus, fingerprint: { material: structuredClone(material), lots: lots.map(lot => ({ id: lot.id, quantity: lot.quantity, status: lot.status, updatedAt: lot.updatedAt })) } };
 }
 export function saveMaterialInventory(state, payload, context) {
@@ -15,7 +15,7 @@ export function saveMaterialInventory(state, payload, context) {
   const before = materialEditSnapshot(state, payload.material.id);
   assert(JSON.stringify(before.fingerprint) === JSON.stringify(payload.expected), 'material_edit_stale');
   const amount = quantity(payload.quantity, { nullable: true });
-  const usage = oneOf(payload.usageStatus, ['new', 'partial', 'finished'], 'usageStatus');
+  const usage = oneOf(payload.usageStatus, ['new', 'partial', 'nearly_finished', 'finished'], 'usageStatus');
   assert(usage !== 'finished' || amount === 0, 'material_edit_finished_quantity');
   const lots = state.lots.filter(lot => lot.materialId === payload.material.id && lot.status !== 'transformed');
   if (amount !== before.quantity) {
