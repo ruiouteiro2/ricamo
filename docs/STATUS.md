@@ -1,5 +1,11 @@
 # Ricamo delivery evidence
 
+## Scoped inventory counts and immediate lists - 2026-11-01
+
+Inventory statistics now derive only from the current category/brand list, including stock alerts, review counts and occupied locations. Category cards keep their independent counts. Category parent pages also display their own product list below compact subcategory cards, so opening Fili immediately shows the thread list as well as the DMC/Anchor/Profilo navigation. The Entry and organisation disclosure is removed. Additional filters and saved views move below the table under More options; statistics also follow the list.
+
+Validation: production build and both category-navigation and material-actions browser journeys passed in isolated headless Edge. The category journey verifies three threads across three brands plus separate bead/fabric/accessory entries, per-brand counts of one, a parent thread list/count of three, a DMC count of one instead of the complete inventory, removal of the Entry and organisation text, and the table preceding statistics within the desktop viewport. Existing edit/remove/purchase actions remain covered. No desktop package was rebuilt.
+
 ## Four inventory categories and contextual creation - 2026-11-01
 
 Materials opens with four category cards: Fili, Perle, Stoffa and Accessori e merceria. Threads opens DMC, Anchor and Profilo; beads opens Mill Hill. Accessories opens needles/pins/magnets, scissors and hoops. Each category/brand/subtype has Add, and leaf-page Add retains its category, brand and accessory subtype without repeated selection. Lists filter to their chosen section and new entries return to that section. Breadcrumbs support navigation; View all materials retains access to the complete inventory and legacy brands. Existing inventory records, lots, purchase relationships and supplier identities are preserved; display grouping maps legacy categories into the four requested groups. The legacy category-management action is removed from this inventory flow.
