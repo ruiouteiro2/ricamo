@@ -36,3 +36,7 @@ test('fabric navigation includes the embroidery brands and excludes the requeste
   assert.ok(FABRIC_BRANDS.includes('Dames Of The Needle'));
   for(const excluded of ['Grigoletto','Feltro','Tessuti Patchwork','Vaupel','Tipologie Varie'])assert.equal(FABRIC_BRANDS.includes(excluded),false);
 });
+
+test('P&G reference retains the exact user URL without becoming physical stock',async()=>{
+ const {purchaseUrl}=await import('../core/pattern-fabric.mjs');const group=INVENTORY_GROUPS.find(group=>group.id==='threads');const child=group.children.find(child=>child.brand==='P&G');assert.equal(child.reference.name,'Filo rame verniciato');assert.equal(child.reference.url,'https://www.tombolodisegnishop.it/prodotto/filo-rame-verniciato-030/');assert.equal(purchaseUrl(child.reference.url),child.reference.url);assert.throws(()=>purchaseUrl('https://www.tombolodisegnishop.it.evil.example/prodotto/'));assert.equal(inventoryContext(group,child).brand,'P&G');
+});
