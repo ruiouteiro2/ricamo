@@ -9,10 +9,12 @@ import {supplierIdentity,supplierSwatch,SUPPLIER_CATEGORIES} from '../../core/su
 import MaterialDescriptors from './MaterialDescriptors.vue';
 import { normalizeDescriptorProperties } from '../../core/material-descriptors.mjs';
 import StagedAttachments from './StagedAttachments.vue';
-import { state, categories, units, locate, saveEntityWithAssets } from '../state';
+import { state, categories, units, locate, saveEntityWithAssets, dispatch } from '../state';
 import { t, errorText } from '../i18n';
 import { inventoryCategories, materialCustomFields } from '../inventory-categories.mjs';
 import { INVENTORY_GROUPS, inventoryGroup, accessorySection } from '../inventory-navigation.mjs';
+import { duplicateMaterials } from '../../core/material-duplicates.mjs';
+import { convertQuantity } from '../../core/fabric.mjs';
 import { quantity } from '../../core/shared.mjs';
 
 const props = defineProps({ material: Object, context: { type: Object, default: () => ({}) } });
@@ -56,6 +58,23 @@ const similar = computed(() => {
     draft.code.trim() ? item.code === draft.code.trim() && item.brand.toLowerCase() === draft.brand.trim().toLowerCase() && item.range.toLowerCase() === draft.range.trim().toLowerCase() : item.name.toLowerCase() === draft.name.trim().toLowerCase()
   )).slice(0, 4);
 });
+const duplicate = ref(null), duplicateError = ref('');
+const duplicateTarget = computed(() => state.value.materials.find(material => material.id === duplicate.value?.targetId));
+function duplicateQuantity(targetId) {
+  const target = state.value.materials.find(material => material.id === targetId);
+  return convertQuantity(duplicate.value.lot.quantity, duplicate.value.material.unit, target.unit, target) ?? '';
+}
+async function confirmDuplicate() {
+  if (busy.value) return;
+  busy.value = true; duplicateError.value = '';
+  try {
+    const amount = quantity(duplicate.value.quantity, { positive: true });
+    const target = duplicateTarget.value;
+    await dispatch('material.addDuplicateStock', { materialId: target.id, material: duplicate.value.material, unit: target.unit, lot: { ...duplicate.value.lot, quantity: amount } }, operationId);
+    duplicate.value = null; emit('saved', target.id);
+  } catch (caught) { duplicateError.value = errorText(caught); }
+  finally { busy.value = false; }
+}
 const threadFamilies = ['mouline', 'special', 'silk', 'wool', 'spool', 'pearl', 'alsace'];
 const threadFamily = ref(draft.properties.threadFamily || 'mouline');
 const usageStatus = ref('new');
@@ -199,6 +218,14 @@ async function save() {
       lot = { quantity: optionalNumber(stock.quantity, 'quantity'), confidence: stock.confidence, status: stock.status, locationId: stock.locationId || null, lotCode: stock.lotCode, cost: price(stock.cost), currency: stock.currency.toUpperCase(), supplierId: stock.supplierId || null, properties: normalizeDescriptorProperties(JSON.parse(JSON.stringify(stock.properties)), 'lot') };
       if (draft.category === 'fabric') lot.properties = { ...lot.properties, widthCm: optionalNumber(stock.widthCm, 'widthCm'), heightCm: optionalNumber(stock.heightCm, 'heightCm'), irregular: false, countX: properties.countX ?? null, countY: properties.countY ?? null, countMeaning: properties.countMeaning || 'stitches' };
     }
+    if (!isEdit.value) {
+      const matches = duplicateMaterials(state.value, payload);
+      if (matches.length) {
+        duplicate.value = { material: payload, lot, matches: matches.map(material => ({ id: material.id, name: material.name })), targetId: matches[0].id, quantity: '' };
+        duplicate.value.quantity = duplicateQuantity(matches[0].id);
+        duplicateError.value = ''; return;
+      }
+    }
     if (isEdit.value) await saveEntityWithAssets('material.save', payload, photoFiles.value, operationId);
     else await saveEntityWithAssets('material.createWithLot', { material: payload, lot }, photoFiles.value, operationId);
     emit('saved', payload.id);
@@ -300,5 +327,14 @@ async function save() {
       </template>
     </form>
     <template #footer><button type="button" class="button" :disabled="busy" @click="emit('close')">{{ t('cancel') }}</button><button class="button primary" type="submit" :form="formId" :disabled="busy||lookupBusy">{{ busy ? t('saving') : t('save') }}</button></template>
+  </AppDialog>
+  <AppDialog v-if="duplicate" :title="t('duplicateEntryTitle')" :busy="busy" @close="duplicate=null">
+    <p class="notice warning">{{ t('duplicateEntryHelp') }}</p>
+    <p v-if="duplicateError" class="notice error" role="alert">{{ duplicateError }}</p>
+    <FormField v-if="duplicate.matches.length > 1" :label="t('material')" v-slot="{ id }"><select :id="id" v-model="duplicate.targetId" @change="duplicate.quantity=duplicateQuantity(duplicate.targetId)"><option v-for="match in duplicate.matches" :key="match.id" :value="match.id">{{ match.name }}</option></select></FormField>
+    <p v-else><strong>{{ duplicateTarget?.name }}</strong></p>
+    <FormField :label="t('duplicateQuantityLabel')" :help="t(`unit_${duplicateTarget?.unit}`)" required v-slot="{ id, describedby }"><input :id="id" v-model="duplicate.quantity" inputmode="decimal" :aria-describedby="describedby" required autofocus /></FormField>
+    <p class="field-help">{{ t('duplicateQuantityHelp') }}</p>
+    <template #footer><button class="button" :disabled="busy" @click="duplicate=null">{{ t('cancel') }}</button><button class="button primary" :disabled="busy" @click="confirmDuplicate">{{ busy ? t('saving') : t('duplicateConfirmQuantity') }}</button></template>
   </AppDialog>
 </template>
