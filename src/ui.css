@@ -156,3 +156,7 @@ tbody tr { transition: background-color var(--motion-fast) var(--ease-ui); }
 .inventory-subcategory-grid .inventory-category-link { padding: 16px; }
 .inventory-subcategory-grid .inventory-category-link h2 { font-size: 1.1rem; }
 .inventory-subcategory-grid .panel-body { padding: 0 16px 16px; }
+
+.backup-contents { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 32px; margin: 24px 0; }
+.backup-contents dd { margin: 0; font-weight: 600; }
+@media (max-width: 700px) { .backup-contents { grid-template-columns: 1fr; } }
