@@ -1,5 +1,13 @@
 # Ricamo delivery evidence
 
+## Brand-only category pages and material icons - 2026-11-01
+
+Parent category pages now show only the brand/subcategory cards with their contextual Add buttons, title and breadcrumbs. Product lists, summary cards and filters appear only after opening a leaf brand/subcategory. Parent-page description and global import/add actions are hidden. The complete-inventory shortcut is removed from the root navigation. This supersedes the previous parent-page aggregate-list layout; brand-specific list controls remain available.
+
+A shared local SVG component replaces box icons on category and brand cards with a skein for threads, a pearl/bead for beads, woven fabric for fabric, and scissors with a needle for accessories. The icons follow the existing outline styling and do not load external assets.
+
+Validation: production build and all three isolated headless Edge browser journeys for categories, material actions and material entry passed. The category journey checks all four icon variants, parent pages without tables/statistics/toolbars/global actions, and product lists with scoped summaries after entering a brand. The actions journey now uses Fili > DMC rather than the removed complete-inventory shortcut. Root icons and the brand-only Fili page were visually inspected. No desktop distribution was rebuilt.
+
 ## Summary cards above product lists - 2026-11-01
 
 The four inventory cards are now Materiali totali, Da rifornire, Da controllare and Utilizzati parzialmente, placed before the toolbar/product list. They appear for threads, beads, fabric and needles/pins/magnets (including the complete inventory view). Counts stay scoped to the current category/brand. Partly-used counts each active material once when it has an unexhausted, non-transformed lot marked partly used, including the previous package-condition descriptor. Its card filters the list, and Total materials restores the active view. The location card and More options section are removed; obsolete hidden advanced-filter preferences no longer filter the list.
