@@ -26,6 +26,7 @@ const words = {
   deleteThreadConfirm: ['Eliminare {name} dall’elenco?', 'Remove {name} from the list?'],
   deleteThreadHelp: ['Il filo viene spostato negli archiviati, da cui puoi ripristinarlo. Gli acquisti aperti vengono annullati e lo storico viene conservato.', 'The thread moves to archived items, where you can restore it. Open purchases are cancelled and history is preserved.'],
   restockExcluded: ['Escluso dagli acquisti', 'Excluded from shopping'], includePurchase: ['Includi negli acquisti', 'Include in shopping'], excludePurchase: ['Annulla acquisto', 'Cancel purchase'],
+  entryFamily_diamant: ['Diamant', 'Diamant'],
   entryFamily_florentine: ['Ritorto fiorentino', 'Florentine twisted cotton'],
   entryStatus_new: ['Nuovo', 'New'], entryStatus_partial: ['Parzialmente utilizzato', 'Partly used'], entryStatus_finished: ['Finito', 'Finished'],
   entryFamily_mouline: ['Mouliné', 'Stranded cotton'], entryFamily_special: ['Mouliné speciali', 'Specialty stranded threads'], entryFamily_silk: ['Mouliné seta', 'Stranded silk'], entryFamily_wool: ['Mouliné lanato', 'Stranded wool'], entryFamily_spool: ['Rocchetto', 'Spool'], entryFamily_pearl: ['Perlé', 'Pearl cotton'], entryFamily_alsace: ["Ritorto d'Alsazia", 'Alsace twisted cotton'],
