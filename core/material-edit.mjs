@@ -1,3 +1,4 @@
+import {setThreadCountUnit} from './thread-count-unit.mjs';
 import { assert, find, quantity, oneOf, add, subtract, totalReserved } from './shared.mjs';
 import { saveMaterial, saveLot, addLot } from './inventory.mjs';
 import { applyStockCount } from './stock-count.mjs';
@@ -14,6 +15,7 @@ export function saveMaterialInventory(state, payload, context) {
   assert(payload?.material && typeof payload.material === 'object' && !Array.isArray(payload.material), 'invalid_payload');
   const before = materialEditSnapshot(state, payload.material.id);
   assert(JSON.stringify(before.fingerprint) === JSON.stringify(payload.expected), 'material_edit_stale');
+  if(payload.threadCountUnit===true&&payload.material.unit!==before.fingerprint.material.unit)setThreadCountUnit(state,{materialId:payload.material.id,unit:payload.material.unit,preserveCounts:true},context);
   const amount = quantity(payload.quantity, { nullable: true });
   const usage = oneOf(payload.usageStatus, ['new', 'partial', 'nearly_finished', 'finished'], 'usageStatus');
   assert(usage !== 'finished' || amount === 0, 'material_edit_finished_quantity');
