@@ -80,6 +80,7 @@ if(draft.category==='thread')draft.unit=threadCountUnit({brand:draft.brand,famil
 const usageStatus = ref(originalInventory?.usageStatus || 'new');
 if (originalInventory) stock.quantity = originalInventory.quantity ?? '';
 const displayProduct = computed(() => previewProduct.value || draft.properties.product);
+watch(displayProduct,product=>{if(draft.category==='thread')draft.unit=threadCountUnit({brand:draft.brand,family:threadFamily.value,product});});
 const quantityHelp = computed(() => `${t(`unit_${draft.unit}`)}. ${originalInventory?.quantity !== null && isEdit.value ? t('materialEditQuantityHelp') : t('unknownHint')}`);
 
 function familyOf(product) {
@@ -233,7 +234,7 @@ async function save() {
       if (draft.properties.threadSize !== undefined) properties.threadSize = draft.properties.threadSize;
       if (draft.category === 'thread') properties.threadFamily = threadFamily.value;
       if (groupId.value === 'accessories') properties.inventorySection = accessoryId.value;
-      const candidate = { ...original, brand: draft.brand, range: draft.brand.trim().toLowerCase() === 'p&g' && !displayProduct.value ? familyLabel('spool') : draft.range || (draft.category === 'thread' ? familyLabel(threadFamily.value) : ''), code: draft.code, minimum: 1, unit: draft.category==='thread'?draft.unit:original.unit, properties };
+      const candidate = { ...original, brand: draft.brand, range: draft.brand.trim().toLowerCase() === 'p&g' && !displayProduct.value ? familyLabel('spool') : draft.range || (draft.category === 'thread' ? familyLabel(threadFamily.value) : ''), code: draft.code, minimum: 1, unit: draft.category==='thread'?draft.unit:original.unit, packageSize:draft.category==='thread'?null:original.packageSize, properties };
       const identityChanged = supplierIdentity(candidate) !== supplierIdentity(original);
       const selected = displayProduct.value;
       if (identityChanged || explicitCatalogue.value) {
