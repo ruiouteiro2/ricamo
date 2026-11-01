@@ -12,7 +12,7 @@ try {
 await page.goto(process.env.RICAMO_TEST_URL || 'http://127.0.0.1:4173');await page.locator('.sidebar').waitFor();await open();
 const family=dialog.getByLabel(/^Tipologia/),brand=dialog.getByLabel(/^Marca/),status=dialog.getByLabel('Stato',{exact:true}),catalogue=dialog.getByLabel('Scegli dal catalogo',{exact:true});
 assert.equal(await family.locator('option').count(),6);assert.deepEqual(await status.locator('option').allTextContents(),['Nuovo','Parzialmente utilizzato','Finito']);
-await expect(brand.locator('option[value="DMC"]')).toBeAttached();await brand.selectOption('DMC');await expect(family.locator('option')).toHaveCount(7);await family.selectOption('mouline');await dialog.getByLabel('Codice colore',{exact:true}).fill('310');
+await expect(brand.locator('option[value="DMC"]')).toBeAttached();await brand.selectOption('DMC');await expect(family.locator('option')).toHaveCount(8);await family.selectOption('mouline');await dialog.getByLabel('Codice colore',{exact:true}).fill('310');
 await expect(catalogue).toBeEnabled();await expect(catalogue.locator('option[value]').filter({hasText:'310'}).first()).toBeAttached();
 const productId=await catalogue.locator('option').evaluateAll(options=>options.find(o=>o.value&&o.textContent.includes('310')).value);await catalogue.selectOption(productId);
 await expect(catalogue.locator('selectedcontent .catalogue-swatch')).toBeVisible();assert.notEqual(await catalogue.locator('selectedcontent .catalogue-swatch').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)');
