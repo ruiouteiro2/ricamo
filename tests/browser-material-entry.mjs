@@ -11,8 +11,8 @@ const open=async()=>{await page.locator('.sidebar').getByRole('button',{name:'Ma
 try {
 await page.goto(process.env.RICAMO_TEST_URL || 'http://127.0.0.1:4173');await page.locator('.sidebar').waitFor();await open();
 const family=dialog.getByLabel(/^Tipologia/),brand=dialog.getByLabel(/^Marca/),status=dialog.getByLabel('Stato',{exact:true}),catalogue=dialog.getByLabel('Scegli dal catalogo',{exact:true});
-assert.equal(await family.locator('option').count(),7);assert.deepEqual(await status.locator('option').allTextContents(),['Nuovo','Parzialmente utilizzato','Finito']);
-await expect(brand.locator('option[value="DMC"]')).toBeAttached();await brand.selectOption('DMC');await family.selectOption('mouline');await dialog.getByLabel('Codice colore',{exact:true}).fill('310');
+assert.equal(await family.locator('option').count(),6);assert.deepEqual(await status.locator('option').allTextContents(),['Nuovo','Parzialmente utilizzato','Finito']);
+await expect(brand.locator('option[value="DMC"]')).toBeAttached();await brand.selectOption('DMC');await expect(family.locator('option')).toHaveCount(7);await family.selectOption('mouline');await dialog.getByLabel('Codice colore',{exact:true}).fill('310');
 await expect(catalogue).toBeEnabled();await expect(catalogue.locator('option[value]').filter({hasText:'310'}).first()).toBeAttached();
 const productId=await catalogue.locator('option').evaluateAll(options=>options.find(o=>o.value&&o.textContent.includes('310')).value);await catalogue.selectOption(productId);
 await expect(catalogue.locator('selectedcontent .catalogue-swatch')).toBeVisible();assert.notEqual(await catalogue.locator('selectedcontent .catalogue-swatch').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)');
@@ -26,6 +26,6 @@ state=await read();const material=state.materials.find(m=>m.code==='001');assert
 await page.locator('.sidebar').getByRole('button',{name:'Acquisti',exact:true}).click();await expect(page.getByRole('region',{name:'Scorte da riassortire'})).toContainText('001');
 await open();await expect(brand.locator('option[value="DMC"]')).toBeAttached();await brand.selectOption('DMC');await family.selectOption('special');await dialog.getByLabel('Codice colore',{exact:true}).fill('E130');await expect(catalogue).toBeEnabled();await expect(catalogue.locator('option').filter({hasText:'E130'}).first()).toBeAttached();const specialId=await catalogue.locator('option').evaluateAll(options=>options.find(o=>o.value&&o.textContent.includes('E130')).value);await catalogue.selectOption(specialId);await expect(family).toHaveValue('special');
 await page.setViewportSize({width:390,height:844});await status.click();await page.screenshot({path:'.runtime/material-status-mobile.png'});await page.keyboard.press('Escape');assert.equal(await dialog.evaluate(el=>el.scrollWidth>el.clientWidth),false);
-assert.deepEqual(errors,[]);console.log('PASS: three statuses, seven families, visible colour swatch in selection/menu, partial persistence, finished sets zero and shopping, special catalogue filtering, desktop/mobile menu, no renderer errors.');
+assert.deepEqual(errors,[]);console.log('PASS: three statuses, six common families and brand-specific twisted type, visible colour swatch in selection/menu, partial persistence, finished sets zero and shopping, special catalogue filtering, desktop/mobile menu, no renderer errors.');
 }catch(e){console.log('ERRORS',errors);console.log((await page.locator('body').innerText()).slice(-1800));await page.screenshot({path:'.runtime/material-options-failure.png'});throw e;}finally{await browser.close()}
 
