@@ -140,3 +140,14 @@ tbody tr { transition: background-color var(--motion-fast) var(--ease-ui); }
 .catalogue-swatch { display: inline-block; flex: 0 0 28px; width: 28px; height: 28px; border: 1px solid var(--line); border-radius: 6px; }
 .catalogue-swatch-unknown { background: repeating-conic-gradient(var(--line) 0% 25%, var(--surface) 0% 50%) 0 0 / 10px 10px; }
 .catalogue-select small { color: var(--muted); font-size: .8em; }
+
+.inventory-breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 24px; }
+.inventory-category-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.inventory-category-card { overflow: hidden; }
+.inventory-category-link { display: grid; grid-template-columns: 40px 1fr 24px; gap: 12px; align-items: center; width: 100%; padding: 28px; text-align: start; border: 0; background: transparent; color: var(--ink); cursor: pointer; }
+.inventory-category-link h2 { margin: 0; }
+.inventory-category-link .muted { grid-column: 2; }
+.inventory-category-link > svg:last-child { grid-column: 3; grid-row: 1 / 3; }
+.inventory-category-link:hover { background: var(--accent-soft); }
+.inventory-category-card .panel-body { padding-top: 0; }
+@media (max-width: 700px) { .inventory-category-grid { grid-template-columns: 1fr; gap: 16px; } }
