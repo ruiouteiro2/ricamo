@@ -39,7 +39,7 @@ const words = {
   catalogueCodeAmbiguous: ['Questo codice corrisponde a più articoli: scegli quello corretto dal catalogo.', 'This code matches more than one item: choose the correct one from the catalogue.'],
   entryFamily_diamant: ['Diamant', 'Diamant'],
   entryFamily_florentine: ['Ritorto fiorentino', 'Florentine twisted cotton'],
-  entryStatus_new: ['Nuovo', 'New'], entryStatus_partial: ['Parzialmente utilizzato', 'Partly used'], entryStatus_finished: ['Finito', 'Finished'],
+  entryStatus_new: ['Nuovo', 'New'], entryStatus_partial: ['Parzialmente utilizzato', 'Partly used'], entryStatus_finished: ['Finito', 'Finished'], entryStatus_nearly_finished: ['Quasi terminato', 'Almost finished'],
   entryFamily_mouline: ['Mouliné', 'Stranded cotton'], entryFamily_special: ['Mouliné speciali', 'Specialty stranded threads'], entryFamily_silk: ['Mouliné seta', 'Stranded silk'], entryFamily_wool: ['Mouliné lanato', 'Stranded wool'], entryFamily_spool: ['Rocchetto', 'Spool'], entryFamily_pearl: ['Perlé', 'Pearl cotton'], entryFamily_alsace: ["Ritorto d'Alsazia", 'Alsace twisted cotton'],
   minimumStockHelp: ['Scorta minima fissa: 1. A zero il materiale compare automaticamente in Acquisti.', 'Fixed minimum stock: 1. At zero the material automatically appears in Shopping.'],
   automaticRestock: ['Scorte da riassortire', 'Stock to replenish'],
