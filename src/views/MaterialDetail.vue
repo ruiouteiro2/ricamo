@@ -27,6 +27,16 @@ const props = defineProps({ id: String });
 const material = computed(() => state.value.materials.find(row => row.id === props.id));
 const summary = computed(() => material.value ? inventorySummary(state.value, props.id) : null);
 const lots = computed(() => state.value.lots.filter(row => row.materialId === props.id).sort((a, b) => a.status === 'transformed' ? 1 : b.status === 'transformed' ? -1 : b.createdAt.localeCompare(a.createdAt)));
+const lotGroups = computed(() => {
+  if (material.value?.category !== 'thread') return [{ key: 'lots', title: 'lots', rows: lots.value }];
+  const started = lot => lot.status !== 'transformed' && lot.quantity !== 0 && lot.properties?.usageStatus !== 'finished' && (['partial','nearly_finished'].includes(lot.properties?.usageStatus) || lot.properties?.details?.packageCondition === 'partial');
+  const fresh = lot => lot.status !== 'transformed' && lot.quantity !== 0 && !started(lot) && lot.properties?.usageStatus !== 'finished';
+  return [
+    { key: 'started', title: 'startedThreadLots', rows: lots.value.filter(started) },
+    { key: 'new', title: 'newThreadLots', rows: lots.value.filter(fresh) },
+    { key: 'other', title: 'otherThreadLots', rows: lots.value.filter(lot => !started(lot) && !fresh(lot)) },
+  ].filter(group => group.rows.length || group.key === 'new');
+});
 const historyPage = ref(1), historySize = 30;
 const movements = computed(() => state.value.movements.filter(row => row.materialId === props.id || lots.value.some(lot => lot.id === row.lotId)).toReversed());
 const historyPages = computed(() => Math.max(1, Math.ceil(movements.value.length / historySize)));
@@ -118,11 +128,11 @@ function openKit(lot) { openModal('kit', lot.id); }
     <div class="two-columns">
       <div class="stack">
         <CatalogueReferenceUsage v-if="material.category==='reference'" :material-id="id"/>
-        <section class="panel">
-          <div class="panel-heading"><h2>{{ t('lots') }}</h2><button class="button small" :disabled="material.archived" @click="openModal('lot')"><Plus :size="15" />{{ t('addLot') }}</button></div>
-          <EmptyState v-if="!lots.length" compact :icon="Package" :title="t('noLots')" :description="t('noLotsHelp')"><button class="button primary" :disabled="material.archived" @click="openModal('lot')">{{ t('addLot') }}</button></EmptyState>
+        <section v-for="(group, groupIndex) in lotGroups" :key="group.key" class="panel" :aria-label="t(group.title)">
+          <div class="panel-heading"><h2>{{ t(group.title) }}</h2><button class="button small" v-if="groupIndex === 0" :disabled="material.archived" @click="openModal('lot')"><Plus :size="15" />{{ t('addLot') }}</button></div>
+          <EmptyState v-if="!group.rows.length" compact :icon="Package" :title="t('noLots')" :description="t('noLotsHelp')"><button class="button primary" :disabled="material.archived" @click="openModal('lot')">{{ t('addLot') }}</button></EmptyState>
           <div v-else class="table-wrap"><table><thead><tr><th>{{ t('lot') }}</th><th>{{ t('quantity') }}</th><th>{{ t('status') }}</th><th>{{ t('more') }}</th></tr></thead><tbody>
-            <tr v-for="lot in lots" :key="lot.id">
+            <tr v-for="lot in group.rows" :key="lot.id">
               <td><strong>{{ lot.lotCode || lot.id.slice(0, 8) }}</strong><span class="cell-subtitle">{{ locate(lot.locationId) }}</span><span v-if="material.category === 'fabric'" class="cell-subtitle">{{ number(lot.properties.widthCm) }} × {{ number(lot.properties.heightCm) }} cm <span v-if="lot.properties.irregular">· {{ t('irregularFabric') }}</span></span><span v-if="lot.sourceLotId" class="cell-subtitle">{{ t('cutFrom') }} {{ state.lots.find(row => row.id === lot.sourceLotId)?.lotCode || lot.sourceLotId.slice(0,8) }}</span><MaterialDescriptors :properties="lot.properties" :category="material.category" scope="lot" readonly /></td>
               <td>{{ lot.confidence === 'estimated' ? '≈ ' : '' }}{{ number(lot.quantity) }}<span class="cell-subtitle">{{ t(`unit_${material.unit}`) }}</span><span v-if="lotReserved(lot.id)" class="cell-subtitle">{{ t('reserved') }}: {{ number(lotReserved(lot.id)) }}</span><span v-if="lot.cost !== null" class="cell-subtitle">{{ money(lot.cost, lot.currency) }}</span></td>
               <td><span class="badge" :class="{ green: lot.status === 'usable', warning: ['blocked','unverified'].includes(lot.status), danger: lot.status === 'damaged' }">{{ lot.quantity === 0 ? t('entryStatus_finished') : lot.properties.usageStatus ? t(`entryStatus_${lot.properties.usageStatus}`) : t(lot.status) }}</span></td>
