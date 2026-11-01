@@ -1,0 +1,36 @@
+import {_electron as electron,expect} from '@playwright/test';
+import assert from 'node:assert/strict';
+import {mkdtempSync,mkdirSync,writeFileSync} from 'node:fs';
+import {join,resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {assertElectronSecurity} from './electron-security.mjs';
+import {APP_VERSION} from '../core/version.mjs';
+const rootPath=fileURLToPath(new URL('../',import.meta.url));
+mkdirSync(join(rootPath,'.runtime'),{recursive:true});
+const data=mkdtempSync(join(rootPath,'.runtime','desktop-actions-061-'));
+const executable=resolve(process.env.RICAMO_EXECUTABLE||join(rootPath,'node_modules/electron/dist/electron.exe'));
+const env={...process.env,RICAMO_DATA_DIR:data};delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_OPTIONS;
+const app=await electron.launch({chromiumSandbox:true,executablePath:executable,args:process.env.RICAMO_EXECUTABLE?[]:[rootPath],env,timeout:40000});
+const page=await app.firstWindow();await page.setViewportSize({width:1440,height:1000});await page.emulateMedia({reducedMotion:'reduce'});
+const requests=[];page.on('request',request=>{if(/^https?:/.test(request.url()))requests.push(request.url());});
+const errors=[];page.on('pageerror',e=>errors.push(e.message));
+const dialog=page.getByRole('dialog');
+const nav=async name=>{await page.locator('.sidebar').getByRole('button',{name,exact:true}).click();if(name==='Materiali'){await page.locator('.inventory-category-card').filter({has:page.getByRole('heading',{name:'Fili',exact:true})}).getByRole('button').first().click();await page.locator('.inventory-category-card').filter({has:page.getByRole('heading',{name:'DMC',exact:true})}).getByRole('button').first().click();await expect(page.locator('.page-header h1')).toHaveText('DMC');}};
+const read=()=>page.evaluate(async()=>{const result=await window.ricamo.load();if(!result.ok)throw new Error(result.error?.code);return result.value;});
+try {
+await page.locator('.sidebar').waitFor();assert.equal(new URL(page.url()).protocol,'ricamo:');assert.equal(await app.evaluate(({app})=>app.getVersion()),APP_VERSION);const security=await assertElectronSecurity(app);await nav('Materiali');await page.getByRole('button',{name:'Aggiungi materiale',exact:true}).first().click();
+await expect(dialog.locator('output').filter({hasText:'DMC'})).toBeVisible();await dialog.getByLabel('Codice colore',{exact:true}).fill('310');await dialog.getByLabel('Quantit\u00e0 posseduta',{exact:true}).fill('0');await dialog.getByRole('button',{name:'Salva',exact:true}).click();await expect(dialog).toHaveCount(0);await nav('Materiali');
+const table=page.locator('.table-wrap table');await expect(table.getByRole('columnheader',{name:'Riservato',exact:true})).toHaveCount(0);await expect(table.getByRole('columnheader',{name:'Posizione',exact:true})).toHaveCount(0);
+await table.getByRole('button',{name:/^Modifica filo:/}).click();await dialog.getByLabel(/^Nome/).fill('Filo modificato');await dialog.getByRole('button',{name:'Salva',exact:true}).click();await expect(dialog).toHaveCount(0);await expect(table).toContainText('Filo modificato');assert.equal((await read()).materials[0].name,'Filo modificato');
+await table.getByRole('button',{name:/^Inserisci in Acquisti:/}).click();await expect(dialog).toBeVisible();await dialog.getByLabel(/^Quantit/).fill('2');await dialog.getByRole('button',{name:'Salva',exact:true}).click();await expect(dialog).toHaveCount(0);assert.equal((await read()).purchases[0].quantity,2);
+const auto=page.getByRole('region',{name:'Scorte da riassortire'});
+await auto.getByRole('button',{name:'Annulla acquisto',exact:true}).click();await expect(auto).toContainText('Escluso dagli acquisti');let state=await read();assert.equal(state.purchases[0].status,'cancelled');assert.equal(state.materials[0].properties.restockSuppressed,true);
+await page.reload();await page.locator('.sidebar').waitFor();await nav('Acquisti');await expect(auto).toContainText('Escluso dagli acquisti');await auto.getByRole('button',{name:'Includi negli acquisti',exact:true}).click();await expect(auto).toContainText('Da acquistare');
+await auto.getByRole('button',{name:/Modifica acquisto/}).click();await dialog.getByLabel(/^Quantit/).fill('3');await dialog.getByRole('button',{name:'Salva',exact:true}).click();await expect(dialog).toHaveCount(0);
+const orders=page.locator('table').filter({has:page.locator('caption').filter({hasText:'Lista e ordini'})});
+await orders.getByRole('button',{name:/Modifica acquisto/}).click();await dialog.getByLabel(/^Quantit/).fill('4');await dialog.getByRole('button',{name:'Salva',exact:true}).click();await expect(dialog).toHaveCount(0);state=await read();assert.equal(state.purchases.find(p=>p.status==='to_buy').quantity,4);assert.equal(state.purchases.length,2);
+await orders.getByRole('button',{name:'Annulla acquisto',exact:true}).click();await page.getByRole('combobox',{name:'Stato',exact:true}).selectOption('cancelled');await orders.getByRole('button',{name:'Includi negli acquisti',exact:true}).first().click();await page.getByRole('combobox',{name:'Stato',exact:true}).selectOption('open');await expect(orders).toContainText('Filo modificato');assert.equal((await read()).purchases.filter(p=>p.status==='to_buy').length,1);
+await nav('Materiali');await expect(table.getByRole('button',{name:/^Modifica filo:/})).toBeVisible();await page.screenshot({path:join(data,'material-row-actions.png')});await table.getByRole('button',{name:/^Elimina filo:/}).click();await expect(dialog).toContainText('storico');await dialog.getByRole('button',{name:'Elimina filo',exact:true}).click();await expect(dialog).toHaveCount(0);await expect(page.getByRole('button',{name:/^Modifica filo:/})).toHaveCount(0);
+state=await read();assert.equal(state.materials[0].archived,true);assert.ok(state.purchases.every(p=>p.status==='cancelled'));assert.equal(state.lots.length,1);assert.ok(state.movements.length>0);await page.reload();await page.locator('.sidebar').waitFor();await nav('Acquisti');await expect(auto).toHaveCount(0);
+assert.deepEqual(errors,[]);assert.deepEqual(requests,[]);writeFileSync(join(data,'result.json'),JSON.stringify({version:APP_VERSION,executable,security,errors,requests,checks:['material edit','order creation','quantity edit','colour exclusion','reload persistence','order restoration','archive with history retained']},null,2));console.log('Native evidence: '+data);console.log('PASS: inventory columns and icons, edit persistence, send-to-shopping, order edit/cancel/restore, persistent automatic exclusion, archive removal preserving history and cancelling open orders.');
+}catch(e){console.log('ERRORS',errors);console.log((await page.locator('body').innerText()).slice(-2200));await page.screenshot({path:join(data,'material-actions-failure.png')});throw e;}finally{await app.close()}
