@@ -40,7 +40,7 @@ const threadFamily = ref(draft.properties.threadFamily || 'mouline');
 const usageStatus = ref('new');
 function familyOf(product) {
   const range = String(product.range || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
-  if (/alsac/.test(range)) return 'alsace';
+  if (/alsac|fiorentin/.test(range)) return 'alsace';
   if (/silk|seta|soie|waterlil/.test(range)) return 'silk';
   if (/wool|lana|laine/.test(range)) return 'wool';
   if (/perl|pearl/.test(range)) return 'pearl';
@@ -48,10 +48,13 @@ function familyOf(product) {
   if (/^(mouline|stranded cotton)( special( 25)?)?$/.test(range)) return 'mouline';
   return 'special';
 }
-watch(threadFamily, value => {
+function familyLabel(family) {
+  return t(`entryFamily_${family === 'alsace' && draft.brand.trim().toLowerCase() === 'anchor' ? 'florentine' : family}`);
+}
+watch(() => [threadFamily.value, draft.brand], ([value]) => {
   draft.properties.threadFamily = value;
-  if (draft.properties.product && familyOf(draft.properties.product) === value) return;
-  draft.range = t(`entryFamily_${value}`);
+  if (draft.properties.product && draft.properties.product.brand === draft.brand && familyOf(draft.properties.product) === value) return;
+  draft.range = familyLabel(value);
 });
 watch(usageStatus, value => {
   if (value === 'finished') stock.quantity = '0';
@@ -145,7 +148,7 @@ async function save() {
   try {
     if (!isEdit.value) {
       draft.properties.threadFamily = threadFamily.value;
-      if (!draft.range) draft.range = t(`entryFamily_${threadFamily.value}`);
+      if (!draft.range) draft.range = familyLabel(threadFamily.value);
       stock.properties.usageStatus = usageStatus.value;
       stock.properties.details = { version: 1, packageCondition: usageStatus.value === 'new' ? 'sealed' : 'partial' };
     }
@@ -174,7 +177,7 @@ async function save() {
       <template v-if="!isEdit">
         <div class="form-grid">
           <FormField :label="t('brand')" required v-slot="{ id }"><select :id="id" v-model="draft.brand" required autofocus><option value="">{{ t('allBrands') }}</option><option v-if="draft.brand && !catalogueFacets.brands.includes(draft.brand)" :value="draft.brand">{{ draft.brand }}</option><option v-for="brand in catalogueFacets.brands" :key="brand" :value="brand">{{ brand }}</option></select></FormField>
-          <FormField :label="t('addMaterialType')" required v-slot="{ id }"><select :id="id" v-model="threadFamily" required><option v-for="family in threadFamilies" :key="family" :value="family">{{ t(`entryFamily_${family}`) }}</option></select></FormField>
+          <FormField :label="t('addMaterialType')" required v-slot="{ id }"><select :id="id" v-model="threadFamily" required><option v-for="family in threadFamilies" :key="family" :value="family">{{ familyLabel(family) }}</option></select></FormField>
           <FormField :label="t('addMaterialColorCode')" v-slot="{ id }"><input :id="id" v-model="draft.code" maxlength="200" /></FormField>
           <FormField :label="t('addMaterialThickness')" v-slot="{ id }"><input :id="id" v-model="draft.properties.threadSize" maxlength="100" /></FormField>
           <FormField :label="t('addMaterialCatalogue')" :help="t('addMaterialCatalogueHelp')" wide v-slot="{ id, describedby }"><select :id="id" class="catalogue-select" :value="draft.properties.product?.id || ''" :disabled="catalogueBusy" :aria-describedby="describedby" @change="selectCatalogue"><button type="button"><selectedcontent /></button><option value="">{{ catalogueBusy ? t('loading') : t('addMaterialCataloguePlaceholder') }}</option><option v-for="product in catalogueOptions" :key="product.id" :value="product.id"><span class="catalogue-swatch" :class="{ 'catalogue-swatch-unknown': !product.hex }" :style="{ backgroundColor: product.hex || undefined }" aria-hidden="true"></span><span>{{ [product.brand, product.range, product.code, product.colorName || product.name].filter(Boolean).join(' · ') }}<small v-if="!product.hex"> — {{ t('materialColorUnavailable') }}</small></span></option></select></FormField>
