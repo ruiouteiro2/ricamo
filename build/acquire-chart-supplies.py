@@ -41,7 +41,12 @@ for item in catalogue['items']:
    if strong:value=strong.get_text(' ',strip=True)
   qty=float(value.replace(',','.')) if value and re.fullmatch(r'\d+(?:[.,]\d+)?',value.strip()) else None
   product=idx.get(key(url))
-  rows.append({'name':name,'url':url,'quantity':qty,'productId':product['id'] if product else None,'category':product['category'] if product else 'other','brand':product['brand'] if product else '', 'range':product['range'] if product else '', 'code':product['code'] if product else '', 'unit':product.get('pack',{}).get('unit') if product else None})
+  slug=url.split('/')[3]
+  brands={'dmc':'DMC','mill-hill':'Mill Hill','kreinik':'Kreinik','classic-colorworks':'Classic Colorworks','caron-collection':'Caron Collection','permin-of-copenhagen':'Permin','zweigart':'Zweigart','rainbow-gallery':'Rainbow Gallery','xjudesign':'xJuDesign','valdani':'Valdani','wichelt':'Wichelt','polstitches-designs':'Polstitches Designs','mani-di-donna':'Mani di Donna','picture-this-plus':'Picture This Plus','yli':'YLI','fabric-flair':'Fabric Flair','gloriana':'Gloriana'}
+  # Qty is a count of retail articles/packs, not an invented bead/piece count.
+  category='embellishment' if slug=='mill-hill' else 'thread' if slug in ['dmc','kreinik','classic-colorworks','caron-collection','rainbow-gallery','valdani','yli','gloriana'] else 'fabric' if any(word in name.lower() for word in ['lino','aida','linen','lugana','evenweave','belfast','cashel','jobelan']) else 'other'
+  code=re.match(r'^(\d{5})(?:\s|[-])',name) if slug=='mill-hill' else None
+  rows.append({'name':name,'url':url,'quantity':qty,'productId':product['id'] if product else None,'category':product['category'] if product else category,'brand':product['brand'] if product else brands.get(slug,''), 'range':product['range'] if product else '', 'code':product['code'] if product else code.group(1) if code else '', 'unit':(product.get('pack',{}).get('unit') or 'pack') if product else 'pack'})
  result['charts'][item['id']]={'sourceUrl':item['sourceUrl'],'htmlSha256':hashlib.sha256(raw).hexdigest(),'requirements':rows}
 (root/'data/chart-supplies.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print(json.dumps({'charts':len(result['charts']),'withSupplies':sum(bool(x['requirements']) for x in result['charts'].values()),'components':sum(len(x['requirements']) for x in result['charts'].values()),'knownUnits':sum(bool(r['unit']) for x in result['charts'].values() for r in x['requirements'])}))
