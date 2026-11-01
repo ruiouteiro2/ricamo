@@ -151,3 +151,8 @@ tbody tr { transition: background-color var(--motion-fast) var(--ease-ui); }
 .inventory-category-link:hover { background: var(--accent-soft); }
 .inventory-category-card .panel-body { padding-top: 0; }
 @media (max-width: 700px) { .inventory-category-grid { grid-template-columns: 1fr; gap: 16px; } }
+
+.inventory-subcategory-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.inventory-subcategory-grid .inventory-category-link { padding: 16px; }
+.inventory-subcategory-grid .inventory-category-link h2 { font-size: 1.1rem; }
+.inventory-subcategory-grid .panel-body { padding: 0 16px 16px; }
