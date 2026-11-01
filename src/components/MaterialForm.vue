@@ -58,8 +58,10 @@ const colourCategory=computed(()=>['thread','fabric','embellishment'].includes(d
 draft.properties.custom ||= {};
 const duplicate = ref(null), duplicateError = ref('');
 const duplicateTarget = computed(() => state.value.materials.find(material => material.id === duplicate.value?.targetId));
+const duplicateCountUnit=computed(()=>duplicateTarget.value?.category==='thread'?threadCountUnit(duplicateTarget.value):duplicateTarget.value?.unit);
 function duplicateQuantity(targetId) {
   const target = state.value.materials.find(material => material.id === targetId);
+  if(target.category==='thread'&&target.unit==='m')return duplicate.value.lot.quantity;
   return convertQuantity(duplicate.value.lot.quantity, duplicate.value.material.unit, target.unit, target) ?? '';
 }
 async function confirmDuplicate() {
@@ -68,7 +70,7 @@ async function confirmDuplicate() {
   try {
     const amount = quantity(duplicate.value.quantity, { positive: true });
     const target = duplicateTarget.value;
-    await dispatch('material.addDuplicateStock', { materialId: target.id, material: duplicate.value.material, unit: target.unit, lot: { ...duplicate.value.lot, quantity: amount } }, operationId);
+    await dispatch('material.addDuplicateStock', { materialId: target.id, material: duplicate.value.material, unit: duplicateCountUnit.value, threadCountUnit: target.category==='thread', lot: { ...duplicate.value.lot, quantity: amount } }, operationId);
     duplicate.value = null; emit('saved', target.id);
   } catch (caught) { duplicateError.value = errorText(caught); }
   finally { busy.value = false; }
@@ -320,7 +322,7 @@ async function save() {
     <p v-if="duplicateError" class="notice error" role="alert">{{ duplicateError }}</p>
     <FormField v-if="duplicate.matches.length > 1" :label="t('material')" v-slot="{ id }"><select :id="id" v-model="duplicate.targetId" @change="duplicate.quantity=duplicateQuantity(duplicate.targetId)"><option v-for="match in duplicate.matches" :key="match.id" :value="match.id">{{ match.name }}</option></select></FormField>
     <p v-else><strong>{{ duplicateTarget?.name }}</strong></p>
-    <FormField :label="t('duplicateQuantityLabel')" :help="t(`unit_${duplicateTarget?.unit}`)" required v-slot="{ id, describedby }"><input :id="id" v-model="duplicate.quantity" inputmode="decimal" :aria-describedby="describedby" required autofocus /></FormField>
+    <FormField :label="t('duplicateQuantityLabel')" :help="t(`unit_${duplicateCountUnit}`)" required v-slot="{ id, describedby }"><input :id="id" v-model="duplicate.quantity" inputmode="decimal" :aria-describedby="describedby" required autofocus /></FormField>
     <p class="field-help">{{ t('duplicateQuantityHelp') }}</p>
     <template #footer><button class="button" :disabled="busy" @click="duplicate=null">{{ t('cancel') }}</button><button class="button primary" :disabled="busy" @click="confirmDuplicate">{{ busy ? t('saving') : t('duplicateConfirmQuantity') }}</button></template>
   </AppDialog>
