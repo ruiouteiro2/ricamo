@@ -100,4 +100,9 @@ export function purchaseSchemaMissing(state,payload,context){
   savePurchase(state,{materialId:material.id,quantity:row.toBuy,source:'manual',notes:row.names.join(' ? ')},context);
  }
 }
-export const schemaShoppingHandlers={'schema.purchaseMissing':purchaseSchemaMissing};
+export function unselectSchemaShopping(state,payload){
+ const selection=normalizeSchemaSelection(state,payload);
+ state.settings.preferences ||= {};
+ state.settings.preferences.schemaShopping=schemaShoppingSelections(state).filter(row=>row.kind!==selection.kind||row.id!==selection.id);
+}
+export const schemaShoppingHandlers={'schema.purchaseMissing':purchaseSchemaMissing,'schema.unselectShopping':unselectSchemaShopping};
