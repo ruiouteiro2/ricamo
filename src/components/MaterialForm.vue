@@ -16,6 +16,7 @@ import { duplicateMaterials } from '../../core/material-duplicates.mjs';
 import { convertQuantity } from '../../core/fabric.mjs';
 import { openPurchaseLink } from '../purchase-link.mjs';
 import { quantity } from '../../core/shared.mjs';
+import {threadCountUnit} from '../../core/thread-count-unit.mjs';
 import { materialEditSnapshot } from '../../core/material-edit.mjs';
 
 const spoolOnlyBrand = brand => ['madeira', 'p&g'].includes(String(brand || '').trim().toLowerCase());
@@ -25,7 +26,7 @@ const original = props.material ? JSON.parse(JSON.stringify(props.material)) : n
 const originalInventory = original ? materialEditSnapshot(state.value, original.id) : null;
 const previewProduct = ref(null), explicitCatalogue = ref(false);
 const formId = useId(), operationId = crypto.randomUUID(), materialId = props.material?.id || crypto.randomUUID();
-const draft = reactive({ name: '', category: 'thread', brand: '', range: '', code: '', unit: 'm', color: '#8b6477', tagsText: '', notes: '', minimum: 1, packageSize: '', strands: '', divisible: false, reusable: false, favorite: false, properties: {}, attachments: [], ...JSON.parse(JSON.stringify(props.material || {})) });
+const draft = reactive({ name: '', category: 'thread', brand: '', range: '', code: '', unit: 'skein', color: '#8b6477', tagsText: '', notes: '', minimum: 1, packageSize: '', strands: '', divisible: false, reusable: false, favorite: false, properties: {}, attachments: [], ...JSON.parse(JSON.stringify(props.material || {})) });
 draft.tagsText = (props.material?.tags || []).join(', ');
 const stock = reactive({ enabled: !props.material, quantity: '', confidence: 'exact', status: 'usable', locationId: '', lotCode: '', cost: '', currency: state.value.settings.currency, supplierId: '', widthCm: '', heightCm: '', properties: {} });
 const busy = ref(false), error = ref(''), photoFiles = ref([]);
@@ -36,7 +37,7 @@ const accessoryId = ref(props.context.section || (original ? accessorySection(dr
 if (!props.material) {
   draft.category = activeGroup.value.category;
   draft.brand = props.context.brand || (activeGroup.value.children.length === 1 ? activeGroup.value.children[0].brand : '');
-  draft.unit = draft.category === 'thread' ? (spoolOnlyBrand(draft.brand) ? 'spool' : 'm') : 'piece';
+  draft.unit = draft.category === 'thread' ? threadCountUnit({brand:draft.brand}) : 'piece';
 }
 const brandLabel = brand => activeGroup.value.children.find(child => child.brand === brand)?.label || brand;
 const brandOptions = computed(() => groupId.value === 'accessories' ? catalogueFacets.value.brands : activeGroup.value.children.map(child => child.brand).filter(Boolean));
@@ -44,7 +45,7 @@ watch(groupId, () => {
   draft.category = activeGroup.value.category;
   draft.brand = activeGroup.value.children.length === 1 ? activeGroup.value.children[0].brand : '';
   draft.range = ''; draft.code = ''; draft.name = ''; draft.color = ''; draft.properties = { custom: {} };
-  draft.unit = draft.category === 'thread' ? (spoolOnlyBrand(draft.brand) ? 'spool' : 'm') : 'piece';
+  draft.unit = draft.category === 'thread' ? threadCountUnit({brand:draft.brand}) : 'piece';
 });
 watch(accessoryId, () => {
   if (groupId.value !== 'accessories' || !draft.properties.product) return;
@@ -75,11 +76,12 @@ async function confirmDuplicate() {
 const threadFamilies = computed(() => spoolOnlyBrand(draft.brand) ? ['spool'] : ['mouline', 'special', 'silk', 'wool', 'spool', 'pearl', ...(draft.brand.trim().toLowerCase() === 'dmc' ? ['diamant'] : []), ...(['dmc', 'anchor'].includes(draft.brand.trim().toLowerCase()) ? ['alsace'] : [])]);
 const savedFamily = original && draft.range ? familyOf(draft) : draft.properties.threadFamily || 'mouline';
 const threadFamily = ref(threadFamilies.value.includes(savedFamily) ? savedFamily : threadFamilies.value[0]);
+if(draft.category==='thread')draft.unit=threadCountUnit({brand:draft.brand,family:threadFamily.value,properties:draft.properties});
 const usageStatus = ref(originalInventory?.usageStatus || 'new');
 if (originalInventory) stock.quantity = originalInventory.quantity ?? '';
 const displayProduct = computed(() => previewProduct.value || draft.properties.product);
 const quantityHelp = computed(() => `${t(`unit_${draft.unit}`)}. ${originalInventory?.quantity !== null && isEdit.value ? t('materialEditQuantityHelp') : t('unknownHint')}`);
-watch(() => draft.brand, (brand, previous) => { if (!isEdit.value && draft.category === 'thread' && (spoolOnlyBrand(brand) || spoolOnlyBrand(previous))) draft.unit = spoolOnlyBrand(brand) ? 'spool' : 'm'; });
+
 function familyOf(product) {
   if (spoolOnlyBrand(product.brand ?? draft.brand)) return 'spool';
   const range = String(product.range || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
@@ -97,13 +99,13 @@ function familyLabel(family) {
 }
 watch(() => [threadFamily.value, draft.brand], ([value]) => {
   if (draft.category !== 'thread') return;
-  if (!isEdit.value && (spoolOnlyBrand(draft.brand) || value === 'diamant')) draft.unit = 'spool';
+  draft.unit=threadCountUnit({brand:draft.brand,family:value,product:displayProduct.value&&familyOf(displayProduct.value)===value?displayProduct.value:undefined});
   if (!threadFamilies.value.includes(value)) { threadFamily.value = threadFamilies.value[0]; return; }
   draft.properties.threadFamily = value;
   if (draft.properties.product && draft.properties.product.brand === draft.brand && familyOf(draft.properties.product) === value) return;
   draft.range = familyLabel(value);
 });
-watch(threadFamily, (value, previous) => { if (!isEdit.value && draft.category === 'thread' && previous === 'diamant' && value !== 'diamant' && !(draft.properties.product?.brand === draft.brand && familyOf(draft.properties.product) === value)) draft.unit = spoolOnlyBrand(draft.brand) ? 'spool' : 'm'; });
+
 watch(usageStatus, value => {
   if (value === 'finished') stock.quantity = '0';
   else if (String(stock.quantity).trim() === '0') stock.quantity = '';
@@ -190,7 +192,7 @@ function chooseProduct(product, { automatic = false } = {}){
   Object.assign(draft,{name:product.name,brand:product.brand,range:product.range,code:product.code,color:product.hex??''});
   draft.properties.product=JSON.parse(JSON.stringify(product));
   if(!isEdit.value){
-    if (!automatic) draft.unit=units.includes(product.pack.unit)?product.pack.unit:product.category==='thread'?'m':'piece';
+    draft.unit=product.category==='thread'?threadCountUnit({brand:product.brand,family:familyOf(product),product}):units.includes(product.pack.unit)?product.pack.unit:'piece';
     if(spoolOnlyBrand(product.brand))draft.unit='spool';
     if(product.brand==='Madeira'){draft.properties.threadSize=product.range.match(/(\d+)$/)?.[1]||'';}
     draft.packageSize=draft.unit==='m'?product.pack.lengthM??'':'';
@@ -231,7 +233,7 @@ async function save() {
       if (draft.properties.threadSize !== undefined) properties.threadSize = draft.properties.threadSize;
       if (draft.category === 'thread') properties.threadFamily = threadFamily.value;
       if (groupId.value === 'accessories') properties.inventorySection = accessoryId.value;
-      const candidate = { ...original, brand: draft.brand, range: draft.brand.trim().toLowerCase() === 'p&g' && !displayProduct.value ? familyLabel('spool') : draft.range || (draft.category === 'thread' ? familyLabel(threadFamily.value) : ''), code: draft.code, minimum: 1, properties };
+      const candidate = { ...original, brand: draft.brand, range: draft.brand.trim().toLowerCase() === 'p&g' && !displayProduct.value ? familyLabel('spool') : draft.range || (draft.category === 'thread' ? familyLabel(threadFamily.value) : ''), code: draft.code, minimum: 1, unit: draft.category==='thread'?draft.unit:original.unit, properties };
       const identityChanged = supplierIdentity(candidate) !== supplierIdentity(original);
       const selected = displayProduct.value;
       if (identityChanged || explicitCatalogue.value) {
@@ -247,12 +249,13 @@ async function save() {
       }
       const sizeChanged = String(properties.threadSize || '') !== String(original.properties.threadSize || '');
       candidate.name = draft.category === 'thread' ? (identityChanged || sizeChanged ? [candidate.brand, candidate.range, candidate.code, properties.threadSize].filter(value => String(value ?? '').trim()).join(' \u00b7 ') : original.name) : draft.name;
-      await dispatch('material.saveInventory', { material: candidate, quantity: optionalNumber(stock.quantity, 'quantity'), usageStatus: usageStatus.value, expected: originalInventory.fingerprint }, operationId);
+      await dispatch('material.saveInventory', { material: candidate, quantity: optionalNumber(stock.quantity, 'quantity'), usageStatus: usageStatus.value, threadCountUnit: draft.category==='thread', expected: originalInventory.fingerprint }, operationId);
       emit('saved', candidate.id); return;
     }
     if (!isEdit.value) {
       if (draft.category === 'thread') {
         draft.properties.threadFamily = threadFamily.value;
+        draft.properties.quantityBasis = 'package-count';
         if (!draft.range) draft.range = familyLabel(threadFamily.value);
       }
       if (groupId.value === 'accessories') {
@@ -302,7 +305,7 @@ async function save() {
           <FormField v-if="draft.category === 'thread'" :label="t('addMaterialThickness')" v-slot="{ id }"><input :id="id" v-model="draft.properties.threadSize" maxlength="100" /></FormField>
           <FormField :label="t('addMaterialCatalogue')" :help="t('addMaterialCatalogueHelp')" wide v-slot="{ id, describedby }"><CatalogueAutoPreview :product="displayProduct" :color="draft.color" :code="draft.code" :busy="catalogueBusy" :ambiguous="catalogueAmbiguous" :error="catalogueError" :options-count="catalogueOptions.length" /><select :id="id" class="catalogue-select" :value="displayProduct?.id || ''" :disabled="catalogueBusy" :aria-describedby="describedby" @change="selectCatalogue"><button type="button"><selectedcontent /></button><option value="">{{ catalogueBusy ? t('loading') : t('addMaterialCataloguePlaceholder') }}</option><option v-for="product in catalogueOptions" :key="product.id" :value="product.id"><span class="catalogue-swatch" :class="{ 'catalogue-swatch-unknown': !product.hex && !productPreview(product) }" :style="{ backgroundColor: product.hex || undefined, ...productPreviewStyle(product) }" aria-hidden="true"></span><span>{{ [product.brand, product.range, product.code, product.colorName || (product.supplier === 'dmc' && product.range === 'Diamant' ? '' : product.name)].filter(Boolean).join(' · ') }}<small v-if="!product.hex && !productPreview(product)"> — {{ t('materialColorUnavailable') }}</small></span></option></select></FormField>
           <FormField :label="t('addMaterialOwnedQuantity')" :help="quantityHelp" v-slot="{ id, describedby }"><input :id="id" v-model="stock.quantity" inputmode="decimal" :aria-describedby="describedby" /></FormField>
-          <FormField :label="t('minimum')" :help="t('minimumStockHelp')" v-slot="{ id, describedby }"><input :id="id" value="1" readonly :aria-describedby="describedby" /></FormField>
+          <FormField :label="t('minimum')" :help="`${draft.category==='thread'?t(`unit_${draft.unit}`)+'. ':''}${t('minimumStockHelp')}`" v-slot="{ id, describedby }"><input :id="id" value="1" readonly :aria-describedby="describedby" /></FormField>
           <FormField :label="t('status')" v-slot="{ id }"><select :id="id" v-model="usageStatus"><option v-for="status in ['new','partial','nearly_finished','finished']" :key="status" :value="status">{{ t(`entryStatus_${status}`) }}</option></select></FormField>
         </div>
         <p v-if="draft.brand === 'Madeira'" class="field-help">{{ t('madeiraCatalogueHelp') }} <button type="button" class="button text small" @click="openMadeiraCatalogue">{{ t('madeiraOfficialCatalogue') }}</button></p>
