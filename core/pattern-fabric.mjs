@@ -6,7 +6,7 @@ export function purchaseUrl(value='') {
   assert(typeof value==='string'&&value.length<=2000,'purchase_link_invalid');
   if(!value)return '';
   let url;try{url=new URL(value);}catch{assert(false,'purchase_link_invalid');}
-  assert(url.protocol==='https:'&&!url.username&&!url.password&&['www.casacenina.it','www.casacenina.com','www.casacenina.fr','www.casacenina.es','casacenina.it','casacenina.com','casacenina.fr','casacenina.es','www.tessiland.com','tessiland.com'].includes(url.hostname)&&!url.port,'purchase_link_invalid');
+  assert(url.protocol==='https:'&&!url.username&&!url.password&&['www.casacenina.it','www.casacenina.com','www.casacenina.fr','www.casacenina.es','casacenina.it','casacenina.com','casacenina.fr','casacenina.es','www.tessiland.com','tessiland.com','www.madeira.com','madeira.com'].includes(url.hostname)&&!url.port,'purchase_link_invalid');
   return url.href;
 }
 export function normalizePatternFabric(value={}) {
