@@ -8,8 +8,6 @@ import EmptyState from '../components/EmptyState.vue';
 import AppDialog from '../components/AppDialog.vue';
 import MaterialForm from '../components/MaterialForm.vue';
 import InventoryBulkForm from '../components/InventoryBulkForm.vue';
-import InventoryRapidForm from '../components/InventoryRapidForm.vue';
-import StockCountDialog from '../components/StockCountDialog.vue';
 import InventoryLabels from '../components/InventoryLabels.vue';
 import KitLibrary from '../components/KitLibrary.vue';
 import InventorySavedViews from '../components/InventorySavedViews.vue';
@@ -58,7 +56,7 @@ const rows = computed(() => {
   for(const row of state.value.needs)link(row.materialId,row.projectId);
   for(const row of state.value.movements)if(row.projectId)link(lotsById.get(row.lotId)?.materialId||row.materialId,row.projectId);
   for(const row of state.value.projects)if(row.fabricLotId)link(lotsById.get(row.fabricLotId)?.materialId,row.id);
-  return state.value.materials.map(material => {
+  return state.value.materials.filter(material => matchesInventorySection(material, section.value.group?.id, section.value.child?.id)).map(material => {
     const holdings = lots.get(material.id) || [];
     const summary = inventorySummary({ lots: holdings, reservations: holdings.flatMap(lot => reservations.get(lot.id) || []) }, material.id);
     const locationIds = [...new Set(holdings.filter(lot => lot.status !== 'transformed').map(lot => lot.locationId))];
@@ -73,7 +71,6 @@ const filtered = computed(() => {
     if (filter.value === 'low' && !row.low) return false;
     if (filter.value === 'review' && !row.summary.unknown && !row.summary.conflicts.length) return false;
     if (filter.value === 'favorite' && !row.material.favorite) return false;
-    if (!matchesInventorySection(row.material, section.value.group?.id, section.value.child?.id)) return false;
     if (category.value && !matchesInventorySection(row.material, INVENTORY_GROUPS.find(group => group.category === category.value)?.id)) return false;
     if (location.value && !row.locationIds.includes(location.value)) return false;
     if(stock.value==='positive'&&!(row.summary.knownPhysical>0))return false;
@@ -95,7 +92,7 @@ function togglePage(){if(pageSelected.value)selected.value=selected.value.filter
 const activeRows = computed(() => rows.value.filter(row => !row.material.archived));
 const lowCount = computed(() => activeRows.value.filter(row => row.low).length);
 const reviewCount = computed(() => activeRows.value.filter(row => row.summary.unknown || row.summary.conflicts.length).length);
-const locationCount = computed(() => new Set(state.value.lots.filter(row => row.status !== 'transformed' && row.locationId).map(row => row.locationId)).size);
+const locationCount = computed(() => new Set(activeRows.value.flatMap(row => row.holdings).filter(lot => lot.status !== 'transformed' && lot.locationId).map(lot => lot.locationId)).size);
 function clear() { applyView({}); }
 function closeForm() { adding.value = false; if (route.value.id === 'new') route.value = { ...route.value, id: null }; }
 function created(id) {
@@ -122,20 +119,14 @@ function workflowSaved(){workflow.value='';selected.value=[];}
       <template v-if="section.child"><ChevronRight :size="15" /><span>{{ tileLabel(section.child) }}</span></template>
       <span v-else-if="section.showList">{{ t('all') }}</span>
     </nav>
-    <section v-if="!section.showList" class="inventory-category-grid" :aria-label="t(section.group ? 'inventorySubcategories' : 'inventoryCategories')">
+    <section v-if="!section.showList" class="inventory-category-grid" :class="{ 'inventory-subcategory-grid': section.group }" :aria-label="t(section.group ? 'inventorySubcategories' : 'inventoryCategories')">
       <article v-for="tile in tiles" :key="tile.id" class="panel inventory-category-card">
         <button class="inventory-category-link" @click="openTile(tile)"><Package :size="30" /><h2>{{ tileLabel(tile) }}</h2><span class="muted">{{ number(tileCount(tile), 0) }} {{ t('materials').toLowerCase() }}</span><ChevronRight :size="20" /></button>
         <div class="panel-body"><button class="button" @click="addToTile(tile)"><Plus :size="16" />{{ t('add') }}</button></div>
       </article>
     </section>
-    <div v-if="!section.showList" class="actions form-section"><button class="button" @click="navigate('materials', section.group ? inventoryRoute(section.group.id, 'all') : 'all')">{{ t('inventoryViewAll') }}</button></div>
-    <template v-if="section.showList">
-    <div class="metrics">
-      <div class="metric"><div class="metric-top">{{ t('materials') }}<Package :size="18" /></div><div class="metric-value">{{ number(activeRows.length, 0) }}</div><div class="metric-caption">{{ t('materialCount') }}</div></div>
-      <button class="metric" @click="filter = 'low'"><div class="metric-top">{{ t('lowStock') }}<CircleAlert :size="18" /></div><div class="metric-value">{{ number(lowCount, 0) }}</div><div class="metric-caption">{{ t('belowMinimum') }}</div></button>
-      <button class="metric" @click="filter = 'review'"><div class="metric-top">{{ t('needsReview') }}<Search :size="18" /></div><div class="metric-value">{{ number(reviewCount, 0) }}</div><div class="metric-caption">{{ t('unknownOrConflicted') }}</div></button>
-      <div class="metric"><div class="metric-top">{{ t('locations') }}<MapPin :size="18" /></div><div class="metric-value">{{ number(locationCount, 0) }}</div><div class="metric-caption">{{ t('occupiedLocations') }}</div></div>
-    </div>
+    <div v-if="!section.group && !section.showList" class="actions form-section"><button class="button" @click="navigate('materials', section.group ? inventoryRoute(section.group.id, 'all') : 'all')">{{ t('inventoryViewAll') }}</button></div>
+    <template v-if="section.showList || section.group">
     <div class="toolbar">
       <div class="toolbar-search"><Search :size="17" /><input v-model="search" :aria-label="t('searchMaterials')" :placeholder="t('searchMaterials')" /></div>
       <select v-model="category" :aria-label="t('category')"><option value="">{{ t('allCategories') }}</option><option v-for="option in categoryOptions" :key="option.value" :value="option.value">{{ option.label }}</option></select>
@@ -144,10 +135,9 @@ function workflowSaved(){workflow.value='';selected.value=[];}
       <select v-model="sort" :aria-label="t('sort')"><option value="nameAZ">{{ t('nameAZ') }}</option><option value="recent">{{ t('recent') }}</option><option value="nameZA">{{ t('nameZA') }}</option><option value="codeAZ">{{ t('codeAZ') }}</option><option value="brandAZ">{{ t('brandAZ') }}</option></select>
       <button class="button small" :disabled="preferenceBusy" @click="rememberFilters">{{ t('rememberFilters') }}</button>
     </div>
-    <details class="form-section"><summary>{{ t('inventoryWorkflows') }}</summary><div class="actions form-section"><button class="button" @click="workflow='count'">{{ t('stockCountTitle') }}</button><button class="button" @click="workflow = 'rapid'">{{ t('rapidEntry') }}</button><button class="button" @click="workflow = 'collections'">{{ t('kitCollections') }}</button></div></details>
     <p v-if="preferenceError" role="alert" class="notice error">{{ preferenceError }}</p>
     <section class="panel">
-      <div class="panel-body"><details><summary>{{ t('moreInventoryFilters') }}</summary><div class="form-grid"><label>{{ t('stockFilter') }}<select v-model="stock"><option value="">{{ t('all') }}</option><option value="positive">{{ t('knownPositiveStock') }}</option><option value="zero">{{ t('knownZeroStock') }}</option><option value="unknown">{{ t('unknown') }}</option></select></label><label>{{ t('reservationFilter') }}<select v-model="reservation"><option value="">{{ t('all') }}</option><option value="reserved">{{ t('reserved') }}</option><option value="unreserved">{{ t('notReserved') }}</option><option value="conflict">{{ t('conflict') }}</option></select></label><label>{{ t('project') }}<select v-model="project"><option value="">{{ t('all') }}</option><option v-for="row in state.projects" :key="row.id" :value="row.id">{{ row.name }}</option></select></label><label>{{ t('lotStatusFilter') }}<select v-model="lotStatus"><option value="">{{ t('all') }}</option><option v-for="status in ['usable','blocked','damaged','unverified','transformed']" :key="status" :value="status">{{ t(status) }}</option></select></label></div><p class="field-help">{{ t('projectFilterHelp') }}</p></details><InventorySavedViews :current="currentView()" @apply="applyView" /></div>
+
       <div v-if="selected.length" class="panel-heading"><span>{{ t('selectedMaterialCount',{count:selected.length}) }}</span><div class="actions"><button class="button small" @click="selected=[]">{{ t('clearSelection') }}</button><button class="button small" @click="workflow='collectionSelection'">{{ t('kitCreateFromSelection') }}</button><button class="button small" @click="workflow='labels'">{{ t('inventoryLabels') }}</button><button class="button primary small" @click="workflow='bulk'">{{ t('bulkEdit') }}</button></div></div>
       <EmptyState v-if="!rows.length" :icon="Package" :title="t('emptyMaterials')" :description="t('emptyMaterialsBody')"><button class="button primary" @click="adding = true"><Plus :size="16" />{{ t('addMaterial') }}</button></EmptyState>
       <EmptyState v-else-if="!filtered.length" :icon="Search" :title="t('noResults')"><button class="button" @click="clear">{{ t('clearFilters') }}</button></EmptyState>
@@ -172,11 +162,18 @@ function workflowSaved(){workflow.value='';selected.value=[];}
         <div class="panel-heading"><small class="muted">{{ number(filtered.length, 0) }} {{ t('materials').toLowerCase() }} · {{ t('page') }} {{ page }} / {{ pageCount }}</small><div class="actions"><button class="icon-button" :disabled="page <= 1" :aria-label="t('previousPage')" @click="page--"><ChevronLeft :size="18" /></button><button class="icon-button" :disabled="page >= pageCount" :aria-label="t('nextPage')" @click="page++"><ChevronRight :size="18" /></button></div></div>
       </template>
     </section>
+    <details class="form-section"><summary>{{ t('more') }}</summary>
+      <div class="panel-body"><details><summary>{{ t('moreInventoryFilters') }}</summary><div class="form-grid"><label>{{ t('stockFilter') }}<select v-model="stock"><option value="">{{ t('all') }}</option><option value="positive">{{ t('knownPositiveStock') }}</option><option value="zero">{{ t('knownZeroStock') }}</option><option value="unknown">{{ t('unknown') }}</option></select></label><label>{{ t('reservationFilter') }}<select v-model="reservation"><option value="">{{ t('all') }}</option><option value="reserved">{{ t('reserved') }}</option><option value="unreserved">{{ t('notReserved') }}</option><option value="conflict">{{ t('conflict') }}</option></select></label><label>{{ t('project') }}<select v-model="project"><option value="">{{ t('all') }}</option><option v-for="row in state.projects" :key="row.id" :value="row.id">{{ row.name }}</option></select></label><label>{{ t('lotStatusFilter') }}<select v-model="lotStatus"><option value="">{{ t('all') }}</option><option v-for="status in ['usable','blocked','damaged','unverified','transformed']" :key="status" :value="status">{{ t(status) }}</option></select></label></div><p class="field-help">{{ t('projectFilterHelp') }}</p></details><InventorySavedViews :current="currentView()" @apply="applyView" /></div>
+    </details>
+    <div class="metrics">
+      <div class="metric"><div class="metric-top">{{ t('materials') }}<Package :size="18" /></div><div class="metric-value">{{ number(activeRows.length, 0) }}</div><div class="metric-caption">{{ t('materialCount') }}</div></div>
+      <button class="metric" @click="filter = 'low'"><div class="metric-top">{{ t('lowStock') }}<CircleAlert :size="18" /></div><div class="metric-value">{{ number(lowCount, 0) }}</div><div class="metric-caption">{{ t('belowMinimum') }}</div></button>
+      <button class="metric" @click="filter = 'review'"><div class="metric-top">{{ t('needsReview') }}<Search :size="18" /></div><div class="metric-value">{{ number(reviewCount, 0) }}</div><div class="metric-caption">{{ t('unknownOrConflicted') }}</div></button>
+      <div class="metric"><div class="metric-top">{{ t('locations') }}<MapPin :size="18" /></div><div class="metric-value">{{ number(locationCount, 0) }}</div><div class="metric-caption">{{ t('occupiedLocations') }}</div></div>
+    </div>
     </template>
     <KitLibrary v-if="workflow==='collections'||workflow==='collectionSelection'" :selected-material-ids="workflow==='collectionSelection'?selected:[]" @close="workflow=''" />
     <InventoryBulkForm v-if="workflow==='bulk'" :ids="selected" @close="workflow=''" @saved="workflowSaved" />
-    <StockCountDialog v-if="workflow==='count'" :material-ids="selected" :initial-location="location" :initial-category="category" @close="workflow=''" @saved="workflowSaved"/>
-    <InventoryRapidForm v-if="workflow==='rapid'" @close="workflow=''" @saved="workflowSaved" />
     <InventoryLabels v-if="workflow==='labels'" :material-ids="selected" @close="workflow=''" />
     <MaterialForm v-if="editing" :key="editing.id" :material="editing" @close="editing=null" @saved="edited" />
     <AppDialog v-if="deleting" :title="t('deleteThread')" :busy="actionBusy" @close="deleting=null">
