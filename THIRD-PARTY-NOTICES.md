@@ -103,3 +103,7 @@ License: GPL-2+
  License version 2 can be found in the file
  /usr/share/common-licenses/GPL-2'.
 ```
+
+## Casa Cenina catalogue cover previews
+
+The offline chart catalogue includes 482 small cover previews attributed to Mirabilia/Nora Corbett and Bella Filipina, obtained from their public Casa Cenina catalogue pages on 2026-11-01. These images remain the property of their respective authors and publishers and are not licensed under this repository’s MIT license. They identify commercial products; no chart grids, instructions or purchased PDFs are included. Source URLs and image SHA-256 values are recorded in `data/pattern-catalogue.json`. See `docs/CHART-CATALOGUE-SOURCES.md`.
