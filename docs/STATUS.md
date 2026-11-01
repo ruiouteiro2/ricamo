@@ -1,5 +1,15 @@
 # Ricamo delivery evidence
 
+## Windows update 0.6.1 - 2026-11-01
+
+Installer: `release/Ricamo-0.6.1-Windows-x64-Setup.exe` (150,188,239 bytes), SHA-256 `aa291d237067d4c0e1b9945b42ed550814a259124fd24720df1a70b3ea384fda`. This release includes all current November inventory, category navigation, material-entry, shopping and lineal-icon changes. Package and lockfile versions are 0.6.1; the application reports 0.6.1. The installer is an unsigned Windows x64 NSIS build with the existing application identity and data-preserving configuration.
+
+Exact release audit passed: packaged core, desktop, frontend, data and DMC files match the workspace; 51 runtime packages and 74 notice files were checked. ASAR SHA-256: `5d8df7a8c312b309a2468016e4e38ce3b1210f68015b9efe28ecd95570592ce3`; executable SHA-256: `9079992e99e043106969d67a409d02baa98f9f016e6837df078c635242edee28`. The first audit attempt exposed Windows backslash paths returned by ASAR; the auditor now normalises them and the audit was rerun successfully. Installer, ASAR and executable hashes are recorded in `release/Ricamo-0.6.1-release-manifest.json` and `release/Ricamo-0.6.1-SHA256SUMS.txt`.
+
+Validation: `node --test --test-concurrency=2 tests/*.test.mjs` with process isolation completed 538 tests: 537 passed, one skipped, zero failures. This differs from the previously documented shared-process invocation; the shared-process test interaction is not claimed resolved. Production build passed. Three native Windows journeys passed on the actual `release/win-unpacked/Ricamo.exe`: updated persistence smoke/reopen (leading zero code, decimal comma and English persistence), inventory categories/contextual creation/partial counts and icons, and material edit/order edit/cancel/restore/archive actions. All used isolated synthetic profiles; no personal archive was opened or changed. Evidence: `.runtime/desktop-smoke-XmCuXL/result.json`, `.runtime/desktop-inventory-061-zK8yY1/result.json`, `.runtime/desktop-actions-061-Ay5cV2/result.json`. The native renderer had OS sandbox and context isolation enabled, Node integration disabled, no recorded page errors and no HTTP requests. Packaged category rendering was visually inspected.
+
+The NSIS installer was generated and audited; installing/upgrading an existing user installation or a clean second PC was not performed. Test/profile artifacts and distribution binaries remain ignored and are not committed.
+
 ## Unified lineal category artwork - 2026-11-01
 
 All four category icons were redrawn as original local SVGs inspired by the rounded monochrome line style of the supplied [Sewing and Tailoring reference pack](https://www.flaticon.com/packs/sewing-and-tailoring). The shared set depicts a skein with band, three pearls, folded cloth with a stitched edge, and scissors with a needle. Consistent stroke widths replace the previous mixture of gradients and outline artwork. No reference-pack asset is shipped or loaded by the app.
