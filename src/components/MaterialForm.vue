@@ -3,6 +3,7 @@ import { reactive, ref, computed, useId, watch, onBeforeUnmount } from 'vue';
 import { AlertTriangle } from '@lucide/vue';
 import AppDialog from './AppDialog.vue';
 import FormField from './FormField.vue';
+import { productPreview, productPreviewStyle } from '../product-previews.mjs';
 import ThreadReferenceLink from './ThreadReferenceLink.vue';
 import MaterialProductPicker from './MaterialProductPicker.vue';
 import {supplierLookup, supplierSearch, supplierFacets} from '../supplier-catalogues.mjs';
@@ -78,13 +79,14 @@ async function confirmDuplicate() {
   } catch (caught) { duplicateError.value = errorText(caught); }
   finally { busy.value = false; }
 }
-const threadFamilies = computed(() => draft.brand.trim().toLowerCase() === 'madeira' ? ['spool'] : ['mouline', 'special', 'silk', 'wool', 'spool', 'pearl', ...(['dmc', 'anchor'].includes(draft.brand.trim().toLowerCase()) ? ['alsace'] : [])]);
+const threadFamilies = computed(() => draft.brand.trim().toLowerCase() === 'madeira' ? ['spool'] : ['mouline', 'special', 'silk', 'wool', 'spool', 'pearl', ...(draft.brand.trim().toLowerCase() === 'dmc' ? ['diamant'] : []), ...(['dmc', 'anchor'].includes(draft.brand.trim().toLowerCase()) ? ['alsace'] : [])]);
 const threadFamily = ref(threadFamilies.value.includes(draft.properties.threadFamily) ? draft.properties.threadFamily : threadFamilies.value[0]);
 const usageStatus = ref('new');
 watch(() => draft.brand, (brand, previous) => { if (!isEdit.value && draft.category === 'thread' && (brand === 'Madeira' || previous === 'Madeira')) draft.unit = brand === 'Madeira' ? 'spool' : 'm'; });
 function familyOf(product) {
   if (String(product.brand ?? draft.brand).trim().toLowerCase() === 'madeira') return 'spool';
   const range = String(product.range || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+  if (String(product.brand ?? draft.brand).trim().toLowerCase() === 'dmc' && range === 'diamant') return 'diamant';
   if (/alsac|fiorentin/.test(range)) return 'alsace';
   if (/silk|seta|soie|waterlil/.test(range)) return 'silk';
   if (/wool|lana|laine/.test(range)) return 'wool';
@@ -98,12 +100,13 @@ function familyLabel(family) {
 }
 watch(() => [threadFamily.value, draft.brand], ([value]) => {
   if (draft.category !== 'thread') return;
-  if (!isEdit.value && draft.brand === 'Madeira') draft.unit = 'spool';
+  if (!isEdit.value && (draft.brand === 'Madeira' || value === 'diamant')) draft.unit = 'spool';
   if (!threadFamilies.value.includes(value)) { threadFamily.value = threadFamilies.value[0]; return; }
   draft.properties.threadFamily = value;
   if (draft.properties.product && draft.properties.product.brand === draft.brand && familyOf(draft.properties.product) === value) return;
   draft.range = familyLabel(value);
 });
+watch(threadFamily, (value, previous) => { if (!isEdit.value && draft.category === 'thread' && previous === 'diamant' && value !== 'diamant' && !(draft.properties.product?.brand === draft.brand && familyOf(draft.properties.product) === value)) draft.unit = draft.brand === 'Madeira' ? 'spool' : 'm'; });
 watch(usageStatus, value => {
   if (value === 'finished') stock.quantity = '0';
   else if (String(stock.quantity).trim() === '0') stock.quantity = '';
@@ -133,7 +136,7 @@ watch(() => [draft.category, draft.brand, threadFamily.value, accessoryId.value,
       if (draft.category === 'thread') {
         const ranges = facets.ranges.filter(range => familyOf({ range }) === threadFamily.value);
         const results = await Promise.all(ranges.map(async range => {
-          const args = { category: 'thread', brand: draft.brand, range, query: draft.code, limit: 100 };
+          const args = { category: 'thread', brand: draft.brand, range, query: draft.code, limit: 100, ...(draft.brand === 'DMC' && threadFamily.value === 'diamant' ? { supplier: 'dmc' } : {}) };
           const result = await supplierSearch(args);
           if (draft.brand === 'Madeira') for (let offset = 100; offset < Math.min(result.total, 300); offset += 100) result.items.push(...(await supplierSearch({ ...args, offset })).items);
           return result;
@@ -187,7 +190,7 @@ watch(()=>[draft.category,draft.brand,draft.range,draft.code],()=>{
   if(!catalogueCategory.value)return;
   draft.color='';if(!draft.brand||!draft.range||!draft.code)return;
   lookupBusy.value=true;
-  lookupTimer=setTimeout(async()=>{try{const rows=await supplierLookup({category:draft.category,brand:draft.brand,range:draft.range,code:draft.code});if(token!==lookupToken)return;const product=rows.find(row=>row.hex)??rows[0];if(product){draft.properties.product=product;draft.color=product.hex??'';draft.strands=product.pack.strands??'';draft.divisible=product.pack.divisible===true;if(draft.unit==='m')draft.packageSize=product.pack.lengthM??'';}else{const swatch=supplierSwatch({brand:draft.brand,range:draft.range,code:draft.code});if(swatch.hex){draft.color=swatch.hex;draft.properties.colorSource=swatch.rgbSource;}}}catch(caught){if(token===lookupToken)error.value=errorText(caught);}finally{if(token===lookupToken)lookupBusy.value=false;}},250);
+  lookupTimer=setTimeout(async()=>{try{const rows=await supplierLookup({category:draft.category,brand:draft.brand,range:draft.range,code:draft.code});if(token!==lookupToken)return;const product=(draft.brand==='DMC'&&threadFamily.value==='diamant'?rows.find(row=>row.supplier==='dmc'):null)??rows.find(row=>row.hex)??rows[0];if(product){draft.properties.product=product;draft.color=product.hex??'';draft.strands=product.pack.strands??'';draft.divisible=product.pack.divisible===true;if(draft.unit==='m')draft.packageSize=product.pack.lengthM??'';}else{const swatch=supplierSwatch({brand:draft.brand,range:draft.range,code:draft.code});if(swatch.hex){draft.color=swatch.hex;draft.properties.colorSource=swatch.rgbSource;}}}catch(caught){if(token===lookupToken)error.value=errorText(caught);}finally{if(token===lookupToken)lookupBusy.value=false;}},250);
 },{immediate:true});
 onBeforeUnmount(()=>{clearTimeout(lookupTimer);lookupToken++;});
 function chooseCategory() {
@@ -262,13 +265,13 @@ async function save() {
           <FormField v-else :label="t('addMaterialType')" v-slot="{ id }"><input :id="id" v-model="draft.range" maxlength="200" /></FormField>
           <FormField :label="t(draft.category === 'tool' ? 'materialArticleCode' : 'addMaterialColorCode')" v-slot="{ id }"><input :id="id" v-model="draft.code" maxlength="200" /></FormField>
           <FormField v-if="draft.category === 'thread'" :label="t('addMaterialThickness')" v-slot="{ id }"><input :id="id" v-model="draft.properties.threadSize" maxlength="100" /></FormField>
-          <FormField :label="t('addMaterialCatalogue')" :help="t('addMaterialCatalogueHelp')" wide v-slot="{ id, describedby }"><select :id="id" class="catalogue-select" :value="draft.properties.product?.id || ''" :disabled="catalogueBusy" :aria-describedby="describedby" @change="selectCatalogue"><button type="button"><selectedcontent /></button><option value="">{{ catalogueBusy ? t('loading') : t('addMaterialCataloguePlaceholder') }}</option><option v-for="product in catalogueOptions" :key="product.id" :value="product.id"><span class="catalogue-swatch" :class="{ 'catalogue-swatch-unknown': !product.hex }" :style="{ backgroundColor: product.hex || undefined }" aria-hidden="true"></span><span>{{ [product.brand, product.range, product.code, product.colorName || product.name].filter(Boolean).join(' · ') }}<small v-if="!product.hex"> — {{ t('materialColorUnavailable') }}</small></span></option></select></FormField>
+          <FormField :label="t('addMaterialCatalogue')" :help="t('addMaterialCatalogueHelp')" wide v-slot="{ id, describedby }"><select :id="id" class="catalogue-select" :value="draft.properties.product?.id || ''" :disabled="catalogueBusy" :aria-describedby="describedby" @change="selectCatalogue"><button type="button"><selectedcontent /></button><option value="">{{ catalogueBusy ? t('loading') : t('addMaterialCataloguePlaceholder') }}</option><option v-for="product in catalogueOptions" :key="product.id" :value="product.id"><span class="catalogue-swatch" :class="{ 'catalogue-swatch-unknown': !product.hex && !productPreview(product) }" :style="{ backgroundColor: product.hex || undefined, ...productPreviewStyle(product) }" aria-hidden="true"></span><span>{{ [product.brand, product.range, product.code, product.colorName || (product.supplier === 'dmc' && product.range === 'Diamant' ? '' : product.name)].filter(Boolean).join(' · ') }}<small v-if="!product.hex && !productPreview(product)"> — {{ t('materialColorUnavailable') }}</small></span></option></select></FormField>
           <FormField :label="t('addMaterialOwnedQuantity')" :help="`${t(`unit_${draft.unit}`)}. ${t('unknownHint')}`" v-slot="{ id, describedby }"><input :id="id" v-model="stock.quantity" inputmode="decimal" :aria-describedby="describedby" /></FormField>
           <FormField :label="t('minimum')" :help="t('minimumStockHelp')" v-slot="{ id, describedby }"><input :id="id" value="1" readonly :aria-describedby="describedby" /></FormField>
           <FormField :label="t('status')" v-slot="{ id }"><select :id="id" v-model="usageStatus"><option v-for="status in ['new','partial','finished']" :key="status" :value="status">{{ t(`entryStatus_${status}`) }}</option></select></FormField>
         </div>
         <p v-if="draft.brand === 'Madeira'" class="field-help">{{ t('madeiraCatalogueHelp') }} <button type="button" class="button text small" @click="openMadeiraCatalogue">{{ t('madeiraOfficialCatalogue') }}</button></p>
-        <ThreadReferenceLink :reference="activeGroup.children.find(child => child.brand === draft.brand)?.reference" />
+        <ThreadReferenceLink :reference="activeGroup.children.find(child => child.brand === draft.brand && (!child.reference?.family || child.reference.family === threadFamily))?.reference" />
         <p v-if="catalogueError" class="notice error" role="alert">{{ catalogueError }}</p>
       </template>
       <template v-else>
@@ -276,7 +279,7 @@ async function save() {
         <FormField :label="t('name')" required wide v-slot="{ id }"><input :id="id" v-model="draft.name" required maxlength="300" autofocus :placeholder="t('materialNameExample')" /></FormField>
         <FormField :label="t('category')" required v-slot="{ id }"><select :id="id" v-model="draft.category" @change="chooseCategory"><option v-if="!categoryOptions.some(option => option.value === draft.category)" :value="draft.category">{{ t('inventoryAccessories') }}</option><option v-for="option in categoryOptions" :key="option.value" :value="option.value">{{ option.label }}</option></select></FormField>
         <FormField :label="t('unit')" :help="unitLocked ? t('unitLockedHelp') : t('unitHelp')" v-slot="{ id, describedby }"><select :id="id" v-model="draft.unit" :disabled="unitLocked" :aria-describedby="describedby"><option v-for="unit in units" :key="unit" :value="unit">{{ t(`unit_${unit}`) }}</option></select></FormField>
-        <FormField v-if="colourCategory" :label="t('materialAutoColor')" wide v-slot="{id}"><output :id="id" class="actions"><span class="swatch" :style="{background:draft.color||'#aaa6a0'}" aria-hidden="true"/>{{lookupBusy?t('loading'):draft.properties.product?.colorName||draft.color||t('materialColorUnavailable')}}</output></FormField>
+        <FormField v-if="colourCategory" :label="t('materialAutoColor')" wide v-slot="{id}"><output :id="id" class="actions"><span class="swatch" :style="{backgroundColor:draft.color||'#aaa6a0',...productPreviewStyle(draft.properties.product)}" aria-hidden="true"/>{{lookupBusy?t('loading'):draft.properties.product?.colorName||draft.color||(productPreview(draft.properties.product)?draft.properties.product.name:t('materialColorUnavailable'))}}</output></FormField>
       </div>
       <p v-if="draft.properties.product?.colorVariation==='multicolour'" class="field-help">{{t('materialMulticolour')}}</p>
       <section v-if="catalogueCategory" class="form-section">
