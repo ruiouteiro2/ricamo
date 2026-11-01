@@ -4,7 +4,7 @@ import { AlertTriangle } from '@lucide/vue';
 import AppDialog from './AppDialog.vue';
 import FormField from './FormField.vue';
 import MaterialProductPicker from './MaterialProductPicker.vue';
-import {supplierLookup} from '../supplier-catalogues.mjs';
+import {supplierLookup, supplierSearch, supplierFacets} from '../supplier-catalogues.mjs';
 import {supplierIdentity,supplierSwatch,SUPPLIER_CATEGORIES} from '../../core/supplier-products.mjs';
 import MaterialDescriptors from './MaterialDescriptors.vue';
 import { normalizeDescriptorProperties } from '../../core/material-descriptors.mjs';
@@ -35,6 +35,43 @@ const similar = computed(() => {
     draft.code.trim() ? item.code === draft.code.trim() && item.brand.toLowerCase() === draft.brand.trim().toLowerCase() && item.range.toLowerCase() === draft.range.trim().toLowerCase() : item.name.toLowerCase() === draft.name.trim().toLowerCase()
   )).slice(0, 4);
 });
+const catalogueItems = ref([]), catalogueFacets = ref({ brands: [], ranges: [] });
+const catalogueBusy = ref(false), catalogueError = ref('');
+let catalogueTimer, catalogueToken = 0;
+const catalogueOptions = computed(() => {
+  const selected = draft.properties.product;
+  return selected && !catalogueItems.value.some(item => item.id === selected.id)
+    ? [selected, ...catalogueItems.value] : catalogueItems.value;
+});
+watch(() => [draft.brand, draft.range, draft.code], () => {
+  if (isEdit.value) return;
+  clearTimeout(catalogueTimer);
+  const token = ++catalogueToken;
+  catalogueBusy.value = true;
+  catalogueError.value = '';
+  catalogueTimer = setTimeout(async () => {
+    try {
+      const [result, facets] = await Promise.all([
+        supplierSearch({ brand: draft.brand, range: draft.range, query: draft.code, limit: 100 }),
+        supplierFacets({ brand: draft.brand }),
+      ]);
+      if (token !== catalogueToken) return;
+      catalogueItems.value = result.items;
+      catalogueFacets.value = facets;
+    } catch (caught) {
+      if (token === catalogueToken) catalogueError.value = errorText(caught);
+    } finally {
+      if (token === catalogueToken) catalogueBusy.value = false;
+    }
+  }, 250);
+}, { immediate: true });
+onBeforeUnmount(() => { clearTimeout(catalogueTimer); catalogueToken++; });
+function selectCatalogue(event) {
+  const product = catalogueOptions.value.find(item => item.id === event.target.value);
+  if (!product) return;
+  draft.category = product.category;
+  chooseProduct(product);
+}
 function chooseProduct(product){
   delete draft.properties.colorSource;
   Object.assign(draft,{name:product.name,brand:product.brand,range:product.range,code:product.code,color:product.hex??''});
@@ -82,7 +119,7 @@ async function save() {
     const properties = normalizeDescriptorProperties(JSON.parse(JSON.stringify(draft.properties)));
     properties.custom = Object.fromEntries(Object.entries(properties.custom || {}).map(([key,value]) => [key,String(value ?? '')]));
     for (const key of ['countX', 'countY']) if (key in properties) properties[key] = optionalNumber(properties[key], key);
-    const payload = { ...JSON.parse(JSON.stringify(draft)), id: materialId, tags: draft.tagsText.split(',').map(tag => tag.trim()).filter(Boolean), minimum: optionalNumber(draft.minimum, 'minimum'), packageSize: optionalNumber(draft.packageSize, 'packageSize'), strands: optionalNumber(draft.strands, 'strands'), properties };
+    const payload = { ...JSON.parse(JSON.stringify(draft)), name: isEdit.value ? draft.name : [draft.brand, draft.range, draft.code, draft.properties.threadSize].filter(value => String(value ?? '').trim()).join(' · '), id: materialId, tags: draft.tagsText.split(',').map(tag => tag.trim()).filter(Boolean), minimum: optionalNumber(draft.minimum, 'minimum'), packageSize: optionalNumber(draft.packageSize, 'packageSize'), strands: optionalNumber(draft.strands, 'strands'), properties };
     delete payload.tagsText;
     let lot = null;
     if (!isEdit.value && stock.enabled) {
@@ -101,6 +138,19 @@ async function save() {
   <AppDialog :title="t(isEdit ? 'editMaterial' : 'addMaterial')" wide :busy="busy" @close="emit('close')">
     <p v-if="error" class="notice error" role="alert">{{ error }}</p>
     <form :id="formId" @submit.prevent="save">
+      <template v-if="!isEdit">
+        <div class="form-grid">
+          <FormField :label="t('brand')" required v-slot="{ id }"><input :id="id" v-model="draft.brand" :list="`${formId}-brands`" required maxlength="200" autofocus /><datalist :id="`${formId}-brands`"><option v-for="brand in catalogueFacets.brands" :key="brand" :value="brand" /></datalist></FormField>
+          <FormField :label="t('addMaterialType')" required v-slot="{ id }"><input :id="id" v-model="draft.range" :list="`${formId}-types`" required maxlength="200" /><datalist :id="`${formId}-types`"><option v-for="range in catalogueFacets.ranges" :key="range" :value="range" /></datalist></FormField>
+          <FormField :label="t('addMaterialColorCode')" v-slot="{ id }"><input :id="id" v-model="draft.code" maxlength="200" /></FormField>
+          <FormField :label="t('addMaterialThickness')" v-slot="{ id }"><input :id="id" v-model="draft.properties.threadSize" maxlength="100" /></FormField>
+          <FormField :label="t('addMaterialCatalogue')" :help="t('addMaterialCatalogueHelp')" wide v-slot="{ id, describedby }"><select :id="id" :value="draft.properties.product?.id || ''" :disabled="catalogueBusy" :aria-describedby="describedby" @change="selectCatalogue"><option value="">{{ catalogueBusy ? t('loading') : t('addMaterialCataloguePlaceholder') }}</option><option v-for="product in catalogueOptions" :key="product.id" :value="product.id">{{ [product.brand, product.range, product.code, product.colorName || product.name].filter(Boolean).join(' · ') }}</option></select></FormField>
+          <FormField :label="t('addMaterialOwnedQuantity')" :help="`${t(`unit_${draft.unit}`)}. ${t('unknownHint')}`" v-slot="{ id, describedby }"><input :id="id" v-model="stock.quantity" inputmode="decimal" :aria-describedby="describedby" /></FormField>
+          <FormField :label="t('status')" v-slot="{ id }"><select :id="id" v-model="stock.status"><option v-for="status in ['usable','blocked','damaged','unverified']" :key="status" :value="status">{{ t(status) }}</option></select></FormField>
+        </div>
+        <p v-if="catalogueError" class="notice error" role="alert">{{ catalogueError }}</p>
+      </template>
+      <template v-else>
       <div class="form-grid">
         <FormField :label="t('name')" required wide v-slot="{ id }"><input :id="id" v-model="draft.name" required maxlength="300" autofocus :placeholder="t('materialNameExample')" /></FormField>
         <FormField :label="t('category')" required v-slot="{ id }"><select :id="id" v-model="draft.category" @change="chooseCategory"><option v-for="option in categoryOptions" :key="option.value" :value="option.value">{{ option.label }}</option></select></FormField>
@@ -169,6 +219,7 @@ async function save() {
         </div>
         <section v-if="!isEdit && stock.enabled" class="form-section"><h3>{{ t('lotCategoryDetails') }}</h3><MaterialDescriptors :properties="stock.properties" :category="draft.category" scope="lot" /></section>
       </details>
+      </template>
     </form>
     <template #footer><button type="button" class="button" :disabled="busy" @click="emit('close')">{{ t('cancel') }}</button><button class="button primary" type="submit" :form="formId" :disabled="busy||lookupBusy">{{ busy ? t('saving') : t('save') }}</button></template>
   </AppDialog>
