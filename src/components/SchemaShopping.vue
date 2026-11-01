@@ -5,10 +5,12 @@ import AppDialog from './AppDialog.vue';
 import {state,dispatch,notify} from '../state';
 import {t,number,errorText} from '../i18n';
 import {schemaSupplySource,previewSchemaPurchases,schemaShoppingSelections} from '../../core/schema-shopping.mjs';
+import {CHART_CATALOGUE} from '../../core/chart-collection.mjs';
 import {UNITS} from '../../core/inventory.mjs';
 const props=defineProps({kind:{type:String,required:true},id:{type:String,required:true}});
 const open=ref(false),busy=ref(false),error=ref(''),corrections=ref([]),saved=ref(false);
 const selection=computed(()=>({kind:props.kind,id:props.id,corrections:corrections.value}));
+const name=computed(()=>props.kind==='chart'?CHART_CATALOGUE.items.find(row=>row.id===props.id)?.name:state.value.patterns.find(row=>row.id===props.id)?.name);
 const source=computed(()=>schemaSupplySource(state.value,selection.value));
 const selected=computed(()=>schemaShoppingSelections(state.value).some(row=>row.kind===props.kind&&row.id===props.id));
 const preview=computed(()=>{try{return previewSchemaPurchases(state.value,selection.value);}catch{return null;}});
@@ -19,8 +21,8 @@ async function select(){busy.value=true;error.value='';try{await dispatch('schem
 const display=value=>value===null||value===undefined?t('schemaCheck'):number(value);
 </script>
 <template>
-<button class="button small" :aria-label="`${t('schemaShopping')}: ${source.name}`" @click="show"><ShoppingCart :size="16"/>{{t('schemaShopping')}}<span v-if="selected"> ?</span></button>
-<AppDialog v-if="open" :title="`${t('schemaShopping')}: ${source.name}`" wide :busy="busy" @close="open=false">
+<button class="button small" :aria-label="`${t('schemaShopping')}: ${name}`" @click="show"><ShoppingCart :size="16"/>{{t('schemaShopping')}}<span v-if="selected"> ?</span></button>
+<AppDialog v-if="open" :title="`${t('schemaShopping')}: ${name}`" wide :busy="busy" @close="open=false">
  <p class="field-help">{{t('schemaShoppingHelp')}}</p><p v-if="source.estimated" class="notice">{{t('schemaEstimatedHelp')}}</p><p v-if="kind==='chart'" class="field-help">{{t('schemaSourceHelp')}}</p>
  <p v-if="error" class="notice error" role="alert">{{error}}</p><p v-if="saved" class="notice" role="status">{{t('schemaSelected')}}</p>
  <p v-if="!source.requirements.length" class="notice">{{t(kind==='chart'?'schemaChartSuppliesMissing':'schemaSuppliesMissing')}}</p>
