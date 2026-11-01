@@ -1,5 +1,13 @@
 # Ricamo delivery evidence
 
+## Metallici Madeira label and spool entry - Windows 0.6.5 - 2026-11-01
+
+The Fili brand tile and new-material brand controls now display Metallici Madeira. The existing `madeira` route and `Madeira` manufacturer identity are retained, so previous records remain in the same section without migration. New entries for this section offer only Rocchetto, preselected; switching to this brand selects spool if the previous family is unsupported. DMC/Anchor exclusive twisted types remain restricted.
+
+Validation: four navigation unit tests, browser category and material-entry journeys passed. The updated category journey also passed on packaged Windows 0.6.5, checking the visible label, contextual default, sole Rocchetto option, brand-change reset, saved `spool` family / Rocchetto range, scoped counts, reload and other category regressions. Native evidence: `.runtime/desktop-inventory-061-jpK6ZK/result.json`; no renderer errors or HTTP requests, sandbox/context isolation active and Node integration disabled. Brand-page layout was visually inspected. Tests used synthetic data; no personal data was modified.
+
+Installer: `release/Ricamo-0.6.5-Windows-x64-Setup.exe` (152,776,584 bytes), SHA-256 `a535d59d39ee09aec5280b289dd4ef3efe4873661764ef0fd352dd26e212350f`. Packaging and exact release audit passed with matching sources and zero dirty files before this evidence update. Unsigned build; clean-PC installation and personal-profile upgrade were not tested.
+
 ## Thread brands and exclusive twisted types - Windows 0.6.4 - 2026-11-01
 
 Fili now has five brand pages: DMC, Anchor, Profilo, P&G and Madeira, each retaining scoped counts and contextual addition. The new-material form offers Ritorto d'Alsazia only for DMC and Ritorto fiorentino only for Anchor. Other brands and an unspecified brand show only the six common thread families. Changing from a selected twisted type to an unsupported brand resets the family to Moulin?, preventing a hidden incompatible selection from being saved. Existing stock and source catalogues are preserved; adding a brand page does not claim a newly sourced manufacturer product catalogue.
