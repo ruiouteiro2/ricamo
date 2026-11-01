@@ -1,5 +1,15 @@
 # Ricamo delivery evidence
 
+## Explicit zero-stock purchases and started thread groups - Windows 0.6.14 - 2026-11-01
+
+Shopping now has an explicit Add zero-stock items to purchases button. Opening the page or exhausting stock does not create an order or automatically display derived shortages as purchase rows. The button uses registered, non-archived materials with known physical total zero; unknown stock, positive physical stock, user-excluded materials and quantities already covered by open orders are skipped. New orders use minimum shortfall with existing pack rounding; no stock is invented or consumed. A second click/retry does not duplicate covered quantities. Existing order editing, cancellation and explicit restoration remain available. Inventory low-stock metrics remain informative; project-driven purchases still require their separate explicit action. This supersedes the earlier automatic replenishment display described in older entries.
+
+Thread detail now shows started/near-finished lots in Filo iniziato before a separate Matasse nuove in inventario list; exhausted/transformed lots appear afterward in a third group when present. Existing partial-package metadata is recognized, and quantities, lot controls and history remain intact. Other material categories retain their existing lot list.
+
+Validation: 557 Node tests, 556 passed, one skipped, zero failures. Added domain checks cover absent/zero/unknown/owned/excluded/archived stock, explicit action, pending coverage, unchanged lots and retry idempotency. Browser and packaged Windows journeys passed explicit bulk creation, no automatic orders, unknown/owned skips, disabled covered button, started/new separation and order, near-finished status and reload. Updated simplified-edit and material/purchase action journeys passed on browser and native builds, including cancellation/restoration, hidden metadata, count/status, SQLite reopen and archive preservation. Native evidence: `.runtime/manual-restock-started-ZhXrQc/result.json`, `.runtime/simple-material-edit-WpuLvl/result.json`, `.runtime/desktop-actions-061-f2kvSJ/result.json`. Node log: `.runtime/manual-restock-all-unit.log`. Browser thread layout visually inspected. No recorded renderer errors or HTTP requests; sandbox assertions passed. Synthetic profiles only.
+
+Installer: `release/Ricamo-0.6.14-Windows-x64-Setup.exe`, SHA-256 `ce8261592d6cb7a863eec6f8f1f91dc4a665b8dd68fb070124b489ca3559b04e`. Final package/release audit passed with sourcesMatch true and dirtyFiles zero before this evidence update. Unsigned build; clean-PC installation and personal-profile upgrade not tested.
+
 ## Almost finished material status - Windows 0.6.13 - 2026-11-01
 
 Added Quasi terminato / Almost finished to the shared Add/Edit status selector, between partially used and finished. The persisted nearly_finished value survives edit readback; it uses the existing partial package condition and therefore remains included in partially used counts. Selecting this status does not consume stock or force a zero quantity. Finished/zero behavior remains unchanged.
