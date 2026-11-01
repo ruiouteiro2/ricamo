@@ -1,3 +1,4 @@
+import {threadCountHandlers} from './thread-count-unit.mjs';
 import { schemaShoppingHandlers, validateSchemaShopping } from './schema-shopping.mjs';
 import { materialEditHandlers } from './material-edit.mjs';
 import { chartCollectionHandlers, validateChartCollection } from './chart-collection.mjs';
@@ -31,6 +32,7 @@ import { toolActivityHandlers, validateToolActivity } from './tool-activity.mjs'
 
 export { createState };
 const handlers = {
+  ...threadCountHandlers,
   ...schemaShoppingHandlers,
   ...materialEditHandlers,
   ...chartCollectionHandlers,
