@@ -4,6 +4,10 @@ import additional from './i18n-extra.json';
 
 export const language = ref('it');
 const words = {
+  inventoryThreads: ['Fili', 'Threads'], inventoryBeads: ['Perle', 'Beads'], inventoryFabrics: ['Stoffa', 'Fabric'], inventoryAccessories: ['Accessori e merceria', 'Accessories and haberdashery'],
+  inventoryNeedles: ['Aghi, spilli e magneti', 'Needles, pins and magnets'], inventoryScissors: ['Forbici', 'Scissors'], inventoryHoops: ['Telai', 'Hoops'],
+  inventoryNavigation: ['Percorso materiali', 'Material navigation'], inventoryCategories: ['Categorie materiali', 'Material categories'], inventorySubcategories: ['Marche e sottocategorie', 'Brands and subcategories'], inventoryViewAll: ['Vedi tutti i materiali', 'View all materials'],
+
   editThreadNamed: ['Modifica filo: {name}', 'Edit thread: {name}'], deleteThreadNamed: ['Elimina filo: {name}', 'Delete thread: {name}'], shopThreadNamed: ['Inserisci in Acquisti: {name}', 'Add to Shopping: {name}'],
   deleteThread: ['Elimina filo', 'Delete thread'], sendToShopping: ['Inserisci in Acquisti', 'Add to Shopping'],
   deleteThreadConfirm: ['Eliminare {name} dall’elenco?', 'Remove {name} from the list?'],
