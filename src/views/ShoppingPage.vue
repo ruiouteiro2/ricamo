@@ -9,6 +9,7 @@ import { state, dispatch, navigate, normalize, locate, notify, statusText } from
 import { storage } from '../storage';
 import { t, number, money, date, language, errorText } from '../i18n';
 import { shoppingNeeds } from '../../core/commands.mjs';
+import { restockNeeds } from '../../core/purchasing.mjs';
 import { quantity, DomainError, subtract } from '../../core/shared.mjs';
 
 const documentsId=ref(null);
@@ -19,6 +20,8 @@ const selectedProjects = computed(() => projectId.value ? [projectId.value] : ac
 const materialById = computed(() => new Map(state.value.materials.map(m => [m.id, m])));
 const supplierById = computed(() => new Map(state.value.suppliers.map(s => [s.id, s])));
 const requirements = computed(() => shoppingNeeds(state.value, selectedProjects.value));
+const replenishment = computed(() => restockNeeds(state.value));
+const matchingReplenishment = computed(() => replenishment.value.filter(row => matchesMaterial(row.materialId)));
 const matchingRequirements = computed(() => requirements.value.filter(row => matchesMaterial(row.materialId)));
 const filteredOrders = computed(() => state.value.purchases.filter(row => {
   if (status.value === 'open' && ['received', 'cancelled'].includes(row.status)) return false;
@@ -155,7 +158,7 @@ async function printList() {
   </PageHeader>
   <p v-if="error" role="alert" class="notice error">{{ error }}</p>
   <div class="metrics">
-    <div class="metric"><div class="metric-top">{{ t('to_buy') }}<ShoppingBag :size="18" /></div><div class="metric-value">{{ number(openOrders.filter(o => o.status === 'to_buy').length, 0) }}</div><div class="metric-caption">{{ t('purchaseRows') }}</div></div>
+    <div class="metric"><div class="metric-top">{{ t('to_buy') }}<ShoppingBag :size="18" /></div><div class="metric-value">{{ number(openOrders.filter(o => o.status === 'to_buy').length + replenishment.filter(row => row.toOrder > 0).length, 0) }}</div><div class="metric-caption">{{ t('purchaseRows') }}</div></div>
     <div class="metric"><div class="metric-top">{{ t('outstanding') }}<Truck :size="18" /></div><div class="metric-value">{{ number(openOrders.filter(o => ['ordered','partial'].includes(o.status)).length, 0) }}</div><div class="metric-caption">{{ t('purchaseRows') }}</div></div>
     <div class="metric"><div class="metric-top">{{ t('shortage') }}<ClipboardList :size="18" /></div><div class="metric-value">{{ number(requirements.filter(n => n.knownShortfall > 0).length, 0) }}</div><div class="metric-caption">{{ t('materialsInSelectedProjects') }}</div></div>
     <div class="metric"><div class="metric-top">{{ t('suppliers') }}<Store :size="18" /></div><div class="metric-value">{{ number(state.suppliers.length, 0) }}</div><div class="metric-caption">{{ t('localContacts') }}</div></div>
@@ -171,6 +174,19 @@ async function printList() {
     <button v-if="tab === 'suppliers'" class="button" @click="openSupplier()"><Plus :size="16" />{{ t('newSupplier') }}</button>
   </div>
   <template v-if="tab === 'orders'">
+    <section v-if="matchingReplenishment.length" class="panel" :aria-label="t('automaticRestock')">
+      <div class="panel-heading"><h2>{{ t('automaticRestock') }}</h2></div>
+      <div class="panel-body"><p class="field-help">{{ t('automaticRestockHelp') }}</p></div>
+      <div class="table-wrap"><table><thead><tr><th>{{ t('material') }}</th><th>{{ t('addMaterialOwnedQuantity') }}</th><th>{{ t('minimum') }}</th><th>{{ t('toOrder') }}</th><th>{{ t('status') }}</th><th><span class="sr-only">{{ t('actions') }}</span></th></tr></thead><tbody>
+        <tr v-for="need in matchingReplenishment" :key="need.materialId">
+          <td><button class="cell-title" @click="navigate('material', need.materialId)">{{ materialName(need.materialId) }}</button><span class="cell-subtitle">{{ materialCode(need.materialId) }}</span></td>
+          <td>{{ number(need.physical) }}<span class="cell-subtitle">{{ t(`unit_${need.unit}`) }}</span></td>
+          <td>{{ number(need.minimum) }}</td><td>{{ number(need.toOrder) }}</td>
+          <td><span class="badge warning">{{ t(need.toOrder > 0 ? 'to_buy' : 'restockCovered') }}</span></td>
+          <td><button class="button small" :disabled="!need.toOrder" @click="openPurchase(null, need)">{{ t('newPurchase') }}</button></td>
+        </tr>
+      </tbody></table></div>
+    </section>
     <div class="panel">
       <div v-if="filteredOrders.length" class="table-wrap"><table><caption class="sr-only">{{ t('orders') }}</caption><thead><tr><th>{{ t('material') }}</th><th>{{ t('quantity') }}</th><th>{{ t('received') }}</th><th>{{ t('status') }}</th><th>{{ t('supplier') }}</th><th>{{ t('estimatedTotal') }}</th><th><span class="sr-only">{{ t('actions') }}</span></th></tr></thead><tbody>
         <tr v-for="order in filteredOrders" :key="order.id">
@@ -183,7 +199,7 @@ async function printList() {
           <td><div class="actions"><button class="button small" @click="documentsId=order.id">{{ t('purchaseDocuments') }}</button><button class="icon-button" :aria-label="t('editNamedPurchase', { name: materialName(order.materialId) })" @click="openPurchase(order)"><Pencil :size="16" /></button><button v-if="!['received','cancelled'].includes(order.status)" class="button small" @click="openReceive(order)"><PackageCheck :size="15" />{{ t('receive') }}</button></div></td>
         </tr>
       </tbody></table></div>
-      <EmptyState v-else :icon="ShoppingBag" :title="state.purchases.length ? t('noResults') : t('emptyShopping')" :description="t('emptyShoppingBody')">
+      <EmptyState v-else-if="!matchingReplenishment.length" :icon="ShoppingBag" :title="state.purchases.length ? t('noResults') : t('emptyShopping')" :description="t('emptyShoppingBody')">
         <button v-if="!state.materials.length" class="button primary" @click="navigate('materials')">{{ t('addMaterial') }}</button>
         <button v-else class="button primary" @click="openPurchase()">{{ t('newPurchase') }}</button>
       </EmptyState>
