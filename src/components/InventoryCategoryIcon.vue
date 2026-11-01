@@ -19,6 +19,9 @@ defineProps({ group: { type: String, default: 'threads' }, size: { type: [Number
       <path d="M5 6c3-1 5 1 5 4v14m0-14c5-2 10-2 16 0M8 26v3c6-3 12-4 18-2v-3" />
       <path d="M22 13v7" stroke-dasharray="1.4 2.4" />
     </g>
+    <g v-else-if="group === 'charts'">
+      <rect x="4" y="3" width="24" height="26" rx="2" /><path d="M8 8h16M8 13h16M8 18h16M8 23h16M12 8v15M17 8v15M22 8v15m-9-9 3 3m0-3-3 3" />
+    </g>
     <g v-else>
       <circle cx="7" cy="25" r="3.6" /><circle cx="17" cy="25" r="3.6" />
       <path d="m9 22 3-6 3 6M12 16 5 4c0 6 2 10 7 12Zm0 0 9-12c0 6-4 11-9 12Z" />
