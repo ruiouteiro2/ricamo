@@ -1,6 +1,7 @@
 import chartSupplies from '../data/chart-supplies.json' with {type:'json'};
 import {CHART_CATALOGUE} from './chart-collection.mjs';
 import {bundledSupplierProducts,supplierIdentity} from './supplier-products.mjs';
+import {previewPatternProcurement} from './pattern-procurement.mjs';
 import {normalizePatternSupplies} from './pattern-supplies.mjs';
 import {convertQuantity} from './fabric.mjs';
 import {inventorySummary,saveMaterial,UNITS} from './inventory.mjs';
@@ -10,6 +11,16 @@ let products;
 const catalogue=()=>products??=new Map(bundledSupplierProducts().map(p=>[p.id,p]));
 const productOf=row=>row.product??row.properties?.product;
 const identity=row=>`${row.category}:${row.code?supplierIdentity(row):row.url||productOf(row)?.url||row.properties?.purchaseUrl||JSON.stringify([row.brand,row.range,row.name])}`;
+const urlKey=value=>String(value??'').replace(/^https:\/\/www\.casacenina\.(?:com|fr|es)\//,'https://www.casacenina.it/');
+function stockMatches(state,row,key){
+ const active=state.materials.filter(m=>!m.archived&&m.category===row.category);
+ const url=urlKey(row.url||productOf(row)?.url);
+ const exact=active.filter(m=>identity(m)===key||(url&&urlKey(productOf(m)?.url||m.properties?.purchaseUrl)===url));
+ if(exact.length)return {materials:exact,ambiguous:false};
+ if(!row.code||!row.brand||row.range)return {materials:[],ambiguous:false};
+ const loose=active.filter(m=>m.brand.toLocaleLowerCase()===row.brand.toLocaleLowerCase()&&m.code===row.code);
+ return {materials:loose,ambiguous:new Set(loose.map(m=>m.range)).size>1};
+}
 export function schemaSupplySource(state,selection){
  const kind=oneOf(selection.kind,['chart','pattern'],'kind');
  if(kind==='chart'){
@@ -17,9 +28,17 @@ export function schemaSupplySource(state,selection){
   const source=chartSupplies.charts[item.id];
   return {name:item.name,sourceUrl:item.sourceUrl,requirements:(source?.requirements??[]).map(row=>({...row,...(row.productId&&catalogue().has(row.productId)?{product:catalogue().get(row.productId)}:{})}))};
  }
- const pattern=find(state,'patterns',selection.id);assert(!pattern.archived,'schema_archived');
+ const pattern=find(state,'patterns',selection.id);
  const design=pattern.library?.design;
- return {name:pattern.name,sourceUrl:design?.sourceUrl??'',requirements:design?normalizePatternSupplies(design).requirements:[]};
+ if(design?.requirements?.length)return {name:pattern.name,sourceUrl:design.sourceUrl??'',requirements:normalizePatternSupplies(design).requirements};
+ const linked=CHART_CATALOGUE.items.find(row=>row.sourceUrl===(design?.sourceUrl||pattern.library?.origin));
+ if(linked)return {...schemaSupplySource(state,{kind:'chart',id:linked.id}),name:pattern.name};
+ const revision=pattern.revisions.find(row=>row.id===pattern.currentRevisionId);
+ if(revision){
+  const preview=previewPatternProcurement(state,revision,{design,products:[...catalogue().values()]});
+  return {name:pattern.name,estimated:true,requirements:preview.rows.map(row=>{const offer=row.offers.find(offer=>offer.packagesRequired!==null&&offer.product.pack.unit);return {category:row.category,brand:row.color.brand??'',range:row.color.range??'',code:row.color.code??'',name:row.color.name||row.color.code||'Material',quantity:offer?offer.packagesRequired:row.required,unit:offer?offer.product.pack.unit:row.unit,...(offer?{product:offer.product,url:offer.product.url}:{} )};})};
+ }
+ return {name:pattern.name,sourceUrl:design?.sourceUrl??'',requirements:[]};
 }
 export function normalizeSchemaSelection(state,value){
  const kind=oneOf(value.kind,['chart','pattern'],'kind');const source=schemaSupplySource(state,{kind,id:value.id});
@@ -49,8 +68,8 @@ export function previewSchemaPurchases(state,selection){
   });
  }
  const rows=[...grouped.entries()].map(([key,row])=>{
-  const matches=state.materials.filter(m=>!m.archived&&identity(m)===key);
-  let available=0,pending=0,unknown=Boolean(row.invalid);
+  const match=stockMatches(state,row,key),matches=match.materials;
+  let available=0,pending=0,unknown=Boolean(row.invalid||match.ambiguous);
   for(const material of matches){
    const summary=inventorySummary(state,material.id);const conversion={...material,product:productOf(material)??productOf(row)};
    const amount=convertQuantity(summary.available,material.unit,row.unit,conversion);
@@ -66,6 +85,7 @@ export function previewSchemaPurchases(state,selection){
 }
 export function purchaseSchemaMissing(state,payload,context){
  const preview=previewSchemaPurchases(state,payload);assert(preview.source.requirements.length,'schema_supplies_missing');
+ state.settings.preferences ||= {};
  state.settings.preferences.schemaShopping=preview.selections;
  for(const row of preview.rows){
   if(row.toBuy===null||row.toBuy<=0||row.suppressed)continue;
