@@ -1,3 +1,4 @@
+import { materialEditHandlers } from './material-edit.mjs';
 import { chartCollectionHandlers, validateChartCollection } from './chart-collection.mjs';
 import { duplicateMaterials, duplicateMaterialHandlers } from './material-duplicates.mjs';
 import {applyProjectProcurement} from './pattern-procurement.mjs';
@@ -29,6 +30,7 @@ import { toolActivityHandlers, validateToolActivity } from './tool-activity.mjs'
 
 export { createState };
 const handlers = {
+  ...materialEditHandlers,
   ...chartCollectionHandlers,
   ...duplicateMaterialHandlers,
   ...threadCatalogueHandlers,
