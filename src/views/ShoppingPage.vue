@@ -9,7 +9,7 @@ import { state, route, dispatch, navigate, normalize, locate, notify, statusText
 import { storage } from '../storage';
 import { t, number, money, date, language, errorText } from '../i18n';
 import { shoppingNeeds } from '../../core/commands.mjs';
-import { restockNeeds } from '../../core/purchasing.mjs';
+import { zeroStockPurchases } from '../../core/purchasing.mjs';
 import { quantity, DomainError, subtract } from '../../core/shared.mjs';
 
 const documentsId=ref(null);
@@ -20,8 +20,7 @@ const selectedProjects = computed(() => projectId.value ? [projectId.value] : ac
 const materialById = computed(() => new Map(state.value.materials.map(m => [m.id, m])));
 const supplierById = computed(() => new Map(state.value.suppliers.map(s => [s.id, s])));
 const requirements = computed(() => shoppingNeeds(state.value, selectedProjects.value));
-const replenishment = computed(() => restockNeeds(state.value));
-const matchingReplenishment = computed(() => replenishment.value.filter(row => matchesMaterial(row.materialId)));
+const zeroStock = computed(() => zeroStockPurchases(state.value));
 const matchingRequirements = computed(() => requirements.value.filter(row => matchesMaterial(row.materialId)));
 const filteredOrders = computed(() => state.value.purchases.filter(row => {
   if (status.value === 'open' && ['received', 'cancelled'].includes(row.status)) return false;
@@ -94,18 +93,6 @@ function openPurchase(order = null, requirement = null) {
     requirementProjects: requirement?.allocations?.length ? requirement.allocations.map(a => a.projectId) : null,
   };
 }
-function editRestock(need) {
-  const existing = state.value.purchases.find(row => row.materialId === need.materialId && !['received','cancelled'].includes(row.status));
-  if (existing) openPurchase(existing);
-  else openPurchase(null, { ...need, toOrder: need.toOrder || Math.max(1, need.minimum - need.physical) });
-}
-async function setIncluded(materialId, enabled) {
-  if (busy.value) return;
-  busy.value=true; error.value='';
-  try { await dispatch('purchase.restock', { materialId, enabled }); notify(); }
-  catch (caught) { error.value=errorText(caught); }
-  finally { busy.value=false; }
-}
 async function changeOrderStatus(order, nextStatus) {
   if (busy.value) return;
   busy.value=true; error.value='';
@@ -140,6 +127,13 @@ async function submitForm(draft) {
   }
 }
 function saved() { form.value = null; notify(); }
+async function addMissingStock() {
+  if (busy.value) return;
+  busy.value = true; error.value = '';
+  try { await dispatch('purchase.addZeroStock', {}); tab.value = 'orders'; status.value = 'open'; search.value = ''; projectId.value = ''; priority.value = ''; notify(); }
+  catch (caught) { error.value = errorText(caught); }
+  finally { busy.value = false; }
+}
 async function generate() {
   if (busy.value) return;
   busy.value = true; error.value = '';
@@ -179,13 +173,15 @@ if (route.value.page === 'shopping' && route.value.id) {
 <template>
   <section class="page">
   <PageHeader :eyebrow="t('shopping')" :title="t('shoppingTitle')" :description="t('shoppingSubtitle')">
+    <button class="button" :disabled="busy || !zeroStock.length" @click="addMissingStock"><Plus :size="17" />{{ t('addZeroStockPurchases') }} ({{ zeroStock.length }})</button>
     <button class="button" :disabled="busy" @click="printList">{{ t('print') }}</button>
     <button v-if="tab === 'orders'" class="button" :disabled="busy || !filteredOrders.length" @click="exportList"><Download :size="16" />{{ t('export') }}</button>
     <button class="button primary" :disabled="!materialOptions.length" @click="openPurchase()"><Plus :size="17" />{{ t('newPurchase') }}</button>
   </PageHeader>
+  <p class="field-help">{{ t('zeroStockPurchaseHelp') }}</p>
   <p v-if="error" role="alert" class="notice error">{{ error }}</p>
   <div class="metrics">
-    <div class="metric"><div class="metric-top">{{ t('to_buy') }}<ShoppingBag :size="18" /></div><div class="metric-value">{{ number(openOrders.filter(o => o.status === 'to_buy').length + replenishment.filter(row => row.toOrder > 0).length, 0) }}</div><div class="metric-caption">{{ t('purchaseRows') }}</div></div>
+    <div class="metric"><div class="metric-top">{{ t('to_buy') }}<ShoppingBag :size="18" /></div><div class="metric-value">{{ number(openOrders.filter(o => o.status === 'to_buy').length, 0) }}</div><div class="metric-caption">{{ t('purchaseRows') }}</div></div>
     <div class="metric"><div class="metric-top">{{ t('outstanding') }}<Truck :size="18" /></div><div class="metric-value">{{ number(openOrders.filter(o => ['ordered','partial'].includes(o.status)).length, 0) }}</div><div class="metric-caption">{{ t('purchaseRows') }}</div></div>
     <div class="metric"><div class="metric-top">{{ t('shortage') }}<ClipboardList :size="18" /></div><div class="metric-value">{{ number(requirements.filter(n => n.knownShortfall > 0).length, 0) }}</div><div class="metric-caption">{{ t('materialsInSelectedProjects') }}</div></div>
     <div class="metric"><div class="metric-top">{{ t('suppliers') }}<Store :size="18" /></div><div class="metric-value">{{ number(state.suppliers.length, 0) }}</div><div class="metric-caption">{{ t('localContacts') }}</div></div>
@@ -201,19 +197,6 @@ if (route.value.page === 'shopping' && route.value.id) {
     <button v-if="tab === 'suppliers'" class="button" @click="openSupplier()"><Plus :size="16" />{{ t('newSupplier') }}</button>
   </div>
   <template v-if="tab === 'orders'">
-    <section v-if="matchingReplenishment.length" class="panel" :aria-label="t('automaticRestock')">
-      <div class="panel-heading"><h2>{{ t('automaticRestock') }}</h2></div>
-      <div class="panel-body"><p class="field-help">{{ t('automaticRestockHelp') }}</p></div>
-      <div class="table-wrap"><table><thead><tr><th>{{ t('material') }}</th><th>{{ t('addMaterialOwnedQuantity') }}</th><th>{{ t('minimum') }}</th><th>{{ t('toOrder') }}</th><th>{{ t('status') }}</th><th><span class="sr-only">{{ t('actions') }}</span></th></tr></thead><tbody>
-        <tr v-for="need in matchingReplenishment" :key="need.materialId">
-          <td><button class="cell-title" @click="navigate('material', need.materialId)">{{ materialName(need.materialId) }}</button><span class="cell-subtitle">{{ materialCode(need.materialId) }}</span></td>
-          <td>{{ number(need.physical) }}<span class="cell-subtitle">{{ t(`unit_${need.unit}`) }}</span></td>
-          <td>{{ number(need.minimum) }}</td><td>{{ number(need.toOrder) }}</td>
-          <td><span class="badge warning">{{ t(need.suppressed ? 'restockExcluded' : need.toOrder > 0 ? 'to_buy' : 'restockCovered') }}</span></td>
-          <td><div class="actions"><button class="icon-button" :disabled="busy" :aria-label="t('editNamedPurchase', { name: materialName(need.materialId) })" @click="editRestock(need)"><Pencil :size="18" /></button><button class="button small" :disabled="busy" @click="setIncluded(need.materialId, need.suppressed)"><RotateCcw v-if="need.suppressed" :size="16" /><X v-else :size="16" />{{ t(need.suppressed ? 'includePurchase' : 'excludePurchase') }}</button></div></td>
-        </tr>
-      </tbody></table></div>
-    </section>
     <div class="panel">
       <div v-if="filteredOrders.length" class="table-wrap"><table><caption class="sr-only">{{ t('orders') }}</caption><thead><tr><th>{{ t('material') }}</th><th>{{ t('quantity') }}</th><th>{{ t('received') }}</th><th>{{ t('status') }}</th><th>{{ t('supplier') }}</th><th>{{ t('estimatedTotal') }}</th><th><span class="sr-only">{{ t('actions') }}</span></th></tr></thead><tbody>
         <tr v-for="order in filteredOrders" :key="order.id">
