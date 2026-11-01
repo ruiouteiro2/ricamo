@@ -11,7 +11,7 @@ function seed(){let s=createState();s=run(s,'material.save',{id:'black',name:'Bl
 test('3 required minus 1 owned orders 2, repeated selection and operation retries never duplicate stock or purchases',async()=>{
  let s=seed();const before=structuredClone(s.lots);assert.equal(previewSchemaPurchases(s,selection('a')).rows[0].toBuy,2);
  s=run(s,'schema.purchaseMissing',selection('a'),'selected');assert.equal(s.purchases.length,1);assert.equal(s.purchases[0].quantity,2);assert.deepEqual(s.lots,before);assert.deepEqual(run(s,'schema.purchaseMissing',selection('a'),'selected'),s);
- s=run(s,'schema.purchaseMissing',selection('a'));assert.equal(s.purchases.length,1);
+ s=run(s,'schema.purchaseMissing',selection('a'));assert.equal(s.purchases.length,1);assert.equal(Object.is(previewSchemaPurchases(s,selection('a')).rows[0].toBuy,-0),false);
  s=run(s,'schema.purchaseMissing',selection('b'));assert.equal(s.purchases.reduce((n,r)=>n+r.quantity,0),5);assert.equal(s.materials.length,1);
  const restored=await inspectBackup(await createBackup(s,[]));assert.deepEqual(restored.state.settings.preferences.schemaShopping,s.settings.preferences.schemaShopping);
 });
