@@ -4,6 +4,7 @@ import additional from './i18n-extra.json';
 
 export const language = ref('it');
 const words = {
+  entryFamily_florentine: ['Ritorto fiorentino', 'Florentine twisted cotton'],
   entryStatus_new: ['Nuovo', 'New'], entryStatus_partial: ['Parzialmente utilizzato', 'Partly used'], entryStatus_finished: ['Finito', 'Finished'],
   entryFamily_mouline: ['Mouliné', 'Stranded cotton'], entryFamily_special: ['Mouliné speciali', 'Specialty stranded threads'], entryFamily_silk: ['Mouliné seta', 'Stranded silk'], entryFamily_wool: ['Mouliné lanato', 'Stranded wool'], entryFamily_spool: ['Rocchetto', 'Spool'], entryFamily_pearl: ['Perlé', 'Pearl cotton'], entryFamily_alsace: ["Ritorto d'Alsazia", 'Alsace twisted cotton'],
   minimumStockHelp: ['Scorta minima fissa: 1. A zero il materiale compare automaticamente in Acquisti.', 'Fixed minimum stock: 1. At zero the material automatically appears in Shopping.'],
