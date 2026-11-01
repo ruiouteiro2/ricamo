@@ -1,5 +1,9 @@
 # Ricamo delivery evidence
 
+## Anchor twisted-thread label - 2026-11-01
+
+Selecting Anchor replaces the Alsace twisted-cotton option label with Ritorto fiorentino. Switching brands updates both the visible option and manual saved range, while catalogue products retain their original identities. Catalogue range classification recognises Fiorentino wording. Validation: production build and the existing material-entry browser journey passed; an isolated browser check additionally verified Anchor/DMC/Anchor switching and the saved Fiorentino range after reload. No desktop package was rebuilt.
+
 ## Material entry choices and colour menus - 2026-11-01
 
 The Add material form now offers New, Partly used and Finished as the three usage states. Usage is persisted on the initial lot independently of operational usability; Finished sets physical quantity to zero and therefore appears in automatic replenishment. Typing zero also selects Finished. The saved usage state is displayed in material details; zero-quantity lots display Finished. Changing Finished back to another state clears the zero quantity for explicit entry.
