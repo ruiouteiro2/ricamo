@@ -4,6 +4,8 @@ import additional from './i18n-extra.json';
 
 export const language = ref('it');
 const words = {
+  threadReference: ['Riferimento filo', 'Thread reference'],
+  openThreadReference: ['Apri riferimento filo', 'Open thread reference'],
   supplier_snapshot_only: ['Catalogo ufficiale incluso per uso offline. Si aggiorna con gli aggiornamenti di Ricamo.', 'Official catalogue included for offline use. Updated with Ricamo releases.'],
   madeiraCatalogueHelp: ['255 riferimenti dalle cartelle ufficiali Madeira FS, Supertwist e CR. Le anteprime digitali sono indicative: lucentezza e colori multicolore non sono riproducibili con un solo colore.', '255 references from official Madeira FS, Supertwist and CR shade cards. Digital previews are indicative: metallic sheen and multicolour effects cannot be reproduced by a single colour.'],
   madeiraOfficialCatalogue: ['Catalogo ufficiale Madeira', 'Official Madeira catalogue'],
