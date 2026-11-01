@@ -1,9 +1,10 @@
 <script setup>
 import { materialSearchDescriptors } from '../material-descriptors.mjs';
 import { computed, ref, watch } from 'vue';
-import { Plus, Search, Package, CircleAlert, Download, ChevronLeft, ChevronRight, Heart, MapPin } from '@lucide/vue';
+import { Plus, Search, Package, CircleAlert, Download, ChevronLeft, ChevronRight, Heart, MapPin, Pencil, Trash2, ShoppingCart } from '@lucide/vue';
 import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
+import AppDialog from '../components/AppDialog.vue';
 import MaterialForm from '../components/MaterialForm.vue';
 import CategoryManager from '../components/CategoryManager.vue';
 import InventoryBulkForm from '../components/InventoryBulkForm.vue';
@@ -17,6 +18,14 @@ import { state, route, navigate, notify, normalize, locate, dispatch } from '../
 import { t, number, errorText } from '../i18n';
 import { inventorySummary } from '../../core/inventory.mjs';
 
+const editing = ref(null), deleting = ref(null), actionBusy = ref(false), actionError = ref('');
+async function removeMaterial() {
+  actionBusy.value = true; actionError.value = '';
+  try { await dispatch('material.removeFromInventory', { id: deleting.value.id }); selected.value = selected.value.filter(id => id !== deleting.value.id); deleting.value = null; notify(); }
+  catch (error) { actionError.value = errorText(error); }
+  finally { actionBusy.value = false; }
+}
+function edited() { editing.value = null; notify(); }
 const props = defineProps({ initialAction: String });
 const adding = ref(props.initialAction === 'new' || route.value.id === 'new'), workflow = ref(''), selected = ref([]);
 let remembered = state.value.settings.preferences?.materialFilters || {};
@@ -112,15 +121,18 @@ function workflowSaved(){workflow.value='';selected.value=[];}
       <template v-else>
         <div class="table-wrap">
           <table>
-            <thead><tr><th><input type="checkbox" :checked="pageSelected" :indeterminate="!pageSelected && visible.some(row=>selected.includes(row.material.id))" :aria-label="t('selectVisibleMaterials')" @change="togglePage" /></th><th>{{ t('name') }}</th><th>{{ t('category') }}</th><th>{{ t('physical') }}</th><th>{{ t('reserved') }}</th><th>{{ t('available') }}</th><th>{{ t('location') }}</th><th><span class="sr-only">{{ t('status') }}</span></th></tr></thead>
+            <thead><tr><th><input type="checkbox" :checked="pageSelected" :indeterminate="!pageSelected && visible.some(row=>selected.includes(row.material.id))" :aria-label="t('selectVisibleMaterials')" @change="togglePage" /></th><th>{{ t('name') }}</th><th>{{ t('category') }}</th><th>{{ t('physical') }}</th><th>{{ t('available') }}</th><th><span class="sr-only">{{ t('status') }}</span></th><th>{{ t('actions') }}</th></tr></thead>
             <tbody><tr v-for="row in visible" :key="row.material.id"><td><input v-model="selected" :value="row.material.id" type="checkbox" :disabled="selected.length>=200 && !selected.includes(row.material.id)" :aria-label="t('selectMaterial',{name:row.material.name})" /></td>
               <td><div class="material-cell"><span class="swatch" :style="{ backgroundColor: row.material.color || undefined }"><Package v-if="!row.material.color" :size="18" /></span><div><button class="cell-title" @click="navigate('material', row.material.id)">{{ row.material.name }} <Heart v-if="row.material.favorite" :size="12" /></button><span class="cell-subtitle">{{ [row.material.brand, row.material.range, row.material.code].filter(Boolean).join(' · ') || '—' }}</span></div></div></td>
               <td>{{ categoryName(row.material.category) }}</td>
               <td>{{ row.summary.estimated ? '≈ ' : '' }}{{ number(row.summary.physical) }}<small v-if="row.summary.physical !== null" class="cell-subtitle">{{ t(`unit_${row.material.unit}`) }}</small><small v-else-if="row.summary.knownPhysical" class="cell-subtitle">{{ t('knownAtLeast') }} {{ number(row.summary.knownPhysical) }}</small></td>
-              <td>{{ number(row.summary.reserved) }}</td>
               <td><strong>{{ number(row.summary.available) }}</strong><span v-if="row.summary.unknown" class="cell-subtitle">{{ t('plusUnknown') }}</span></td>
-              <td><span v-for="name in row.locationNames.slice(0, 2)" :key="name" class="cell-subtitle">{{ name }}</span><span v-if="row.locationNames.length > 2" class="cell-subtitle">+{{ row.locationNames.length - 2 }}</span><span v-if="!row.locationNames.length">—</span></td>
               <td><span v-if="row.summary.conflicts.length" class="badge danger">{{ t('conflict') }}</span><span v-else-if="row.low" class="badge warning">{{ t('lowStock') }}</span><span v-else-if="row.material.archived" class="badge">{{ t('archived') }}</span></td>
+              <td><div class="actions">
+                <button class="icon-button" :aria-label="t('editThreadNamed', { name: row.material.name })" :title="t('edit')" @click="editing=row.material"><Pencil :size="18" /></button>
+                <button class="icon-button" :aria-label="t('deleteThreadNamed', { name: row.material.name })" :title="t('deleteThread')" @click="deleting=row.material; actionError='' "><Trash2 :size="18" /></button>
+                <button class="icon-button" :aria-label="t('shopThreadNamed', { name: row.material.name })" :title="t('sendToShopping')" @click="navigate('shopping', row.material.id)"><ShoppingCart :size="18" /></button>
+              </div></td>
             </tr></tbody>
           </table>
         </div>
@@ -133,6 +145,12 @@ function workflowSaved(){workflow.value='';selected.value=[];}
     <StockCountDialog v-if="workflow==='count'" :material-ids="selected" :initial-location="location" :initial-category="category" @close="workflow=''" @saved="workflowSaved"/>
     <InventoryRapidForm v-if="workflow==='rapid'" @close="workflow=''" @saved="workflowSaved" />
     <InventoryLabels v-if="workflow==='labels'" :material-ids="selected" @close="workflow=''" />
+    <MaterialForm v-if="editing" :key="editing.id" :material="editing" @close="editing=null" @saved="edited" />
+    <AppDialog v-if="deleting" :title="t('deleteThread')" :busy="actionBusy" @close="deleting=null">
+      <p>{{ t('deleteThreadConfirm', { name: deleting.name }) }}</p><p class="field-help">{{ t('deleteThreadHelp') }}</p>
+      <p v-if="actionError" role="alert" class="notice error">{{ actionError }}</p>
+      <template #footer><button class="button" :disabled="actionBusy" @click="deleting=null">{{ t('cancel') }}</button><button class="button primary" :disabled="actionBusy" @click="removeMaterial">{{ t('deleteThread') }}</button></template>
+    </AppDialog>
     <MaterialForm v-if="adding" @close="closeForm" @saved="created" />
   </div>
 </template>
