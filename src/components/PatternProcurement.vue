@@ -1,5 +1,6 @@
 <script setup>
 import {computed,ref,watch,onBeforeUnmount} from 'vue';
+import {supplierName} from '../../core/supplier-products.mjs';
 import FormField from './FormField.vue';
 import {ChevronLeft,ChevronRight,RefreshCw} from '@lucide/vue';
 import {state,dispatch,notify} from '../state';
@@ -38,7 +39,7 @@ async function apply(){busy.value=true;error.value='';try{await getPreview();awa
 async function getPreview(){clearTimeout(timer);await refresh();if(preview.value.error)throw preview.value.error;if(error.value)throw Object.assign(new Error(error.value),{code:'procurement_lookup_failed'});return JSON.parse(JSON.stringify({...preview.value.value,revisionId:props.revision?.id??null,width:props.revision?.width??null,height:props.revision?.height??null}));}
 defineExpose({getPreview});
 const display=(value,digits=6)=>value===null||value===undefined?t('unknown'):number(value,digits);
-const supplier=product=>product.supplier==='casa-cenina'?'Casa Cenina':product.supplier==='tessiland'?'Tessiland':product.supplier;
+const supplier=product=>supplierName(product.supplier);
 const displayUnit=unit=>unit==='ball'?t('procurementBall'):unit==='cone'?t('procurementCone'):t(unit);
 </script>
 <template>
