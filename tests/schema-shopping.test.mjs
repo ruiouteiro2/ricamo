@@ -32,3 +32,11 @@ test('quantities and units may be corrected without changing stock; malformed ov
  assert.throws(()=>run(s,'schema.purchaseMissing',{...selection('a'),corrections:[{index:500,quantity:3,unit:'skein'}]}));
  s=run(s,'pattern.save',{id:'a',archived:true});assert.equal(s.patterns[0].archived,true);
 });
+
+test('reserved stock is protected and incompatible package measures require verification',()=>{
+ let s=seed();s=run(s,'project.save',{id:'other',name:'Other work'});s=run(s,'reservation.set',{projectId:'other',lotId:'one',quantity:1});assert.equal(previewSchemaPurchases(s,selection('a')).rows[0].toBuy,3);
+ s=run(s,'material.save',{...s.materials[0],unit:'m'});const preview=previewSchemaPurchases(s,selection('a'));assert.equal(preview.rows[0].toBuy,null);const before=structuredClone(s.lots);s=run(s,'schema.purchaseMissing',selection('a'));assert.equal(s.purchases.length,0);assert.deepEqual(s.lots,before);
+});
+test('numeric pattern revisions estimate packs explicitly, not chart-cover pixels',()=>{
+ let s=createState();const revision=createBlank(10,10,[{brand:'DMC',range:'Mouliné',code:'310',name:'Black',hex:'#000000'}],{id:'numeric',settings:{strands:2,fabric:{type:'aida',countX:14,countY:14,countMeaning:'stitches',overX:1,overY:1}}});revision.cells.fill(0);s=run(s,'pattern.save',{id:'numeric',name:'Numeric',revision});const source=schemaSupplySource(s,selection('numeric'));assert.equal(source.estimated,true);assert.equal(source.requirements[0].unit,'skein');assert.equal(source.requirements[0].quantity,1);
+});
