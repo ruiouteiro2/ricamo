@@ -3,6 +3,7 @@ import { reactive, ref, computed, useId, watch, onBeforeUnmount } from 'vue';
 import { AlertTriangle } from '@lucide/vue';
 import AppDialog from './AppDialog.vue';
 import FormField from './FormField.vue';
+import { catalogueCodeQuery, exactCatalogueMatch } from '../material-catalogue-match.mjs';
 import { productPreview, productPreviewStyle } from '../product-previews.mjs';
 import ThreadReferenceLink from './ThreadReferenceLink.vue';
 import MaterialProductPicker from './MaterialProductPicker.vue';
@@ -116,7 +117,8 @@ watch(() => stock.quantity, value => {
   else if (usageStatus.value === 'finished') usageStatus.value = 'partial';
 });
 const catalogueItems = ref([]), catalogueFacets = ref({ brands: [], ranges: [] });
-const catalogueBusy = ref(false), catalogueError = ref('');
+const catalogueBusy = ref(false), catalogueError = ref(''), catalogueAmbiguous = ref(false);
+const matchingBusy = computed(() => !isEdit.value && draft.category === 'thread' && catalogueBusy.value);
 let catalogueTimer, catalogueToken = 0;
 const catalogueOptions = computed(() => {
   const selected = draft.properties.product;
@@ -128,16 +130,23 @@ watch(() => [draft.category, draft.brand, threadFamily.value, accessoryId.value,
   clearTimeout(catalogueTimer);
   const token = ++catalogueToken;
   catalogueBusy.value = true;
-  catalogueError.value = '';
+  catalogueError.value = ''; catalogueAmbiguous.value = false;
   catalogueTimer = setTimeout(async () => {
     try {
       const facets = await supplierFacets({ category: draft.category, brand: draft.brand });
+      const context = { brand: draft.brand, family: threadFamily.value, code: draft.code };
+      const query = catalogueCodeQuery(context);
       let products;
       if (draft.category === 'thread') {
         const ranges = facets.ranges.filter(range => familyOf({ range }) === threadFamily.value);
         const results = await Promise.all(ranges.map(async range => {
-          const args = { category: 'thread', brand: draft.brand, range, query: draft.code, limit: 100, ...(draft.brand === 'DMC' && threadFamily.value === 'diamant' ? { supplier: 'dmc' } : {}) };
-          const result = await supplierSearch(args);
+          const args = { category: 'thread', brand: draft.brand, range, query, limit: 100, ...(draft.brand === 'DMC' && threadFamily.value === 'diamant' ? { supplier: 'dmc' } : {}) };
+          const [result, exact] = await Promise.all([
+            supplierSearch(args),
+            query ? supplierLookup({ category: 'thread', brand: args.brand, range, code: query }) : Promise.resolve([]),
+          ]);
+          const exactOffers = exact.filter(product => !args.supplier || product.supplier === args.supplier);
+          result.items = [...new Map([...exactOffers, ...result.items].map(product => [product.id, product])).values()];
           if (draft.brand === 'Madeira') for (let offset = 100; offset < Math.min(result.total, 300); offset += 100) result.items.push(...(await supplierSearch({ ...args, offset })).items);
           return result;
         }));
@@ -149,6 +158,15 @@ watch(() => [draft.category, draft.brand, threadFamily.value, accessoryId.value,
       if (token !== catalogueToken) return;
       catalogueItems.value = products.slice(0, draft.brand === 'Madeira' ? 300 : 100);
       catalogueFacets.value = facets;
+      if (draft.category === 'thread') {
+        const match = exactCatalogueMatch(products, context);
+        catalogueAmbiguous.value = match.ambiguous;
+        if (match.product && draft.properties.product?.id !== match.product.id) chooseProduct(match.product, { automatic: true });
+        if (!match.product && !match.ambiguous && query) {
+          const swatch = supplierSwatch({ brand: context.brand, range: draft.range || familyLabel(threadFamily.value), code: query });
+          if (swatch.hex) { draft.color = swatch.hex; draft.properties.colorSource = swatch.rgbSource; }
+        }
+      }
     } catch (caught) {
       if (token === catalogueToken) catalogueError.value = errorText(caught);
     } finally {
@@ -167,12 +185,12 @@ function selectCatalogue(event) {
   draft.category = product.category;
   chooseProduct(product);
 }
-function chooseProduct(product){
+function chooseProduct(product, { automatic = false } = {}){
   delete draft.properties.colorSource;
   Object.assign(draft,{name:product.name,brand:product.brand,range:product.range,code:product.code,color:product.hex??''});
   draft.properties.product=JSON.parse(JSON.stringify(product));
   if(!isEdit.value){
-    draft.unit=units.includes(product.pack.unit)?product.pack.unit:product.category==='thread'?'m':'piece';
+    if (!automatic) draft.unit=units.includes(product.pack.unit)?product.pack.unit:product.category==='thread'?'m':'piece';
     if(product.brand==='Madeira'){draft.unit='spool';draft.properties.threadSize=product.range.match(/(\d+)$/)?.[1]||'';}
     draft.packageSize=draft.unit==='m'?product.pack.lengthM??'':'';
   }
@@ -188,7 +206,9 @@ watch(()=>[draft.category,draft.brand,draft.range,draft.code],()=>{
   if(snapshot){delete draft.properties.product;draft.strands='';draft.divisible=false;draft.packageSize='';}
   delete draft.properties.colorSource;
   if(!catalogueCategory.value)return;
-  draft.color='';if(!draft.brand||!draft.range||!draft.code)return;
+  draft.color='';
+  if (!isEdit.value && draft.category === 'thread') return;
+  if(!draft.brand||!draft.range||!draft.code)return;
   lookupBusy.value=true;
   lookupTimer=setTimeout(async()=>{try{const rows=await supplierLookup({category:draft.category,brand:draft.brand,range:draft.range,code:draft.code});if(token!==lookupToken)return;const product=(draft.brand==='DMC'&&threadFamily.value==='diamant'?rows.find(row=>row.supplier==='dmc'):null)??rows.find(row=>row.hex)??rows[0];if(product){draft.properties.product=product;draft.color=product.hex??'';draft.strands=product.pack.strands??'';draft.divisible=product.pack.divisible===true;if(draft.unit==='m')draft.packageSize=product.pack.lengthM??'';}else{const swatch=supplierSwatch({brand:draft.brand,range:draft.range,code:draft.code});if(swatch.hex){draft.color=swatch.hex;draft.properties.colorSource=swatch.rgbSource;}}}catch(caught){if(token===lookupToken)error.value=errorText(caught);}finally{if(token===lookupToken)lookupBusy.value=false;}},250);
 },{immediate:true});
@@ -210,7 +230,7 @@ function price(value) {
 }
 async function openMadeiraCatalogue() { try { await openPurchaseLink('https://www.madeira.com/it-it/materiali-da-ricamo/filati-industriali/metallizzati'); } catch (caught) { error.value = errorText(caught); } }
 async function save() {
-  if (busy.value||lookupBusy.value) return;
+  if (busy.value||lookupBusy.value||matchingBusy.value) return;
   busy.value = true; error.value = '';
   try {
     if (!isEdit.value) {
@@ -272,6 +292,9 @@ async function save() {
         </div>
         <p v-if="draft.brand === 'Madeira'" class="field-help">{{ t('madeiraCatalogueHelp') }} <button type="button" class="button text small" @click="openMadeiraCatalogue">{{ t('madeiraOfficialCatalogue') }}</button></p>
         <ThreadReferenceLink :reference="activeGroup.children.find(child => child.brand === draft.brand && (!child.reference?.family || child.reference.family === threadFamily))?.reference" />
+        <div v-if="draft.color && !draft.properties.product && !catalogueBusy" class="field-help actions" role="status"><span class="catalogue-swatch" :style="{ backgroundColor: draft.color }" aria-hidden="true" />{{ t('cataloguePaletteOnly') }}</div>
+        <p v-if="draft.code.trim() && !draft.color && !catalogueBusy && !catalogueError && !catalogueOptions.length" class="field-help" role="status">{{ t('catalogueCodeNotFound') }}</p>
+        <p v-else-if="catalogueAmbiguous && !catalogueBusy" class="field-help" role="status">{{ t('catalogueCodeAmbiguous') }}</p>
         <p v-if="catalogueError" class="notice error" role="alert">{{ catalogueError }}</p>
       </template>
       <template v-else>
@@ -345,7 +368,7 @@ async function save() {
       </details>
       </template>
     </form>
-    <template #footer><button type="button" class="button" :disabled="busy" @click="emit('close')">{{ t('cancel') }}</button><button class="button primary" type="submit" :form="formId" :disabled="busy||lookupBusy">{{ busy ? t('saving') : t('save') }}</button></template>
+    <template #footer><button type="button" class="button" :disabled="busy" @click="emit('close')">{{ t('cancel') }}</button><button class="button primary" type="submit" :form="formId" :disabled="busy||lookupBusy||matchingBusy">{{ busy ? t('saving') : t('save') }}</button></template>
   </AppDialog>
   <AppDialog v-if="duplicate" :title="t('duplicateEntryTitle')" :busy="busy" @close="duplicate=null">
     <p class="notice warning">{{ t('duplicateEntryHelp') }}</p>
