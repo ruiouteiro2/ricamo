@@ -15,6 +15,7 @@ import { inventoryCategories, materialCustomFields } from '../inventory-categori
 import { INVENTORY_GROUPS, inventoryGroup, accessorySection } from '../inventory-navigation.mjs';
 import { duplicateMaterials } from '../../core/material-duplicates.mjs';
 import { convertQuantity } from '../../core/fabric.mjs';
+import { openPurchaseLink } from '../purchase-link.mjs';
 import { quantity } from '../../core/shared.mjs';
 
 const props = defineProps({ material: Object, context: { type: Object, default: () => ({}) } });
@@ -31,7 +32,7 @@ const accessoryId = ref(props.context.section || 'needles');
 if (!props.material) {
   draft.category = activeGroup.value.category;
   draft.brand = props.context.brand || (activeGroup.value.children.length === 1 ? activeGroup.value.children[0].brand : '');
-  draft.unit = draft.category === 'thread' ? 'm' : 'piece';
+  draft.unit = draft.category === 'thread' ? (draft.brand === 'Madeira' ? 'spool' : 'm') : 'piece';
 }
 const brandLabel = brand => activeGroup.value.children.find(child => child.brand === brand)?.label || brand;
 const brandOptions = computed(() => groupId.value === 'accessories' ? catalogueFacets.value.brands : activeGroup.value.children.map(child => child.brand).filter(Boolean));
@@ -39,7 +40,7 @@ watch(groupId, () => {
   draft.category = activeGroup.value.category;
   draft.brand = activeGroup.value.children.length === 1 ? activeGroup.value.children[0].brand : '';
   draft.range = ''; draft.code = ''; draft.name = ''; draft.color = ''; draft.properties = { custom: {} };
-  draft.unit = draft.category === 'thread' ? 'm' : 'piece';
+  draft.unit = draft.category === 'thread' ? (draft.brand === 'Madeira' ? 'spool' : 'm') : 'piece';
 });
 watch(accessoryId, () => {
   if (groupId.value !== 'accessories' || !draft.properties.product) return;
@@ -79,7 +80,9 @@ async function confirmDuplicate() {
 const threadFamilies = computed(() => draft.brand.trim().toLowerCase() === 'madeira' ? ['spool'] : ['mouline', 'special', 'silk', 'wool', 'spool', 'pearl', ...(['dmc', 'anchor'].includes(draft.brand.trim().toLowerCase()) ? ['alsace'] : [])]);
 const threadFamily = ref(threadFamilies.value.includes(draft.properties.threadFamily) ? draft.properties.threadFamily : threadFamilies.value[0]);
 const usageStatus = ref('new');
+watch(() => draft.brand, (brand, previous) => { if (!isEdit.value && draft.category === 'thread' && (brand === 'Madeira' || previous === 'Madeira')) draft.unit = brand === 'Madeira' ? 'spool' : 'm'; });
 function familyOf(product) {
+  if (String(product.brand ?? draft.brand).trim().toLowerCase() === 'madeira') return 'spool';
   const range = String(product.range || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
   if (/alsac|fiorentin/.test(range)) return 'alsace';
   if (/silk|seta|soie|waterlil/.test(range)) return 'silk';
@@ -94,6 +97,7 @@ function familyLabel(family) {
 }
 watch(() => [threadFamily.value, draft.brand], ([value]) => {
   if (draft.category !== 'thread') return;
+  if (!isEdit.value && draft.brand === 'Madeira') draft.unit = 'spool';
   if (!threadFamilies.value.includes(value)) { threadFamily.value = threadFamilies.value[0]; return; }
   draft.properties.threadFamily = value;
   if (draft.properties.product && draft.properties.product.brand === draft.brand && familyOf(draft.properties.product) === value) return;
@@ -127,14 +131,19 @@ watch(() => [draft.category, draft.brand, threadFamily.value, accessoryId.value,
       let products;
       if (draft.category === 'thread') {
         const ranges = facets.ranges.filter(range => familyOf({ range }) === threadFamily.value);
-        const results = await Promise.all(ranges.map(range => supplierSearch({ category: 'thread', brand: draft.brand, range, query: draft.code, limit: 100 })));
+        const results = await Promise.all(ranges.map(async range => {
+          const args = { category: 'thread', brand: draft.brand, range, query: draft.code, limit: 100 };
+          const result = await supplierSearch(args);
+          if (draft.brand === 'Madeira') for (let offset = 100; offset < Math.min(result.total, 300); offset += 100) result.items.push(...(await supplierSearch({ ...args, offset })).items);
+          return result;
+        }));
         products = results.flatMap(result => result.items).filter(product => familyOf(product) === threadFamily.value);
       } else {
         const result = await supplierSearch({ category: draft.category, brand: draft.brand, query: draft.code, limit: 100 });
         products = result.items.filter(product => draft.category !== 'tool' || accessorySection(product) === accessoryId.value);
       }
       if (token !== catalogueToken) return;
-      catalogueItems.value = products.slice(0, 100);
+      catalogueItems.value = products.slice(0, draft.brand === 'Madeira' ? 300 : 100);
       catalogueFacets.value = facets;
     } catch (caught) {
       if (token === catalogueToken) catalogueError.value = errorText(caught);
@@ -160,6 +169,7 @@ function chooseProduct(product){
   draft.properties.product=JSON.parse(JSON.stringify(product));
   if(!isEdit.value){
     draft.unit=units.includes(product.pack.unit)?product.pack.unit:product.category==='thread'?'m':'piece';
+    if(product.brand==='Madeira'){draft.unit='spool';draft.properties.threadSize=product.range.match(/(\d+)$/)?.[1]||'';}
     draft.packageSize=draft.unit==='m'?product.pack.lengthM??'':'';
   }
   draft.strands=product.pack.strands??'';draft.divisible=product.pack.divisible===true;
@@ -194,6 +204,7 @@ function price(value) {
   if (Math.abs(number * 100 - Math.round(number * 100)) > 0.000001) throw Object.assign(new Error(), { code: 'invalid_number' });
   return Math.round(number * 100);
 }
+async function openMadeiraCatalogue() { try { await openPurchaseLink('https://www.madeira.com/it-it/materiali-da-ricamo/filati-industriali/metallizzati'); } catch (caught) { error.value = errorText(caught); } }
 async function save() {
   if (busy.value||lookupBusy.value) return;
   busy.value = true; error.value = '';
@@ -255,6 +266,7 @@ async function save() {
           <FormField :label="t('minimum')" :help="t('minimumStockHelp')" v-slot="{ id, describedby }"><input :id="id" value="1" readonly :aria-describedby="describedby" /></FormField>
           <FormField :label="t('status')" v-slot="{ id }"><select :id="id" v-model="usageStatus"><option v-for="status in ['new','partial','finished']" :key="status" :value="status">{{ t(`entryStatus_${status}`) }}</option></select></FormField>
         </div>
+        <p v-if="draft.brand === 'Madeira'" class="field-help">{{ t('madeiraCatalogueHelp') }} <button type="button" class="button text small" @click="openMadeiraCatalogue">{{ t('madeiraOfficialCatalogue') }}</button></p>
         <p v-if="catalogueError" class="notice error" role="alert">{{ catalogueError }}</p>
       </template>
       <template v-else>
