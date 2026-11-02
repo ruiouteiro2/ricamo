@@ -1,5 +1,15 @@
 # Ricamo delivery evidence
 
+## Atelier visual refresh - Windows 0.6.20 - 2026-11-02
+
+Requested a more professional and feminine appearance. Replaced the beige and dark plum palette with petal white, mulberry accent and champagne details; display text now uses the Windows system font Palatino Linotype through a shared token, so no font file or remote asset was added. Controls are softer, cards have light shadows, and a dashed running-stitch line marks the hero, sidebar and empty states. Application icon, favicon, window background and on-screen selection overlays follow the palette. Print styles, PDF exports, chart colours and stored default colours are unchanged. No behaviour or data change.
+
+Validation: axe color-contrast found zero issues on home, materials, projects, project detail, patterns, shopping, data, locations, settings, help and the add-material dialog in Edge against the production frontend; no page errors; no horizontal overflow at 480px. Packaged 0.6.20 passed `sticky-batch-entry-ui` and `simple-material-edit-ui`, with the new tokens confirmed in Electron, no renderer errors and no HTTP requests. `node --test --test-isolation=none tests/*.test.mjs` reports 573 total, 571 passed, one skipped, one failure ("Dates and currency reject invalid input..."); the same failure occurs on the commit before this work. `desktop-ui-polish` (line 100) and `desktop-smoke` (line 49) fail at the same lines on the unmodified 0.6.19 package as on this restyle, so they are not regressions from it, but they remain failing and were not updated. The full `test:desktop` suite was not run. Electron is absent from `node_modules`, so packaged executables were used.
+
+Known text defect, not changed here: `src/i18n.js:61` contains literal question marks in place of accented letters ("Quantit?", "gi?"), visible on the Shopping page.
+
+Installer `release/Ricamo-0.6.20-Windows-x64-Setup.exe`, SHA-256 `c4dcb54b7a1b39375fad36ccf6bcffe7a82802974c9a7889c3aa8ed108522eb5`. Packaging/audit passed with sourcesMatch true and dirtyFiles zero before this evidence update. Unsigned local build. The desktop installation was not upgraded and remains 0.6.19; no clean-PC/offline installation claim.
+
 ## Sticky table headers and continuous material entry - Windows 0.6.19 - 2026-11-02
 
 Long shared table areas now have bounded vertical scrolling with a sticky header, preserving native horizontal alignment. Dialog tables use a smaller bound. Header backgrounds remain opaque while rows scroll beneath them. Print styles remove the scroll-height limit and restore normal repeating table headers. Inventory pagination/filter changes reset its vertical table position to the first row.
