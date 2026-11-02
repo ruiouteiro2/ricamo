@@ -14,7 +14,7 @@ else{browser=await chromium.launch({channel:'msedge',headless:true});page=await 
 const errors=[],requests=[];page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(/^https?:/.test(request.url())&&(native||!request.url().startsWith(base)))requests.push(request.url());});
 try{
  if(!native)await page.goto(base);await page.locator('.sidebar').waitFor();if(native){assert.equal(await app.evaluate(({app})=>app.getVersion()),APP_VERSION);await assertElectronSecurity(app);}
- await page.locator('.sidebar').getByRole('button',{name:'Materiali',exact:true}).click();await page.getByRole('button',{name:'Aggiungi materiale',exact:true}).click();
+ await page.locator('.sidebar').getByRole('button',{name:'Materiali',exact:true}).click();await page.locator('.inventory-category-card').filter({hasText:'Fili'}).getByRole('button',{name:'Aggiungi',exact:true}).click();
  const form=page.getByRole('dialog'),brand=form.getByLabel(/^Marca/),family=form.getByLabel(/^Tipologia/),size=form.getByLabel('Numero spessore',{exact:true}),code=form.getByLabel('Codice colore',{exact:true}),catalogue=form.getByLabel('Scegli dal catalogo',{exact:true}),reference=form.locator('.thread-reference');
  await brand.selectOption('DMC');
  const selectFamily=async(value,text)=>{await family.selectOption(value);await expect(reference).toContainText(text);await expect(reference).toContainText('Casa Cenina');};
