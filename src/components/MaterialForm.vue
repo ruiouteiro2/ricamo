@@ -68,7 +68,7 @@ async function confirmDuplicate() {
   if (busy.value) return;
   busy.value = true; duplicateError.value = '';
   try {
-    const amount = quantity(duplicate.value.quantity, { positive: true });
+    const amount = quantity(duplicateQuantity(duplicate.value.targetId), { positive: true });
     const target = duplicateTarget.value;
     await dispatch('material.addDuplicateStock', { materialId: target.id, material: duplicate.value.material, unit: duplicateCountUnit.value, threadCountUnit: target.category==='thread', lot: { ...duplicate.value.lot, quantity: amount } }, operationId);
     duplicate.value = null; emit('saved', target.id);
@@ -281,8 +281,7 @@ async function save() {
     if (!isEdit.value) {
       const matches = duplicateMaterials(state.value, payload);
       if (matches.length) {
-        duplicate.value = { material: payload, lot, matches: matches.map(material => ({ id: material.id, name: material.name })), targetId: matches[0].id, quantity: '' };
-        duplicate.value.quantity = duplicateQuantity(matches[0].id);
+        duplicate.value = { material: payload, lot, matches: matches.map(material => ({ id: material.id, name: material.name })), targetId: matches[0].id };
         duplicateError.value = ''; return;
       }
     }
@@ -320,9 +319,9 @@ async function save() {
   <AppDialog v-if="duplicate" :title="t('duplicateEntryTitle')" :busy="busy" @close="duplicate=null">
     <p class="notice warning">{{ t('duplicateEntryHelp') }}</p>
     <p v-if="duplicateError" class="notice error" role="alert">{{ duplicateError }}</p>
-    <FormField v-if="duplicate.matches.length > 1" :label="t('material')" v-slot="{ id }"><select :id="id" v-model="duplicate.targetId" @change="duplicate.quantity=duplicateQuantity(duplicate.targetId)"><option v-for="match in duplicate.matches" :key="match.id" :value="match.id">{{ match.name }}</option></select></FormField>
+    <FormField v-if="duplicate.matches.length > 1" :label="t('material')" v-slot="{ id }"><select :id="id" v-model="duplicate.targetId" autofocus><option v-for="match in duplicate.matches" :key="match.id" :value="match.id">{{ match.name }}</option></select></FormField>
     <p v-else><strong>{{ duplicateTarget?.name }}</strong></p>
-    <FormField :label="t('duplicateQuantityLabel')" :help="t(`unit_${duplicateCountUnit}`)" required v-slot="{ id, describedby }"><input :id="id" v-model="duplicate.quantity" inputmode="decimal" :aria-describedby="describedby" required autofocus /></FormField>
+    <p class="duplicate-quantity-summary"><span>{{ t('duplicateQuantityLabel') }}</span><strong>{{ duplicateQuantity(duplicate.targetId) }} {{ t(`unit_${duplicateCountUnit}`) }}</strong></p>
     <p class="field-help">{{ t('duplicateQuantityHelp') }}</p>
     <template #footer><button class="button" :disabled="busy" @click="duplicate=null">{{ t('cancel') }}</button><button class="button primary" :disabled="busy" @click="confirmDuplicate">{{ busy ? t('saving') : t('duplicateConfirmQuantity') }}</button></template>
   </AppDialog>
