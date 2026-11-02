@@ -6,6 +6,7 @@ import {normalizePatternSupplies} from './pattern-supplies.mjs';
 import {convertQuantity} from './fabric.mjs';
 import {inventorySummary,saveMaterial,UNITS} from './inventory.mjs';
 import {savePurchase} from './purchasing.mjs';
+import {isDiscontinued} from './discontinued-materials.mjs';
 import {assert,find,oneOf,quantity,add,subtract} from './shared.mjs';
 let products;
 const catalogue=()=>products??=new Map(bundledSupplierProducts().map(p=>[p.id,p]));
@@ -76,7 +77,7 @@ export function previewSchemaPurchases(state,selection){
    if(amount===null||summary.unknown)unknown=true;else available=add(available,amount);
    for(const order of state.purchases.filter(p=>p.materialId===material.id&&['to_buy','ordered','partial'].includes(p.status))){const value=convertQuantity(subtract(order.quantity,order.received),material.unit,row.unit,conversion);if(value===null)unknown=true;else pending=add(pending,value);}
   }
-  const suppressed=matches.some(m=>m.properties.restockSuppressed===true);
+  const suppressed=isDiscontinued(row)||matches.some(m=>m.properties.restockSuppressed===true||isDiscontinued(m));
   const missing=unknown?null:Math.max(0,subtract(row.required,add(available,pending)));
   const toBuy=missing===null?null:['skein','spool','pack','piece','cone','ball'].includes(row.unit)?Math.max(0,Math.ceil(missing-1e-12)):missing;
   return {...row,key,matches:matches.map(m=>m.id),available:unknown?null:available,pending,toBuy,suppressed};
