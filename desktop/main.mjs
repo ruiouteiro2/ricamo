@@ -51,7 +51,7 @@ async function start() {
     const url = new URL(details.url);
     callback({ cancel: !['ricamo:', 'data:', 'blob:', 'devtools:'].includes(url.protocol) || (url.protocol === 'ricamo:' && url.host !== 'app') });
   });
-  window = new BrowserWindow({ ...initialWindowBounds(screen.getPrimaryDisplay().workArea), title: 'Ricamo', backgroundColor: '#f7f5f1', show: false,
+  window = new BrowserWindow({ ...initialWindowBounds(screen.getPrimaryDisplay().workArea), title: 'Ricamo', backgroundColor: '#fbf7f6', show: false,
     webPreferences: { preload: join(root, 'desktop', 'preload.cjs'), contextIsolation: true, sandbox: true, nodeIntegration: false, webSecurity: true, spellcheck: false, webviewTag: false } });
   const examples = createExampleStudio({ owner: window, root });
   handle('open-example', () => examples.open(repository.load().settings.language));
