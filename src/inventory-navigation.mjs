@@ -16,6 +16,7 @@ const DMC_REFERENCES = [
   { name: 'DMC Diamant', source: 'Casa Cenina', family: 'diamant', url: `${CASA_DMC}dmc-diamant/` },
   { name: "DMC Coton Perlé - Retors d'Alsace", source: 'Casa Cenina', family: 'alsace', url: 'https://www.casacenina.it/filati.html#dmc' },
   ...[5, 8, 12].map(size => ({ name: `DMC Coton Perlé - Retors d'Alsace #${size}`, source: 'Casa Cenina', family: 'alsace', size: String(size), url: `${CASA_DMC}dmc-coton-perle-retors-d-alsace-${size}/` })),
+  { name: 'DMC Coton Retors Mat', source: 'DMC', family: 'mat', url: 'https://www.dmc.com/IT/it/products/dmc-wool-tapestry/retors-mat-cotton' },
 ];
 export const INVENTORY_GROUPS = [
   { id: 'threads', category: 'thread', labelKey: 'inventoryThreads', children: ['DMC','Anchor','Profilo','P&G','Madeira'].map(brand => ({ ...brandChild(brand), label: brand === 'Madeira' ? 'Metallici Madeira' : brand, ...(brand === 'DMC' ? { reference: DMC_REFERENCES[0], references: DMC_REFERENCES } : {}), ...(brand === 'P&G' ? { reference: { name: 'Filo rame verniciato', source: 'Tombolo e Disegni', url: 'https://www.tombolodisegnishop.it/prodotto/filo-rame-verniciato-030/' } } : {}) })) },
