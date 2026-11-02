@@ -40,7 +40,10 @@ export function threadRangeMatchesSize(range, family, size = '') {
   if (!expected || !['pearl', 'alsace'].includes(family)) return true;
   return threadSize(range) === expected;
 }
+const isCustomCategory = value => String(value ?? '').startsWith('custom-');
+export const customInventoryGroups = (categories = []) => categories.filter(row => isCustomCategory(row.id)).map(row => ({ id: row.id, category: row.id, label: row.name, children: [], custom: true }));
 export function inventoryGroup(material) {
+  if (isCustomCategory(material.category)) return material.category;
   return ({ thread: 'threads', embellishment: 'beads', fabric: 'fabrics' })[material.category] || 'accessories';
 }
 export function accessorySection(material) {
@@ -62,11 +65,11 @@ export function matchesInventorySection(material, groupId, childId = '') {
   return brand === fold(child.brand);
 }
 export function inventoryRoute(groupId = '', childId = '') { return groupId ? `category:${groupId}${childId ? `:${childId}` : ''}` : null; }
-export function parseInventoryRoute(id) {
+export function parseInventoryRoute(id, categories = []) {
   const [, groupId, childId = ''] = String(id || '').split(':');
-  const group = INVENTORY_GROUPS.find(item => item.id === groupId);
+  const group = [...INVENTORY_GROUPS, ...customInventoryGroups(categories)].find(item => item.id === groupId);
   const child = group?.children.find(item => item.id === childId);
-  return { group: group || null, child: child || null, showList: id === 'all' || Boolean(group && childId === 'all') || Boolean(child) };
+  return { group: group || null, child: child || null, showList: id === 'all' || Boolean(group && childId === 'all') || Boolean(child) || Boolean(group?.custom) };
 }
 export function inventoryContext(group, child = null) {
   return group ? { groupId: group.id, category: group.category, brand: child?.brand || (group.children.length === 1 ? group.children[0].brand : ''), section: group.id === 'accessories' ? child?.id || '' : '' } : {};
