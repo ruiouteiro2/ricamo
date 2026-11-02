@@ -3,6 +3,9 @@ import { supplierIdentity, supplierFold } from './supplier-products.mjs';
 import { assert, find, quantity } from './shared.mjs';
 import { addLot } from './inventory.mjs';
 
+// A DMC Perlé skein and ball of one colour are separate stock, so they never merge.
+const dmcPerleFormat = material => supplierFold(material.brand) === 'dmc' && (material.properties?.threadFamily === 'pearl' || /^(perle|pearl)/.test(supplierFold(material.range))) && ['skein', 'ball'].includes(material.unit) ? material.unit : '';
+
 export function duplicateMaterials(state, candidate) {
   const code = String(candidate.code || '').trim();
   const name = supplierFold(candidate.name);
@@ -11,6 +14,8 @@ export function duplicateMaterials(state, candidate) {
     if (material.id === candidate.id || material.archived || material.category !== candidate.category) return false;
     const a = supplierFold(material.properties?.threadSize), b = supplierFold(candidate.properties?.threadSize);
     if (a && b && a !== b) return false;
+    const formatA = dmcPerleFormat(material), formatB = dmcPerleFormat(candidate);
+    if (formatA && formatB && formatA !== formatB) return false;
     return code ? supplierIdentity(material) === supplierIdentity(candidate)
       : name === supplierFold(material.name) && supplierFold(material.brand) === supplierFold(candidate.brand);
   });
