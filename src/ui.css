@@ -112,6 +112,21 @@ tbody tr { transition: background-color var(--motion-fast) var(--ease-ui); }
 }
 .popover-enter-from, .popover-leave-to { opacity: 0; translate: 0 -5px; }
 .toast-enter-from, .toast-leave-to { opacity: 0; translate: 0 8px; }
+.toast[popover] { margin: 0; border: 0; inset: auto; }
+.dialog-footer-spacer { flex: 1; }
+.duplicate-quantity-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-soft, #fcf5f6);
+}
+.duplicate-quantity-summary span { color: var(--muted); }
+.duplicate-quantity-summary strong { white-space: nowrap; }
+.dialog .table-wrap td .button { margin-top: 8px; }
 .dialog[open] { animation: dialog-appear var(--motion-normal) var(--ease-ui); }
 .dialog[open]::backdrop { animation: backdrop-appear var(--motion-normal) var(--ease-ui); }
 @keyframes dialog-appear { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }
