@@ -1,5 +1,13 @@
 # Ricamo delivery evidence
 
+## Colour code stays as typed - Windows 0.6.42 - 2026-11-02
+
+A match rewrote the code field while it was being typed: Anchor `2` became `002` and DMC Mouliné `10` became `010` after 250 ms, so a further digit produced `0023`. The form now keeps the typed text in the field while it has focus, and shows the catalogue's own code when focus leaves; the preview and the saved code still use the catalogue's. A cleared code always updates the field. Mill Hill and Profilo were not affected by this rewrite.
+
+Unit suite: 610 total, 608 passed, one skipped, one failed; the failure is the existing `tool-activity` date test. Packaged journeys passed: `automatic-colour-preview-ui` (typing 2, 3, 5 gives 235), `dmc-diamant-ui`, `mill-hill-ui`, `profilo-reference-ui`, `dmc-alsace-ui`, `dmc-pearl-format-ui`, `simple-material-edit-ui`, `desktop-inventory-categories`; `sticky-batch-entry-ui` passed on the build before the cleared-code change. The first packaged run stopped before installation because `mill-hill-ui` found a cleared code still showing. The full desktop suite was not run. Release audit passed with `sourcesMatch: true` and `dirtyFiles: 0`.
+
+Installer `release/Ricamo-0.6.42-Windows-x64-Setup.exe`, SHA-256 `071e6f732b1fe75df5dbed0fe543c546e7a8e883ed88cb219e7b856406462b5f`; packaged/installed ASAR SHA-256 `dc43651929ee4921b4a07c5d7b6b4eb9c5367cd17aa7cbe29385e65d7f1c9877`. Ricamo was normally closed and a full profile copy plus validated `.ricamobackup` was saved under `Desktop/Filo/Backup aggiornamenti/prima-0.6.42-20261102-223151` before silent current-user installation (exit 0). Registry reports 0.6.42. State revision 420, all 288 materials, attachment bytes, SQLite integrity and `paginateLists: false` match after install; the installed window reopened successfully. Only installers and update backups for 0.6.41 and 0.6.42 are kept. Unsigned local build; no clean-PC/offline installation claim.
+
 ## Mill Hill catalogue rows and out-of-production block - Windows 0.6.41 - 2026-11-02
 
 The Mill Hill list now follows owned rows with every catalogue article not yet in the inventory, greyed out, with the cart as the only action; out-of-production articles have no cart. An order creates the material at zero quantity and a `to_buy` purchase, in two commands, so a failure between them can leave a material without an order. The row then becomes a normal one. `core/purchasing.mjs` refuses a new purchase for an out-of-production article, zero-stock and project generation skip it, schema shopping treats it as suppressed, and the Shopping form no longer offers it. Orders placed earlier stay editable and receivable.
