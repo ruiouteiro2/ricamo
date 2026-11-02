@@ -18,9 +18,11 @@ const DMC_REFERENCES = [
   ...[5, 8, 12].map(size => ({ name: `DMC Coton Perlé - Retors d'Alsace #${size}`, source: 'Casa Cenina', family: 'alsace', size: String(size), url: `${CASA_DMC}dmc-coton-perle-retors-d-alsace-${size}/` })),
   { name: 'DMC Coton Retors Mat', source: 'DMC', family: 'mat', url: 'https://www.dmc.com/IT/it/products/dmc-wool-tapestry/retors-mat-cotton' },
 ];
+// Lines of the Mill Hill catalogue, most used first. Each code belongs to one line only.
+export const MILL_HILL_LINES = ['Glass Seed Beads', 'Antique Glass Seed Beads', 'Petite Glass Seed Beads', 'Seed Frosted Beads', 'Beads 6/0', 'Beads 8/0', 'Pebble Beads', 'Bugle Beads', 'Magnifica', 'Glass Treasures', 'Crystal Treasures', 'Metal Treasures', 'Glow in the Dark', 'Economy and Mini-Packs', 'Bottoni', 'Bells'];
 export const INVENTORY_GROUPS = [
   { id: 'threads', category: 'thread', labelKey: 'inventoryThreads', children: ['DMC','Anchor','Profilo','P&G','Madeira'].map(brand => ({ ...brandChild(brand), label: brand === 'Madeira' ? 'Metallici Madeira' : brand, ...(brand === 'DMC' ? { reference: DMC_REFERENCES[0], references: DMC_REFERENCES } : {}), ...(brand === 'Profilo' ? { reference: { name: 'Profilo 6 Mouliné', source: 'Casa Cenina', url: 'https://www.casacenina.it/fili-e-filati/profilo/profilo-6-mouline/' } } : {}), ...(brand === 'P&G' ? { reference: { name: 'Filo rame verniciato', source: 'Tombolo e Disegni', url: 'https://www.tombolodisegnishop.it/prodotto/filo-rame-verniciato-030/' } } : {}) })) },
-  { id: 'beads', category: 'embellishment', labelKey: 'inventoryBeads', children: ['Mill Hill'].map(brandChild) },
+  { id: 'beads', category: 'embellishment', labelKey: 'inventoryBeads', children: ['Mill Hill'].map(brand => ({ ...brandChild(brand), reference: { name: 'Mill Hill', source: 'Casa Cenina', url: 'https://www.casacenina.it/mill-hill/?filter_id=8' } })) },
   { id: 'fabrics', category: 'fabric', labelKey: 'inventoryFabrics', children: FABRIC_BRANDS.map(brandChild) },
   { id: 'accessories', category: 'tool', labelKey: 'inventoryAccessories', children: [
     { id: 'needles', labelKey: 'inventoryNeedles' }, { id: 'scissors', labelKey: 'inventoryScissors' }, { id: 'hoops', labelKey: 'inventoryHoops' },
