@@ -22,6 +22,7 @@ import { state, dispatch, navigate, notify, locate } from '../state';
 import { t, number, date, money, errorText } from '../i18n';
 import { inventorySummary } from '../../core/inventory.mjs';
 import { quantity } from '../../core/shared.mjs';
+import { pageTotal, pageRows } from '../pagination.mjs';
 
 const props = defineProps({ id: String });
 const material = computed(() => state.value.materials.find(row => row.id === props.id));
@@ -39,8 +40,8 @@ const lotGroups = computed(() => {
 });
 const historyPage = ref(1), historySize = 30;
 const movements = computed(() => state.value.movements.filter(row => row.materialId === props.id || lots.value.some(lot => lot.id === row.lotId)).toReversed());
-const historyPages = computed(() => Math.max(1, Math.ceil(movements.value.length / historySize)));
-const history = computed(() => movements.value.slice((historyPage.value - 1) * historySize, historyPage.value * historySize));
+const historyPages = computed(() => pageTotal(movements.value.length, historySize));
+const history = computed(() => pageRows(movements.value, historyPage.value, historySize));
 const reservations = computed(() => state.value.reservations.filter(row => row.materialId === props.id && row.quantity > 0));
 const projects = computed(() => state.value.projects.filter(row => !['completed', 'archived'].includes(row.status)));
 const labeling = ref(null), counting=ref(false);
