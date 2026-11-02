@@ -24,3 +24,12 @@ test('official DMC Colbert variants are searchable with offline previews',()=>{
  assert.ok(bundled.some(row=>row.code==='7003'));
  assert.ok(bundled.some(row=>row.code==='CB724'));
 });
+
+test('existing Mouliné lanato records reuse exact Colbert previews without rewriting inventory',()=>{
+ for(const code of ['7444','7727','7971','7439']){
+  const material={brand:'DMC',range:'Mouliné lanato',code,properties:{threadFamily:'wool'}};
+  assert.equal(productPreview(material),previews[`dmc:colbert:${code}`]);
+ }
+ assert.equal(productPreview({brand:'DMC',range:'Mouliné lanato',code:'7445',properties:{threadFamily:'wool'}}),'');
+ assert.equal(productPreview({brand:'DMC',range:'Mouliné',code:'7444',properties:{threadFamily:'mouline'}}),'');
+});
