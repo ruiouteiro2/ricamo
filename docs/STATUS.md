@@ -1,5 +1,13 @@
 # Ricamo delivery evidence
 
+## Casa Cenina Colbert catalogue reference - Windows 0.6.26 - 2026-11-02
+
+Connected the user-supplied Casa Cenina catalogue (`https://www.casacenina.it/fili-e-filati/dmc/dmc-lana-colbert/`) specifically to DMC > Mouliné lanato. The material form now labels the reference source as Casa Cenina and opens that exact page through the existing safe external-link path. The 414 local Colbert choices and offline manufacturer swatch previews from 0.6.25 remain unchanged. The referenced retailer page presents direct colour-code selection and describes four-strand, eight-metre skeins; these page facts were checked but no live runtime fetching or inventory mutation was added.
+
+Focused navigation tests and the complete Edge and packaged-Electron DMC/Colbert journey passed: exact Casa Cenina source label and URL, automatic code 7003 selection, decoded offline preview, existing Diamant behavior, persistence, backup and zero remote renderer requests. Production build and release audit passed with `sourcesMatch: true` and `dirtyFiles: 0`; the full domain suite was not rerun because this release changes only the family-specific external reference.
+
+Installer `release/Ricamo-0.6.26-Windows-x64-Setup.exe`, SHA-256 `ffeef00b0d4e47f650362d8bf0ee9dd398fead7872572a55c7f9802ffab75b73`; packaged/installed ASAR SHA-256 `ca5e15b1857d03fc03bdb7c1a184eed247b32f9e70c536e60bfd392a235b96d3`. Ricamo was normally closed and a full profile copy plus validated `.ricamobackup` was saved under `Desktop/Filo/Backup aggiornamenti` before silent current-user installation (exit 0). Registry reports 0.6.26. State revision 205, all 104 material records, attachment bytes and SQLite integrity match before/after; the installed window reopened successfully. Evidence: `.runtime/casa-colbert-native-0626.log`, `.runtime/release-0626-package.log`, `.runtime/installed-upgrade-0626-verification.json`. Unsigned local build; no clean-PC/offline installation claim.
+
 ## Automatic DMC Colbert colour previews - Windows 0.6.25 - 2026-11-02
 
 Fixed the missing colour in Add Material > Choose from catalogue for DMC wool. The previous release exposed the official Colbert reference link but had no local Colbert product records, so code entry could not select an article or render a preview. Version 0.6.25 bundles 414 exact variants exposed by the official DMC product-data endpoint, including their codes, names when supplied, eight-metre skein fact and original manufacturer swatch images. Typing a code such as `7003` now selects the exact Laine Colbert item and displays its image automatically. The catalogue and images are local at runtime; no live request or approximate RGB value is used.
