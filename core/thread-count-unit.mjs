@@ -3,6 +3,7 @@ const countUnits=['skein','spool','ball','cone','pack'];
 export function threadCountUnit({brand='',family,properties={},product}={}){
  const name=brand.trim().toLowerCase(),kind=family??properties.threadFamily;
  if(['madeira','p&g'].includes(name)||['spool','diamant'].includes(kind))return 'spool';
+ if(name==='dmc'&&kind==='pearl'&&['skein','ball'].includes(properties.threadFormat))return properties.threadFormat;
  const pack=(product??properties.product)?.pack?.unit;
  return countUnits.includes(pack)?pack:'skein';
 }
