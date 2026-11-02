@@ -21,7 +21,7 @@ import { materialEditSnapshot } from '../../core/material-edit.mjs';
 
 const spoolOnlyBrand = brand => ['madeira', 'p&g'].includes(String(brand || '').trim().toLowerCase());
 const props = defineProps({ material: Object, defaults:{type:Object,default:()=>({})}, context: { type: Object, default: () => ({}) } });
-const emit = defineEmits(['close', 'saved']);
+const emit = defineEmits(['close', 'saved', 'bulk']);
 const original = props.material ? JSON.parse(JSON.stringify(props.material)) : null;
 const originalInventory = original ? materialEditSnapshot(state.value, original.id) : null;
 const previewProduct = ref(null), explicitCatalogue = ref(false);
@@ -227,6 +227,9 @@ function price(value) {
   return Math.round(number * 100);
 }
 async function openMadeiraCatalogue() { try { await openPurchaseLink('https://www.madeira.com/it-it/materiali-da-ricamo/filati-industriali/metallizzati'); } catch (caught) { error.value = errorText(caught); } }
+function openBulkEntry() {
+  emit('bulk', { brand: draft.brand, range: draft.category === 'thread' ? familyLabel(threadFamily.value) : draft.range, category: draft.category, unit: draft.unit });
+}
 async function save() {
   if (busy.value||lookupBusy.value||matchingBusy.value) return;
   busy.value = true; error.value = '';
@@ -314,7 +317,7 @@ async function save() {
         <ThreadReferenceLink :reference="activeGroup.children.find(child => child.brand === draft.brand && (!child.reference?.family || child.reference.family === threadFamily))?.reference" />
         <p v-if="catalogueError" class="notice error" role="alert">{{ catalogueError }}</p>
     </form>
-    <template #footer><button type="button" class="button" :disabled="busy" @click="emit('close')">{{ t('cancel') }}</button><button class="button primary" type="submit" :form="formId" :disabled="busy||lookupBusy||matchingBusy">{{ busy ? t('saving') : t('save') }}</button></template>
+    <template #footer><button v-if="!isEdit" type="button" class="button" :disabled="busy" @click="openBulkEntry">{{ t('addMultipleMaterials') }}</button><span class="dialog-footer-spacer"></span><button type="button" class="button" :disabled="busy" @click="emit('close')">{{ t('cancel') }}</button><button class="button primary" type="submit" :form="formId" :disabled="busy||lookupBusy||matchingBusy">{{ busy ? t('saving') : t('save') }}</button></template>
   </AppDialog>
   <AppDialog v-if="duplicate" :title="t('duplicateEntryTitle')" :busy="busy" @close="duplicate=null">
     <p class="notice warning">{{ t('duplicateEntryHelp') }}</p>
