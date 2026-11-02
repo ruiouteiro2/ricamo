@@ -30,5 +30,11 @@ try{
  await page.waitForTimeout(600);
  const shown=await select.evaluate(element=>element.querySelector('selectedcontent')?.textContent||element.selectedOptions[0]?.textContent||'');
  assert.ok(!/loading|caricamento/i.test(shown),`stale select label: ${shown}`);
+ // DMC lists 211 only at #8: #12 borrows that photo, says so, and the saved row keeps showing it.
+ await field('Codice colore').fill('211');await field('Numero spessore').fill('12');
+ await expect(preview).toContainText('spessore 8',{timeout:15000});await expect(preview.locator('img')).toBeVisible();
+ await page.getByRole('dialog').getByRole('button',{name:'Salva',exact:true}).click();await expect(page.getByRole('dialog')).toHaveCount(0);
+ const row=page.locator('.table-wrap tbody tr').filter({hasText:'211'});await expect(row).toBeVisible();
+ assert.ok((await row.locator('.swatch').evaluate(element=>getComputedStyle(element).backgroundImage)).startsWith('url("data:image/'),'saved row shows the colour');
  assert.deepEqual(errors,[]);assert.deepEqual(requests,[]);console.log("PASS: DMC Retors d'Alsace previews. Evidence: "+data);
 }catch(error){await page.screenshot({path:resolve(data,'failure.png')});throw error;}finally{await app.close();}
