@@ -1,45 +1,25 @@
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 
-const props = defineProps({ message: { type: String, default: '' } });
-const toast = ref(null);
+defineProps({ message: { type: String, default: '' } });
+const modalDepth = ref(0);
 
-async function placeAboveDialogs() {
+async function syncDialogs() {
   await nextTick();
-  const element = toast.value;
-  if (!element || !props.message) return;
-  try {
-    const dialogs = [...document.querySelectorAll('dialog[open]')];
-    const host = dialogs.at(-1) || document.body;
-    if (element.matches(':popover-open')) element.hidePopover();
-    if (element.parentElement !== host) host.appendChild(element);
-    element.showPopover();
-  } catch {
-    // Older embedded browsers still display the fixed fallback element.
-  }
+  modalDepth.value = document.querySelectorAll('dialog[open]').length;
 }
 
-function dialogOpened() { void placeAboveDialogs(); }
-function dialogClosed() { void placeAboveDialogs(); }
-
-watch(() => props.message, value => {
-  if (!value) {
-    if (toast.value?.matches(':popover-open')) toast.value.hidePopover();
-    return;
-  }
-  void placeAboveDialogs();
-});
-
 onMounted(() => {
-  window.addEventListener('ricamo:dialog-opened', dialogOpened);
-  window.addEventListener('ricamo:dialog-closed', dialogClosed);
+  void syncDialogs();
+  window.addEventListener('ricamo:dialog-opened', syncDialogs);
+  window.addEventListener('ricamo:dialog-closed', syncDialogs);
 });
 onBeforeUnmount(() => {
-  window.removeEventListener('ricamo:dialog-opened', dialogOpened);
-  window.removeEventListener('ricamo:dialog-closed', dialogClosed);
+  window.removeEventListener('ricamo:dialog-opened', syncDialogs);
+  window.removeEventListener('ricamo:dialog-closed', syncDialogs);
 });
 </script>
 
 <template>
-  <div ref="toast" class="toast" popover="manual" role="status" aria-live="polite" aria-atomic="true">{{ message }}</div>
+  <Transition name="toast"><div v-if="message && modalDepth === 0" class="toast" role="status" aria-live="polite" aria-atomic="true">{{ message }}</div></Transition>
 </template>
