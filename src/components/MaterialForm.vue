@@ -83,11 +83,23 @@ const threadReference = computed(() => {
   const child = activeGroup.value.children.find(item => item.brand === draft.brand);
   return threadReferenceFor(child, threadFamily.value, draft.properties.threadSize);
 });
+const isDmcPerle = computed(() => draft.category === 'thread' && draft.brand.trim().toLowerCase() === 'dmc' && threadFamily.value === 'pearl');
+if (!props.material && props.defaults.threadFormat && isDmcPerle.value) draft.properties.threadFormat = props.defaults.threadFormat;
+const threadFormat = computed({ get: () => draft.properties.threadFormat || draft.unit, set: value => { draft.properties.threadFormat = value; draft.unit = value; } });
+watch(isDmcPerle, value => { if (!value) delete draft.properties.threadFormat; });
+// A catalogue article keeps its own length only in its own format: another format's length would skew estimates.
+function applyThreadFormat(properties) {
+  if (!isDmcPerle.value) { delete properties.threadFormat; return; }
+  properties.threadFormat = draft.unit;
+  const pack = properties.product?.pack;
+  if (pack && pack.unit !== draft.unit) properties.product = { ...properties.product, pack: { ...pack, unit: draft.unit, lengthM: null } };
+}
+const threadFormatName = properties => properties.threadFormat ? t(`threadFormat_${properties.threadFormat}`) : '';
 if(draft.category==='thread')draft.unit=threadCountUnit({brand:draft.brand,family:threadFamily.value,properties:draft.properties});
 const usageStatus = ref(originalInventory?.usageStatus || 'new');
 if (originalInventory) stock.quantity = originalInventory.quantity ?? '';
 const displayProduct = computed(() => previewProduct.value || draft.properties.product);
-watch(displayProduct,product=>{if(draft.category==='thread')draft.unit=threadCountUnit({brand:draft.brand,family:threadFamily.value,product});});
+watch(displayProduct,product=>{if(draft.category==='thread')draft.unit=threadCountUnit({brand:draft.brand,family:threadFamily.value,properties:draft.properties,product});});
 const quantityHelp = computed(() => `${t(`unit_${draft.unit}`)}. ${originalInventory?.quantity !== null && isEdit.value ? t('materialEditQuantityHelp') : t('unknownHint')}`);
 
 function familyOf(product) {
@@ -108,7 +120,7 @@ function familyLabel(family) {
 }
 watch(() => [threadFamily.value, draft.brand], ([value]) => {
   if (draft.category !== 'thread') return;
-  draft.unit=threadCountUnit({brand:draft.brand,family:value,product:displayProduct.value&&familyOf(displayProduct.value)===value?displayProduct.value:undefined});
+  draft.unit=threadCountUnit({brand:draft.brand,family:value,properties:draft.properties,product:displayProduct.value&&familyOf(displayProduct.value)===value?displayProduct.value:undefined});
   if (!threadFamilies.value.includes(value)) { threadFamily.value = threadFamilies.value[0]; return; }
   draft.properties.threadFamily = value;
   if (draft.properties.product && draft.properties.product.brand === draft.brand && familyOf(draft.properties.product) === value) return;
@@ -214,7 +226,7 @@ function chooseProduct(product, { automatic = false } = {}){
   Object.assign(draft,{name:product.name,brand:product.brand,range:product.range,code:product.code,color:product.hex??''});
   draft.properties.product=JSON.parse(JSON.stringify(product));
   if(!isEdit.value){
-    draft.unit=product.category==='thread'?threadCountUnit({brand:product.brand,family:familyOf(product),product}):units.includes(product.pack.unit)?product.pack.unit:'piece';
+    draft.unit=product.category==='thread'?threadCountUnit({brand:product.brand,family:familyOf(product),properties:draft.properties,product}):units.includes(product.pack.unit)?product.pack.unit:'piece';
     if(spoolOnlyBrand(product.brand))draft.unit='spool';
     if(product.brand==='Madeira'){draft.properties.threadSize=product.range.match(/(\d+)$/)?.[1]||'';}
     draft.packageSize=draft.unit==='m'?product.pack.lengthM??'':'';
@@ -272,8 +284,9 @@ async function save() {
           if (selected.fabric) Object.assign(candidate.properties, selected.fabric, { fabricType: selected.type });
         }
       }
-      const sizeChanged = String(properties.threadSize || '') !== String(original.properties.threadSize || '');
-      candidate.name = draft.category === 'thread' ? (identityChanged || sizeChanged ? [candidate.brand, candidate.range, candidate.code, properties.threadSize].filter(value => String(value ?? '').trim()).join(' \u00b7 ') : original.name) : draft.name;
+      applyThreadFormat(candidate.properties);
+      const sizeChanged = String(properties.threadSize || '') !== String(original.properties.threadSize || '') || candidate.unit !== original.unit;
+      candidate.name = draft.category === 'thread' ? (identityChanged || sizeChanged ? [candidate.brand, candidate.range, candidate.code, properties.threadSize, threadFormatName(candidate.properties)].filter(value => String(value ?? '').trim()).join(' \u00b7 ') : original.name) : draft.name;
       await dispatch('material.saveInventory', { material: candidate, quantity: optionalNumber(stock.quantity, 'quantity'), usageStatus: usageStatus.value, threadCountUnit: draft.category==='thread', expected: originalInventory.fingerprint }, operationId);
       emit('saved', candidate.id); return;
     }
@@ -281,6 +294,7 @@ async function save() {
       if (draft.category === 'thread') {
         draft.properties.threadFamily = threadFamily.value;
         draft.properties.quantityBasis = 'package-count';
+        applyThreadFormat(draft.properties);
         if (!draft.range) draft.range = familyLabel(threadFamily.value);
       }
       if (groupId.value === 'accessories') {
@@ -293,7 +307,7 @@ async function save() {
     const properties = normalizeDescriptorProperties(JSON.parse(JSON.stringify(draft.properties)));
     properties.custom = Object.fromEntries(Object.entries(properties.custom || {}).map(([key,value]) => [key,String(value ?? '')]));
     for (const key of ['countX', 'countY']) if (key in properties) properties[key] = optionalNumber(properties[key], key);
-    const payload = { ...JSON.parse(JSON.stringify(draft)), name: isEdit.value || draft.category !== 'thread' ? draft.name : [draft.brand, draft.range, draft.code, draft.properties.threadSize].filter(value => String(value ?? '').trim()).join(' · '), id: materialId, tags: draft.tagsText.split(',').map(tag => tag.trim()).filter(Boolean), minimum: 1, packageSize: optionalNumber(draft.packageSize, 'packageSize'), strands: optionalNumber(draft.strands, 'strands'), properties };
+    const payload = { ...JSON.parse(JSON.stringify(draft)), name: isEdit.value || draft.category !== 'thread' ? draft.name : [draft.brand, draft.range, draft.code, draft.properties.threadSize, threadFormatName(draft.properties)].filter(value => String(value ?? '').trim()).join(' · '), id: materialId, tags: draft.tagsText.split(',').map(tag => tag.trim()).filter(Boolean), minimum: 1, packageSize: optionalNumber(draft.packageSize, 'packageSize'), strands: optionalNumber(draft.strands, 'strands'), properties };
     delete payload.tagsText;
     let lot = null;
     if (!isEdit.value && stock.enabled) {
@@ -327,6 +341,7 @@ async function save() {
           <FormField v-else :label="t('addMaterialType')" v-slot="{ id }"><input :id="id" v-model="draft.range" maxlength="200" /></FormField>
           <FormField :label="t(draft.category === 'tool' ? 'materialArticleCode' : 'addMaterialColorCode')" v-slot="{ id }"><input :id="id" v-model="draft.code" :autofocus="draft.category==='thread'" maxlength="200" /></FormField>
           <FormField v-if="draft.category === 'thread'" :label="t('addMaterialThickness')" v-slot="{ id }"><input :id="id" v-model="draft.properties.threadSize" maxlength="100" /></FormField>
+          <FormField v-if="isDmcPerle" :label="t('threadFormat')" v-slot="{ id }"><select :id="id" v-model="threadFormat"><option v-for="format in ['skein','ball']" :key="format" :value="format">{{ t(`threadFormat_${format}`) }}</option></select></FormField>
           <FormField v-if="!activeGroup.custom" :label="t('addMaterialCatalogue')" :help="t('addMaterialCatalogueHelp')" wide v-slot="{ id, describedby }"><CatalogueAutoPreview :product="displayProduct" :color="draft.color" :code="draft.code" :busy="catalogueBusy" :ambiguous="catalogueAmbiguous" :error="catalogueError" :options-count="catalogueOptions.length" :same-colour="sameColour" /><select :id="id" class="catalogue-select" :value="displayProduct?.id || ''" :disabled="catalogueBusy" :aria-describedby="describedby" @change="selectCatalogue"><button type="button"><selectedcontent /></button><option :key="catalogueBusy ? 'busy' : 'idle'" value="">{{ catalogueBusy ? t('loading') : t('addMaterialCataloguePlaceholder') }}</option><option v-for="product in catalogueOptions" :key="product.id" :value="product.id"><span class="catalogue-swatch" :class="{ 'catalogue-swatch-unknown': !product.hex && !productPreview(product) }" :style="{ backgroundColor: product.hex || undefined, ...productPreviewStyle(product) }" aria-hidden="true"></span><span>{{ [product.brand, product.range, product.code, product.colorName || (product.supplier === 'dmc' && product.range === 'Diamant' ? '' : product.name)].filter(Boolean).join(' · ') }}<small v-if="!product.hex && !productPreview(product)"> — {{ t('materialColorUnavailable') }}</small></span></option></select></FormField>
           <FormField :label="t('addMaterialOwnedQuantity')" :help="quantityHelp" v-slot="{ id, describedby }"><input :id="id" v-model="stock.quantity" inputmode="decimal" :aria-describedby="describedby" /></FormField>
           <FormField :label="t('minimum')" :help="`${draft.category==='thread'?t(`unit_${draft.unit}`)+'. ':''}${t('minimumStockHelp')}`" v-slot="{ id, describedby }"><input :id="id" value="1" readonly :aria-describedby="describedby" /></FormField>
