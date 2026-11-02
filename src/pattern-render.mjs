@@ -64,7 +64,7 @@ export function drawPattern(canvas, revision, options = {}) {
     ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,height);ctx.moveTo(0,y);ctx.lineTo(width,y);ctx.stroke();ctx.restore();
   }
   if (options.selection) {
-    const r = options.selection; ctx.strokeStyle = '#634453'; ctx.lineWidth = 2; ctx.setLineDash([5, 3]); ctx.fillStyle = '#63445318';
+    const r = options.selection; ctx.strokeStyle = '#8c3a5c'; ctx.lineWidth = 2; ctx.setLineDash([5, 3]); ctx.fillStyle = '#8c3a5c18';
     ctx.fillRect(r.x * cell - offsetX, r.y * cell - offsetY, r.width * cell, r.height * cell); ctx.strokeRect(r.x * cell - offsetX, r.y * cell - offsetY, r.width * cell, r.height * cell); ctx.setLineDash([]);
   }
   if (options.cursor) {
