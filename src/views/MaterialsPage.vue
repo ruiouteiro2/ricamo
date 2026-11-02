@@ -13,6 +13,7 @@ import ThreadReferenceLink from '../components/ThreadReferenceLink.vue';
 import MaterialForm from '../components/MaterialForm.vue';
 import InventoryBulkForm from '../components/InventoryBulkForm.vue';
 import InventoryLabels from '../components/InventoryLabels.vue';
+import InventoryRapidForm from '../components/InventoryRapidForm.vue';
 import KitLibrary from '../components/KitLibrary.vue';
 import { inventoryCategories as categoryOptions, categoryLabel as categoryName } from '../inventory-categories.mjs';
 import { state, route, navigate, notify, normalize, locate, dispatch } from '../state';
@@ -28,7 +29,7 @@ async function removeMaterial() {
 }
 function edited() { editing.value = null; notify(); }
 const props = defineProps({ initialAction: String });
-const adding = ref(props.initialAction === 'new' || route.value.id === 'new'), workflow = ref(''), selected = ref([]);
+const adding = ref(props.initialAction === 'new' || route.value.id === 'new'), workflow = ref(''), selected = ref([]), rapidDefaults = ref({});
 const section = computed(() => parseInventoryRoute(route.value.id));
 const addContext = ref({}), addDefaults = ref({}), addFormVersion = ref(0);
 const tileLabel = tile => tile.labelKey ? t(tile.labelKey) : tile.label;
@@ -99,6 +100,7 @@ const lowCount = computed(() => activeRows.value.filter(row => row.low).length);
 const reviewCount = computed(() => activeRows.value.filter(row => row.summary.unknown || row.summary.conflicts.length).length);
 const partialCount = computed(() => activeRows.value.filter(isPartiallyUsed).length);
 function clear() { applyView({}); }
+function openRapid(defaults) { rapidDefaults.value = defaults; adding.value = false; workflow.value = 'rapid'; }
 function closeForm() { adding.value = false; addDefaults.value={}; if (route.value.id === 'new') route.value = { ...route.value, id: null }; }
 function created(id) {
   const material = state.value.materials.find(item => item.id === id);
@@ -181,12 +183,13 @@ function workflowSaved(){workflow.value='';selected.value=[];}
     <KitLibrary v-if="workflow==='collections'||workflow==='collectionSelection'" :selected-material-ids="workflow==='collectionSelection'?selected:[]" @close="workflow=''" />
     <InventoryBulkForm v-if="workflow==='bulk'" :ids="selected" @close="workflow=''" @saved="workflowSaved" />
     <InventoryLabels v-if="workflow==='labels'" :material-ids="selected" @close="workflow=''" />
+    <InventoryRapidForm v-if="workflow==='rapid'" :defaults="rapidDefaults" @close="workflow=''" @saved="workflowSaved" />
     <MaterialForm v-if="editing" :key="editing.id" :material="editing" @close="editing=null" @saved="edited" />
     <AppDialog v-if="deleting" :title="t('deleteThread')" :busy="actionBusy" @close="deleting=null">
       <p>{{ t('deleteThreadConfirm', { name: deleting.name }) }}</p><p class="field-help">{{ t('deleteThreadHelp') }}</p>
       <p v-if="actionError" role="alert" class="notice error">{{ actionError }}</p>
       <template #footer><button class="button" :disabled="actionBusy" @click="deleting=null">{{ t('cancel') }}</button><button class="button primary" :disabled="actionBusy" @click="removeMaterial">{{ t('deleteThread') }}</button></template>
     </AppDialog>
-    <MaterialForm v-if="adding" :key="addFormVersion" :context="addContext" :defaults="addDefaults" @close="closeForm" @saved="created" />
+    <MaterialForm v-if="adding" :key="addFormVersion" :context="addContext" :defaults="addDefaults" @close="closeForm" @saved="created" @bulk="openRapid" />
   </div>
 </template>
