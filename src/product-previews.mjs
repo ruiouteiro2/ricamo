@@ -16,7 +16,10 @@ function exactIdentityPhotos(){
 }
 export function productPreview(value){
  const product=value?.properties?.product??value;if(!product)return '';
- const official=diamant[product.id]||colbert[product.id]||(product.brand==='DMC'&&product.range==='Diamant'?diamant[`dmc:diamant:${product.code}`]:'')||(product.brand==='DMC'&&product.range==='Laine Colbert'?colbert[`dmc:colbert:${product.code}`]:'');if(official)return official;
+ const range=String(product.range??'').normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
+ const code=String(product.code??'').trim().toUpperCase();
+ const legacyColbert=product.brand==='DMC'&&(product.properties?.threadFamily==='wool'||/lanato|lana colbert|laine colbert/.test(range));
+ const official=diamant[product.id]||colbert[product.id]||(product.brand==='DMC'&&product.range==='Diamant'?diamant[`dmc:diamant:${code}`]:'')||(legacyColbert?colbert[`dmc:colbert:${code}`]:'');if(official)return official;
  const url=product.url||value?.properties?.purchaseUrl;
  const direct=casa.byUrl[urlKey(url)];if(direct)return casa.images[direct]||'';
  if(!product.brand||!product.range||!product.code)return '';
