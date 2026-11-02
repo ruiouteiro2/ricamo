@@ -15,6 +15,7 @@ let previous;
 onMounted(async () => {
   previous = document.activeElement;
   dialog.value.showModal();
+  window.dispatchEvent(new CustomEvent('ricamo:dialog-opened'));
   await nextTick();
   (dialog.value.querySelector('[autofocus]') || dialog.value.querySelector('input, select, textarea, button'))?.focus();
 });
