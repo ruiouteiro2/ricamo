@@ -9,11 +9,12 @@ import {previewPatternProcurement} from '../../core/pattern-procurement.mjs';
 import {componentIdentity} from '../../core/thread-recipes.mjs';
 import {lookupSupplierProducts,getSupplierProduct} from '../supplier-catalogues.mjs';
 import {openPurchaseLink} from '../purchase-link.mjs';
+import {pageTotal,pageRows} from '../pagination.mjs';
 const props=defineProps({revision:Object,project:Object,fabric:Object,design:Object,configuration:Object,margins:Object,allowApply:Boolean,embedded:Boolean});
 const query=ref('');
 const products=ref([]),loading=ref(false),error=ref(''),busy=ref(false),page=ref(1),cache=new Map();let timer,requestVersion=0;
 const preview=computed(()=>{try{return{value:previewPatternProcurement(state.value,props.revision,{project:props.project,fabric:props.fabric,design:props.design,configuration:props.configuration,margins:props.margins,products:products.value})}}catch(caught){return{error:caught}}});
-const rows=computed(()=>preview.value.value?.rows??[]),filtered=computed(()=>rows.value.filter(row=>[row.color.brand,row.color.range,row.color.code,row.color.name].join(' ').toLocaleLowerCase().includes(query.value.trim().toLocaleLowerCase()))),pages=computed(()=>Math.max(1,Math.ceil(filtered.value.length/25))),visible=computed(()=>filtered.value.slice((page.value-1)*25,page.value*25));
+const rows=computed(()=>preview.value.value?.rows??[]),filtered=computed(()=>rows.value.filter(row=>[row.color.brand,row.color.range,row.color.code,row.color.name].join(' ').toLocaleLowerCase().includes(query.value.trim().toLocaleLowerCase()))),pages=computed(()=>pageTotal(filtered.value.length,25)),visible=computed(()=>pageRows(filtered.value,page.value,25));
 watch(query,()=>page.value=1);
 watch(pages,value=>{page.value=Math.min(page.value,value)});
 const requests=computed(()=>{
