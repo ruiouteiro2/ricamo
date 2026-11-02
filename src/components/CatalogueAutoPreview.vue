@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { Image as ImageIcon } from '@lucide/vue';
 import { productPreview } from '../product-previews.mjs';
 import { t } from '../i18n';
-const props = defineProps({ product: Object, color: String, code: String, busy: Boolean, ambiguous: Boolean, error: String, optionsCount: Number, sameColour: Object });
+const props = defineProps({ product: Object, color: String, code: String, busy: Boolean, ambiguous: Boolean, error: String, optionsCount: Number, sameColour: Object, discontinued: Boolean });
 const hasCode = computed(() => Boolean(String(props.code || '').trim()));
 const photo = computed(() => productPreview(props.product) || props.sameColour?.image || '');
 const colour = computed(() => (hasCode.value || props.product) ? props.color || props.product?.hex || '' : '');
@@ -24,6 +24,6 @@ const message = computed(() => {
     <div v-if="photo" class="catalogue-auto-preview-media"><img :src="photo" :alt="product?.name || code" /></div>
     <div v-else-if="colour" class="catalogue-auto-preview-media catalogue-auto-preview-colour" :style="{ backgroundColor: colour }" aria-hidden="true"></div>
     <div v-else class="catalogue-auto-preview-placeholder" aria-hidden="true"><ImageIcon :size="26" /></div>
-    <div class="catalogue-auto-preview-copy"><strong>{{ title }}</strong><p class="field-help">{{ message }}</p></div>
+    <div class="catalogue-auto-preview-copy"><strong>{{ title }}</strong><span v-if="discontinued" class="badge discontinued-badge">{{ t('descriptorOption_discontinued') }}</span><p class="field-help">{{ message }}</p></div>
   </section>
 </template>
