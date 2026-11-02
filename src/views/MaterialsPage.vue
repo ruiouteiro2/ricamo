@@ -30,11 +30,11 @@ function edited() { editing.value = null; notify(); }
 const props = defineProps({ initialAction: String });
 const adding = ref(props.initialAction === 'new' || route.value.id === 'new'), workflow = ref(''), selected = ref([]);
 const section = computed(() => parseInventoryRoute(route.value.id));
-const addContext = ref({});
+const addContext = ref({}), addDefaults = ref({}), addFormVersion = ref(0);
 const tileLabel = tile => tile.labelKey ? t(tile.labelKey) : tile.label;
 const tiles = computed(() => section.value.group ? section.value.group.children : [...INVENTORY_GROUPS, { id: 'charts', labelKey: 'patterns' }]);
 function openTile(tile) { if (tile.id === 'charts') { navigate('materialCharts'); return; } navigate('materials', section.value.group ? inventoryRoute(section.value.group.id, tile.id) : inventoryRoute(tile.id)); }
-function addTo(group = section.value.group, child = section.value.child) { addContext.value = inventoryContext(group, child); adding.value = true; }
+function addTo(group = section.value.group, child = section.value.child) { addDefaults.value={}; addContext.value = inventoryContext(group, child); adding.value = true; }
 function addToTile(tile) { if (tile.id === 'charts') { navigate('materialCharts'); return; } addTo(section.value.group || tile, section.value.group ? tile : null); }
 function tileCount(tile) { if (tile.id === 'charts') return CHART_CATALOGUE.items.length; return state.value.materials.filter(material => !material.archived && matchesInventorySection(material, section.value.group?.id || tile.id, section.value.group ? tile.id : '')).length; }
 let remembered = state.value.settings.preferences?.materialFilters || {};
@@ -94,10 +94,14 @@ const lowCount = computed(() => activeRows.value.filter(row => row.low).length);
 const reviewCount = computed(() => activeRows.value.filter(row => row.summary.unknown || row.summary.conflicts.length).length);
 const partialCount = computed(() => activeRows.value.filter(isPartiallyUsed).length);
 function clear() { applyView({}); }
-function closeForm() { adding.value = false; if (route.value.id === 'new') route.value = { ...route.value, id: null }; }
+function closeForm() { adding.value = false; addDefaults.value={}; if (route.value.id === 'new') route.value = { ...route.value, id: null }; }
 function created(id) {
   const material = state.value.materials.find(item => item.id === id);
   const context = addContext.value;
+  if(state.value.settings.preferences?.keepMaterialFormOpen!==false){
+    addDefaults.value={groupId:inventoryGroup(material),brand:material.brand,threadFamily:material.properties.threadFamily,section:accessorySection(material)};
+    addFormVersion.value++;notify(t('materialSavedContinue'));return;
+  }
   closeForm(); notify();
   if (context.groupId) {
     const group = INVENTORY_GROUPS.find(item => item.id === context.groupId);
@@ -178,6 +182,6 @@ function workflowSaved(){workflow.value='';selected.value=[];}
       <p v-if="actionError" role="alert" class="notice error">{{ actionError }}</p>
       <template #footer><button class="button" :disabled="actionBusy" @click="deleting=null">{{ t('cancel') }}</button><button class="button primary" :disabled="actionBusy" @click="removeMaterial">{{ t('deleteThread') }}</button></template>
     </AppDialog>
-    <MaterialForm v-if="adding" :context="addContext" @close="closeForm" @saved="created" />
+    <MaterialForm v-if="adding" :key="addFormVersion" :context="addContext" :defaults="addDefaults" @close="closeForm" @saved="created" />
   </div>
 </template>
