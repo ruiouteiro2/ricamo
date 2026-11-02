@@ -1,5 +1,13 @@
 # Ricamo delivery evidence
 
+## DMC Perlé skein or ball choice - Windows 0.6.35 - 2026-11-02
+
+DMC > Perlé now has a "Formato" field with Matassa and Gomitolo, stored as `properties.threadFormat`. It starts from the catalogue article's format, sets the count unit and is kept during continuous entry. A skein and a ball of one colour are separate stock with their format in the name; the same format still prompts to add to the existing row. When the chosen format differs from the catalogue article, the saved pack takes the chosen unit with an unknown length, because `core/fabric.mjs` uses the pack length for estimates and DMC lengths differ by format. The preview photo is not format-specific. Existing rows were not changed.
+
+Unit suite: 592 total, 590 passed, one skipped, one failed. Packaged journeys passed: `dmc-pearl-format-ui`, `dmc-pearl-ui`, `dmc-mat-ui`, `dmc-alsace-ui`, `dmc-casa-routing-ui`, `thread-count-legacy-ui`, `simple-material-edit-ui`, `sticky-batch-entry-ui`, `desktop-material-actions`. The full desktop suite was not run. Release audit passed with `sourcesMatch: true` and `dirtyFiles: 0`.
+
+Installer `release/Ricamo-0.6.35-Windows-x64-Setup.exe`, SHA-256 `b731bd228346f659a3e9b32f3ccbc2ab7994ea130f4bb7f9cb670985280384ad`; packaged/installed ASAR SHA-256 `37b165cdc714d71e126ea4fa4f1462ebd980e270a4981fa98fa056e9ca2ac94c`. Ricamo was normally closed and a full profile copy plus validated `.ricamobackup` was saved under `Desktop/Filo/Backup aggiornamenti/prima-0.6.35-20261102-183616` before silent current-user installation (exit 0). Registry reports 0.6.35. State revision 218, all 115 materials, attachment bytes, SQLite integrity and `paginateLists: false` match after install; the installed window reopened successfully. Only installers and update backups for 0.6.34 and 0.6.35 are kept. Unsigned local build; no clean-PC/offline installation claim.
+
 ## DMC Coton retors mat type - Windows 0.6.34 - 2026-11-02
 
 Added the DMC type "Coton retors mat", linked to `https://www.dmc.com/IT/it/products/dmc-wool-tapestry/retors-mat-cotton` as its catalogue reference. It bundles 306 variants from the official DMC product-data endpoint with offline manufacturer swatches and official Italian names where published; variants with no name show "Colore <code>". `89-E_2012` and `89-E_2715` have no colour data and are excluded. Importer: `build/acquire-dmc-mat.py`.
