@@ -1,200 +1,224 @@
 {
   "version": 1,
-  "retrievedAt": "2026-11-02T09:30:01.997021+00:00",
+  "retrievedAt": "2026-11-02T09:40:03.964854+00:00",
   "reference": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
   "referenceSha256": "ba37fd1fc8ba6d5392bb39db9421fe6f897743f35cf70faeb7dda1287cab71a5",
   "evidence": [
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-ancolie-des-jardins-4500.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115885/s_coloris-4500-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115885/coloris-4500-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-ancolie-des-jardins-4500.html",
       "name": "DMC Coloris - Ancolie des jardins 4500",
-      "sha256": "e83874613c8781dab0a2f55bf67256a1b7f93590942226ebeade99711a4dc648",
-      "size": 768
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115885/s_coloris-4500-dmc.jpg",
+      "sha256": "a26c82715234bfb59729ff0149ad384218c8c76780bc4f1706d29f27468d63a5",
+      "size": 25285
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-bougainvillier-4507.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115924/s_coloris-4507-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115924/coloris-4507-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-bougainvillier-4507.html",
       "name": "DMC Coloris - Bougainvillier 4507",
-      "sha256": "641ac4743af6093c12f3308a61b97ab02600c6d764ee1ea1482dba87c664db80",
-      "size": 892
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115924/s_coloris-4507-dmc.jpg",
+      "sha256": "2b232bc19d034523d8e473e53cfee6201df7002010d4144d01e7b2e00f697aa4",
+      "size": 15560
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-bruyere-4505.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115922/s_coloris-4505-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115922/coloris-4505-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-bruyere-4505.html",
       "name": "DMC Coloris - Bruyère 4505",
-      "sha256": "ff15e954a9901cb8eb6227515a92f33981fe871f8f6550a3cfc7f97e36cabdc5",
-      "size": 783
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115922/s_coloris-4505-dmc.jpg",
+      "sha256": "2b38f1f4f2ae0b7f471c38839255ffc3efb6f344ae9c06bc2d440c2f42a05f65",
+      "size": 21041
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-camelia-4502.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115919/s_coloris-4502-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115919/coloris-4502-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-camelia-4502.html",
       "name": "DMC Coloris - Camélia 4502",
-      "sha256": "3a4200f853d9baff362442363b8dfc60f002d2656addd619f20742b0091efcd7",
-      "size": 910
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115919/s_coloris-4502-dmc.jpg",
+      "sha256": "319b0066b2b3ff128fc58c1878de8dd8010c570e3c8a13e749091285543cce88",
+      "size": 28912
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-campagne-givree-4508.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115925/s_coloris-4508-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115925/coloris-4508-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-campagne-givree-4508.html",
       "name": "DMC Coloris - Campagne givrée 4508",
-      "sha256": "c154cc3c1da42cac5e7a2bb24578fce80bafabd87e003e5a152386a830f76a79",
-      "size": 768
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115925/s_coloris-4508-dmc.jpg",
+      "sha256": "b81708fd6eef581364a99ea338d2c8b9f383272010750ea518649f8918456d30",
+      "size": 15276
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-conte-de-noel-4520.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115937/s_coloris-4520-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115937/coloris-4520-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-conte-de-noel-4520.html",
       "name": "DMC Coloris - Conte de Noël 4520",
-      "sha256": "448d68bcfa19ea5765dd550adee0c331b4887e665186071085885859f7fe27f7",
-      "size": 768
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115937/s_coloris-4520-dmc.jpg",
+      "sha256": "e23314c5e0afd84152f817e0f7fedb21f6b7aff5309c861b35b78f2a085421d2",
+      "size": 8720
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-cote-de-granit-4509.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115926/s_coloris-4509-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115926/coloris-4509-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-cote-de-granit-4509.html",
       "name": "DMC Coloris - Côte de granit 4509",
-      "sha256": "b2cc4485936e4f4a0adbfdca3d82d94c214ba0a6feab37bfd1edf0cf5617d1f0",
-      "size": 839
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115926/s_coloris-4509-dmc.jpg",
+      "sha256": "692262aec3a4866093c1f886ec629788535968ff9ce11cab38da70681402990a",
+      "size": 28554
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-cottage-4518.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115935/s_coloris-4518-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115935/coloris-4518-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-cottage-4518.html",
       "name": "DMC Coloris - Cottage 4518",
-      "sha256": "4e69a1c381f9fc4b571dc60d6c7d3e1faf3b40dda194707cba5364a09e8cee2d",
-      "size": 835
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115935/s_coloris-4518-dmc.jpg",
+      "sha256": "0c8742e7975620f2bbf5fcbd8b63c3d9f2126645ede54aad52d98937783f9273",
+      "size": 27397
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-erable-4510.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115927/s_coloris-4510-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115927/coloris-4510-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-erable-4510.html",
       "name": "DMC Coloris - Érable 4510",
-      "sha256": "863c3b52d6529413d9925ea629b9717841e56fc1f72b3d85a5900952cd01c69e",
-      "size": 820
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115927/s_coloris-4510-dmc.jpg",
+      "sha256": "c4ae593b26fe4dccdd85b4657e64417a8504e291acc730903ee2669dc03d674d",
+      "size": 25325
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-ete-indien-4511.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115928/s_coloris-4511-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115928/coloris-4511-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-ete-indien-4511.html",
       "name": "DMC Coloris - Été indien 4511",
-      "sha256": "2df12d22a448e4a71d6bc284d0d85813e367294590ec72037db0f9c2749278f7",
-      "size": 918
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115928/s_coloris-4511-dmc.jpg",
+      "sha256": "8632dbf0e6d3f2aca3be533d36df61553420b35c0b190dd1e71fb15e41855c22",
+      "size": 30354
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-fleurs-des-champs-4501.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115918/s_coloris-4501-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115918/coloris-4501-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-fleurs-des-champs-4501.html",
       "name": "DMC Coloris - Fleurs des champs 4501",
-      "sha256": "8e0a0321a0a9d1981fb74fd7aa1d872c4ef3112f4ae8c0668a4c84dcc059cad1",
-      "size": 772
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115918/s_coloris-4501-dmc.jpg",
+      "sha256": "cc7ed1857246933fce105d27a69db830c7eda8d2d224c45a117a6c6c9cd12188",
+      "size": 21050
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-foret-noire-4516.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115933/s_coloris-4516-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115933/coloris-4516-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-foret-noire-4516.html",
       "name": "DMC Coloris - Forêt noire 4516",
-      "sha256": "f3d09a139b177bb9ef2318c9a8fed3986e548aef818b2d967468a925953796fb",
-      "size": 803
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115933/s_coloris-4516-dmc.jpg",
+      "sha256": "45465ef904278623d862ca456db4ab76bd3be841c090b47c08a99da8f4d8d1ae",
+      "size": 24571
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-glycine-4503.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115920/s_coloris-4503-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115920/coloris-4503-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-glycine-4503.html",
       "name": "DMC Coloris - Glycine 4503",
-      "sha256": "e2538960ec9b8ab78fab95ffaf6ad4a8ddce0b66e75a0920231029d343890bf2",
-      "size": 914
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115920/s_coloris-4503-dmc.jpg",
+      "sha256": "180bd0b5f2d4c04fe27433f40ce60f437bbe2421ebfb361617e54d603be65b5e",
+      "size": 30755
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-grands-espaces-4521.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115938/s_coloris-4521-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115938/coloris-4521-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-grands-espaces-4521.html",
       "name": "DMC Coloris - Grands espaces 4521",
-      "sha256": "45ad6b25846626c7535fb5b4a7eeb37305c9a8b5f7dd2af156942b2f792ac588",
-      "size": 738
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115938/s_coloris-4521-dmc.jpg",
+      "sha256": "f1a1556eee918bb7c2ed67e6977c8648f844bc01dd6e3a3380dc0d108e199d70",
+      "size": 9091
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-hortensia-4504.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115921/s_coloris-4504-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115921/coloris-4504-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-hortensia-4504.html",
       "name": "DMC Coloris - Hortensia 4504",
-      "sha256": "6e4d6c20fe6fbc6940b7d84ebff14a17ad7db9942fbc30f2e1a287af142d9350",
-      "size": 836
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115921/s_coloris-4504-dmc.jpg",
+      "sha256": "b94184e0c6f0f559ce9e4f62c04b899cfeb91c2631b621a1e60efddecc64964c",
+      "size": 20337
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-jingle-bells-4519.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115936/s_coloris-4519-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115936/coloris-4519-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-jingle-bells-4519.html",
       "name": "DMC Coloris - Jingle bells 4519",
-      "sha256": "5f443a79d90694ead3d9ba283db88e809d6d2b123d046f05ed000ed3164f53a6",
-      "size": 772
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115936/s_coloris-4519-dmc.jpg",
+      "sha256": "5bd7ea5cee1d45889958147e818d7ccc59ba9230b97a5f1f15dc468228bc0458",
+      "size": 21092
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-londres-4513.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115930/s_coloris-4513-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115930/coloris-4513-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-londres-4513.html",
       "name": "DMC Coloris - Londres 4513",
-      "sha256": "ea8dd1df0bf3ddd1cea0f50a27cbf934ace8a7c7572d970135d49deea529b58c",
-      "size": 975
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115930/s_coloris-4513-dmc.jpg",
+      "sha256": "dd79f07a4e659b1b93fc473cf3ca2b12ea24bc400e09f074dfacd61f59cf8a77",
+      "size": 13758
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-lutins-4517.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115934/s_coloris-4517-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115934/coloris-4517-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-lutins-4517.html",
       "name": "DMC Coloris - Lutins 4517",
-      "sha256": "21c30b760258529d2d31f5777e536f46ab2441c9eab8e5d658bc7700fa06b7db",
-      "size": 791
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115934/s_coloris-4517-dmc.jpg",
+      "sha256": "7f67e4ca14f40c81f743e546639033905d8ac5e05db5b7c5ff19d28dbd7446e0",
+      "size": 25559
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-nuit-canadienne-4522.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115939/s_coloris-4522-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115939/coloris-4522-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-nuit-canadienne-4522.html",
       "name": "DMC Coloris - Nuit canadienne 4522",
-      "sha256": "f095e3e013b64e4009bd8ffaffedc90d6c1ea82d6f5c2c82855df04f507ddd08",
-      "size": 460
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115939/s_coloris-4522-dmc.jpg",
+      "sha256": "4822283faeb1de5d8cc4e293fffeb7125d2a27681ade861be66a529c3c11b7ce",
+      "size": 5769
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-paris-4515.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115932/s_coloris-4515-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115932/coloris-4515-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-paris-4515.html",
       "name": "DMC Coloris - Paris 4515",
-      "sha256": "d95436e01e4b24464c0fa9c32a5aacdb41311c36bf446db8539472cfaa921be8",
-      "size": 812
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115932/s_coloris-4515-dmc.jpg",
+      "sha256": "576045d893843e04ae7a8ab237e3f579e9e6c7daa5c2cdc35fd05d39e04e1bd5",
+      "size": 28728
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-primavera-4506.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115923/s_coloris-4506-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115923/coloris-4506-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-primavera-4506.html",
       "name": "DMC Coloris - Primavera 4506",
-      "sha256": "de3d15e6127d8a6f4e2edbc6d627d5e6d8f4abe5d0ba535436f6c15cf2fc0907",
-      "size": 817
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115923/s_coloris-4506-dmc.jpg",
+      "sha256": "b73285648fcd0db16001c54706ae6f7e1305988a1128cfa051d6b2c94461b3c4",
+      "size": 21599
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-states-4512.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115929/s_coloris-4512-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115929/coloris-4512-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-states-4512.html",
       "name": "DMC Coloris - States 4512",
-      "sha256": "2191190bbf794a6905fb4a21306a696b50f25f652a2d869ec4512b513658a6ea",
-      "size": 962
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115929/s_coloris-4512-dmc.jpg",
+      "sha256": "c7b627fd954ab31f0a7f5a4b9d6375bcb18505cb45b58b8ab4700e0713e26e54",
+      "size": 17102
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-venise-4514.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115931/s_coloris-4514-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115931/coloris-4514-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-venise-4514.html",
       "name": "DMC Coloris - Venise 4514",
-      "sha256": "7d3aaf8e9c4dd094e06bac3cb81da15bbecf31bf0b0956051a43bd7126cc24a5",
-      "size": 952
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115931/s_coloris-4514-dmc.jpg",
+      "sha256": "40f6c7cba5aecd3c0bb42cbd0c83b0ac76ae904c8496f9a638c9b7cd566b6a7c",
+      "size": 13119
     },
     {
       "productUrl": "https://www.casacenina.it/dmc/dmc-coloris-vent-du-nord-4523.html",
-      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115940/s_coloris-4523-dmc.jpg",
-      "sourcePageUrl": "https://www.casacenina.it/fili-e-filati/dmc/dmc-mouline-coloris/",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115940/coloris-4523-dmc.jpg",
+      "sourcePageUrl": "https://www.casacenina.it/dmc/dmc-coloris-vent-du-nord-4523.html",
       "name": "DMC Coloris - Vent du nord 4523",
-      "sha256": "b3f4e552a7b1b00bda16d9cbb118ef1be5861f424d0b12d87e74bc2a9929b3be",
-      "size": 804
+      "listingImageUrl": "https://www.casacenina.it/catalog/images/img_205/packshot/115940/s_coloris-4523-dmc.jpg",
+      "sha256": "885d828af06faa866b996f39dae81c47fc605476a7261b9bd9ac7265c209e05c",
+      "size": 26526
     },
     {
       "productUrl": "https://www.casacenina.it/zweigart/lino-belfast-32ct-lilac.html",
