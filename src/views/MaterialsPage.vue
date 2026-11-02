@@ -18,6 +18,7 @@ import KitLibrary from '../components/KitLibrary.vue';
 import { inventoryCategories as categoryOptions, categoryLabel as categoryName } from '../inventory-categories.mjs';
 import { state, route, navigate, notify, normalize, locate, dispatch } from '../state';
 import { t, number, errorText } from '../i18n';
+import { paginationEnabled, pageTotal, pageRows } from '../pagination.mjs';
 import { inventorySummary } from '../../core/inventory.mjs';
 
 const editing = ref(null), deleting = ref(null), actionBusy = ref(false), actionError = ref('');
@@ -90,10 +91,10 @@ const filtered = computed(() => {
     return !query || row.search.includes(query);
   }).sort((a, b) => sort.value === 'recent' ? b.material.createdAt.localeCompare(a.material.createdAt) : sort.value === 'nameZA' ? b.material.name.localeCompare(a.material.name) : sort.value==='codeAZ' ? a.material.code.localeCompare(b.material.code) || a.material.name.localeCompare(b.material.name) : sort.value==='brandAZ' ? a.material.brand.localeCompare(b.material.brand)||a.material.range.localeCompare(b.material.range)||a.material.code.localeCompare(b.material.code) : a.material.name.localeCompare(b.material.name));
 });
-const pageCount = computed(() => Math.max(1, Math.ceil(filtered.value.length / pageSize)));
+const pageCount = computed(() => pageTotal(filtered.value.length, pageSize));
 watch(pageCount, count => { page.value = Math.min(page.value, count); });
-const visible = computed(() => filtered.value.slice((page.value - 1) * pageSize, page.value * pageSize));
-const pageSelected=computed(()=>visible.value.length>0&&visible.value.every(row=>selected.value.includes(row.material.id)));
+const visible = computed(() => pageRows(filtered.value, page.value, pageSize));
+const pageSelected=computed(()=>visible.value.length>0&&visible.value.slice(0,200).every(row=>selected.value.includes(row.material.id)));
 function togglePage(){if(pageSelected.value)selected.value=selected.value.filter(id=>!visible.value.some(row=>row.material.id===id));else selected.value=[...new Set([...selected.value,...visible.value.map(row=>row.material.id)])].slice(0,200);}
 const activeRows = computed(() => rows.value.filter(row => !row.material.archived));
 const lowCount = computed(() => activeRows.value.filter(row => row.low).length);
@@ -176,7 +177,7 @@ function workflowSaved(){workflow.value='';selected.value=[];}
             </tr></tbody>
           </table>
         </div>
-        <div class="panel-heading"><small class="muted">{{ number(filtered.length, 0) }} {{ t('materials').toLowerCase() }} · {{ t('page') }} {{ page }} / {{ pageCount }}</small><div class="actions"><button class="icon-button" :disabled="page <= 1" :aria-label="t('previousPage')" @click="page--"><ChevronLeft :size="18" /></button><button class="icon-button" :disabled="page >= pageCount" :aria-label="t('nextPage')" @click="page++"><ChevronRight :size="18" /></button></div></div>
+        <div class="panel-heading"><small class="muted">{{ number(filtered.length, 0) }} {{ t('materials').toLowerCase() }}<template v-if="paginationEnabled"> · {{ t('page') }} {{ page }} / {{ pageCount }}</template></small><div v-if="paginationEnabled" class="actions"><button class="icon-button" :disabled="page <= 1" :aria-label="t('previousPage')" @click="page--"><ChevronLeft :size="18" /></button><button class="icon-button" :disabled="page >= pageCount" :aria-label="t('nextPage')" @click="page++"><ChevronRight :size="18" /></button></div></div>
       </template>
     </section>
     </template>
