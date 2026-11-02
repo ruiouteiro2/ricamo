@@ -1,7 +1,7 @@
 <script setup>
 import { productPreview, productPreviewStyle } from '../product-previews.mjs';
 import { CHART_CATALOGUE } from '../../core/chart-collection.mjs';
-import { INVENTORY_GROUPS, parseInventoryRoute, inventoryRoute, inventoryContext, matchesInventorySection } from '../inventory-navigation.mjs';
+import { INVENTORY_GROUPS, inventoryGroup, accessorySection, parseInventoryRoute, inventoryRoute, inventoryContext, matchesInventorySection } from '../inventory-navigation.mjs';
 import { materialSearchDescriptors } from '../material-descriptors.mjs';
 import { computed, ref, watch } from 'vue';
 import { Plus, Search, Package, CircleAlert, Download, ChevronLeft, ChevronRight, Heart, PackageOpen, Pencil, Trash2, ShoppingCart } from '@lucide/vue';
