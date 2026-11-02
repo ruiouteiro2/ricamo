@@ -215,3 +215,5 @@ tbody tr { transition: background-color var(--motion-fast) var(--ease-ui); }
 }
 
 .discontinued-badge { display: inline-block; margin-inline-start: .5rem; white-space: nowrap; }
+.catalogue-rows td:not(:last-child) { opacity: .45; filter: grayscale(.7); }
+.catalogue-rows .cell-title { cursor: default; }
