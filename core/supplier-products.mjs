@@ -10,6 +10,7 @@ import colbert from '../data/dmc-colbert-catalogue.json' with {type:'json'};
 import alsace from '../data/dmc-alsace-catalogue.json' with {type:'json'};
 import pearl from '../data/dmc-pearl-catalogue.json' with {type:'json'};
 import mat from '../data/dmc-mat-catalogue.json' with {type:'json'};
+import millHill from '../data/mill-hill-catalogue.json' with {type:'json'};
 import madeira from '../data/madeira-metallic-catalogue.json' with {type:'json'};
 import lightEffects from '../data/dmc-light-effects-swatches.json' with {type:'json'};
 
@@ -64,7 +65,7 @@ export function bundledSupplierProducts(){const legacy=[...CASA_CENINA.fabrics,.
  ...row,supplier:'casa-cenina',type:row.type??(row.category==='embellishment'?'bead':row.range==='Mouliné'?'mouline':row.brand==='Kreinik'?'metallic':'thread'),retrievedAt:CASA_CENINA.retrievedAt,
  pack:row.brand==='DMC'&&row.range==='Mouliné'?{unit:'skein',lengthM:8,strands:6,divisible:true}:row.category==='embellishment'?{unit:'pack'}:{},
  fabric:row.category==='fabric'&&row.countMeaning?{countX:row.count,countY:row.count,countMeaning:row.countMeaning,overX:row.over,overY:row.over}:null,
-})));return [...legacy,...[...acquired.products,...supplement.products,...madeira.products,...diamant.products,...colbert.products,...alsace.products,...pearl.products,...mat.products,...coloris.products].map(row=>normalizeSupplierProduct(supplierSwatch(row)))];}
+})));return [...legacy,...[...acquired.products,...supplement.products,...madeira.products,...diamant.products,...colbert.products,...alsace.products,...pearl.products,...mat.products,...millHill.products,...coloris.products].map(row=>normalizeSupplierProduct(supplierSwatch(row)))];}
 
 /** Catalogue pack facts are valid only for the exact saved material identity. */
 export function validateSupplierMaterial(material){
