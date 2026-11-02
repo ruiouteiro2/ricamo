@@ -47,7 +47,11 @@ entries = []
 for variant in variants:
     colour = variant.get("colour") or {}
     code = str(colour.get("code") or "").strip()
-    name = str(colour.get("presentation") or "").strip()
+    name = str(
+        colour.get("presentation")
+        or (colour.get("colourGroup") or {}).get("presentation")
+        or f"Colore {code}"
+    ).strip()
     swatch = str(colour.get("swatch") or "").strip()
     if not code or len(code) > 30 or not name or len(name) > 200:
         raise ValueError("Invalid Colbert colour metadata")
