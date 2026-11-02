@@ -3,11 +3,14 @@ import { addLot, inventorySummary, archiveMaterial } from './inventory.mjs';
 import { confirmedConsumption } from './projects.mjs';
 import { fabricHeldPieces } from './fabric-state.mjs';
 import { toolHeldQuantity } from './tool-state.mjs';
+import { isDiscontinued } from './discontinued-materials.mjs';
 
 export function savePurchase(state, p, ctx) {
   const id = recordId(state, 'purchases', p, ctx), existing = state.purchases.find(row => row.id === id);
   const source = { ...existing, ...p }, material = find(state, 'materials', source.materialId);
   if (existing) assert(existing.materialId === material.id, 'purchase_material_changed');
+  // An order placed earlier stays editable and receivable; only a new one is refused.
+  else assert(!isDiscontinued(material), 'material_discontinued');
   const received = add(...state.receipts.filter(r => r.purchaseId === id).map(r => r.quantity));
   const amount = quantity(source.quantity, { positive: true });
   assert(amount >= received, 'less_than_received', { received });
@@ -84,7 +87,7 @@ export function restockNeeds(state) {
 
 /** Only an explicit command creates orders for known-zero registered inventory. */
 export function zeroStockPurchases(state) {
-  return restockNeeds(state).filter(row => row.physical === 0 && !row.suppressed && row.toOrder > 0);
+  return restockNeeds(state).filter(row => row.physical === 0 && !row.suppressed && row.toOrder > 0 && !isDiscontinued(find(state, 'materials', row.materialId)));
 }
 export function addZeroStockPurchases(state, p, ctx) {
   for (const need of zeroStockPurchases(state)) {
@@ -141,6 +144,7 @@ export function generatePurchases(state, p, ctx) {
   for (const need of summary) {
     if (need.toOrder === null || need.toOrder <= 0) continue;
     const material = find(state, 'materials', need.materialId);
+    if (isDiscontinued(material)) continue;
     const amount = material.packageSize ? quantity(Math.ceil(need.toOrder / material.packageSize) * material.packageSize) : need.toOrder;
     const existing = state.purchases.find(row => row.materialId === material.id && row.source === 'project' && row.status === 'to_buy' && [...row.projectIds].sort().join('|') === groupKey);
     savePurchase(state, { id: existing?.id, materialId: material.id, quantity: amount, projectIds, source: 'project', status: 'to_buy', notes: existing?.notes ?? '' }, ctx);
