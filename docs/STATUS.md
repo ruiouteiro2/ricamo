@@ -1,5 +1,11 @@
 # Ricamo delivery evidence
 
+## Applied soft typefaces to the installed desktop app - 2026-11-02
+
+At the user's request, applied the already prepared and tested 0.6.21 UI/font update to the actual desktop installation, reusing its installer unchanged. Verified SHA-256 `a360be7e7c5fba2d896f3ddb9d04fbae824e5abb055fbf3b8a9d7e73cddb91c7` and reran release audit with sourcesMatch true and dirtyFiles zero. The earlier packaged font-load, sticky-entry and simplified-edit evidence was reused; no application source or behavior change was made in this installation step.
+
+Normally closed Ricamo and saved a full profile recovery copy plus a validated .ricamobackup under Desktop/Filo/Backup aggiornamenti before installing (NSIS exit 0). Registry now reports 0.6.21. Installed app.asar matches the tested package exactly and includes the local Nunito and Quicksand WOFF2 assets. SQLite integrity is ok; application-state JSON/revision and all attachment hashes match the pre-upgrade copy. Reopened the installed Ricamo window successfully. Evidence: `.runtime/apply-0621-audit.log`, `.runtime/installed-upgrade-0621-verification.json`. This supersedes the build entry's earlier statement that the desktop installation remained at 0.6.20. Unsigned local build; no clean-PC/offline installation claim.
+
 ## Soft interface typefaces - Windows 0.6.21 - 2026-11-02
 
 Requested a softer typeface. The interface now uses Nunito for text and Quicksand for headings, logo and large figures, replacing Segoe UI and Palatino Linotype. Unmodified Latin and Latin Extended variable WOFF2 subsets from Fontsource 5.3.0 are bundled under `src/assets` with their SIL OFL 1.1 licences and attributed in THIRD-PARTY-NOTICES.md; nothing is fetched at runtime. Characters outside those subsets fall back to system fonts. Heading weights rose to 600 because Quicksand is lighter. PDF export fonts, print documents and chart symbols are unchanged. No behaviour or data change.
