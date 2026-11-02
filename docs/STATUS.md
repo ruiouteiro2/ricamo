@@ -1,5 +1,15 @@
 # Ricamo delivery evidence
 
+## DMC Retors d'Alsace previews - Windows 0.6.30 - 2026-11-02
+
+DMC > Ritorto d'Alsazia had a Casa Cenina link but no local products, so every code reported "not found". Version 0.6.30 bundles 146 variants from the official DMC product-data endpoint (35 at #5, 76 at #8, 35 at #12) with their manufacturer swatches, served offline. Code plus thickness now selects the exact article: 726 at #12 resolves to SKU `215EA-E/12_726`. One listed variant, `215EA-E/8_703`, has no colour data and is excluded rather than guessed. Saved rows with this type, a thickness and a listed code reuse the swatch without being rewritten. DMC does not publish colour names for this line, so the label is "Colore <code>". Casa Cenina returned a Cloudflare block to automated requests on 2026-11-02, so it was not used as the source for this data; its reference link is unchanged.
+
+Also fixed the catalogue menu showing the literal word "loading": the `loading` label was missing and the customised select kept showing it after the search ended.
+
+Unit suite: 581 total, 579 passed, one skipped, one failed; the failure is the existing `tool-activity` date test. `tests/dmc-alsace-ui.mjs` passed on the packaged app with empty data and with a copy of the real databases. `tests/existing-colbert-previews-ui.mjs` and `tests/list-pagination-ui.mjs` also passed. The full desktop suite was not run. Release audit passed with `sourcesMatch: true` and `dirtyFiles: 0`.
+
+Installer `release/Ricamo-0.6.30-Windows-x64-Setup.exe`, SHA-256 `9c66c619a3062a4fd1d4fb3290141acf148f9d35ecf50ce67dcc7e1c6885e70e`; packaged/installed ASAR SHA-256 `86cc29a45adabf7c7bb273528c67761a220e7a3005ff3bbfd616122cc3e1b50e`. Ricamo was normally closed and a full profile copy plus validated `.ricamobackup` was saved under `Desktop/Filo/Backup aggiornamenti/prima-0.6.30-20261102-165528` before silent current-user installation (exit 0). Registry reports 0.6.30. State revision 206, all 104 materials, attachment bytes, SQLite integrity and `paginateLists: false` match after install; the installed window reopened successfully. Evidence: `.runtime/release-0630-package.log`, `.runtime/installed-upgrade-0630-verification.json`. Unsigned local build; no clean-PC/offline installation claim.
+
 ## List pagination toggle - Windows 0.6.29 - 2026-11-02
 
 Added Settings > Lists > "Split long lists into pages", stored as the boolean preference `paginateLists`. Pagination stays on by default for new and existing data. Turning it off shows every row in Materials, the chart catalogue, material movement history, pattern usage, pattern procurement, purchase documents and catalogue reference usage, through the shared `src/pagination.mjs` helper. Data-entry and review flows (rapid entry, stock count, kits, project transfer, CSV preview), the thread catalogue manager, pattern effects and print preview keep their pages. With pagination off, the Materials select-all checkbox still selects at most the existing 200-row limit and can now clear that selection.
