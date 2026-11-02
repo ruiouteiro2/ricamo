@@ -48,6 +48,21 @@ for chart in charts['items']:
   for a in tr.select('a[href]'):
    img=a.find('img')
    if img and a['href']!=chart['sourceUrl']:observe(img,a['href'],chart['sourceUrl'])
+# Prefer the explicitly observed larger product image for Coloris; keep the
+# listing thumbnail URL as provenance. Never infer larger filenames.
+def larger_coloris(product):
+ try:
+  detail=fetch(product['url'],CACHE/('coloris-'+product['code']+'.html'),3000000)
+  page=BeautifulSoup(decode(detail),'html.parser');img=page.select_one('img#img-prodotto')
+  source=(img.get('data-src') or img.get('src','')) if img else ''
+  if source.startswith('https://www.casacenina.it/catalog/images/'):
+   prior=photos[product['url']]
+   return product['url'],{**prior,'listingImageUrl':prior['imageUrl'],'imageUrl':source,'sourcePageUrl':product['url']}
+ except Exception:pass
+ return None
+with concurrent.futures.ThreadPoolExecutor(max_workers=4)as pool:
+ for result in pool.map(larger_coloris,coloris):
+  if result:photos[result[0]]=result[1]
 # Restrict photos to inventory product categories, excluding chart covers.
 photos={url:proof for url,proof in photos.items() if not any(part in url for part in ['/mirabilia','/bella-filipina/'])}
 def acquire(proof):
