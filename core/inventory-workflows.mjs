@@ -1,7 +1,7 @@
 import { assert, identifier, text, quantity, stringList, bool, oneOf, find, optionalRef } from './shared.mjs';
 import { saveMaterial, addLot, UNITS } from './inventory.mjs';
 
-export const INVENTORY_BATCH_LIMIT = 200;
+export const INVENTORY_BATCH_LIMIT = 2000;
 export const BULK_FIELDS = ['brand', 'range', 'minimum', 'favorite', 'tags', 'notes'];
 function inEntry(index, action) {
   try { return action(); }
@@ -30,7 +30,7 @@ export function previewBulkMaterials(state, { ids, changes }) {
 export function previewRapidMaterials(state, { base, entries }) {
   assert(base && typeof base === 'object', 'invalid_payload');
   assert(Array.isArray(entries) && entries.length > 0 && entries.length <= INVENTORY_BATCH_LIMIT, 'inventory_batch_limit');
-  const common = { brand: text(base.brand, 'brand', { max: 200 }), range: text(base.range, 'range', { max: 200 }), category: text(base.category, 'category', { required: true, max: 100 }), unit: oneOf(base.unit, UNITS, 'unit') };
+  const common = { brand: text(base.brand, 'brand', { max: 200 }), range: text(base.range, 'range', { max: 200 }), category: text(base.category, 'category', { required: true, max: 100 }), unit: oneOf(base.unit, UNITS, 'unit'), minimum: 1 };
   const codes = entries.map((entry,index) => inEntry(index, () => { assert(entry && typeof entry === 'object' && !Array.isArray(entry), 'invalid_payload'); return text(entry.code, 'code', { required: true, max: 200 }); }));
   const counts = new Map(); codes.forEach(code => counts.set(code, (counts.get(code) || 0) + 1));
   const materialIndex = new Map();
