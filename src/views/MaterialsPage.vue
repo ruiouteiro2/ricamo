@@ -109,7 +109,7 @@ function created(id) {
   const material = state.value.materials.find(item => item.id === id);
   const context = addContext.value;
   if(state.value.settings.preferences?.keepMaterialFormOpen!==false){
-    addDefaults.value={groupId:inventoryGroup(material),brand:material.brand,threadFamily:material.properties.threadFamily,section:accessorySection(material)};
+    addDefaults.value={groupId:inventoryGroup(material),brand:material.brand,threadFamily:material.properties.threadFamily,threadFormat:material.properties.threadFormat,section:accessorySection(material)};
     addFormVersion.value++;notify(t('materialSavedContinue'));return;
   }
   closeForm(); notify();
