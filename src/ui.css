@@ -112,7 +112,8 @@ tbody tr { transition: background-color var(--motion-fast) var(--ease-ui); }
 }
 .popover-enter-from, .popover-leave-to { opacity: 0; translate: 0 -5px; }
 .toast-enter-from, .toast-leave-to { opacity: 0; translate: 0 8px; }
-.toast[popover] { margin: 0; border: 0; inset: auto; }
+.toast { pointer-events: none; outline: 2px solid rgba(255,255,255,.9); font-weight: 700; }
+.dialog .dialog-toast { position: fixed; left: 50%; bottom: 24px; z-index: 1000; max-width: calc(100% - 48px); }
 .dialog-footer-spacer { flex: 1; }
 .duplicate-quantity-summary {
   display: flex;
