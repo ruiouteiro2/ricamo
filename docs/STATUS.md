@@ -1,5 +1,13 @@
 # Ricamo delivery evidence
 
+## Persistent feedback hotfix - Windows 0.6.23 - 2026-11-02
+
+Corrected the 0.6.22 feedback regression reported after installation. The previous top-layer implementation could move the feedback element into a modal and then lose it when that modal was destroyed. Feedback is now persistent: while a native dialog is open, a high-contrast copy is rendered inside that dialog at z-index 1000; when the final dialog closes, the global copy remains visible for the rest of its original timeout. The message itself was not removed or shortened, and the overlay does not intercept pointer input.
+
+The Edge and packaged-Electron `sticky-batch-entry-ui` journey passed with no page errors or remote requests. It explicitly verifies feedback visibility inside the active dialog, stacking above modal content, and continued global visibility after the multi-item dialog closes. Vite production build and release audit passed with `sourcesMatch: true` and `dirtyFiles: 0`.
+
+Installer `release/Ricamo-0.6.23-Windows-x64-Setup.exe`, SHA-256 `8ddf4c4e001202cd577370e8d8e6aa5aa29412f9d499d91933f15aa685ff9ce8`. Ricamo was normally closed, a full profile copy plus validated `.ricamobackup` was saved under `Desktop/Filo/Backup aggiornamenti`, and the installer completed with exit 0. Registry reports 0.6.23; installed `app.asar` exactly matches the tested package. Application state at revision 167, attachment hashes and SQLite integrity match before/after; the installed window reopened successfully. Evidence: `.runtime/sticky-feedback-fix.log`, `.runtime/sticky-feedback-fix-native.log`, `.runtime/release-0623-package.log`, `.runtime/installed-upgrade-0623-verification.json`. The isolated full domain suite was not rerun because this hotfix changes only feedback rendering; 0.6.22 evidence remains applicable. Unsigned local build; no clean-PC/offline installation claim.
+
 ## Duplicate confirmation and multi-item entry - Windows 0.6.22 - 2026-11-02
 
 Duplicate material confirmation now reuses the quantity already entered in Add Material. The second modal contains only the matched material selector when needed, a read-only quantity summary, and confirm/cancel actions; it no longer asks the user to type the quantity again. Global feedback is rendered as a manual popover anchored to the currently active native dialog and is reordered as stacked dialogs open or close, so it remains visibly and semantically above both modals instead of behind their backdrops.
