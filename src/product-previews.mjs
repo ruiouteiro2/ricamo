@@ -2,6 +2,7 @@ import diamant from './assets/dmc-diamant-previews.json' with {type:'json'};
 import colbert from './assets/dmc-colbert-previews.json' with {type:'json'};
 import alsace from './assets/dmc-alsace-previews.json' with {type:'json'};
 import pearl from './assets/dmc-pearl-previews.json' with {type:'json'};
+import mat from './assets/dmc-mat-previews.json' with {type:'json'};
 import casa from './assets/casa-product-previews.json' with {type:'json'};
 import {bundledSupplierProducts,supplierIdentity} from '../core/supplier-products.mjs';
 const urlKey=value=>String(value??'').replace(/^https:\/\/www\.casacenina\.(?:com|fr|es)\//,'https://www.casacenina.it/');
@@ -33,7 +34,8 @@ export function productPreview(value){
  const legacyAlsace=product.brand==='DMC'&&(product.properties?.threadFamily==='alsace'||/alsac|alsazia/.test(range));
  const size=String(value?.properties?.threadSize??product.properties?.threadSize??range).match(/\d+/)?.[0];
  const legacyPearl=product.brand==='DMC'&&!legacyAlsace&&(product.properties?.threadFamily==='pearl'||/perl|pearl/.test(range));
- const official=diamant[product.id]||colbert[product.id]||alsace[product.id]||(legacyAlsace&&size?alsace[`dmc:alsace:${Number(size)}:${code}`]:'')||(legacyPearl&&size?pearl.images[pearl.byKey[`dmc:pearl:${Number(size)}:${code}`]]:'')||((legacyAlsace||legacyPearl)&&size?sameColourSwatch({family:legacyAlsace?'alsace':'pearl',size,code})?.image:'')||(product.brand==='DMC'&&product.range==='Diamant'?diamant[`dmc:diamant:${code}`]:'')||(legacyColbert?colbert[`dmc:colbert:${code}`]:'');if(official)return official;
+ const legacyMat=product.brand==='DMC'&&(product.properties?.threadFamily==='mat'||/retors mat/.test(range));
+ const official=diamant[product.id]||colbert[product.id]||alsace[product.id]||mat[product.id]||(legacyMat?mat[`dmc:mat:${code}`]:'')||(legacyAlsace&&size?alsace[`dmc:alsace:${Number(size)}:${code}`]:'')||(legacyPearl&&size?pearl.images[pearl.byKey[`dmc:pearl:${Number(size)}:${code}`]]:'')||((legacyAlsace||legacyPearl)&&size?sameColourSwatch({family:legacyAlsace?'alsace':'pearl',size,code})?.image:'')||(product.brand==='DMC'&&product.range==='Diamant'?diamant[`dmc:diamant:${code}`]:'')||(legacyColbert?colbert[`dmc:colbert:${code}`]:'');if(official)return official;
  const url=product.url||value?.properties?.purchaseUrl;
  const direct=casa.byUrl[urlKey(url)];if(direct)return casa.images[direct]||'';
  if(!product.brand||!product.range||!product.code)return '';
