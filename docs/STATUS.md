@@ -1,5 +1,13 @@
 # Ricamo delivery evidence
 
+## Existing DMC wool previews - Windows 0.6.28 - 2026-11-02
+
+Existing inventory rows saved as DMC > Mouliné lanato now resolve to the exact local Colbert swatch by brand, wool family or legacy range name, plus code. Inventory records are not rewritten. Of the five real rows, 7439, 7444, 7727 and 7971 show their swatch. Code 7445 stays uncoloured because it is absent from the 414 local Colbert records and was not found on the Casa Cenina list when checked during this work; no approximate colour is assigned, and the code needs checking by the user.
+
+Focused `tests/dmc-colbert.test.mjs` passed 2/2 and `tests/existing-colbert-previews-ui.mjs` passed on the packaged app. The installed 0.6.28 app was also opened on a temporary copy of the real database: the four swatches rendered, 7445 had none, with zero page errors and zero web requests. The full domain and desktop suites were not rerun for this release. Release audit passed with `sourcesMatch: true` and `dirtyFiles: 0`.
+
+Installer `release/Ricamo-0.6.28-Windows-x64-Setup.exe`, SHA-256 `5c75581e33d7ba5eed79eb0c080bf94cf22c03a40ad31cf4bebb12c83099b204`; packaged/installed ASAR SHA-256 `e0d7109b8440171b04195d078e5797ba4e24026a7a04a68e0ff4f186b3c447ca`. Ricamo was normally closed and a full profile copy plus validated `.ricamobackup` was saved under `Desktop/Filo/Backup aggiornamenti/prima-0.6.28-20261102-162730` before silent current-user installation (exit 0). Registry reports 0.6.28. State revision 205, all 104 material records, attachment bytes and SQLite integrity match before/after; the installed window reopened successfully. Launching from a shell with `ELECTRON_RUN_AS_NODE=1` exits with no window, so clear it first. Evidence: `.runtime/release-0628-package.log`, `.runtime/installed-upgrade-0628-verification.json`. Unsigned local build; no clean-PC/offline installation claim.
+
 ## Size-aware Casa Cenina DMC catalogues - Windows 0.6.27 - 2026-11-02
 
 Connected every existing DMC entry family to the corresponding Casa Cenina catalogue: Mouliné, special-thread index, Satin for silk, Lana Colbert for wool, Mouliné cone for spool, Perlé, Diamant and Coton Perlé - Retors d'Alsace. Perlé resolves entered sizes 3, 5, 8 or 12 to the exact catalogue; Retors d'Alsace resolves 5, 8 or 12. Empty or unsupported sizes retain the DMC index rather than guessing a product. The same entered size now filters local Perlé/Alsace ranges used by Choose from catalogue, preventing a duplicate colour code in a different thickness from being selected. Changing size clears a previously selected product only when its range no longer matches; code and inventory quantity are not altered.
