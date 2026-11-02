@@ -78,6 +78,11 @@ async function confirmDuplicate() {
 const threadFamilies = computed(() => spoolOnlyBrand(draft.brand) ? ['spool'] : ['mouline', 'special', 'silk', 'wool', 'spool', 'pearl', ...(draft.brand.trim().toLowerCase() === 'dmc' ? ['diamant'] : []), ...(['dmc', 'anchor'].includes(draft.brand.trim().toLowerCase()) ? ['alsace'] : [])]);
 const savedFamily = original && draft.range ? familyOf(draft) : props.defaults.threadFamily || draft.properties.threadFamily || 'mouline';
 const threadFamily = ref(threadFamilies.value.includes(savedFamily) ? savedFamily : threadFamilies.value[0]);
+const threadReference = computed(() => {
+  const child = activeGroup.value.children.find(item => item.brand === draft.brand);
+  return child?.references?.find(reference => !reference.family || reference.family === threadFamily.value)
+    || ((!child?.reference?.family || child.reference.family === threadFamily.value) ? child?.reference : null);
+});
 if(draft.category==='thread')draft.unit=threadCountUnit({brand:draft.brand,family:threadFamily.value,properties:draft.properties});
 const usageStatus = ref(originalInventory?.usageStatus || 'new');
 if (originalInventory) stock.quantity = originalInventory.quantity ?? '';
@@ -314,7 +319,7 @@ async function save() {
           <FormField :label="t('status')" v-slot="{ id }"><select :id="id" v-model="usageStatus"><option v-for="status in ['new','partial','nearly_finished','finished']" :key="status" :value="status">{{ t(`entryStatus_${status}`) }}</option></select></FormField>
         </div>
         <p v-if="draft.brand === 'Madeira'" class="field-help">{{ t('madeiraCatalogueHelp') }} <button type="button" class="button text small" @click="openMadeiraCatalogue">{{ t('madeiraOfficialCatalogue') }}</button></p>
-        <ThreadReferenceLink :reference="activeGroup.children.find(child => child.brand === draft.brand && (!child.reference?.family || child.reference.family === threadFamily))?.reference" />
+        <ThreadReferenceLink :reference="threadReference" />
         <p v-if="catalogueError" class="notice error" role="alert">{{ catalogueError }}</p>
     </form>
     <template #footer><button v-if="!isEdit" type="button" class="button" :disabled="busy" @click="openBulkEntry">{{ t('addMultipleMaterials') }}</button><span class="dialog-footer-spacer"></span><button type="button" class="button" :disabled="busy" @click="emit('close')">{{ t('cancel') }}</button><button class="button primary" type="submit" :form="formId" :disabled="busy||lookupBusy||matchingBusy">{{ busy ? t('saving') : t('save') }}</button></template>
