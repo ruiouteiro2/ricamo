@@ -213,3 +213,5 @@ tbody tr { transition: background-color var(--motion-fast) var(--ease-ui); }
   .table-wrap, .dialog .table-wrap { max-height: none !important; overflow: visible !important; }
   .table-wrap thead { position: static !important; display: table-header-group; }
 }
+
+.discontinued-badge { display: inline-block; margin-inline-start: .5rem; white-space: nowrap; }
