@@ -16,6 +16,15 @@ function exactIdentityPhotos(){
  }
  identities=new Map([...candidates].filter(([,values])=>values.size===1).map(([key,values])=>[key,[...values][0]]));return identities;
 }
+const closestSizes=(sizes,size)=>[...sizes].sort((a,b)=>Math.abs(a-size)-Math.abs(b-size));
+/** DMC numbers a colour once per line, so a size without its own photo can show that colour from another size, then from the sibling line. */
+export function sameColourSwatch({family,size,code}={}){
+ const number=Number(String(size??'').match(/\d+/)?.[0]),key=String(code??'').trim().toUpperCase();if(!number||!key)return null;
+ const lines={alsace:{sizes:[5,8,12],image:value=>alsace[`dmc:alsace:${value}:${key}`]},pearl:{sizes:[3,5,8,12],image:value=>pearl.images[pearl.byKey[`dmc:pearl:${value}:${key}`]]}};
+ if(!lines[family])return null;
+ for(const line of [family,family==='alsace'?'pearl':'alsace'])for(const value of closestSizes(lines[line].sizes,number)){if(line===family&&value===number)continue;const image=lines[line].image(value);if(image)return{image,line,size:value};}
+ return null;
+}
 export function productPreview(value){
  const product=value?.properties?.product??value;if(!product)return '';
  const range=String(product.range??'').normalize('NFD').replace(/\p{Diacritic}/gu,'').toLowerCase();
@@ -24,7 +33,7 @@ export function productPreview(value){
  const legacyAlsace=product.brand==='DMC'&&(product.properties?.threadFamily==='alsace'||/alsac|alsazia/.test(range));
  const size=String(value?.properties?.threadSize??product.properties?.threadSize??range).match(/\d+/)?.[0];
  const legacyPearl=product.brand==='DMC'&&!legacyAlsace&&(product.properties?.threadFamily==='pearl'||/perl|pearl/.test(range));
- const official=diamant[product.id]||colbert[product.id]||alsace[product.id]||(legacyAlsace&&size?alsace[`dmc:alsace:${Number(size)}:${code}`]:'')||(legacyPearl&&size?pearl.images[pearl.byKey[`dmc:pearl:${Number(size)}:${code}`]]:'')||(product.brand==='DMC'&&product.range==='Diamant'?diamant[`dmc:diamant:${code}`]:'')||(legacyColbert?colbert[`dmc:colbert:${code}`]:'');if(official)return official;
+ const official=diamant[product.id]||colbert[product.id]||alsace[product.id]||(legacyAlsace&&size?alsace[`dmc:alsace:${Number(size)}:${code}`]:'')||(legacyPearl&&size?pearl.images[pearl.byKey[`dmc:pearl:${Number(size)}:${code}`]]:'')||((legacyAlsace||legacyPearl)&&size?sameColourSwatch({family:legacyAlsace?'alsace':'pearl',size,code})?.image:'')||(product.brand==='DMC'&&product.range==='Diamant'?diamant[`dmc:diamant:${code}`]:'')||(legacyColbert?colbert[`dmc:colbert:${code}`]:'');if(official)return official;
  const url=product.url||value?.properties?.purchaseUrl;
  const direct=casa.byUrl[urlKey(url)];if(direct)return casa.images[direct]||'';
  if(!product.brand||!product.range||!product.code)return '';
