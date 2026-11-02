@@ -1412,8 +1412,8 @@
     "Custom categories"
   ],
   "customCategoriesHelp": [
-    "Le categorie personali organizzano i materiali. I campi aggiuntivi sono annotazioni: non cambiano quantità, unità o riserve.",
-    "Custom categories organise materials. Additional fields are notes: they do not change quantities, units or reservations."
+    "Le categorie personali compaiono in Materiali accanto a quelle esistenti e possono contenere i tuoi articoli.",
+    "Custom categories appear in Materials beside the existing ones and can hold your items."
   ],
   "noCustomCategories": [
     "Non hai ancora categorie personali.",
