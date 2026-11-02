@@ -1,5 +1,13 @@
 # Ricamo delivery evidence
 
+## Greyed DMC Mouliné rows - Windows 0.6.43 - 2026-11-02
+
+Fili > DMC now follows owned rows with each DMC Mouliné colour not yet entered, greyed out, with the cart as the only action. Shops list one colour under several rows and spellings, so the 997 catalogue rows are shown once per identity (506 colours; Ecru and B5200 spellings count as one). A colour counts as owned only in Mouliné, so a Perlé row with the same number does not hide it. The 94 listed out-of-production codes also appear, marked and without a cart. On the real data this gave 251 rows: 157 orderable and 94 out of production. Orderable rows without a photo or digital colour: 18 (48, 51, 52, 53, 67, 69, 90, 92, 93, 94, 99, 105, 106, 107, 111, 115, 121, 125). `src/mill-hill-catalogue.mjs` became `src/catalogue-rows.mjs`.
+
+Unit suite: 612 total, 610 passed, one skipped, one failed; the failure is the existing `tool-activity` date test. Packaged journeys passed: `dmc-mouline-rows-ui`, `automatic-colour-preview-ui`, `mill-hill-ui`, `dmc-pearl-ui`, `profilo-reference-ui`, `dmc-alsace-ui`, `dmc-pearl-format-ui`, `simple-material-edit-ui`, `desktop-inventory-categories`. `tests/browser-inventory-categories.mjs` was edited to count only owned rows and was not run. The installed app on a copy of the real databases showed 251 greyed rows in 1.6 s, zero page errors and zero web requests. The full desktop suite was not run. Release audit passed with `sourcesMatch: true` and `dirtyFiles: 0`.
+
+Installer `release/Ricamo-0.6.43-Windows-x64-Setup.exe`, SHA-256 `23f704243e14f5c08324276562591600d5f8ce53cdbbbd26b0189a8bc50cda03`; packaged/installed ASAR SHA-256 `da83b8336c1ff28e000310a3d6a305cb1baa25be43eded192ee2a204e481c7b9`. Ricamo was normally closed and a full profile copy plus validated `.ricamobackup` was saved under `Desktop/Filo/Backup aggiornamenti/prima-0.6.43-20261102-234443` before silent current-user installation (exit 0). Registry reports 0.6.43. State revision 676, all 517 materials, attachment bytes, SQLite integrity and `paginateLists: false` match after install; the installed window reopened successfully. Only installers and update backups for 0.6.42 and 0.6.43 are kept. Unsigned local build; no clean-PC/offline installation claim.
+
 ## Colour code stays as typed - Windows 0.6.42 - 2026-11-02
 
 A match rewrote the code field while it was being typed: Anchor `2` became `002` and DMC Mouliné `10` became `010` after 250 ms, so a further digit produced `0023`. The form now keeps the typed text in the field while it has focus, and shows the catalogue's own code when focus leaves; the preview and the saved code still use the catalogue's. A cleared code always updates the field. Mill Hill and Profilo were not affected by this rewrite.
