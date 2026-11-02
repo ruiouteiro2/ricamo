@@ -76,7 +76,7 @@ async function confirmDuplicate() {
   } catch (caught) { duplicateError.value = errorText(caught); }
   finally { busy.value = false; }
 }
-const threadFamilies = computed(() => spoolOnlyBrand(draft.brand) ? ['spool'] : ['mouline', 'special', 'silk', 'wool', 'spool', 'pearl', ...(draft.brand.trim().toLowerCase() === 'dmc' ? ['diamant'] : []), ...(['dmc', 'anchor'].includes(draft.brand.trim().toLowerCase()) ? ['alsace'] : [])]);
+const threadFamilies = computed(() => spoolOnlyBrand(draft.brand) ? ['spool'] : ['mouline', 'special', 'silk', 'wool', 'spool', 'pearl', ...(draft.brand.trim().toLowerCase() === 'dmc' ? ['diamant'] : []), ...(['dmc', 'anchor'].includes(draft.brand.trim().toLowerCase()) ? ['alsace'] : []), ...(draft.brand.trim().toLowerCase() === 'dmc' ? ['mat'] : [])]);
 const savedFamily = original && draft.range ? familyOf(draft) : props.defaults.threadFamily || draft.properties.threadFamily || 'mouline';
 const threadFamily = ref(threadFamilies.value.includes(savedFamily) ? savedFamily : threadFamilies.value[0]);
 const threadReference = computed(() => {
@@ -94,6 +94,7 @@ function familyOf(product) {
   if (spoolOnlyBrand(product.brand ?? draft.brand)) return 'spool';
   const range = String(product.range || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
   if (String(product.brand ?? draft.brand).trim().toLowerCase() === 'dmc' && range === 'diamant') return 'diamant';
+  if (String(product.brand ?? draft.brand).trim().toLowerCase() === 'dmc' && /retors mat/.test(range)) return 'mat';
   if (/alsac|fiorentin/.test(range)) return 'alsace';
   if (/silk|seta|soie|waterlil/.test(range)) return 'silk';
   if (/wool|lana|laine/.test(range)) return 'wool';
