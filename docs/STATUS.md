@@ -1,5 +1,13 @@
 # Ricamo delivery evidence
 
+## Soft interface typefaces - Windows 0.6.21 - 2026-11-02
+
+Requested a softer typeface. The interface now uses Nunito for text and Quicksand for headings, logo and large figures, replacing Segoe UI and Palatino Linotype. Unmodified Latin and Latin Extended variable WOFF2 subsets from Fontsource 5.3.0 are bundled under `src/assets` with their SIL OFL 1.1 licences and attributed in THIRD-PARTY-NOTICES.md; nothing is fetched at runtime. Characters outside those subsets fall back to system fonts. Heading weights rose to 600 because Quicksand is lighter. PDF export fonts, print documents and chart symbols are unchanged. No behaviour or data change.
+
+Validation: axe color-contrast found zero issues on the same 11 screens in Edge against the production frontend; no page errors; no horizontal overflow at 480px. Packaged 0.6.21 loads Nunito and Quicksand from local files in Electron with no failed fonts, renderer errors or HTTP requests, and passed `sticky-batch-entry-ui` and `simple-material-edit-ui`. `node --test --test-isolation=none tests/*.test.mjs`: 573 total, 571 passed, one skipped, one failure ("Dates and currency reject invalid input..."), unchanged from the 0.6.20 entry. The full `test:desktop` suite was not run.
+
+Installer `release/Ricamo-0.6.21-Windows-x64-Setup.exe`, SHA-256 `a360be7e7c5fba2d896f3ddb9d04fbae824e5abb055fbf3b8a9d7e73cddb91c7`. Packaging/audit passed with sourcesMatch true and dirtyFiles zero before this evidence update. Unsigned local build. The desktop installation was not upgraded and remains 0.6.20; no clean-PC/offline installation claim.
+
 ## Applied atelier UI to the installed desktop app - 2026-11-02
 
 At the user's request, applied the already prepared 0.6.20 visual refresh to the actual desktop installation. Reused the existing installer unchanged, verified SHA-256 `c4dcb54b7a1b39375fad36ccf6bcffe7a82802974c9a7889c3aa8ed108522eb5`, and reran release audit with sourcesMatch true and dirtyFiles zero. The isolated-process command `node --test --test-concurrency=2 tests/*.test.mjs` passed 572 tests with one skipped and zero failures (573 total), resolving the shared-process date-test failure described in the earlier build entry for this run. The packaged sticky/batch-entry journey passed again with no renderer errors or HTTP requests; its screenshot was visually inspected. Evidence: `.runtime/apply-0620-unit.log`, `.runtime/apply-0620-native.log`, `.runtime/sticky-batch-iNLV6i/result.json`. Previously documented unrelated smoke/polish checks were not changed or claimed as passing.
