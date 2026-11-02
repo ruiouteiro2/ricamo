@@ -19,7 +19,7 @@ onMounted(async () => {
   await nextTick();
   (dialog.value.querySelector('[autofocus]') || dialog.value.querySelector('input, select, textarea, button'))?.focus();
 });
-onBeforeUnmount(() => { dialog.value?.close(); previous?.focus?.(); });
+onBeforeUnmount(() => { dialog.value?.close(); window.dispatchEvent(new CustomEvent('ricamo:dialog-closed')); previous?.focus?.(); });
 </script>
 
 <template>
