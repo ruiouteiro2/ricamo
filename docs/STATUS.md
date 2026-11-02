@@ -1,5 +1,15 @@
 # Ricamo delivery evidence
 
+## Profilo colour previews - Windows 0.6.37 - 2026-11-02
+
+All 400 Profilo 6 Mouliné articles now show their colour offline, including saved rows with a listed code. `build/acquire-casa-profilo.py` read each public Casa Cenina product page once, one request at a time, under the importer's own User-Agent, and accepted a photo only when its label named that article's code; `robots.txt` allows these pages and no request was refused. Casa Cenina shows each colour as a small rectangle on a blank square, so `build/crop-casa-profilo.cjs` keeps the rectangle's centre. Five pale images have no detectable edge and use the central area. The site shows the same image for four pairs of codes (075/076, 338/379, 380/381, 441/444). DMC equivalents from the pages, available for 399 articles, are recorded in `data/casa-profilo-preview-sources.json` and not shown in the interface.
+
+This corrects the 0.6.32 and 0.6.36 notes: the block seen earlier applied to a request with a generic browser User-Agent, not to this importer's identified requests.
+
+Unit suite: 596 total, 594 passed, one skipped, one failed; the failure is the existing `tool-activity` date test. Packaged journeys passed: `profilo-reference-ui`, `dmc-pearl-ui`, `dmc-mat-ui`, `existing-colbert-previews-ui`, `simple-material-edit-ui`, `desktop-inventory-categories`. The installed app on a copy of the real databases showed code 059 with its colour, zero page errors and zero web requests. The full desktop suite was not run. Release audit passed with `sourcesMatch: true` and `dirtyFiles: 0`.
+
+Installer `release/Ricamo-0.6.37-Windows-x64-Setup.exe`, SHA-256 `3b59e32edb387742423af2411bc9b9ec2f56c84dbc3db94cd7f752a5510d20e1`; packaged/installed ASAR SHA-256 `a816dc841b60f9b6de76e2ecd10b851fc2f41e82f35958b2dcb5c712525a5bda`. Ricamo was normally closed and a full profile copy plus validated `.ricamobackup` was saved under `Desktop/Filo/Backup aggiornamenti/prima-0.6.37-20261102-191723` before silent current-user installation (exit 0). Registry reports 0.6.37. State revision 224, all 119 materials, attachment bytes, SQLite integrity and `paginateLists: false` match after install; the installed window reopened successfully. Only installers and update backups for 0.6.36 and 0.6.37 are kept. Unsigned local build; no clean-PC/offline installation claim.
+
 ## Profilo catalogue reference - Windows 0.6.36 - 2026-11-02
 
 Fili > Profilo now links to `https://www.casacenina.it/fili-e-filati/profilo/profilo-6-mouline/` on its tile, its list and the material form; no other brand has this link. The bundled range name "6 Mouliné" was classified as "Mouliné speciali", so the default Mouliné type found no article for any Profilo code. It now resolves to Mouliné. The 400 Profilo articles have no photo or digital colour, so they still show "Anteprima non disponibile". The Casa Cenina page itself could not be opened automatically because the site blocks automated requests; web search confirmed its Profilo 6 Mouliné product pages.
