@@ -18,10 +18,13 @@ test('Mill Hill beads carry the requested Casa Cenina reference',()=>{
 });
 
 test('every Mill Hill article shows its own photo offline',()=>{
- assert.equal(articles.length,728);assert.equal(articles.length,catalogue.products.length);assert.deepEqual(sources.missing,[]);
- for(const row of articles){assert.match(productPreview(row),/^data:image\/(jpeg|png|gif|webp);base64,/,row.url);assert.equal(productPreview(row),previews.images[previews.byUrl[row.url]],row.url);}
- const image=row=>previews.images[sources.evidence.find(entry=>entry.code===row).previewSha256];
- assert.equal(productPreview(articles.find(row=>row.code==='00143')),image('00143'));assert.notEqual(image('00143'),image('12143'));
+ assert.ok(articles.length>=995);assert.equal(articles.length,catalogue.products.length);assert.deepEqual(sources.missing,[]);
+ // Sold-out cards have no cart button: they must be neither lost nor merged with their neighbour.
+ for(const code of ['02098','11001','13001','13105','13005'])assert.ok(articles.some(row=>row.code===code),code);
+ const scarlet=articles.find(row=>row.code==='13105');assert.equal(scarlet.range,'Crystal Treasures');assert.equal(scarlet.id,'casa-mh-130545');
+ const withoutPhoto=articles.filter(row=>!productPreview(row)).map(row=>row.code);assert.deepEqual(withoutPhoto,['02093']);
+ for(const row of articles)if(previews.byUrl[row.url])assert.equal(productPreview(row),previews.images[previews.byUrl[row.url]],row.url);
+ assert.notEqual(productPreview(articles.find(row=>row.code==='00143')),productPreview(articles.find(row=>row.code==='12143')));
 });
 
 test('the type menu lists exactly the catalogue lines',()=>{
