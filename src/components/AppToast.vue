@@ -9,7 +9,10 @@ async function placeAboveDialogs() {
   const element = toast.value;
   if (!element || !props.message) return;
   try {
+    const dialogs = [...document.querySelectorAll('dialog[open]')];
+    const host = dialogs.at(-1) || document.body;
     if (element.matches(':popover-open')) element.hidePopover();
+    if (element.parentElement !== host) host.appendChild(element);
     element.showPopover();
   } catch {
     // Older embedded browsers still display the fixed fallback element.
@@ -17,6 +20,7 @@ async function placeAboveDialogs() {
 }
 
 function dialogOpened() { void placeAboveDialogs(); }
+function dialogClosed() { void placeAboveDialogs(); }
 
 watch(() => props.message, value => {
   if (!value) {
@@ -26,8 +30,14 @@ watch(() => props.message, value => {
   void placeAboveDialogs();
 });
 
-onMounted(() => window.addEventListener('ricamo:dialog-opened', dialogOpened));
-onBeforeUnmount(() => window.removeEventListener('ricamo:dialog-opened', dialogOpened));
+onMounted(() => {
+  window.addEventListener('ricamo:dialog-opened', dialogOpened);
+  window.addEventListener('ricamo:dialog-closed', dialogClosed);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener('ricamo:dialog-opened', dialogOpened);
+  window.removeEventListener('ricamo:dialog-closed', dialogClosed);
+});
 </script>
 
 <template>
