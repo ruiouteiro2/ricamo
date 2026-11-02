@@ -112,7 +112,7 @@ function familyOf(product) {
   if (/wool|lana|laine/.test(range)) return 'wool';
   if (/perl|pearl/.test(range)) return 'pearl';
   if (/spool|rocchett|rocca|spoletta|bobina|bobbin|cucit/.test(range)) return 'spool';
-  if (/^(mouline|stranded cotton)( special( 25)?)?$/.test(range)) return 'mouline';
+  if (/^(6 )?(mouline|stranded cotton)( special( 25)?)?$/.test(range)) return 'mouline';
   return 'special';
 }
 function familyLabel(family) {
