@@ -4,6 +4,8 @@ import {discontinuedEntry,isDiscontinued} from '../core/discontinued-materials.m
 import {bundledSupplierProducts,supplierIdentity} from '../core/supplier-products.mjs';
 import {productPreview} from '../src/product-previews.mjs';
 import catalogue from '../data/discontinued-materials.json' with {type:'json'};
+import {addZeroStockPurchases,generatePurchases,savePurchase,zeroStockPurchases} from '../core/purchasing.mjs';
+import {missingMillHillArticles,millHillMaterial} from '../src/mill-hill-catalogue.mjs';
 
 const bead=code=>({brand:'Mill Hill',range:'Crystal Treasures',code,properties:{}});
 const thread=(code,range='Mouliné')=>({brand:'DMC',range,code,properties:{}});
@@ -31,4 +33,35 @@ test('a status set on the material outranks the list both ways',()=>{
 test('out-of-production beads are selectable and show a photo where one exists',()=>{
  const products=bundledSupplierProducts().filter(row=>row.brand==='Mill Hill'&&row.id.startsWith('casa-mh-'));
  for(const row of catalogue.entries.filter(entry=>entry.brand==='Mill Hill')){const product=products.find(item=>item.code===row.code);assert.ok(product,row.code);if(row.code!=='02093')assert.ok(productPreview(product),row.code);}
+});
+
+const shop=materials=>({materials,purchases:[],receipts:[],lots:[],reservations:[],needs:[],projects:[],suppliers:[],movements:[],audit:[],settings:{currency:'EUR'}});
+const owned=(id,code)=>({id,name:code,category:'embellishment',brand:'Mill Hill',range:'Crystal Treasures',code,unit:'pack',minimum:1,properties:{}});
+const context={now:'2026-11-02T00:00:00.000Z',operationId:'test',id:(()=>{let next=0;return()=>`generated-${++next}`;})()};
+
+test('an out-of-production article cannot enter Shopping by any route',()=>{
+ const state=shop([owned('old','13005'),owned('new','00143')]);
+ assert.throws(()=>savePurchase(state,{materialId:'old',quantity:1,currency:'EUR'},context),{code:'material_discontinued'});
+ assert.deepEqual(zeroStockPurchases(state).map(row=>row.materialId),['new']);
+ addZeroStockPurchases(state,{},context);assert.deepEqual(state.purchases.map(row=>row.materialId),['new']);
+});
+
+test('an order placed before the mark stays editable',()=>{
+ const state=shop([owned('old','00143')]);savePurchase(state,{materialId:'old',quantity:1,currency:'EUR'},context);
+ state.materials[0].code='13005';const [order]=state.purchases;
+ savePurchase(state,{...order,status:'cancelled'},context);assert.equal(state.purchases[0].status,'cancelled');
+});
+
+test('project demand skips an out-of-production article',()=>{
+ const state=shop([owned('old','13005'),owned('new','00143')]);state.projects=[{id:'p',status:'active'}];state.needs=[{projectId:'p',materialId:'old',quantity:1},{projectId:'p',materialId:'new',quantity:1}];
+ generatePurchases(state,{projectIds:['p']},context);assert.deepEqual(state.purchases.map(row=>row.materialId),['new']);
+});
+
+test('the catalogue list leaves out what is already in the inventory',()=>{
+ const all=missingMillHillArticles([]);assert.equal(all.length,bundledSupplierProducts().filter(row=>row.id.startsWith('casa-mh-')).length);
+ assert.ok(all.find(row=>row.product.code==='13005').discontinued);assert.ok(!all.find(row=>row.product.code==='00143').discontinued);
+ const left=missingMillHillArticles([owned('a','00143'),{...owned('b','12143'),archived:true},{...owned('c','13005'),brand:'Altro'}]);
+ assert.ok(!left.some(row=>row.product.code==='00143'));assert.ok(left.some(row=>row.product.code==='12143'));assert.ok(left.some(row=>row.product.code==='13005'));
+ const button=all.find(row=>!row.product.code).product;assert.ok(!missingMillHillArticles([{...owned('d',''),properties:{product:button}}]).some(row=>row.product.id===button.id));
+ const material=millHillMaterial(all.find(row=>row.product.code==='00143').product,'id');assert.equal(material.unit,'pack');assert.equal(material.name,'Mill Hill · Glass Seed Beads · 00143 · Robin Egg Blue Ceylon');
 });
