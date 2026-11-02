@@ -65,7 +65,7 @@ function chooseBeadLine(line) {
 // A match replaces the code with the catalogue's own (2 becomes 002), so the field shows it only after typing ends.
 const codeInput = ref(draft.code), codeField = ref(null);
 watch(codeInput, value => { if (value !== draft.code) draft.code = value; });
-watch(() => draft.code, value => { if (document.activeElement !== codeField.value) codeInput.value = value; });
+watch(() => draft.code, value => { if (!value || document.activeElement !== codeField.value) codeInput.value = value; });
 const lookupBusy=ref(false);let lookupTimer,lookupToken=0;
 const catalogueCategory=computed(()=>SUPPLIER_CATEGORIES.includes(draft.category));
 const colourCategory=computed(()=>['thread','fabric','embellishment'].includes(draft.category));
