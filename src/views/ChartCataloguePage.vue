@@ -9,6 +9,7 @@ import { chartPreview } from '../pattern-catalogue.mjs';
 import { state, route, navigate, dispatch } from '../state';
 import { openPurchaseLink } from '../purchase-link.mjs';
 import { t, number, date, errorText } from '../i18n';
+import { paginationEnabled, pageTotal, pageRows } from '../pagination.mjs';
 const brand = computed(() => CHART_BRANDS.find(item => item.id === route.value.id));
 const search = ref(''), ownership = ref('all'), status = ref('all'), density = ref(16), page = ref(1);
 const busy = reactive({}), error = ref('');
@@ -19,8 +20,8 @@ const filtered = computed(() => entries.value.filter(item => {
   const saved = record(item), text = `${item.name} ${item.brand} ${item.sourceId}`.toLocaleLowerCase();
   return text.includes(search.value.trim().toLocaleLowerCase()) && (ownership.value === 'all' || saved.owned === (ownership.value === 'owned')) && (status.value === 'all' || saved.status === status.value);
 }));
-const pageCount = computed(() => Math.max(1, Math.ceil(filtered.value.length / 24)));
-const visible = computed(() => filtered.value.slice((page.value - 1) * 24, page.value * 24));
+const pageCount = computed(() => pageTotal(filtered.value.length, 24));
+const visible = computed(() => pageRows(filtered.value, page.value, 24));
 watch(pageCount, count => { page.value = Math.min(page.value, count); });
 watch([search, ownership, status], () => { page.value = 1; });
 function dimensions(item) { const size = chartDimensions(item, density.value); return size ? `${number(size.widthCm, 1)} × ${number(size.heightCm, 1)} cm` : t('chartSizeUnavailable'); }
@@ -60,7 +61,7 @@ async function source(item) { error.value = ''; try { await openPurchaseLink(ite
         </article>
       </div>
       <p v-if="!filtered.length" class="notice">{{ t('noResults') }}</p>
-      <div class="actions form-section"><button class="button" :disabled="page === 1" @click="page--">{{ t('previousPage') }}</button><span>{{ number(filtered.length,0) }} {{ t('patterns').toLowerCase() }} · {{ page }} / {{ pageCount }}</span><button class="button" :disabled="page === pageCount" @click="page++">{{ t('nextPage') }}</button></div>
+      <div class="actions form-section"><button v-if="paginationEnabled" class="button" :disabled="page === 1" @click="page--">{{ t('previousPage') }}</button><span>{{ number(filtered.length,0) }} {{ t('patterns').toLowerCase() }}<template v-if="paginationEnabled"> · {{ page }} / {{ pageCount }}</template></span><button v-if="paginationEnabled" class="button" :disabled="page === pageCount" @click="page++">{{ t('nextPage') }}</button></div>
     </template>
     <p class="field-help form-section">Casa Cenina · {{ t('chartCatalogueChecked') }} {{ date(CHART_CATALOGUE.checkedAt) }} · {{ t('chartCatalogueAttribution') }}</p>
   </div>
