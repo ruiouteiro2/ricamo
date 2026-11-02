@@ -23,6 +23,10 @@ assert.equal(packaged.name,manifest.name);assert.equal(packaged.version,manifest
 for(const [name,version]of Object.entries(manifest.dependencies))assert.equal(packaged.dependencies[name],version);
 for(const path of files)assert.ok(['LICENSE','THIRD-PARTY-NOTICES.md','package.json','src/engine/dmc.json'].includes(path)||['core/','desktop/','dist/','data/','node_modules/'].some(prefix=>path.startsWith(prefix)),`Unexpected packaged file: ${path}`);
 
+// desktop/protocol.mjs answers 403 above this size, which leaves a lazy page blank without an error.
+const ASSET_LIMIT=32*1024*1024;
+for(const path of files.filter(path=>path.startsWith('dist/')))assert.ok(statFile(asar,internal(path)).size<=ASSET_LIMIT,`Packaged asset exceeds the protocol limit: ${path}`);
+
 const sources={};
 for(const folder of ['core','desktop','dist','data']){
   const expected={};
