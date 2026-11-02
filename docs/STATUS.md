@@ -1,5 +1,13 @@
 # Ricamo delivery evidence
 
+## Automatic DMC Colbert colour previews - Windows 0.6.25 - 2026-11-02
+
+Fixed the missing colour in Add Material > Choose from catalogue for DMC wool. The previous release exposed the official Colbert reference link but had no local Colbert product records, so code entry could not select an article or render a preview. Version 0.6.25 bundles 414 exact variants exposed by the official DMC product-data endpoint, including their codes, names when supplied, eight-metre skein fact and original manufacturer swatch images. Typing a code such as `7003` now selects the exact Laine Colbert item and displays its image automatically. The catalogue and images are local at runtime; no live request or approximate RGB value is used.
+
+Validation: production build passed; the isolated full Node suite reports 574 tests, 573 passed, one skipped and zero failures. The focused Edge and packaged-Electron journey passed exact Colbert lookup, decoded image preview, catalogue swatch, official reference opening, existing Diamant behavior, persistence, full backup and zero remote renderer requests. Package audit passed with `sourcesMatch: true` and `dirtyFiles: 0`.
+
+Installer `release/Ricamo-0.6.25-Windows-x64-Setup.exe`, SHA-256 `8e17ab96fbae68832f2c1c4cd7c9ada714835feddf7ae7b5c3e6eda36030888d`; packaged/installed ASAR SHA-256 `a3e636ad8c4f0b289b71fb1c8f66ecf4083c8708c59960230d30dc78d9393a74`. Ricamo was normally closed and a complete profile copy plus validated `.ricamobackup` was saved under `Desktop/Filo/Backup aggiornamenti` before silent current-user installation (exit 0). Registry reports 0.6.25. State revision 205, all 104 material records, attachment bytes and SQLite integrity match before/after; the installed window reopened successfully. Evidence: `.runtime/dmc-colbert-native-0625.log`, `.runtime/release-0625-package.log`, `.runtime/installed-upgrade-0625-verification.json`. Unsigned local build; no clean-PC/offline installation claim.
+
 ## Official DMC Colbert wool reference - Windows 0.6.24 - 2026-11-02
 
 Added the user-supplied official DMC Colbert wool URL (`https://www.dmc.com/FR/fr/products/dmc-wool-tapestry/colbert-wool`) as the catalogue reference shown specifically for DMC → Mouliné lanato. DMC now supports family-specific references: selecting wool shows DMC Lana Colbert, selecting Diamant shows the existing Diamant source, and unrelated brands/families do not inherit either link. No runtime catalogue fetching or inventory data mutation was added.
