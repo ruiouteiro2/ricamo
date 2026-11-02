@@ -5,6 +5,7 @@ import {mkdtempSync,mkdirSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {APP_VERSION} from '../core/version.mjs';
 import {assertElectronSecurity} from './electron-security.mjs';
+import catalogue from '../data/mill-hill-catalogue.json' with {type:'json'};
 
 assert.ok(process.env.RICAMO_EXECUTABLE,'RICAMO_EXECUTABLE is required');mkdirSync('.runtime',{recursive:true});const data=mkdtempSync(resolve('.runtime/mill-hill-'));
 const env={...process.env,RICAMO_DATA_DIR:data};delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_OPTIONS;
@@ -12,6 +13,7 @@ const app=await electron.launch({chromiumSandbox:true,executablePath:resolve(pro
 page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(/^https?:/.test(request.url()))requests.push(request.url());});
 const field=name=>page.getByLabel(name,{exact:true}),preview=page.locator('.catalogue-auto-preview'),form=page.getByRole('dialog'),menu=form.locator('select.catalogue-select');
 const card=name=>page.locator('.inventory-category-card').filter({has:page.getByRole('heading',{name,exact:true})});
+const inLine=line=>catalogue.products.filter(row=>row.range===line).length+1;
 const decoded=async()=>{const image=preview.locator('img');await expect(image).toBeVisible();assert.ok(await image.evaluate(element=>element.complete&&element.naturalWidth>0),'photo decodes');return image.getAttribute('src');};
 try{
  await page.locator('.sidebar').waitFor();assert.equal(await app.evaluate(({app})=>app.getVersion()),APP_VERSION);await assertElectronSecurity(app);await closeAfterMaterialSave(page);
@@ -22,7 +24,7 @@ try{
  await expect(form.locator('.thread-reference')).toContainText('Casa Cenina');
  // Same layout as threads: no name to type, a type menu and the code driving the preview.
  await expect(field('Nome *')).toHaveCount(0);await expect(field('Tipologia *')).toHaveValue('Glass Seed Beads');
- await expect(menu.locator('option')).toHaveCount(113,{timeout:15000});
+ await expect(menu.locator('option')).toHaveCount(inLine('Glass Seed Beads'),{timeout:15000});
  await field('Codice colore').fill('00143');
  await expect(preview).toContainText('Mill Hill · Glass Seed Beads · 00143',{timeout:15000});await expect(preview).toContainText('Robin Egg Blue Ceylon');
  const blue=await decoded();
@@ -31,7 +33,12 @@ try{
  await expect(preview).toContainText('Mill Hill · Glass Treasures · 12143',{timeout:15000});await expect(field('Tipologia *')).toHaveValue('Glass Treasures');
  assert.notEqual(await decoded(),blue);
  // Choosing a line after a catalogue code starts again from that line's menu.
- await field('Tipologia *').selectOption('Magnifica');await expect(field('Codice colore')).toHaveValue('');await expect(menu.locator('option')).toHaveCount(120,{timeout:15000});
+ await field('Tipologia *').selectOption('Magnifica');await expect(field('Codice colore')).toHaveValue('');await expect(menu.locator('option')).toHaveCount(inLine('Magnifica'),{timeout:15000});
+ // A sold article carries no mark; an out-of-production one shows its photo and says so.
+ await field('Codice colore').fill('13005');await expect(preview).toContainText('Mill Hill · Crystal Treasures · 13005',{timeout:15000});await decoded();await expect(preview.locator('.discontinued-badge')).toHaveText('Fuori produzione');await expect(field('Tipologia *')).toHaveValue('Crystal Treasures');
+ await field('Quantità posseduta').fill('1');await form.getByRole('button',{name:'Salva',exact:true}).click();await expect(form).toHaveCount(0);
+ await expect(page.locator('.table-wrap tbody tr').filter({hasText:'13005'}).locator('.discontinued-badge')).toHaveText('Fuori produzione');
+ await page.getByRole('button',{name:'Aggiungi materiale',exact:true}).first().click();await field('Tipologia *').selectOption('Magnifica');
  // An article unknown to the catalogue can still be saved by hand under the chosen line.
  await field('Codice colore').fill('99999');await expect(preview).toContainText('99999',{timeout:15000});await expect(field('Tipologia *')).toHaveValue('Magnifica');await expect(preview.locator('img')).toHaveCount(0);
  await field('Quantità posseduta').fill('1');await form.getByRole('button',{name:'Salva',exact:true}).click();await expect(form).toHaveCount(0);
@@ -40,7 +47,7 @@ try{
  await field('Codice colore').fill('00143');await expect(preview).toContainText('Robin Egg Blue Ceylon',{timeout:15000});
  await expect(form.getByText(/^confezion/i).or(form.getByText(/confezioni\. /))).not.toHaveCount(0);
  await field('Quantità posseduta').fill('2');await form.getByRole('button',{name:'Salva',exact:true}).click();await expect(form).toHaveCount(0);
- const row=page.locator('.table-wrap tbody tr').filter({hasText:'00143'});await expect(row).toBeVisible();await expect(row).toContainText('Mill Hill · Glass Seed Beads · 00143 · Robin Egg Blue Ceylon');await expect(row).toContainText('confezioni');
+ const row=page.locator('.table-wrap tbody tr').filter({hasText:'00143'});await expect(row).toBeVisible();await expect(row).toContainText('Mill Hill · Glass Seed Beads · 00143 · Robin Egg Blue Ceylon');await expect(row).toContainText('confezioni');await expect(row.locator('.discontinued-badge')).toHaveCount(0);
  assert.ok((await row.locator('.swatch').evaluate(element=>getComputedStyle(element).backgroundImage)).startsWith('url("data:image/'),'saved row shows the beads');
  // The saved row reopens in the same layout, and a changed code renames it.
  await row.getByRole('button',{name:/^Modifica/}).click();await expect(field('Nome *')).toHaveCount(0);await expect(field('Tipologia *')).toHaveValue('Glass Seed Beads');await expect(field('Codice colore')).toHaveValue('00143');
