@@ -30,6 +30,10 @@ try{
  await page.waitForTimeout(600);
  const shown=await select.evaluate(element=>element.querySelector('selectedcontent')?.textContent||element.selectedOptions[0]?.textContent||'');
  assert.ok(!/loading|caricamento/i.test(shown),`stale select label: ${shown}`);
+ // #12 lists 4145 but not 414: the longer code must not hide the colour of 414, nor replace it.
+ await field('Codice colore').fill('414');await field('Numero spessore').fill('12');
+ await expect(preview).toContainText('spessore 8',{timeout:15000});await expect(preview).toContainText('414');await expect(preview.locator('img')).toBeVisible();
+ await field('Codice colore').fill('4145');await expect(preview).toContainText("Retors d'Alsace #12",{timeout:15000});await expect(preview).toContainText('4145');await expect(preview.locator('img')).toBeVisible();
  // DMC lists 211 only at #8: #12 borrows that photo, says so, and the saved row keeps showing it.
  await field('Codice colore').fill('211');await field('Numero spessore').fill('12');
  await expect(preview).toContainText('spessore 8',{timeout:15000});await expect(preview.locator('img')).toBeVisible();
