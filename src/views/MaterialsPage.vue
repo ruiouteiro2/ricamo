@@ -3,7 +3,7 @@ import { productPreview, productPreviewStyle } from '../product-previews.mjs';
 import { CHART_CATALOGUE } from '../../core/chart-collection.mjs';
 import { INVENTORY_GROUPS, inventoryGroup, accessorySection, parseInventoryRoute, inventoryRoute, inventoryContext, matchesInventorySection } from '../inventory-navigation.mjs';
 import { materialSearchDescriptors } from '../material-descriptors.mjs';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, nextTick } from 'vue';
 import { Plus, Search, Package, CircleAlert, Download, ChevronLeft, ChevronRight, Heart, PackageOpen, Pencil, Trash2, ShoppingCart } from '@lucide/vue';
 import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
@@ -46,6 +46,11 @@ function applyView(view) { search.value=view.search||'';category.value=view.cate
 watch([search, category, location, filter, sort, page], () => { try { sessionStorage.setItem('ricamo:material-view', JSON.stringify(currentView())); } catch { /* Preference storage may be unavailable; inventory remains usable. */ } });
 async function rememberFilters() { preferenceBusy.value = true; preferenceError.value = ''; try { await dispatch('settings.save', { preferences: { ...state.value.settings.preferences, materialFilters: currentView() } }); notify(); } catch(error) { preferenceError.value = errorText(error); } finally { preferenceBusy.value = false; } }
 if (section.value.group) applyView({});
+const inventoryTable = ref(null);
+watch([page, search, category, location, filter, sort], async () => {
+  await nextTick();
+  inventoryTable.value?.scrollTo({ top: 0 });
+});
 const pageSize = 50;
 watch(() => props.initialAction, value => { if (value === 'new') adding.value = true; });
 watch(() => route.value.id, value => { if (value === 'new') adding.value = true; });
@@ -152,7 +157,7 @@ function workflowSaved(){workflow.value='';selected.value=[];}
       <EmptyState v-if="!rows.length" :icon="Package" :title="t('emptyMaterials')" :description="t('emptyMaterialsBody')"><button class="button primary" @click="adding = true"><Plus :size="16" />{{ t('addMaterial') }}</button></EmptyState>
       <EmptyState v-else-if="!filtered.length" :icon="Search" :title="t('noResults')"><button class="button" @click="clear">{{ t('clearFilters') }}</button></EmptyState>
       <template v-else>
-        <div class="table-wrap">
+        <div ref="inventoryTable" class="table-wrap">
           <table>
             <thead><tr><th><input type="checkbox" :checked="pageSelected" :indeterminate="!pageSelected && visible.some(row=>selected.includes(row.material.id))" :aria-label="t('selectVisibleMaterials')" @change="togglePage" /></th><th>{{ t('name') }}</th><th>{{ t('category') }}</th><th>{{ t('physical') }}</th><th>{{ t('available') }}</th><th><span class="sr-only">{{ t('status') }}</span></th><th>{{ t('actions') }}</th></tr></thead>
             <tbody><tr v-for="row in visible" :key="row.material.id"><td><input v-model="selected" :value="row.material.id" type="checkbox" :disabled="selected.length>=200 && !selected.includes(row.material.id)" :aria-label="t('selectMaterial',{name:row.material.name})" /></td>
