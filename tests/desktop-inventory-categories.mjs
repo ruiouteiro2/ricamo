@@ -1,3 +1,4 @@
+import {closeAfterMaterialSave} from './material-entry-preference.mjs';
 import {_electron as electron,expect} from '@playwright/test';
 import assert from 'node:assert/strict';
 import {mkdtempSync,mkdirSync,writeFileSync} from 'node:fs';
@@ -23,7 +24,7 @@ const add=async name=>{await card(name).getByRole('button',{name:'Aggiungi',exac
 const save=async()=>{await dialog.getByRole('button',{name:'Salva',exact:true}).click();await expect(dialog).toHaveCount(0);};
 const read=()=>page.evaluate(async()=>{const result=await window.ricamo.load();if(!result.ok)throw new Error(result.error?.code);return result.value;});
 try{
-await page.locator('.sidebar').waitFor();assert.equal(new URL(page.url()).protocol,'ricamo:');assert.equal(await app.evaluate(({app})=>app.getVersion()),APP_VERSION);const security=await assertElectronSecurity(app);await root();assert.deepEqual(await page.locator('.inventory-category-card h2').allTextContents(),['Fili','Perle','Stoffa','Accessori e merceria','Schemi']);assert.deepEqual(await page.locator('.inventory-category-card [data-inventory-icon]').evaluateAll(icons=>icons.map(icon=>icon.dataset.inventoryIcon)),['threads','beads','fabrics','accessories','charts']);await page.locator('.page').screenshot({path:join(data,'inventory-four-categories.png')});
+await page.locator('.sidebar').waitFor();await closeAfterMaterialSave(page);assert.equal(new URL(page.url()).protocol,'ricamo:');assert.equal(await app.evaluate(({app})=>app.getVersion()),APP_VERSION);const security=await assertElectronSecurity(app);await root();assert.deepEqual(await page.locator('.inventory-category-card h2').allTextContents(),['Fili','Perle','Stoffa','Accessori e merceria','Schemi']);assert.deepEqual(await page.locator('.inventory-category-card [data-inventory-icon]').evaluateAll(icons=>icons.map(icon=>icon.dataset.inventoryIcon)),['threads','beads','fabrics','accessories','charts']);await page.locator('.page').screenshot({path:join(data,'inventory-four-categories.png')});
 await add('Perle');await expect(dialog.locator('output').filter({hasText:'Mill Hill'})).toBeVisible();await dialog.getByRole('button',{name:'Annulla',exact:true}).click();
 await add('Stoffa');await expect(dialog.getByLabel(/^Marca/).locator('option')).toHaveCount(14);await expect(dialog.getByLabel('Categoria',{exact:true})).toHaveCount(0);await dialog.getByRole('button',{name:'Annulla',exact:true}).click();
 await page.getByRole('button',{name:'Aggiungi materiale',exact:true}).click();await expect(dialog).toBeVisible();
