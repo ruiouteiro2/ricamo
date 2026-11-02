@@ -71,6 +71,7 @@ export function validateState(state, { validatePattern } = {}) {
   oneOf(state.settings.paper, ['a4', 'letter'], 'paper');
   currency(state.settings.currency);
   if (state.settings.preferences !== undefined) object(state.settings.preferences, 'preferences');
+  if (state.settings.preferences?.keepMaterialFormOpen !== undefined) assert(typeof state.settings.preferences.keepMaterialFormOpen === 'boolean', 'invalid_boolean', { field: 'keepMaterialFormOpen' });
 
   for (const material of state.materials) {
     requiredText(material, ['name', 'category', 'brand', 'range', 'code', 'description', 'notes', 'color']);
