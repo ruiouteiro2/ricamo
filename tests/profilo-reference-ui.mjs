@@ -22,8 +22,11 @@ try{
  await expect(form.locator('.thread-reference')).toContainText('Profilo 6 Mouliné');await expect(form.locator('.thread-reference')).toContainText('Casa Cenina');
  await expect(field('Tipologia *')).toHaveValue('mouline');await field('Codice colore').fill('002');
  await expect(preview).toContainText('Profilo · 6 Mouliné · 002',{timeout:15000});
+ const image=preview.locator('img');await expect(image).toBeVisible();assert.ok(await image.evaluate(element=>element.complete&&element.naturalWidth>0),'swatch decodes');
+ await expect(form.locator('select.catalogue-select')).not.toContainText('Colore digitale non disponibile');
  await field('Quantità posseduta').fill('2');await form.getByRole('button',{name:'Salva',exact:true}).click();await expect(form).toHaveCount(0);
  const row=page.locator('.table-wrap tbody tr').filter({hasText:'002'});await expect(row).toBeVisible();await expect(row).toContainText('matasse');
+ assert.ok((await row.locator('.swatch').evaluate(element=>getComputedStyle(element).backgroundImage)).startsWith('url("data:image/'),'saved row shows the colour');
  await row.getByRole('button',{name:/^Modifica filo:/}).click();await expect(field('Tipologia *')).toHaveValue('mouline');await form.getByRole('button',{name:'Annulla',exact:true}).click();
  assert.deepEqual(errors,[]);assert.deepEqual(requests,[]);console.log('PASS: Profilo reference and Mouliné catalogue choice. Evidence: '+data);
 }catch(error){await page.screenshot({path:resolve(data,'failure.png')});throw error;}finally{await app.close();}
