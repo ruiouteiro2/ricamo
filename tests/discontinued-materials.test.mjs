@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {discontinuedEntry,isDiscontinued} from '../core/discontinued-materials.mjs';
-import {bundledSupplierProducts,supplierIdentity} from '../core/supplier-products.mjs';
+import {bundledSupplierProducts,supplierIdentity,validateSupplierMaterial} from '../core/supplier-products.mjs';
 import {productPreview} from '../src/product-previews.mjs';
 import catalogue from '../data/discontinued-materials.json' with {type:'json'};
 import {addZeroStockPurchases,generatePurchases,savePurchase,zeroStockPurchases} from '../core/purchasing.mjs';
-import {missingMillHillArticles,millHillMaterial} from '../src/mill-hill-catalogue.mjs';
+import {missingCatalogueArticles,catalogueMaterial,hasCatalogueRows} from '../src/catalogue-rows.mjs';
 
 const bead=code=>({brand:'Mill Hill',range:'Crystal Treasures',code,properties:{}});
 const thread=(code,range='Mouliné')=>({brand:'DMC',range,code,properties:{}});
@@ -58,10 +58,29 @@ test('project demand skips an out-of-production article',()=>{
 });
 
 test('the catalogue list leaves out what is already in the inventory',()=>{
- const all=missingMillHillArticles([]);assert.equal(all.length,bundledSupplierProducts().filter(row=>row.id.startsWith('casa-mh-')).length);
+ const all=missingCatalogueArticles('Mill Hill',[]);assert.equal(all.length,bundledSupplierProducts().filter(row=>row.id.startsWith('casa-mh-')).length);
  assert.ok(all.find(row=>row.product.code==='13005').discontinued);assert.ok(!all.find(row=>row.product.code==='00143').discontinued);
- const left=missingMillHillArticles([owned('a','00143'),{...owned('b','12143'),archived:true},{...owned('c','13005'),brand:'Altro'}]);
+ const left=missingCatalogueArticles('Mill Hill',[owned('a','00143'),{...owned('b','12143'),archived:true},{...owned('c','13005'),brand:'Altro'}]);
  assert.ok(!left.some(row=>row.product.code==='00143'));assert.ok(left.some(row=>row.product.code==='12143'));assert.ok(left.some(row=>row.product.code==='13005'));
- const button=all.find(row=>!row.product.code).product;assert.ok(!missingMillHillArticles([{...owned('d',''),properties:{product:button}}]).some(row=>row.product.id===button.id));
- const material=millHillMaterial(all.find(row=>row.product.code==='00143').product,'id');assert.equal(material.unit,'pack');assert.equal(material.name,'Mill Hill · Glass Seed Beads · 00143 · Robin Egg Blue Ceylon');
+ const button=all.find(row=>!row.product.code).product;assert.ok(!missingCatalogueArticles('Mill Hill',[{...owned('d',''),properties:{product:button}}]).some(row=>row.product.id===button.id));
+ const material=catalogueMaterial(all.find(row=>row.product.code==='00143').product,'id');assert.equal(material.unit,'pack');assert.equal(material.name,'Mill Hill · Glass Seed Beads · 00143 · Robin Egg Blue Ceylon');
+});
+
+const dmcThread=(code,range='Mouliné')=>({id:code,brand:'DMC',range,code,category:'thread',properties:{}});
+test('each DMC Mouliné colour appears once until it is entered',()=>{
+ const all=missingCatalogueArticles('DMC',[]);assert.equal(new Set(all.map(row=>supplierIdentity(row.product))).size,all.length);
+ assert.ok(hasCatalogueRows('DMC'));assert.ok(hasCatalogueRows('Mill Hill'));assert.ok(!hasCatalogueRows('Anchor'));assert.ok(!hasCatalogueRows(undefined));
+ assert.equal(all.length,new Set(bundledSupplierProducts().filter(row=>row.brand==='DMC'&&row.range==='Mouliné'&&row.category==='thread').map(supplierIdentity)).size+catalogue.entries.filter(row=>row.brand==='DMC').length);
+ assert.ok(all.every(row=>row.product.range==='Mouliné'));
+ assert.ok(!missingCatalogueArticles('DMC',[dmcThread('ECRU')]).some(row=>/^ecru$/i.test(row.product.code)));
+ assert.ok(!missingCatalogueArticles('DMC',[dmcThread('blanc')]).some(row=>/^blanc$/i.test(row.product.code)));
+ assert.ok(missingCatalogueArticles('DMC',[dmcThread('321','Perlé 5')]).some(row=>row.product.code==='321'),'another line does not own the Mouliné colour');
+ assert.ok(missingCatalogueArticles('DMC',[{...dmcThread('321'),archived:true}]).some(row=>row.product.code==='321'));
+ assert.ok(!missingCatalogueArticles('DMC',[dmcThread('321')]).some(row=>row.product.code==='321'));
+});
+test('a DMC Mouliné order uses the same shape as a thread entered in the form',()=>{
+ const all=missingCatalogueArticles('DMC',[]),red=all.find(row=>row.product.code==='321');assert.ok(!red.discontinued);
+ const material=catalogueMaterial(red.product,'id');assert.equal(material.name,'DMC · Mouliné · 321');assert.equal(material.unit,'skein');assert.equal(material.strands,6);assert.equal(material.divisible,true);assert.equal(material.properties.threadFamily,'mouline');assert.equal(material.properties.quantityBasis,'package-count');assert.equal(material.color,red.product.hex);
+ assert.equal(validateSupplierMaterial(material).id,red.product.id);
+ const retired=all.find(row=>row.product.code==='222');assert.ok(retired.discontinued);
 });
