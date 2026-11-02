@@ -44,7 +44,7 @@ export function createExampleStudio({ owner, root }) {
       opening = (async () => {
         language = locale === 'en' ? 'en' : 'it'; closeGuard = false; closeAuthorized = false;
         const isolated = await exampleSession();
-        window = new BrowserWindow({ parent: owner, modal: true, ...initialWindowBounds(screen.getDisplayMatching(owner.getBounds()).workArea, { width: 1360, height: 920 }), title: language === 'en' ? 'Ricamo — example studio' : 'Ricamo — atelier di esempio', backgroundColor: '#f7f5f1', show: false,
+        window = new BrowserWindow({ parent: owner, modal: true, ...initialWindowBounds(screen.getDisplayMatching(owner.getBounds()).workArea, { width: 1360, height: 920 }), title: language === 'en' ? 'Ricamo — example studio' : 'Ricamo — atelier di esempio', backgroundColor: '#fbf7f6', show: false,
           webPreferences: { session: isolated, preload: join(root, 'desktop', 'example-preload.cjs'), contextIsolation: true, sandbox: true, nodeIntegration: false, webSecurity: true, spellcheck: false, webviewTag: false } });
         window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
         window.webContents.on('will-navigate', event => event.preventDefault());
