@@ -10,6 +10,7 @@ import { storage } from '../storage';
 import { t, number, money, date, language, errorText } from '../i18n';
 import { shoppingNeeds } from '../../core/commands.mjs';
 import { zeroStockPurchases } from '../../core/purchasing.mjs';
+import { isDiscontinued } from '../../core/discontinued-materials.mjs';
 import { quantity, DomainError, subtract } from '../../core/shared.mjs';
 
 const documentsId=ref(null);
@@ -38,7 +39,7 @@ const costs = computed(() => {
   return Object.entries(totals);
 });
 const unpriced = computed(() => filteredOrders.value.filter(order => order.unitPrice === null).length);
-const materialOptions = computed(() => state.value.materials.filter(m => !m.archived || m.id === form.value?.initial.materialId).map(m => ({ value: m.id, label: `${m.name}${m.code ? ` · ${m.code}` : ''} (${t(m.unit)})` })));
+const materialOptions = computed(() => state.value.materials.filter(m => (!m.archived && !isDiscontinued(m)) || m.id === form.value?.initial.materialId).map(m => ({ value: m.id, label: `${m.name}${m.code ? ` · ${m.code}` : ''} (${t(m.unit)})` })));
 const locationOptions = computed(() => state.value.locations.map(l => ({ value: l.id, label: locate(l.id) })).sort((a, b) => a.label.localeCompare(b.label)));
 const supplierOptions = computed(() => state.value.suppliers.map(s => ({ value: s.id, label: s.name })));
 const projectOptions = computed(() => state.value.projects.map(p => ({ value: p.id, label: p.name })));
@@ -165,7 +166,7 @@ if (route.value.page === 'shopping' && route.value.id) {
   if (material && !material.archived) {
     const existing = state.value.purchases.find(row => row.materialId === material.id && !['received','cancelled'].includes(row.status));
     if (existing) openPurchase(existing);
-    else openPurchase(null, { materialId: material.id, toOrder: 1, allocations: [] });
+    else if (!isDiscontinued(material)) openPurchase(null, { materialId: material.id, toOrder: 1, allocations: [] });
   }
 }
 </script>
@@ -222,16 +223,16 @@ if (route.value.page === 'shopping' && route.value.id) {
   </template>
   <template v-else-if="tab === 'requirements'">
     <p class="notice">{{ t('aggregateHelp') }}</p>
-    <div class="panel"><div class="panel-heading"><h2>{{ t('requirements') }}</h2><button class="button primary" :disabled="busy || !requirements.some(r => !r.unknownDemand && r.toOrder > 0)" @click="generate"><RefreshCw :size="16" />{{ busy ? t('saving') : t('generateShopping') }}</button></div>
+    <div class="panel"><div class="panel-heading"><h2>{{ t('requirements') }}</h2><button class="button primary" :disabled="busy || !requirements.some(r => !r.unknownDemand && r.toOrder > 0 && !isDiscontinued(materialById.get(r.materialId)))" @click="generate"><RefreshCw :size="16" />{{ busy ? t('saving') : t('generateShopping') }}</button></div>
       <div v-if="matchingRequirements.length" class="table-wrap"><table><caption class="sr-only">{{ t('requirements') }}</caption><thead><tr><th>{{ t('material') }}</th><th>{{ t('remaining') }}</th><th>{{ t('availableForProjects') }}</th><th>{{ t('ordered') }}</th><th>{{ t('shortage') }}</th><th>{{ t('toOrder') }}</th><th><span class="sr-only">{{ t('actions') }}</span></th></tr></thead><tbody>
         <tr v-for="need in matchingRequirements" :key="need.materialId">
-          <td><button class="cell-title" @click="navigate('material', need.materialId)">{{ materialName(need.materialId) }}</button><span class="cell-subtitle mono">{{ materialCode(need.materialId) }}</span><span class="cell-subtitle">{{ projectNames(need.allocations.map(a => a.projectId)) }}</span><span v-if="need.unknownStock || need.unknownDemand" class="badge warning">{{ t('needsReview') }}</span></td>
+          <td><button class="cell-title" @click="navigate('material', need.materialId)">{{ materialName(need.materialId) }}</button><span class="cell-subtitle mono">{{ materialCode(need.materialId) }}</span><span class="cell-subtitle">{{ projectNames(need.allocations.map(a => a.projectId)) }}</span><span v-if="need.unknownStock || need.unknownDemand" class="badge warning">{{ t('needsReview') }}</span><span v-if="isDiscontinued(materialById.get(need.materialId))" class="badge">{{ t('descriptorOption_discontinued') }}</span></td>
           <td>{{ number(need.remaining, 6) }}<span class="cell-subtitle">{{ t(need.unit) }}</span></td>
           <td>{{ number(need.eligibleForGroup, 6) }}<span v-if="need.estimatedStock" class="cell-subtitle">{{ t('estimated') }}</span><span class="cell-subtitle">{{ t('reserved') }}: {{ number(need.reserved, 6) }}</span></td>
           <td>{{ number(need.ordered, 6) }}</td>
           <td><span :class="{ 'badge warning': need.knownShortfall > 0 }">{{ number(need.shortfall, 6) }}</span></td>
           <td>{{ number(need.toOrder, 6) }}<span v-if="need.packageCount !== null && need.toOrder > 0" class="cell-subtitle">{{ t('packageRoundingHelp') }}</span></td>
-          <td><button class="button small" :disabled="need.unknownDemand || !need.toOrder" @click="openPurchase(null, need)"><Plus :size="15" />{{ t('add') }}</button></td>
+          <td><button class="button small" :disabled="need.unknownDemand || !need.toOrder || isDiscontinued(materialById.get(need.materialId))" @click="openPurchase(null, need)"><Plus :size="15" />{{ t('add') }}</button></td>
         </tr>
       </tbody></table></div>
       <EmptyState v-else :icon="ClipboardList" :title="t('noRequirements')" :description="t('noRequirementsHelp')"><button class="button" @click="navigate('projects')">{{ t('projects') }}</button></EmptyState>
