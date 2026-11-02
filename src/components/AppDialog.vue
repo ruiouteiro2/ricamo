@@ -16,7 +16,7 @@ onMounted(async () => {
   previous = document.activeElement;
   dialog.value.showModal();
   await nextTick();
-  dialog.value.querySelector('[autofocus], input, select, textarea, button')?.focus();
+  (dialog.value.querySelector('[autofocus]') || dialog.value.querySelector('input, select, textarea, button'))?.focus();
 });
 onBeforeUnmount(() => { dialog.value?.close(); previous?.focus?.(); });
 </script>
