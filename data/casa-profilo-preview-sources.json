@@ -1,0 +1,2808 @@
+{
+  "format": "ricamo-casa-profilo-previews",
+  "version": 1,
+  "retrievedAt": "2026-11-02T18:11:26.170589+00:00",
+  "missing": [],
+  "evidence": [
+    {
+      "code": "002",
+      "productUrl": "https://www.casacenina.it/stafil/profilo002.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7657/761.jpg",
+      "previewSha256": "14f5fe0e7ef68be71a3e1bf43f269af9b6db7345712ebff8a86349a695b74ba2",
+      "dmcEquivalent": "761"
+    },
+    {
+      "code": "003",
+      "productUrl": "https://www.casacenina.it/stafil/profilo003.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7656/760.jpg",
+      "previewSha256": "6e9aff9cc4b4a8e1eb590af6229d30d9a49ba8f1b73125f55b41c82e890e9757",
+      "dmcEquivalent": "760"
+    },
+    {
+      "code": "004",
+      "productUrl": "https://www.casacenina.it/stafil/profilo004.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7829/3712.jpg",
+      "previewSha256": "82fd2ea3a60e5609a16b4149b55ec0fc8bd15b59b656b90cf482939846352687",
+      "dmcEquivalent": "3712"
+    },
+    {
+      "code": "006",
+      "productUrl": "https://www.casacenina.it/stafil/profilo006.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7806/3328.jpg",
+      "previewSha256": "1a6b7893e90c551b0b3d5f2c4b067fed5e5e6e888f89e6652a9af2caf4082081",
+      "dmcEquivalent": "3328"
+    },
+    {
+      "code": "007",
+      "productUrl": "https://www.casacenina.it/stafil/profilo007.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7542/353.jpg",
+      "previewSha256": "9b05a387522dca5f266e49c5d3a712b6e413849406893fa03530f2c4deb0d375",
+      "dmcEquivalent": "353"
+    },
+    {
+      "code": "008",
+      "productUrl": "https://www.casacenina.it/stafil/profilo008.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7541/352.jpg",
+      "previewSha256": "3b605d318440ecab7cd3df1b21b3050ede89c9f0545c45574bbf850981e65a56",
+      "dmcEquivalent": "352"
+    },
+    {
+      "code": "009",
+      "productUrl": "https://www.casacenina.it/stafil/profilo009.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7540/351.jpg",
+      "previewSha256": "90a9f2ad1a5884eaf89353f166f3bcb0cc85cdaa87a8b342e97f388cc855051e",
+      "dmcEquivalent": "351"
+    },
+    {
+      "code": "011",
+      "productUrl": "https://www.casacenina.it/stafil/profilo011.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7539/350.jpg",
+      "previewSha256": "939eb60508dca462ed16b603dc2bb7d7d9ed13e2e009de01394e641f491d66be",
+      "dmcEquivalent": "350"
+    },
+    {
+      "code": "012",
+      "productUrl": "https://www.casacenina.it/stafil/profilo012.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7828/3708.jpg",
+      "previewSha256": "75b0fa02927219dc2ce70dc53cc7e5230a33d0c7b45b1fb110a7e035a137fbf7",
+      "dmcEquivalent": "3708"
+    },
+    {
+      "code": "014",
+      "productUrl": "https://www.casacenina.it/stafil/profilo014.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7827/3706.jpg",
+      "previewSha256": "bef6acd03d6a09f68e86334c20e5e281394c3a2c08b574428335da3f2dcb0d6b",
+      "dmcEquivalent": "3706"
+    },
+    {
+      "code": "015",
+      "productUrl": "https://www.casacenina.it/stafil/profilo015.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7826/3705.jpg",
+      "previewSha256": "c1d37664dc2ef299d84bfb05da0e65bd26050cc2486f7c64274ae83a7cdaf6b8",
+      "dmcEquivalent": "3705"
+    },
+    {
+      "code": "016",
+      "productUrl": "https://www.casacenina.it/stafil/profilo016.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7864/3801.jpg",
+      "previewSha256": "e18d300ec7338cdbfbad6e2ca9eb9603a907eff6d0a01e93b6c446a9a8d64243",
+      "dmcEquivalent": "3801"
+    },
+    {
+      "code": "017",
+      "productUrl": "https://www.casacenina.it/stafil/profilo017.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7620/666.jpg",
+      "previewSha256": "1832943423f367f3e3f3545efbc93b11f594485a3aff9d837e7438ec97f2b10c",
+      "dmcEquivalent": "666"
+    },
+    {
+      "code": "018",
+      "productUrl": "https://www.casacenina.it/stafil/profilo018.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7527/321.jpg",
+      "previewSha256": "de6f48f409e71917a08235ecaa09d588db99f882c2be1c09e8d873191e1ff78d",
+      "dmcEquivalent": "321"
+    },
+    {
+      "code": "019",
+      "productUrl": "https://www.casacenina.it/stafil/profilo019.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7573/498.jpg",
+      "previewSha256": "b4f4ba2fd064f5c61d95abaa2e37dcd5937829676ce61df3eb06f10b73ed3041",
+      "dmcEquivalent": "498"
+    },
+    {
+      "code": "022",
+      "productUrl": "https://www.casacenina.it/stafil/profilo022.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7684/815.jpg",
+      "previewSha256": "4664751b30120dc96a0173d94cbb50f031b035a0b79e1e2fbdfc1fee06278363",
+      "dmcEquivalent": "815"
+    },
+    {
+      "code": "023",
+      "productUrl": "https://www.casacenina.it/stafil/profilo023.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7683/814.jpg",
+      "previewSha256": "c822663fa8ff7258cc058bd3ce4e738dc0d93424f206fa802e1444266768e6fc",
+      "dmcEquivalent": "814"
+    },
+    {
+      "code": "024",
+      "productUrl": "https://www.casacenina.it/stafil/profilo024.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7714/894.jpg",
+      "previewSha256": "b18025dcb734afb09e920d59598a061e9ec7ce2f4edac642bc93a41ddc5677bd",
+      "dmcEquivalent": "894"
+    },
+    {
+      "code": "025",
+      "productUrl": "https://www.casacenina.it/stafil/profilo025.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7713/893.jpg",
+      "previewSha256": "47e924b0d6cca7106c22332c91f709364136b255e5b0203791fe9e789967b0ff",
+      "dmcEquivalent": "893"
+    },
+    {
+      "code": "026",
+      "productUrl": "https://www.casacenina.it/stafil/profilo026.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7712/892.jpg",
+      "previewSha256": "5319aea5620f01b7072d602526101fbdf88c8158522beacdb3c23533f04ed779",
+      "dmcEquivalent": "892"
+    },
+    {
+      "code": "027",
+      "productUrl": "https://www.casacenina.it/stafil/profilo027.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7711/891.jpg",
+      "previewSha256": "9c9b6fbc36164282abe745be31a3ff211f2d65192f0b666a570f9d658124d6c9",
+      "dmcEquivalent": "891"
+    },
+    {
+      "code": "028",
+      "productUrl": "https://www.casacenina.it/stafil/profilo028.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7687/818.jpg",
+      "previewSha256": "f51f8f456128b7555d82a78474397c444b3b25f27784eaee7db2a65e26a92ef0",
+      "dmcEquivalent": "818"
+    },
+    {
+      "code": "029",
+      "productUrl": "https://www.casacenina.it/stafil/profilo029.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7759/957.jpg",
+      "previewSha256": "fc69694c7a75179682298738bd5baf3b773ad7ccd02ed1a70a69e68f5f0b17d6",
+      "dmcEquivalent": "957"
+    },
+    {
+      "code": "030",
+      "productUrl": "https://www.casacenina.it/stafil/profilo030.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7758/956.jpg",
+      "previewSha256": "8390cd06017326c43e56015c42cba00ea98ce0a364b7cb2a01eb4345d91b21c3",
+      "dmcEquivalent": "956"
+    },
+    {
+      "code": "031",
+      "productUrl": "https://www.casacenina.it/stafil/profilo031.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7517/309.jpg",
+      "previewSha256": "7c6e99c15b3d2927b8cb0a3a3a753e5b5c3a8ad5c21f5c6ee95822cf759123e4",
+      "dmcEquivalent": "309"
+    },
+    {
+      "code": "032",
+      "productUrl": "https://www.casacenina.it/stafil/profilo032.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_014/packshot/7764/963.jpg",
+      "previewSha256": "f58e82105e17d2bbce0c195d84b90f9ffa5773a6430317445dc75e6983b7ace8",
+      "dmcEquivalent": "963"
+    },
+    {
+      "code": "033",
+      "productUrl": "https://www.casacenina.it/stafil/profilo033.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7831/3716.jpg",
+      "previewSha256": "f23c5aaa6046d03cec90f9cefbe76a2f3a5b4e56fe9bc9ef3a978487078e12d6",
+      "dmcEquivalent": "3716"
+    },
+    {
+      "code": "034",
+      "productUrl": "https://www.casacenina.it/stafil/profilo034.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_014/packshot/7763/962.jpg",
+      "previewSha256": "852f4837abc9f7efed49e90011eef5a0841b933cec4306c710b02f4ea463704d",
+      "dmcEquivalent": "962"
+    },
+    {
+      "code": "035",
+      "productUrl": "https://www.casacenina.it/stafil/profilo035.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_014/packshot/7762/961.jpg",
+      "previewSha256": "2577cccc2d6d810e3176aaff8d953ecef02f84b1826e6fe8cacb00da4395211f",
+      "dmcEquivalent": "961"
+    },
+    {
+      "code": "036",
+      "productUrl": "https://www.casacenina.it/stafil/profilo036.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7896/3833.jpg",
+      "previewSha256": "dcf1c40d207962e44f098a9a5521bfbaf406f74d4fe172b24600b7880cf7a6f7",
+      "dmcEquivalent": "3833"
+    },
+    {
+      "code": "037",
+      "productUrl": "https://www.casacenina.it/stafil/profilo037.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7895/3832.jpg",
+      "previewSha256": "dccd5d788bd370cde36344aad1c50af55df9c2647adc1d770bf78455c085132e",
+      "dmcEquivalent": "3832"
+    },
+    {
+      "code": "039",
+      "productUrl": "https://www.casacenina.it/stafil/profilo039.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7662/777.jpg",
+      "previewSha256": "6d05fba272e1c420fe6dfe27e0609f9d072a8adc9a27449250d7c7d2c045a6d6",
+      "dmcEquivalent": "777"
+    },
+    {
+      "code": "040",
+      "productUrl": "https://www.casacenina.it/stafil/profilo040.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7688/819.jpg",
+      "previewSha256": "af014e88aff5111f1b040b3b6b35505b4687a281cd29022bac8c4a402e871dd3",
+      "dmcEquivalent": "819"
+    },
+    {
+      "code": "041",
+      "productUrl": "https://www.casacenina.it/stafil/profilo041.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7805/3326.jpg",
+      "previewSha256": "fb61d2ab071b2fd10bcd60cb6da4cb88410703ed2e106a93eaad8836204f88de",
+      "dmcEquivalent": "3326"
+    },
+    {
+      "code": "042",
+      "productUrl": "https://www.casacenina.it/stafil/profilo042.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7717/899.jpg",
+      "previewSha256": "60ced76f7f569315dc530c725366e95619cade665a3a826c1f9925e829339878",
+      "dmcEquivalent": "899"
+    },
+    {
+      "code": "043",
+      "productUrl": "https://www.casacenina.it/stafil/profilo043.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7533/335.jpg",
+      "previewSha256": "8804e978c0b2b2e4a9015f6e3738b942c0e3d4a077d74c23f0fc695aa6967f09",
+      "dmcEquivalent": "335"
+    },
+    {
+      "code": "044",
+      "productUrl": "https://www.casacenina.it/stafil/profilo044.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7529/326.jpg",
+      "previewSha256": "c3741b1b11ecd20ebaba5e9570931943fc706ad0d1f05fb75851ce12f8696936",
+      "dmcEquivalent": "326"
+    },
+    {
+      "code": "045",
+      "productUrl": "https://www.casacenina.it/stafil/profilo045.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7814/3354.jpg",
+      "previewSha256": "2b9331ec0ad8548fad8fbf06ac5006fbdf44b1ac56dec6e731ce64d4bb122ea6",
+      "dmcEquivalent": "3354"
+    },
+    {
+      "code": "047",
+      "productUrl": "https://www.casacenina.it/stafil/profilo047.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7836/3733.jpg",
+      "previewSha256": "623f31b42003b2df26c0141a487550bf7bf6ec603692db65091e39086db64282",
+      "dmcEquivalent": "3733"
+    },
+    {
+      "code": "048",
+      "productUrl": "https://www.casacenina.it/stafil/profilo048.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_055/packshot/33383/3731.jpg",
+      "previewSha256": "084f2bb21894d8d5959bce7197ee5ba8e02e61220d4fe97393ac8d35327beb10",
+      "dmcEquivalent": "3731"
+    },
+    {
+      "code": "049",
+      "productUrl": "https://www.casacenina.it/stafil/profilo049.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7813/3350.jpg",
+      "previewSha256": "6840ea564379154f2432dd1a92c4e478c9c8f47ea1cacdf6e4af84c0361905ab",
+      "dmcEquivalent": "3350"
+    },
+    {
+      "code": "050",
+      "productUrl": "https://www.casacenina.it/stafil/profilo050.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7485/150.jpg",
+      "previewSha256": "1c93b32ac030078f8ac7050c0ee985bb625005d1e31186bd3223054301e85196",
+      "dmcEquivalent": "150"
+    },
+    {
+      "code": "051",
+      "productUrl": "https://www.casacenina.it/stafil/profilo051.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7825/3689.jpg",
+      "previewSha256": "b7d65eed6c9667a2f64fa3e168cc871cc244eb5e3a9c2c59fc276deb73418c81",
+      "dmcEquivalent": "3689"
+    },
+    {
+      "code": "052",
+      "productUrl": "https://www.casacenina.it/stafil/profilo052.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7824/3688.jpg",
+      "previewSha256": "33fa796f1652e587a59acb7360ce9a946697c3f746106a35690be5d801f1ea1e",
+      "dmcEquivalent": "3688"
+    },
+    {
+      "code": "053",
+      "productUrl": "https://www.casacenina.it/stafil/profilo053.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7823/3687.jpg",
+      "previewSha256": "45d3436e5716f162285a81757a5a0b1b57cdef91f0db1bf0a73514677f5a67a9",
+      "dmcEquivalent": "3687"
+    },
+    {
+      "code": "054",
+      "productUrl": "https://www.casacenina.it/stafil/profilo054.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7866/3803.jpg",
+      "previewSha256": "329270a01fc2e5a839179e4319bc350a8a131f760b1745f0f50483fba58dae5d",
+      "dmcEquivalent": "3803"
+    },
+    {
+      "code": "055",
+      "productUrl": "https://www.casacenina.it/stafil/profilo055.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7822/3685.jpg",
+      "previewSha256": "30d459c96fc508de9ce0210758c7019d5d6d9c985ac6ceba26c39507e7940337",
+      "dmcEquivalent": "3685"
+    },
+    {
+      "code": "056",
+      "productUrl": "https://www.casacenina.it/stafil/profilo056.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7605/605.jpg",
+      "previewSha256": "c4d8cb201d6bed1044ef2f19160242cab2b66f2124bf8063e5fefc339f119601",
+      "dmcEquivalent": "605"
+    },
+    {
+      "code": "057",
+      "productUrl": "https://www.casacenina.it/stafil/profilo057.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7604/604.jpg",
+      "previewSha256": "11147448dfcef687a0d84a3189a37bc4ae5778d249c605be9715015cfa71c899",
+      "dmcEquivalent": "604"
+    },
+    {
+      "code": "059",
+      "productUrl": "https://www.casacenina.it/stafil/profilo059.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7602/602.jpg",
+      "previewSha256": "ceb804278dff784992ff84884ad0f54399c5d24f02c6b95d641b22b2fbe79ca2",
+      "dmcEquivalent": "602"
+    },
+    {
+      "code": "060",
+      "productUrl": "https://www.casacenina.it/stafil/profilo060.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7601/601.jpg",
+      "previewSha256": "d2e0d9ccdf19891b1229997d8cf79d2d1b08505cf9999e844a26c94b77ab7a0e",
+      "dmcEquivalent": "601"
+    },
+    {
+      "code": "062",
+      "productUrl": "https://www.casacenina.it/stafil/profilo062.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7869/3806.jpg",
+      "previewSha256": "1de12074235e03ad4917898277762f2a3bfbb9875feff6af5355ac4568558e3b",
+      "dmcEquivalent": "3806"
+    },
+    {
+      "code": "063",
+      "productUrl": "https://www.casacenina.it/stafil/profilo063.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7868/3805.jpg",
+      "previewSha256": "42020ec58e3eb84ec135c80ffbbee6531d7c28bd197d85d6f77e9a61814e54de",
+      "dmcEquivalent": "3805"
+    },
+    {
+      "code": "064",
+      "productUrl": "https://www.casacenina.it/stafil/profilo064.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7867/3804.jpg",
+      "previewSha256": "257513e315fe080c7d4d52fa6990d30da503e1d76a9685f738e41e7927e76223",
+      "dmcEquivalent": "3804"
+    },
+    {
+      "code": "065",
+      "productUrl": "https://www.casacenina.it/stafil/profilo065.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7821/3609.jpg",
+      "previewSha256": "44725b558345eb8812f3f5754bbc5ecd5bac09a5d7caaa5000bf244bfd2e322d",
+      "dmcEquivalent": "3609"
+    },
+    {
+      "code": "066",
+      "productUrl": "https://www.casacenina.it/stafil/profilo066.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7820/3608.jpg",
+      "previewSha256": "6c82e9b60ac06b1dba181921e83894e5bf62c4479afd5166fa2094b81fcb49ea",
+      "dmcEquivalent": "3608"
+    },
+    {
+      "code": "067",
+      "productUrl": "https://www.casacenina.it/stafil/profilo067.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7819/3607.jpg",
+      "previewSha256": "0d84936ca1a6ea649f118bbb09b7874dbfe2248d5109a57eddc627d982c2b23a",
+      "dmcEquivalent": "3607"
+    },
+    {
+      "code": "068",
+      "productUrl": "https://www.casacenina.it/stafil/profilo068.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7730/917.jpg",
+      "previewSha256": "d2c940b5bf7447e86f188ac9d86ae16728b4a1ec1934b7312cd5d90bbffd1ca1",
+      "dmcEquivalent": "917"
+    },
+    {
+      "code": "070",
+      "productUrl": "https://www.casacenina.it/stafil/profilo070.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7729/915.jpg",
+      "previewSha256": "adbdedf7881098eeb84c1639b0bdf4c697b91daf223c051864a149fea78a427c",
+      "dmcEquivalent": "915"
+    },
+    {
+      "code": "071",
+      "productUrl": "https://www.casacenina.it/stafil/profilo071.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7512/225.jpg",
+      "previewSha256": "dbab0f3ab26a89491071288a7bdd5656918d772d63e29a13ead08f27ccd5b6c5",
+      "dmcEquivalent": "225"
+    },
+    {
+      "code": "073",
+      "productUrl": "https://www.casacenina.it/stafil/profilo073.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7511/224.jpg",
+      "previewSha256": "b73e17ac2411873ede67bf5a3b660b0fece7ac0b526e82367b1d87b3a44423db",
+      "dmcEquivalent": "224"
+    },
+    {
+      "code": "074",
+      "productUrl": "https://www.casacenina.it/stafil/profilo074.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7510/223.jpg",
+      "previewSha256": "052ca4bf4491d8fe438413be0f948e57f3d8ccc63acfef872aada0ba7217249f",
+      "dmcEquivalent": "223"
+    },
+    {
+      "code": "075",
+      "productUrl": "https://www.casacenina.it/stafil/profilo075.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7833/3722.jpg",
+      "previewSha256": "c31cae7eaa85135f682c9bf9d675a40c1ce890e4de74f084b1d36c9caf14f99d",
+      "dmcEquivalent": "3722"
+    },
+    {
+      "code": "076",
+      "productUrl": "https://www.casacenina.it/stafil/profilo076.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7832/3721.jpg",
+      "previewSha256": "c31cae7eaa85135f682c9bf9d675a40c1ce890e4de74f084b1d36c9caf14f99d",
+      "dmcEquivalent": "3721"
+    },
+    {
+      "code": "077",
+      "productUrl": "https://www.casacenina.it/stafil/profilo077.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7509/221.jpg",
+      "previewSha256": "57bae126bf7138e35a318ea3dcebe888780282e8ef3fe5ad83071c614e7ff39a",
+      "dmcEquivalent": "221"
+    },
+    {
+      "code": "078",
+      "productUrl": "https://www.casacenina.it/stafil/profilo078.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7835/3727.jpg",
+      "previewSha256": "f178d496644bcd6ee82a4f00b37394bb11a6f8b1a6807c06cdf5d30a62d85a88",
+      "dmcEquivalent": "3727"
+    },
+    {
+      "code": "080",
+      "productUrl": "https://www.casacenina.it/stafil/profilo080.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7522/316.jpg",
+      "previewSha256": "7b7ad0f937ec2d5fa7b7e298b2f9f39ccdb2021618456a8ba0541511b9c5a4e7",
+      "dmcEquivalent": "316"
+    },
+    {
+      "code": "081",
+      "productUrl": "https://www.casacenina.it/stafil/profilo081.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7834/3726.jpg",
+      "previewSha256": "64748f2bbb509d3757a3d73b28af811ed602affc18766a21a8b9c6db931392c3",
+      "dmcEquivalent": "3726"
+    },
+    {
+      "code": "082",
+      "productUrl": "https://www.casacenina.it/stafil/profilo082.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7865/3802.jpg",
+      "previewSha256": "588d770f123b53724b96e1e6e7fda1e6b9518fa3a67fa8004e7a17e6a3d43519",
+      "dmcEquivalent": "3802"
+    },
+    {
+      "code": "084",
+      "productUrl": "https://www.casacenina.it/stafil/profilo084.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7719/902.jpg",
+      "previewSha256": "b25620c0d8615e60a7e65ccba22b2f05a21e7345d9d4529d7be5702973488248",
+      "dmcEquivalent": "902"
+    },
+    {
+      "code": "085",
+      "productUrl": "https://www.casacenina.it/stafil/profilo085.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7838/3743.jpg",
+      "previewSha256": "19879a626c5446b74e51d13eac323c798594a524e0b8bb3c81516aff2cbbb173",
+      "dmcEquivalent": "3743"
+    },
+    {
+      "code": "086",
+      "productUrl": "https://www.casacenina.it/stafil/profilo086.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7794/3042.jpg",
+      "previewSha256": "96cefe35b3eadb86feea644d4d24c0efee865ba1292633fc2e95c30c6c0a95f8",
+      "dmcEquivalent": "3042"
+    },
+    {
+      "code": "087",
+      "productUrl": "https://www.casacenina.it/stafil/profilo087.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7793/3041.jpg",
+      "previewSha256": "7d8c35c8ce9586e47d8cff3dfafbc2489f156376b7901144d846b42ca2af2b70",
+      "dmcEquivalent": "3041"
+    },
+    {
+      "code": "088",
+      "productUrl": "https://www.casacenina.it/stafil/profilo088.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7837/3740.jpg",
+      "previewSha256": "952b8d252553046fae022d07a1af372fa3b534f040621a24bf2001690a234170",
+      "dmcEquivalent": "3740"
+    },
+    {
+      "code": "089",
+      "productUrl": "https://www.casacenina.it/stafil/profilo089.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7899/3836.jpg",
+      "previewSha256": "aef9495cab14aa6345235d26d1ebd0057c9178e54d64ee957f42a509fa8f79bf",
+      "dmcEquivalent": "3836"
+    },
+    {
+      "code": "090",
+      "productUrl": "https://www.casacenina.it/stafil/profilo090.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7898/3835.jpg",
+      "previewSha256": "20781aed80ee2c81beb96224867f47b0910228be8439da8ca78c21854fc4e9b1",
+      "dmcEquivalent": "3835"
+    },
+    {
+      "code": "091",
+      "productUrl": "https://www.casacenina.it/stafil/profilo091.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7897/3834.jpg",
+      "previewSha256": "5499a8879d7db456c7417483217300b750217149ed3db324449f2111a988e21f",
+      "dmcEquivalent": "3834"
+    },
+    {
+      "code": "092",
+      "productUrl": "https://www.casacenina.it/stafil/profilo092.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7489/154.jpg",
+      "previewSha256": "855996e372e3dfd5562d5388d943d88fd0e6797fa329a04d25e112d358c1e362",
+      "dmcEquivalent": "154"
+    },
+    {
+      "code": "093",
+      "productUrl": "https://www.casacenina.it/stafil/profilo093.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7508/211.jpg",
+      "previewSha256": "98d020e92bdc67a40f0e10945529b272d1cce4afc096c8e4cd18fbd3e21e33de",
+      "dmcEquivalent": "211"
+    },
+    {
+      "code": "094",
+      "productUrl": "https://www.casacenina.it/stafil/profilo094.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7507/210.jpg",
+      "previewSha256": "b6a8643778694b467aaeae2b927265326faf8b30af124f50ae0a75a3e84ffad2",
+      "dmcEquivalent": "210"
+    },
+    {
+      "code": "095",
+      "productUrl": "https://www.casacenina.it/stafil/profilo095.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7506/209.jpg",
+      "previewSha256": "9125ceeec69d022f87780da45a379c1f0f42afe541bd1bf0f86aa428132cbf73",
+      "dmcEquivalent": "209"
+    },
+    {
+      "code": "096",
+      "productUrl": "https://www.casacenina.it/stafil/profilo096.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7900/3837.jpg",
+      "previewSha256": "583336e1820269ede9043f6dd328a66964dd69f754829441dac0d23d520e6445",
+      "dmcEquivalent": "3837"
+    },
+    {
+      "code": "098",
+      "productUrl": "https://www.casacenina.it/stafil/profilo098.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7530/327.jpg",
+      "previewSha256": "2592ff66a061b35101c062d9cf9b77d44af371387fe8a92ccbbf0ebe4ef0e34f",
+      "dmcEquivalent": "327"
+    },
+    {
+      "code": "099",
+      "productUrl": "https://www.casacenina.it/stafil/profilo099.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7488/153.jpg",
+      "previewSha256": "161d2880e32e766e86fca4b8b1a7d0a6d8bf82c3ee4e91d2df712d65a956adaa",
+      "dmcEquivalent": "153"
+    },
+    {
+      "code": "100",
+      "productUrl": "https://www.casacenina.it/stafil/profilo100.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7591/554.jpg",
+      "previewSha256": "72a1a586796a3b769673e8e736b47989325f54aa5c254e38d241dfee41d22a85",
+      "dmcEquivalent": "554"
+    },
+    {
+      "code": "101",
+      "productUrl": "https://www.casacenina.it/stafil/profilo101.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7590/553.jpg",
+      "previewSha256": "f650d997513f3aa0ec95a2871bb6a0e3b5e0d12c9df263cba07acbe782f1f4c0",
+      "dmcEquivalent": "553"
+    },
+    {
+      "code": "103",
+      "productUrl": "https://www.casacenina.it/stafil/profilo103.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7588/550.jpg",
+      "previewSha256": "8eec3dc42850bec3ec3718da9086debfabb20b3c27089ffdfd21dcd9a6e515d6",
+      "dmcEquivalent": "550"
+    },
+    {
+      "code": "104",
+      "productUrl": "https://www.casacenina.it/stafil/profilo104.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7840/3747.jpg",
+      "previewSha256": "21f8ec641627683960598a7ea7ecdf73edc94cb21e704cfbf9f85d8f664ab517",
+      "dmcEquivalent": "3747"
+    },
+    {
+      "code": "106",
+      "productUrl": "https://www.casacenina.it/stafil/profilo106.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7536/341.jpg",
+      "previewSha256": "f1957242b42c3bd08fdf2db4a090307b2734c2d1e724d7ca31bb3fe8a7c9171f",
+      "dmcEquivalent": "341"
+    },
+    {
+      "code": "107",
+      "productUrl": "https://www.casacenina.it/stafil/profilo107.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7535/340.jpg",
+      "previewSha256": "0b9a5a05214df04350750b81e37708236990440e93eaffdad2e9044d8fd6ef49",
+      "dmcEquivalent": "340"
+    },
+    {
+      "code": "108",
+      "productUrl": "https://www.casacenina.it/stafil/profilo108.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7490/155.jpg",
+      "previewSha256": "c4ba8d26e774d3d4838e9f4f6f4b0d0e798341bbbe001e9dbf19704d69780ec2",
+      "dmcEquivalent": "155"
+    },
+    {
+      "code": "109",
+      "productUrl": "https://www.casacenina.it/stafil/profilo109.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7839/3746.jpg",
+      "previewSha256": "9e9982b5884de51519253e1732c574b1b8d73b6bb34c669805aa25877ab3745b",
+      "dmcEquivalent": "3746"
+    },
+    {
+      "code": "110",
+      "productUrl": "https://www.casacenina.it/stafil/profilo110.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7531/333.jpg",
+      "previewSha256": "793121cabd92329ffd9ac0cd1a83c3f04eb675b36d6024d2d280559a7ad9c106",
+      "dmcEquivalent": "333"
+    },
+    {
+      "code": "111",
+      "productUrl": "https://www.casacenina.it/stafil/profilo111.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7492/157.jpg",
+      "previewSha256": "8fe1d4203a8df09a4a52c9a1cb91555b71eeb8c240befa6075331db8a9fee75c",
+      "dmcEquivalent": "157"
+    },
+    {
+      "code": "112",
+      "productUrl": "https://www.casacenina.it/stafil/profilo112.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7672/794.jpg",
+      "previewSha256": "fb7100540eeee19f5bc6e6919ae9e238d063338c68be5b375711944a6cdb1334",
+      "dmcEquivalent": "794"
+    },
+    {
+      "code": "113",
+      "productUrl": "https://www.casacenina.it/stafil/profilo113.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7870/3807.jpg",
+      "previewSha256": "ff5966b7573e705e23a399f1c10eb04cf2a1c943b0151e5972c9220ab4fa29b8",
+      "dmcEquivalent": "3807"
+    },
+    {
+      "code": "115",
+      "productUrl": "https://www.casacenina.it/stafil/profilo115.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7670/792.jpg",
+      "previewSha256": "218eb86b95793780d4872e34debcc9968ed2025f45dd543f719304d582a5a626",
+      "dmcEquivalent": "792"
+    },
+    {
+      "code": "116",
+      "productUrl": "https://www.casacenina.it/stafil/profilo116.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7493/158.jpg",
+      "previewSha256": "468c0b75888894d9965ecb5aff5c55f01804d1fa4b6e05ed5082f563fc59737a",
+      "dmcEquivalent": "158"
+    },
+    {
+      "code": "117",
+      "productUrl": "https://www.casacenina.it/stafil/profilo117.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7669/791.jpg",
+      "previewSha256": "22fed0b0d3a9fc8ca17dc6f82213cbc7666462a42ee96bddd2cf25698d367a50",
+      "dmcEquivalent": "791"
+    },
+    {
+      "code": "118",
+      "productUrl": "https://www.casacenina.it/stafil/profilo118.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7903/3840.jpg",
+      "previewSha256": "d32c7c19828e21db7287b5b07847ec097b19a15df0b44f15cba5a176b852ed56",
+      "dmcEquivalent": "3840"
+    },
+    {
+      "code": "119",
+      "productUrl": "https://www.casacenina.it/stafil/profilo119.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7902/3839.jpg",
+      "previewSha256": "99a1c6bdd786d14beb47444003c5ce2f186c20b93ad00337fd254c3d1bfe8f17",
+      "dmcEquivalent": "3839"
+    },
+    {
+      "code": "121",
+      "productUrl": "https://www.casacenina.it/stafil/profilo121.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7677/800.jpg",
+      "previewSha256": "9202863d639ca23f88894d5ae11c2ae9fd05a660b04026bfbabc84b60d4899c7",
+      "dmcEquivalent": "800"
+    },
+    {
+      "code": "122",
+      "productUrl": "https://www.casacenina.it/stafil/profilo122.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7681/809.jpg",
+      "previewSha256": "f480b4ed94bb3834f3b9fa0554fa9674e70463f256c4e39a14b82917b2c1f808",
+      "dmcEquivalent": "809"
+    },
+    {
+      "code": "123",
+      "productUrl": "https://www.casacenina.it/stafil/profilo123.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7676/799.jpg",
+      "previewSha256": "6a8b8f2a81bbe913dec13269e5bc1f8c7435d85fffc756973e737749b7743027",
+      "dmcEquivalent": "799"
+    },
+    {
+      "code": "124",
+      "productUrl": "https://www.casacenina.it/stafil/profilo124.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7675/798.jpg",
+      "previewSha256": "69a56026555c5ecff0afbaf76f4d2243b188599eddd0a72d14a2e6cff7ca5708",
+      "dmcEquivalent": "798"
+    },
+    {
+      "code": "125",
+      "productUrl": "https://www.casacenina.it/stafil/profilo125.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7674/797.jpg",
+      "previewSha256": "5a87eb927ed4b985a6daac6bcf5a913d1d825748ca2c6b592ece493bd06aa881",
+      "dmcEquivalent": "797"
+    },
+    {
+      "code": "126",
+      "productUrl": "https://www.casacenina.it/stafil/profilo126.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7689/820.jpg",
+      "previewSha256": "bd3d6513eafeaf2c3ef946cb9c1c6d75f56d3cfdf58b4187937d315f80256956",
+      "dmcEquivalent": "820"
+    },
+    {
+      "code": "128",
+      "productUrl": "https://www.casacenina.it/stafil/profilo128.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7497/162.jpg",
+      "previewSha256": "a1e10b9a46fb9c5ede9bc2df9ec953c1ab9506ab6f93f1f5d181bea2f0320d73",
+      "dmcEquivalent": "162"
+    },
+    {
+      "code": "129",
+      "productUrl": "https://www.casacenina.it/stafil/profilo129.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7695/827.jpg",
+      "previewSha256": "a01a427a00cb8217e80e2825371311b31333e14c6fac0e3f1c19a7c97d7fb714",
+      "dmcEquivalent": "827"
+    },
+    {
+      "code": "130",
+      "productUrl": "https://www.casacenina.it/stafil/profilo130.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7682/813.jpg",
+      "previewSha256": "0e90f02dda15ba772b0a7a123d586f77bd74d34c5949d31c5ccb2486dbf00055",
+      "dmcEquivalent": "813"
+    },
+    {
+      "code": "131",
+      "productUrl": "https://www.casacenina.it/stafil/profilo131.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7694/826.jpg",
+      "previewSha256": "69b5f581d52fbe6bbd8be2520f7171ec7790708bb90a6871d153074ae92022d5",
+      "dmcEquivalent": "826"
+    },
+    {
+      "code": "132",
+      "productUrl": "https://www.casacenina.it/stafil/profilo132.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7693/825.jpg",
+      "previewSha256": "fdf87a4c575b315a1198d3c6eb0b868113af9b4252a1e8e6ad959272c1daecde",
+      "dmcEquivalent": "825"
+    },
+    {
+      "code": "133",
+      "productUrl": "https://www.casacenina.it/stafil/profilo133.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7692/824.jpg",
+      "previewSha256": "b933af8e95ba1415b7ecdbdeb6c51625f2485b8721d6ff65356928de8fe81d81",
+      "dmcEquivalent": "824"
+    },
+    {
+      "code": "134",
+      "productUrl": "https://www.casacenina.it/stafil/profilo134.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_016/packshot/7782/996.jpg",
+      "previewSha256": "acfa692084861547d5514da0391525c6bad1540ef6ab2f863725a5a3ea074bf7",
+      "dmcEquivalent": "996"
+    },
+    {
+      "code": "135",
+      "productUrl": "https://www.casacenina.it/stafil/profilo135.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7906/3843.jpg",
+      "previewSha256": "64b9eb526815db263481777917cea7e565b5ae07794db467c5f42918ecf699de",
+      "dmcEquivalent": "3843"
+    },
+    {
+      "code": "136",
+      "productUrl": "https://www.casacenina.it/stafil/profilo136.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_016/packshot/7781/995.jpg",
+      "previewSha256": "b8d724e6a14fa4573ea2016e07cf84b3061987b2afd5caa92501cbf2f015cc15",
+      "dmcEquivalent": "995"
+    },
+    {
+      "code": "137",
+      "productUrl": "https://www.casacenina.it/stafil/profilo137.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7909/3846.jpg",
+      "previewSha256": "a1da7907699f9e996bc32a2d838c5778fff095b7bb77788f4c7b1c64ac78268c",
+      "dmcEquivalent": "3846"
+    },
+    {
+      "code": "139",
+      "productUrl": "https://www.casacenina.it/stafil/profilo139.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7907/3844.jpg",
+      "previewSha256": "e8cc9577ac736df6bc241d759868df8392b7ccd8f8b735eedde91ddd884d8945",
+      "dmcEquivalent": "3844"
+    },
+    {
+      "code": "140",
+      "productUrl": "https://www.casacenina.it/stafil/profilo140.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7494/159.jpg",
+      "previewSha256": "90f85626c03ab12ec728134bd5533760164d7cbd6ad9598a286bf0b3e6d6cd0b",
+      "dmcEquivalent": "159"
+    },
+    {
+      "code": "141",
+      "productUrl": "https://www.casacenina.it/stafil/profilo141.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7495/160.jpg",
+      "previewSha256": "33e747388cff272166ac3c2c2f2bb4399eb115b4d7605bf0205e0cdbf1ee383f",
+      "dmcEquivalent": "160"
+    },
+    {
+      "code": "142",
+      "productUrl": "https://www.casacenina.it/stafil/profilo142.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7496/161.jpg",
+      "previewSha256": "f1a053324d26cc206abc68680074db84a3bb36d534eb76c7f5a2fbafdfce6a78",
+      "dmcEquivalent": "161"
+    },
+    {
+      "code": "143",
+      "productUrl": "https://www.casacenina.it/stafil/profilo143.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7845/3756.jpg",
+      "previewSha256": "9f2b77f824152b68d0f6a7fc023a54343785a1a30bf886e2fd0191d4759eec57",
+      "dmcEquivalent": "3756"
+    },
+    {
+      "code": "144",
+      "productUrl": "https://www.casacenina.it/stafil/profilo144.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7660/775.jpg",
+      "previewSha256": "462c56c7647c996396d7d29362cba17516b7e79c26b22d31d033aee89a07e962",
+      "dmcEquivalent": "775"
+    },
+    {
+      "code": "145",
+      "productUrl": "https://www.casacenina.it/stafil/profilo145.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7904/3841.jpg",
+      "previewSha256": "ba0ac0418aa41c9f4464a5c38fcdde6bd4c50e5473c1518b8910735af2801f2e",
+      "dmcEquivalent": "3841"
+    },
+    {
+      "code": "148",
+      "productUrl": "https://www.casacenina.it/stafil/profilo148.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7532/334.jpg",
+      "previewSha256": "e7823ad85dfec92a0132cf03a53996d7437152a9550bf318e94a5fa273a593f1",
+      "dmcEquivalent": "334"
+    },
+    {
+      "code": "149",
+      "productUrl": "https://www.casacenina.it/stafil/profilo149.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7528/322.jpg",
+      "previewSha256": "c3541c227c91c66674769ce29425d61a5854dfd37c0be444334012f93dc4bbdc",
+      "dmcEquivalent": "322"
+    },
+    {
+      "code": "151",
+      "productUrl": "https://www.casacenina.it/stafil/profilo151.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7679/806.jpg",
+      "previewSha256": "77383970561ad5d6af55b8318c0418952bdf87a4d0984f0078b9b35e82cb8722",
+      "dmcEquivalent": "806"
+    },
+    {
+      "code": "152",
+      "productUrl": "https://www.casacenina.it/stafil/profilo152.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7534/336.jpg",
+      "previewSha256": "e277a6d9a1b84fd5f74bc6764e27081a189484616e71e4621ab891ac29079cf6",
+      "dmcEquivalent": "336"
+    },
+    {
+      "code": "153",
+      "productUrl": "https://www.casacenina.it/stafil/profilo153.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7691/823.jpg",
+      "previewSha256": "dd0a097eca87d6dc57ad3f6e62af3a2d79259bcbfb90eb6e9eceff11c6a5f44f",
+      "dmcEquivalent": "823"
+    },
+    {
+      "code": "154",
+      "productUrl": "https://www.casacenina.it/stafil/profilo154.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7748/939.jpg",
+      "previewSha256": "792141c346b31d380a7ba33ee3dbf589fcfea95af4bcd58a1255add28c3e7171",
+      "dmcEquivalent": "939"
+    },
+    {
+      "code": "156",
+      "productUrl": "https://www.casacenina.it/stafil/profilo156.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7843/3753.jpg",
+      "previewSha256": "e9d0628eb83fef71349479fa5e0d0feb0d5f657d87a8bda3645c19d28cc7503e",
+      "dmcEquivalent": "3753"
+    },
+    {
+      "code": "157",
+      "productUrl": "https://www.casacenina.it/stafil/profilo157.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7742/932.jpg",
+      "previewSha256": "9a95cc978f69cf30a81d040565e529fa4b5745d09ab9c0cfb287b069ba8b3278",
+      "dmcEquivalent": "932"
+    },
+    {
+      "code": "158",
+      "productUrl": "https://www.casacenina.it/stafil/profilo158.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7741/931.jpg",
+      "previewSha256": "1bb3f663bdd4be88444cf3791da54f1033d558c5fcffaccb16161753dc7763a0",
+      "dmcEquivalent": "931"
+    },
+    {
+      "code": "159",
+      "productUrl": "https://www.casacenina.it/stafil/profilo159.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7740/930.jpg",
+      "previewSha256": "011f18a05176d11098ce7d40a6fe56fc63d32bbf2cbfcde67ea3f85a07994e8e",
+      "dmcEquivalent": "930"
+    },
+    {
+      "code": "160",
+      "productUrl": "https://www.casacenina.it/stafil/profilo160.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7841/3750.jpg",
+      "previewSha256": "ce30e5d9be894605941cb27fc2f1b286440b85ae4d4b36cf74ef2a8fc0182e24",
+      "dmcEquivalent": "3750"
+    },
+    {
+      "code": "161",
+      "productUrl": "https://www.casacenina.it/stafil/profilo161.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7696/828.jpg",
+      "previewSha256": "caecd8b0d1c87a9004669c8b3b8182427f0fec877edd181affe13bfdf00ab653",
+      "dmcEquivalent": "828"
+    },
+    {
+      "code": "162",
+      "productUrl": "https://www.casacenina.it/stafil/profilo162.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7847/3761.jpg",
+      "previewSha256": "26fe43fb4123fe35c8dfd67dfc00a979a7b8f19075e86169567a4e88e4cf5e36",
+      "dmcEquivalent": "3761"
+    },
+    {
+      "code": "163",
+      "productUrl": "https://www.casacenina.it/stafil/profilo163.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7581/519.jpg",
+      "previewSha256": "9a874f2fcd587312a4c6e9f9795299faf11d5cfb08350dfe84d05dc4c6f80797",
+      "dmcEquivalent": "519"
+    },
+    {
+      "code": "164",
+      "productUrl": "https://www.casacenina.it/stafil/profilo164.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7580/518.jpg",
+      "previewSha256": "cd263ba03aff3a44d34164e51209de45b4d7cf1cfea30af811425dc41511eb5f",
+      "dmcEquivalent": "518"
+    },
+    {
+      "code": "166",
+      "productUrl": "https://www.casacenina.it/stafil/profilo166.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7846/3760.jpg",
+      "previewSha256": "c9686790f8f4c30b7f4933a2e51bf28d0cc440217e93aaa634dc86e5181badf8",
+      "dmcEquivalent": "3760"
+    },
+    {
+      "code": "167",
+      "productUrl": "https://www.casacenina.it/stafil/profilo167.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7905/3842.jpg",
+      "previewSha256": "901a24cca45fac37189b59c7f3c9e47cec3474f16c1c782ec1d7710a0805f2bd",
+      "dmcEquivalent": "3842"
+    },
+    {
+      "code": "168",
+      "productUrl": "https://www.casacenina.it/stafil/profilo168.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7519/311.jpg",
+      "previewSha256": "5ecdd8eaad9f6f6f13cbdd9d9ffa9e07ec9ae91ff10fb62e225056121dbc2d71",
+      "dmcEquivalent": "311"
+    },
+    {
+      "code": "169",
+      "productUrl": "https://www.casacenina.it/stafil/profilo169.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7653/747.jpg",
+      "previewSha256": "8091e802b0fb1d1d29bcb445120514e0c3652ff13baa0e3f413815bdf707430a",
+      "dmcEquivalent": "747"
+    },
+    {
+      "code": "170",
+      "productUrl": "https://www.casacenina.it/stafil/profilo170.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7849/3766.jpg",
+      "previewSha256": "32f150b7bf0f16a018924dd6ea73f7c1fb0169454c40ff44fd01b940f4e3a3ec",
+      "dmcEquivalent": "3766"
+    },
+    {
+      "code": "171",
+      "productUrl": "https://www.casacenina.it/stafil/profilo171.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7680/807.jpg",
+      "previewSha256": "067b38932634fbaa9e082ddab99b84f312aab176ba2add6b2bddb13cfc294cb2",
+      "dmcEquivalent": "807"
+    },
+    {
+      "code": "172",
+      "productUrl": "https://www.casacenina.it/stafil/profilo172.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7848/3765.jpg",
+      "previewSha256": "a805bef77a32080f0232c7734c4bb6e2e33450add766f167baed39487069845e",
+      "dmcEquivalent": "3765"
+    },
+    {
+      "code": "173",
+      "productUrl": "https://www.casacenina.it/stafil/profilo173.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7874/3811.jpg",
+      "previewSha256": "dfbe7615aa0913bc4411925f7e26c8f0bb333816d7a6d547ed7f199ecfb3b7f7",
+      "dmcEquivalent": "3811"
+    },
+    {
+      "code": "174",
+      "productUrl": "https://www.casacenina.it/stafil/profilo174.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7599/598.jpg",
+      "previewSha256": "ef6ecd055f0829fb6a90cb5a62bd23d77a8efbe69535301ec7010bfa6ad63467",
+      "dmcEquivalent": "598"
+    },
+    {
+      "code": "176",
+      "productUrl": "https://www.casacenina.it/stafil/profilo176.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7873/3810.jpg",
+      "previewSha256": "223d4ec87e01f7827891327f5bbd97fe2565d1e58dbcfcb3e5f523e2e0ff77ed",
+      "dmcEquivalent": "3810"
+    },
+    {
+      "code": "177",
+      "productUrl": "https://www.casacenina.it/stafil/profilo177.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7872/3809.jpg",
+      "previewSha256": "4a8cbdd635437c56eed71f27838124ea01320238596297159f57a6f10ad3add1",
+      "dmcEquivalent": "3809"
+    },
+    {
+      "code": "178",
+      "productUrl": "https://www.casacenina.it/stafil/profilo178.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7871/3808.jpg",
+      "previewSha256": "dfc8d9ee96f876b837185672f355355f0f47214be5acbdd0524777cb884841f4",
+      "dmcEquivalent": "3808"
+    },
+    {
+      "code": "180",
+      "productUrl": "https://www.casacenina.it/stafil/profilo180.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7739/928.jpg",
+      "previewSha256": "5f28900093980914bb33f76168c340bfa2a03c4028e45dcf26b75bfefd7eb8d4",
+      "dmcEquivalent": "928"
+    },
+    {
+      "code": "181",
+      "productUrl": "https://www.casacenina.it/stafil/profilo181.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7737/926.jpg",
+      "previewSha256": "60050256512de3ac15671476ee21f2ba6ccf1a8e2c5294ed616d26f294964c39",
+      "dmcEquivalent": "926"
+    },
+    {
+      "code": "182",
+      "productUrl": "https://www.casacenina.it/stafil/profilo182.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7850/3768.jpg",
+      "previewSha256": "700a5384562cd76565102b9c4856f7386a4a9f2031ac5612e7e4fe7229acd021",
+      "dmcEquivalent": "3768"
+    },
+    {
+      "code": "183",
+      "productUrl": "https://www.casacenina.it/stafil/profilo183.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7736/924.jpg",
+      "previewSha256": "7e9e92cc37f67a4697411aa0c88a1c54cef65a77e0c0cbc5446d3fc58f7b1ca0",
+      "dmcEquivalent": "924"
+    },
+    {
+      "code": "184",
+      "productUrl": "https://www.casacenina.it/stafil/profilo184.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7912/3849.jpg",
+      "previewSha256": "550c18101a2e263368c07ae3d9c2f97da39bc7e961c78af89a65f14b1654792f",
+      "dmcEquivalent": "3849"
+    },
+    {
+      "code": "185",
+      "productUrl": "https://www.casacenina.it/stafil/profilo185.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7911/3848.jpg",
+      "previewSha256": "aed36014a0717e7bb45b5536d60542e052bb11ed4d85cfc018f851d60fc5bba3",
+      "dmcEquivalent": "3848"
+    },
+    {
+      "code": "186",
+      "productUrl": "https://www.casacenina.it/stafil/profilo186.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7910/3847.jpg",
+      "previewSha256": "91e8c94445221dd3e7ac2430c539bfba51758e91497bf1fad4fd123d8304ebc2",
+      "dmcEquivalent": "3847"
+    },
+    {
+      "code": "187",
+      "productUrl": "https://www.casacenina.it/stafil/profilo187.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_014/packshot/7765/964.jpg",
+      "previewSha256": "d6e18b2ebbd7670a357912494a27ae39417cf74ff9936ffc4e600e38c430639c",
+      "dmcEquivalent": "964"
+    },
+    {
+      "code": "189",
+      "productUrl": "https://www.casacenina.it/stafil/profilo189.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7761/959.jpg",
+      "previewSha256": "2c7305ba4a02c2889aad9a6c78cc9848ccc71fa8d51d02093b92c4f17078886b",
+      "dmcEquivalent": "959"
+    },
+    {
+      "code": "190",
+      "productUrl": "https://www.casacenina.it/stafil/profilo190.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7875/3812.jpg",
+      "previewSha256": "1dcc85025817f8bfae9d656535be752e081425ddc6403c619d3811ad09814d4c",
+      "dmcEquivalent": "3812"
+    },
+    {
+      "code": "191",
+      "productUrl": "https://www.casacenina.it/stafil/profilo191.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7914/3851.jpg",
+      "previewSha256": "03ea5cfb07b29621d0a04438d42abcb98a7c993b26b1cf8f36e10218992d2e4a",
+      "dmcEquivalent": "3851"
+    },
+    {
+      "code": "192",
+      "productUrl": "https://www.casacenina.it/stafil/profilo192.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7749/943.jpg",
+      "previewSha256": "d0201e9d1707915ed3ca51a697923c6805532a294f7338d49047c43e7d16dd79",
+      "dmcEquivalent": "943"
+    },
+    {
+      "code": "193",
+      "productUrl": "https://www.casacenina.it/stafil/profilo193.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7913/3850.jpg",
+      "previewSha256": "67d01d3f6d87e23111a1359b8a4c173d1bfee7c63b96383a7c6696849b8b4457",
+      "dmcEquivalent": "3850"
+    },
+    {
+      "code": "194",
+      "productUrl": "https://www.casacenina.it/stafil/profilo194.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_016/packshot/7780/993.jpg",
+      "previewSha256": "d193d873967cea99c2dcaf01639867726cf2189cc996bc6326d33fcc69643b06",
+      "dmcEquivalent": "993"
+    },
+    {
+      "code": "196",
+      "productUrl": "https://www.casacenina.it/stafil/profilo196.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7877/3814.jpg",
+      "previewSha256": "d45c32f4b51ced217175180394e39f9825cfcb0033df5d179c2e37d9783ed92e",
+      "dmcEquivalent": "3814"
+    },
+    {
+      "code": "197",
+      "productUrl": "https://www.casacenina.it/stafil/profilo197.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_016/packshot/7778/991.jpg",
+      "previewSha256": "42d0d462d6c4fdc2160e5bf1a33392cd582ee37838f3515a9f3d93ad1b255ed3",
+      "dmcEquivalent": "991"
+    },
+    {
+      "code": "198",
+      "productUrl": "https://www.casacenina.it/stafil/profilo198.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_014/packshot/7766/966.jpg",
+      "previewSha256": "7a81807ec8a2ccd707fcee55e95fe9d4c5eb40e85c36d8caa03dd9ff28c01d24",
+      "dmcEquivalent": "966"
+    },
+    {
+      "code": "199",
+      "productUrl": "https://www.casacenina.it/stafil/profilo199.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7595/564.jpg",
+      "previewSha256": "d57d894c5ea9273205865c53176d11078d4bfd139f6a753e597a293cab2e5816",
+      "dmcEquivalent": "564"
+    },
+    {
+      "code": "200",
+      "productUrl": "https://www.casacenina.it/stafil/profilo200.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7594/563.jpg",
+      "previewSha256": "5d5eef581edaae7e250583c3417c15766718bb31a35d0eaf888ef10fd044ff7b",
+      "dmcEquivalent": "563"
+    },
+    {
+      "code": "201",
+      "productUrl": "https://www.casacenina.it/stafil/profilo201.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7593/562.jpg",
+      "previewSha256": "5bac8c55125562545daf8a1a479459f992e518b33ab716d902a7465e110e2e72",
+      "dmcEquivalent": "562"
+    },
+    {
+      "code": "202",
+      "productUrl": "https://www.casacenina.it/stafil/profilo202.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7578/504.jpg",
+      "previewSha256": "61bbc14f51478f28dde657b67b42ab71313733e945733649e6863a6b8b8892a5",
+      "dmcEquivalent": "504"
+    },
+    {
+      "code": "203",
+      "productUrl": "https://www.casacenina.it/stafil/profilo203.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7880/3817.jpg",
+      "previewSha256": "06c248d8ada8edb0d169f4133de9a37849afd9d90e945bde73ca99fbdd9fafb6",
+      "dmcEquivalent": "3817"
+    },
+    {
+      "code": "204",
+      "productUrl": "https://www.casacenina.it/stafil/profilo204.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7879/3816.jpg",
+      "previewSha256": "880a7c55f31792f8bf784e2da4d52d8fb8b302000f0853c1d8f57eec465f32b9",
+      "dmcEquivalent": "3816"
+    },
+    {
+      "code": "205",
+      "productUrl": "https://www.casacenina.it/stafil/profilo205.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7878/3815.jpg",
+      "previewSha256": "e0b59d7505281132916536cad604ad50468ec29d6c27e93d242a02759b214b33",
+      "dmcEquivalent": "3815"
+    },
+    {
+      "code": "207",
+      "productUrl": "https://www.casacenina.it/stafil/profilo207.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7592/561.jpg",
+      "previewSha256": "588a5a67c73262ca7fd598b8bedcb7a2b73154b83c66e4279075212c8a33744b",
+      "dmcEquivalent": "561"
+    },
+    {
+      "code": "208",
+      "productUrl": "https://www.casacenina.it/stafil/profilo208.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7876/3813.jpg",
+      "previewSha256": "58687e5f7755c327fe6e866dd499b8836077f3654904b1f5fb34fb9f747b3c5e",
+      "dmcEquivalent": "3813"
+    },
+    {
+      "code": "210",
+      "productUrl": "https://www.casacenina.it/stafil/profilo210.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7576/502.jpg",
+      "previewSha256": "4eef051b5d2ccf004c9052caa9521582e0ad0222f0558bf26c9cf1fc1bdb8dce",
+      "dmcEquivalent": "502"
+    },
+    {
+      "code": "211",
+      "productUrl": "https://www.casacenina.it/stafil/profilo211.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7575/501.jpg",
+      "previewSha256": "00bca6f9eacd05ce14465197bda69924feafbf2cc3617d92f94358c6626bbd3b",
+      "dmcEquivalent": "501"
+    },
+    {
+      "code": "212",
+      "productUrl": "https://www.casacenina.it/stafil/profilo212.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7574/500.jpg",
+      "previewSha256": "48470f9eedad9479e2e1062a487a40a7d8c4e856c9771b40f41c979ad3cfd6e4",
+      "dmcEquivalent": "500"
+    },
+    {
+      "code": "213",
+      "productUrl": "https://www.casacenina.it/stafil/profilo213.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7757/955.jpg",
+      "previewSha256": "9337b9545c77f16737b14c0ced9873df10beedc3a31a8415caa8e2d4456b4f8c",
+      "dmcEquivalent": "955"
+    },
+    {
+      "code": "214",
+      "productUrl": "https://www.casacenina.it/stafil/profilo214.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7756/954.jpg",
+      "previewSha256": "6046e11347bea6cf8d893836bb9d66f993fa61545ccc6aa02485dc3fb7941265",
+      "dmcEquivalent": "954"
+    },
+    {
+      "code": "216",
+      "productUrl": "https://www.casacenina.it/stafil/profilo216.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7728/913.jpg",
+      "previewSha256": "c77de161c4c79256e4de79ca1a914f6780a2cff4efa7adc305fc29dcae4b8340",
+      "dmcEquivalent": "913"
+    },
+    {
+      "code": "218",
+      "productUrl": "https://www.casacenina.it/stafil/profilo218.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7726/911.jpg",
+      "previewSha256": "6ec8169a2d76fa415e5b5cb554089b73bf2806c0f38884acb20e2bc5fd3476e6",
+      "dmcEquivalent": "911"
+    },
+    {
+      "code": "219",
+      "productUrl": "https://www.casacenina.it/stafil/profilo219.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7724/909.jpg",
+      "previewSha256": "9c3cc2666d96c84ac7315da3375c931ce70f4cd44021606bafc78d898124b89e",
+      "dmcEquivalent": "909"
+    },
+    {
+      "code": "220",
+      "productUrl": "https://www.casacenina.it/stafil/profilo220.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7881/3818.jpg",
+      "previewSha256": "ab9c3838dd5e355af211d81adc7d96845e066dfa8ede48c3b40bc3b3d8a876e8",
+      "dmcEquivalent": "3818"
+    },
+    {
+      "code": "221",
+      "productUrl": "https://www.casacenina.it/stafil/profilo221.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7547/369.jpg",
+      "previewSha256": "1e91949b062129e35f63f8f6dfabca2a7e7379fc2d093ac67b6f375e9a3fbe07",
+      "dmcEquivalent": "369"
+    },
+    {
+      "code": "222",
+      "productUrl": "https://www.casacenina.it/stafil/profilo222.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7546/368.jpg",
+      "previewSha256": "03485e46b3857272d9fc81c76718d9e6e46eecf0ea7498695a36ef099b6b8346",
+      "dmcEquivalent": "368"
+    },
+    {
+      "code": "223",
+      "productUrl": "https://www.casacenina.it/stafil/profilo223.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7526/320.jpg",
+      "previewSha256": "8cda17717c0deab44014b1ea9167d2486a770dfd78bce554a89741888483c7bc",
+      "dmcEquivalent": "320"
+    },
+    {
+      "code": "224",
+      "productUrl": "https://www.casacenina.it/stafil/profilo224.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7545/367.jpg",
+      "previewSha256": "195573871e44fc85205794c3de1141f3b30085eca46e23fa245f5f8447e46b71",
+      "dmcEquivalent": "367"
+    },
+    {
+      "code": "225",
+      "productUrl": "https://www.casacenina.it/stafil/profilo225.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7525/319.jpg",
+      "previewSha256": "44e3fa4e63a8402df1b66ca2ed53674ce3847b0f5a2ff2f1d36dda12ac4d028b",
+      "dmcEquivalent": "319"
+    },
+    {
+      "code": "226",
+      "productUrl": "https://www.casacenina.it/stafil/profilo226.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7710/890.jpg",
+      "previewSha256": "86f39b242c16d8599e304f2caf423e90e12fb3293cf7ee9664bd1f13df6c804c",
+      "dmcEquivalent": "890"
+    },
+    {
+      "code": "227",
+      "productUrl": "https://www.casacenina.it/stafil/profilo227.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7499/164.jpg",
+      "previewSha256": "7ed45a6e75c304757dcbe82e058849f225da9011e18f5ad4e12f2d9aa7c46690",
+      "dmcEquivalent": "164"
+    },
+    {
+      "code": "228",
+      "productUrl": "https://www.casacenina.it/stafil/profilo228.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_015/packshot/7777/989.jpg",
+      "previewSha256": "d66b658a5e9c985200a0d5caf75445d105d46c3dbc1af4e95900be1f23f6cdc8",
+      "dmcEquivalent": "989"
+    },
+    {
+      "code": "230",
+      "productUrl": "https://www.casacenina.it/stafil/profilo230.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_015/packshot/7775/987.jpg",
+      "previewSha256": "4a1f8f5834ec46abba76a8f97774585f32b810e3d80f0f0cac1afe1a835eb787",
+      "dmcEquivalent": "987"
+    },
+    {
+      "code": "231",
+      "productUrl": "https://www.casacenina.it/stafil/profilo231.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_015/packshot/7774/986.jpg",
+      "previewSha256": "2b1344a1689a23f2cc6f019746c6f73824dcfead87864baf2412ee721d99195d",
+      "dmcEquivalent": "986"
+    },
+    {
+      "code": "232",
+      "productUrl": "https://www.casacenina.it/stafil/profilo232.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7659/772.jpg",
+      "previewSha256": "e733d286d56881457203604ce49b7c23247e0fbe834d0554fadcbeecd75071a5",
+      "dmcEquivalent": "772"
+    },
+    {
+      "code": "233",
+      "productUrl": "https://www.casacenina.it/stafil/profilo233.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7812/3348.jpg",
+      "previewSha256": "c0a04b24716ab4a98b2865a44e07c677823f6af8957a0cee321b7c61ef407fd7",
+      "dmcEquivalent": "3348"
+    },
+    {
+      "code": "234",
+      "productUrl": "https://www.casacenina.it/stafil/profilo234.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7811/3347.jpg",
+      "previewSha256": "baa18eb399d53f21b45c7cdac9860a0e4649c17f41f8330b9512c2afa3b37af3",
+      "dmcEquivalent": "3347"
+    },
+    {
+      "code": "235",
+      "productUrl": "https://www.casacenina.it/stafil/profilo235.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7810/3346.jpg",
+      "previewSha256": "c62c06c5b62f5005b3a12c52bac32bd25cf385bd46e9815dcdd33a87f4c05f11",
+      "dmcEquivalent": "3346"
+    },
+    {
+      "code": "236",
+      "productUrl": "https://www.casacenina.it/stafil/profilo236.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7809/3345.jpg",
+      "previewSha256": "49b8f80c7b6e174e3a496d0ed842388f8a510b58c20d5bedecd88f7677c0d90d",
+      "dmcEquivalent": "3345"
+    },
+    {
+      "code": "237",
+      "productUrl": "https://www.casacenina.it/stafil/profilo237.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7715/895.jpg",
+      "previewSha256": "d88e43a8c467be83757e24091fe5732f888ae0a54024b50ab6c48cfaee7aadf8",
+      "dmcEquivalent": "895"
+    },
+    {
+      "code": "238",
+      "productUrl": "https://www.casacenina.it/stafil/profilo238.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7629/704.jpg",
+      "previewSha256": "d7d02922decdab5c6b591d1de32b3506fe1f51ef48b8ecd875824d09541f4237",
+      "dmcEquivalent": "704"
+    },
+    {
+      "code": "239",
+      "productUrl": "https://www.casacenina.it/stafil/profilo239.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7628/703.jpg",
+      "previewSha256": "31b63b8393c1b01c5f459ca16e2a8aac5d6dfe6b4de112a6c0a93f3972a13d8f",
+      "dmcEquivalent": "703"
+    },
+    {
+      "code": "240",
+      "productUrl": "https://www.casacenina.it/stafil/profilo240.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7627/702.jpg",
+      "previewSha256": "515d94e41d2ef22ab7d1bb383d1cbc736495e018a1ccf543f6dbeece73f5689e",
+      "dmcEquivalent": "702"
+    },
+    {
+      "code": "241",
+      "productUrl": "https://www.casacenina.it/stafil/profilo241.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7626/701.jpg",
+      "previewSha256": "d7c453d59b868d0917a28a13ec5179fd6e7dfe88b1f39fab331cae05777531ee",
+      "dmcEquivalent": "701"
+    },
+    {
+      "code": "242",
+      "productUrl": "https://www.casacenina.it/stafil/profilo242.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7625/700.jpg",
+      "previewSha256": "2f18677351f7a523480ce78efba31efcd24d1071681df084b32dedc81ad5a385",
+      "dmcEquivalent": "700"
+    },
+    {
+      "code": "243",
+      "productUrl": "https://www.casacenina.it/stafil/profilo243.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7624/699.jpg",
+      "previewSha256": "aeceeab94f0d4bfc32e69cfb45319bd2f5ce017526197e83079c4bce6efca47b",
+      "dmcEquivalent": "699"
+    },
+    {
+      "code": "244",
+      "productUrl": "https://www.casacenina.it/stafil/profilo244.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7723/907.jpg",
+      "previewSha256": "d05118207d305cd8012ce76f9d552049a8f8bcf19bdd9976cbbe257ebb2c36c3",
+      "dmcEquivalent": "907"
+    },
+    {
+      "code": "245",
+      "productUrl": "https://www.casacenina.it/stafil/profilo245.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7722/906.jpg",
+      "previewSha256": "754bce745b8ee1da380881f8f407193fd253b001bad7c97388bcc01ef46af77f",
+      "dmcEquivalent": "906"
+    },
+    {
+      "code": "246",
+      "productUrl": "https://www.casacenina.it/stafil/profilo246.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7721/905.jpg",
+      "previewSha256": "ec1c43feb81d7f5730c58ba19fc153ff03e8e1223a592ac55fc3dcb5021488b7",
+      "dmcEquivalent": "905"
+    },
+    {
+      "code": "247",
+      "productUrl": "https://www.casacenina.it/stafil/profilo247.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7720/904.jpg",
+      "previewSha256": "69e4b821993a16b3e08fbc0fccb75d2c30ba61185b894ecfe1f8a82b791b797f",
+      "dmcEquivalent": "904"
+    },
+    {
+      "code": "248",
+      "productUrl": "https://www.casacenina.it/stafil/profilo248.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7572/472.jpg",
+      "previewSha256": "3f5b477a7f51af504da44601b36c62c19a59553b9aa56fb93f2aef77c397128b",
+      "dmcEquivalent": "472"
+    },
+    {
+      "code": "249",
+      "productUrl": "https://www.casacenina.it/stafil/profilo249.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7571/471.jpg",
+      "previewSha256": "6de1028b9950c78bd04f9c8355d84977053b119158c95f9d948c2c986472388b",
+      "dmcEquivalent": "471"
+    },
+    {
+      "code": "250",
+      "productUrl": "https://www.casacenina.it/stafil/profilo250.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7570/470.jpg",
+      "previewSha256": "af963509a447da1cff910b23fabbc77a2c63b5c10b9744f81b1c85278e428cc4",
+      "dmcEquivalent": "470"
+    },
+    {
+      "code": "251",
+      "productUrl": "https://www.casacenina.it/stafil/profilo251.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7746/937.jpg",
+      "previewSha256": "1401831b35ac6601999a559cdf531e5bef6aa22b631c4b473bd95849169b037c",
+      "dmcEquivalent": "937"
+    },
+    {
+      "code": "253",
+      "productUrl": "https://www.casacenina.it/stafil/profilo253.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7745/936.jpg",
+      "previewSha256": "249d20d65aee19ba542b2b0d19b0854eb17ae30cb0a2d30a16d3f5bedd8c7c4e",
+      "dmcEquivalent": "936"
+    },
+    {
+      "code": "254",
+      "productUrl": "https://www.casacenina.it/stafil/profilo254.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7744/935.jpg",
+      "previewSha256": "f37ffbc9704c7b76dd9660a55a0df94424dfe65f42874bf7be7bc15fa74e46e2",
+      "dmcEquivalent": "935"
+    },
+    {
+      "code": "255",
+      "productUrl": "https://www.casacenina.it/stafil/profilo255.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7743/934.jpg",
+      "previewSha256": "8cf189641ae52ab6cecb7eb690d0232cbe4e5ed5581529c76b66bfa4b378eb0a",
+      "dmcEquivalent": "934"
+    },
+    {
+      "code": "256",
+      "productUrl": "https://www.casacenina.it/stafil/profilo256.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7800/3053.jpg",
+      "previewSha256": "8cfb73a7ea27bfefb48b56986e7e0cec33e46a4871e60e7f13b618e1a9dae5eb",
+      "dmcEquivalent": "3053"
+    },
+    {
+      "code": "258",
+      "productUrl": "https://www.casacenina.it/stafil/profilo258.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7799/3052.jpg",
+      "previewSha256": "8f475fa1c87a171d8fe91c7b5d4ac1f1bf994be832c554b67243bb8089717c1a",
+      "dmcEquivalent": "3052"
+    },
+    {
+      "code": "259",
+      "productUrl": "https://www.casacenina.it/stafil/profilo259.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7798/3051.jpg",
+      "previewSha256": "50e699ae8042388a96cc680b8c682f30af9ddfd06c575b901a7babc1042f1b16",
+      "dmcEquivalent": "3051"
+    },
+    {
+      "code": "260",
+      "productUrl": "https://www.casacenina.it/stafil/profilo260.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7585/524.jpg",
+      "previewSha256": "21951b85f5a66cdea2dff0da0f852c45345a28a4451bc4e2dde06164397060d8",
+      "dmcEquivalent": "524"
+    },
+    {
+      "code": "261",
+      "productUrl": "https://www.casacenina.it/stafil/profilo261.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7583/522.jpg",
+      "previewSha256": "6f46a6cdffcface9b53ad7b7e79e0208f42d5bde7778e20e05e918dd2e943c66",
+      "dmcEquivalent": "522"
+    },
+    {
+      "code": "262",
+      "productUrl": "https://www.casacenina.it/stafil/profilo262.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7582/520.jpg",
+      "previewSha256": "8dcbdfc995ffcce1eb9093309e6293a919e391467e98877593dd6086c7117ef1",
+      "dmcEquivalent": "520"
+    },
+    {
+      "code": "263",
+      "productUrl": "https://www.casacenina.it/stafil/profilo263.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7817/3364.jpg",
+      "previewSha256": "d6c532891f72a51cfb25d59497a1dc895ba0e253fcde4f67151ea4b19ebc40a1",
+      "dmcEquivalent": "3364"
+    },
+    {
+      "code": "264",
+      "productUrl": "https://www.casacenina.it/stafil/profilo264.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7816/3363.jpg",
+      "previewSha256": "028497d19e4986ed6ae600d126afea0c3233fb1883bc01a7dfc1d790b97f6f69",
+      "dmcEquivalent": "3363"
+    },
+    {
+      "code": "265",
+      "productUrl": "https://www.casacenina.it/stafil/profilo265.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7815/3362.jpg",
+      "previewSha256": "c869e09d79215a642c2f8df6c3c593c621dcd1339cbfbd2a4068013a14f9ce1e",
+      "dmcEquivalent": "3362"
+    },
+    {
+      "code": "266",
+      "productUrl": "https://www.casacenina.it/stafil/profilo266.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7882/3819.jpg",
+      "previewSha256": "8f146e5626791233ced4c509fa20b2a9b848f98ada0620a196430e53d9484bae",
+      "dmcEquivalent": "3819"
+    },
+    {
+      "code": "268",
+      "productUrl": "https://www.casacenina.it/stafil/profilo268.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7501/166.jpg",
+      "previewSha256": "f1f4b126e1007396b95b115e9b703d31e946554496d2f2d690760df8bfcac873",
+      "dmcEquivalent": "166"
+    },
+    {
+      "code": "269",
+      "productUrl": "https://www.casacenina.it/stafil/profilo269.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7597/581.jpg",
+      "previewSha256": "1ad4d37f4a3735004f9c1d44486a9b4a98d1f65e21bdc9f187bbde1feafec5d9",
+      "dmcEquivalent": "581"
+    },
+    {
+      "code": "270",
+      "productUrl": "https://www.casacenina.it/stafil/profilo270.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7596/580.jpg",
+      "previewSha256": "b3c8b4b75e398df7a365bd9c03c5fea14bd3ca51bd8bfde71cc0e69eca3378a7",
+      "dmcEquivalent": "580"
+    },
+    {
+      "code": "271",
+      "productUrl": "https://www.casacenina.it/stafil/profilo271.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7644/734.jpg",
+      "previewSha256": "59a99625219ebb54bad1610ff8715df914588d0c6415f1fd62e8e49f4c8b1ef4",
+      "dmcEquivalent": "734"
+    },
+    {
+      "code": "272",
+      "productUrl": "https://www.casacenina.it/stafil/profilo272.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7643/733.jpg",
+      "previewSha256": "4060b02d84b3c5101735ed1b5c48c5b803b6fbac8e85cbf9a75a2551e0f81ee9",
+      "dmcEquivalent": "733"
+    },
+    {
+      "code": "273",
+      "productUrl": "https://www.casacenina.it/stafil/profilo273.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7642/732.jpg",
+      "previewSha256": "7d4932332e7fe4c53e64411cc8096462b82cf365df00b07ed178152bb219b8dd",
+      "dmcEquivalent": "732"
+    },
+    {
+      "code": "274",
+      "productUrl": "https://www.casacenina.it/stafil/profilo274.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7640/730.jpg",
+      "previewSha256": "29cf95fc6c61441af8d3feceef5160203aa4fe7e33ddb3e334692c81b4b41aeb",
+      "dmcEquivalent": "730"
+    },
+    {
+      "code": "275",
+      "productUrl": "https://www.casacenina.it/stafil/profilo275.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7785/3013.jpg",
+      "previewSha256": "10b5a78a17a9ebc6821865a6fef6767261d592cbb2edf43c514c0e8829261df7",
+      "dmcEquivalent": "3013"
+    },
+    {
+      "code": "276",
+      "productUrl": "https://www.casacenina.it/stafil/profilo276.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7784/3012.jpg",
+      "previewSha256": "db34c5dffde5a5edaaef99e2d18f5ea5d90bd5ca34f344e878a5ff519e4e30ab",
+      "dmcEquivalent": "3012"
+    },
+    {
+      "code": "277",
+      "productUrl": "https://www.casacenina.it/stafil/profilo277.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7783/3011.jpg",
+      "previewSha256": "1bce6556e32321e5416ade6fdfbe0cdff3a943501d90899524f4dba9912a101c",
+      "dmcEquivalent": "3011"
+    },
+    {
+      "code": "278",
+      "productUrl": "https://www.casacenina.it/stafil/profilo278.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7550/372.jpg",
+      "previewSha256": "413d17a0e457361e54c9234660fad17f8950ab07342cbd0f43566773ed6b4be9",
+      "dmcEquivalent": "372"
+    },
+    {
+      "code": "280",
+      "productUrl": "https://www.casacenina.it/stafil/profilo280.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7549/371.jpg",
+      "previewSha256": "1afdca5fa585ca573131270e8ba527220277b9ceeff22b6918da61c6774d0f15",
+      "dmcEquivalent": "371"
+    },
+    {
+      "code": "281",
+      "productUrl": "https://www.casacenina.it/stafil/profilo281.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7702/834.jpg",
+      "previewSha256": "d5c869304c13329a06912fd4c7e70f73530b66775ad42960941bfc5030e6970c",
+      "dmcEquivalent": "834"
+    },
+    {
+      "code": "282",
+      "productUrl": "https://www.casacenina.it/stafil/profilo282.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7701/833.jpg",
+      "previewSha256": "8b078fdea4706786f8fd0c91a46cd0c63fb65290bc860b2f5a7664831a55a7b0",
+      "dmcEquivalent": "833"
+    },
+    {
+      "code": "283",
+      "productUrl": "https://www.casacenina.it/stafil/profilo283.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7700/832.jpg",
+      "previewSha256": "96d34be50cd61b336e14714c8cc7b34600819f430dbde3c62039ef1672d9bc43",
+      "dmcEquivalent": "832"
+    },
+    {
+      "code": "285",
+      "productUrl": "https://www.casacenina.it/stafil/profilo285.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7699/831.jpg",
+      "previewSha256": "c6dd05034dffba5bd0bf0c2c156aa9442df01096a9d7a75a4295d1f8c19c7e82",
+      "dmcEquivalent": "831"
+    },
+    {
+      "code": "286",
+      "productUrl": "https://www.casacenina.it/stafil/profilo286.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7697/829.jpg",
+      "previewSha256": "69b212d39de92b5ba16b7042f7d381af391e17a394a85084a71170ed9c331dc7",
+      "dmcEquivalent": "829"
+    },
+    {
+      "code": "287",
+      "productUrl": "https://www.casacenina.it/stafil/profilo287.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7611/613.jpg",
+      "previewSha256": "eb3dcf02c0208ec3ef0d733b1f577289fc2b7e5e6aaff0972c94f5781fe93b99",
+      "dmcEquivalent": "613"
+    },
+    {
+      "code": "288",
+      "productUrl": "https://www.casacenina.it/stafil/profilo288.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7610/612.jpg",
+      "previewSha256": "14b6e64cecec4229378003484ed79782362b675747fcfc4e7ff71ba4af2bf92d",
+      "dmcEquivalent": "612"
+    },
+    {
+      "code": "289",
+      "productUrl": "https://www.casacenina.it/stafil/profilo289.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7609/611.jpg",
+      "previewSha256": "8926bccd8909133fe71fdcc6a54dae18b9137b822a11c7168e9b712389343c38",
+      "dmcEquivalent": "611"
+    },
+    {
+      "code": "290",
+      "productUrl": "https://www.casacenina.it/stafil/profilo290.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7608/610.jpg",
+      "previewSha256": "9fc3359503a80d9845019bd4ed9bc89d25d09614506f1619798c1c75d30dafb0",
+      "dmcEquivalent": "610"
+    },
+    {
+      "code": "291",
+      "productUrl": "https://www.casacenina.it/stafil/profilo291.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7797/3047.jpg",
+      "previewSha256": "ff4d888eeb8ef2e6160f80c4c4567d19e09c22e4e887b323803fa90d28805084",
+      "dmcEquivalent": "3047"
+    },
+    {
+      "code": "292",
+      "productUrl": "https://www.casacenina.it/stafil/profilo292.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7796/3046.jpg",
+      "previewSha256": "ffaef2a9395c24a160d9439605e3f7150f56c3a2f4e9b2557fc89ae859f07179",
+      "dmcEquivalent": "3046"
+    },
+    {
+      "code": "294",
+      "productUrl": "https://www.casacenina.it/stafil/profilo294.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7795/3045.jpg",
+      "previewSha256": "a3c226748d1b6edcef57e58ed18a8ebfb549200590baed9246513365239d7d29",
+      "dmcEquivalent": "3045"
+    },
+    {
+      "code": "295",
+      "productUrl": "https://www.casacenina.it/stafil/profilo295.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7652/746.jpg",
+      "previewSha256": "8c6937e3ebec5c1122448ea0afa729f4b7d49c713b1e7700c63ee55c5ee6f188",
+      "dmcEquivalent": "746"
+    },
+    {
+      "code": "296",
+      "productUrl": "https://www.casacenina.it/stafil/profilo296.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7622/677.jpg",
+      "previewSha256": "70963de5800f87d6da465ed4ef8dd9cdff408f93bd1da63a55bc40d1e62e6622",
+      "dmcEquivalent": "677"
+    },
+    {
+      "code": "297",
+      "productUrl": "https://www.casacenina.it/stafil/profilo297.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7558/422.jpg",
+      "previewSha256": "7b4c42e813ddaf58d0177527c0fbb06ec5f962337c154413c3704171655f26fb",
+      "dmcEquivalent": "422"
+    },
+    {
+      "code": "298",
+      "productUrl": "https://www.casacenina.it/stafil/profilo298.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7891/3828.jpg",
+      "previewSha256": "ef5e82605425271000156fc9969c73326875beba2ea7846f3c3c1b0f74c06fac",
+      "dmcEquivalent": "3828"
+    },
+    {
+      "code": "300",
+      "productUrl": "https://www.casacenina.it/stafil/profilo300.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7709/869.jpg",
+      "previewSha256": "a8ea1334971d1dd68fc42283883b20a9f03453fa556c50c080cfda452a2d1a16",
+      "dmcEquivalent": "869"
+    },
+    {
+      "code": "301",
+      "productUrl": "https://www.casacenina.it/stafil/profilo301.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7638/728.jpg",
+      "previewSha256": "c5c1f8d485e4dcf7b3cd23c18dfd592399133161cc68a01f13834eaabf32ec8f",
+      "dmcEquivalent": "728"
+    },
+    {
+      "code": "302",
+      "productUrl": "https://www.casacenina.it/stafil/profilo302.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7668/783.jpg",
+      "previewSha256": "9343d70d2be095d43e869e6d1ccee895412b9b414424766c39ba44ae8582b6ab",
+      "dmcEquivalent": "783"
+    },
+    {
+      "code": "303",
+      "productUrl": "https://www.casacenina.it/stafil/profilo303.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7667/782.jpg",
+      "previewSha256": "fcdb06e8f6839d62a0b40bde4f71ba21741a956308f7434b61da36606f6c207c",
+      "dmcEquivalent": "782"
+    },
+    {
+      "code": "304",
+      "productUrl": "https://www.casacenina.it/stafil/profilo304.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7665/780.jpg",
+      "previewSha256": "a9d5578c2a7e126bb3fe649bfcab9713a85545edb3fce0c5d24f39d5795ed38a",
+      "dmcEquivalent": "780"
+    },
+    {
+      "code": "305",
+      "productUrl": "https://www.casacenina.it/stafil/profilo305.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7621/676.jpg",
+      "previewSha256": "cb712f4e1c9495a1c1cc57ad154c5fc91df866a2ded79917b6ebd59a9094d372",
+      "dmcEquivalent": "676"
+    },
+    {
+      "code": "306",
+      "productUrl": "https://www.casacenina.it/stafil/profilo306.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7639/729.jpg",
+      "previewSha256": "4cb53efdc19cb290c805aa35eb51c052729dfeaffeb0d735916efe99eb623ecf",
+      "dmcEquivalent": "729"
+    },
+    {
+      "code": "307",
+      "productUrl": "https://www.casacenina.it/stafil/profilo307.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7623/680.jpg",
+      "previewSha256": "3df2d49c2e34c580d4c819c96429583e249cde9b2f8bffeaf2a80c3ec84d370c",
+      "dmcEquivalent": "680"
+    },
+    {
+      "code": "308",
+      "productUrl": "https://www.casacenina.it/stafil/profilo308.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7892/3829.jpg",
+      "previewSha256": "101a97b795e9301afb5b4e8e24f1b4797b47b58058ba1ceb537065d348383933",
+      "dmcEquivalent": "3829"
+    },
+    {
+      "code": "309",
+      "productUrl": "https://www.casacenina.it/stafil/profilo309.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7885/3822.jpg",
+      "previewSha256": "52b1f9a8f47ab088355bc2db01519d01e781986037c8cee6fea2a94dcb56fe6e",
+      "dmcEquivalent": "3822"
+    },
+    {
+      "code": "310",
+      "productUrl": "https://www.casacenina.it/stafil/profilo310.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7884/3821.jpg",
+      "previewSha256": "bed281a8b0382c5c91465ae39a6bce609acc648d645966aee479d99082ed79a3",
+      "dmcEquivalent": "3821"
+    },
+    {
+      "code": "311",
+      "productUrl": "https://www.casacenina.it/stafil/profilo311.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7883/3820.jpg",
+      "previewSha256": "f4e730425df005370e0b780e3e5a556162ede5a2f1470fbc10eb3c973bc4021e",
+      "dmcEquivalent": "3820"
+    },
+    {
+      "code": "312",
+      "productUrl": "https://www.casacenina.it/stafil/profilo312.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7915/3852.jpg",
+      "previewSha256": "61395a7f099df2117a9de146f8c08be8a1301f97bf8e1abdc63d5547acca270b",
+      "dmcEquivalent": "3852"
+    },
+    {
+      "code": "313",
+      "productUrl": "https://www.casacenina.it/stafil/profilo313.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7565/445.jpg",
+      "previewSha256": "8819559e704f3ed0c2ee7a7af314e480e72185bf0132c225b8619e90b81b43ec",
+      "dmcEquivalent": "445"
+    },
+    {
+      "code": "314",
+      "productUrl": "https://www.casacenina.it/stafil/profilo314.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7516/307.jpg",
+      "previewSha256": "c4884d069bcfea91e02d2a029dbc3998cd8c818d8415597be153c71e9e3f7cbe",
+      "dmcEquivalent": "307"
+    },
+    {
+      "code": "315",
+      "productUrl": "https://www.casacenina.it/stafil/profilo315.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_015/packshot/7770/973.jpg",
+      "previewSha256": "c7158d6f44edfb48553c406e1ee5310da205d2f2d18c568894214c27e068faae",
+      "dmcEquivalent": "973"
+    },
+    {
+      "code": "316",
+      "productUrl": "https://www.casacenina.it/stafil/profilo316.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7564/444.jpg",
+      "previewSha256": "c4d54189558437a09502a8c4460ceca53e9791ce9c630259a75080ecf58df873",
+      "dmcEquivalent": "444"
+    },
+    {
+      "code": "317",
+      "productUrl": "https://www.casacenina.it/stafil/profilo317.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7803/3078.jpg",
+      "previewSha256": "987349b650d6bae6a6ad5df05f74079b879c28b632ceae741936e21fbfe56a24",
+      "dmcEquivalent": "3078"
+    },
+    {
+      "code": "318",
+      "productUrl": "https://www.casacenina.it/stafil/profilo318.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7637/727.jpg",
+      "previewSha256": "4dd86389b03df4b8f3645b764a0962f2b414735040cb97e2bc36f021339a9538",
+      "dmcEquivalent": "727"
+    },
+    {
+      "code": "319",
+      "productUrl": "https://www.casacenina.it/stafil/profilo319.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7636/726.jpg",
+      "previewSha256": "c6dfc6b77731aab2981971dcd229cadf2a7f13a8439b272e9ca674d8987f10d4",
+      "dmcEquivalent": "726"
+    },
+    {
+      "code": "320",
+      "productUrl": "https://www.casacenina.it/stafil/profilo320.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7635/725.jpg",
+      "previewSha256": "34d4c6ca8a8cd8fbcf95c583792cc11f59af3f7c221c0286a5fcb7a78dfb1f21",
+      "dmcEquivalent": "725"
+    },
+    {
+      "code": "321",
+      "productUrl": "https://www.casacenina.it/stafil/profilo321.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_015/packshot/7769/972.jpg",
+      "previewSha256": "20231eb63b044adb7e1d75ce0e2d8d602c9c4cbe9dba2caa78f0612d69c40fcc",
+      "dmcEquivalent": "972"
+    },
+    {
+      "code": "322",
+      "productUrl": "https://www.casacenina.it/stafil/profilo322.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7651/745.jpg",
+      "previewSha256": "d968e981a5ba4061ed920edbe7f5f6a642b4f8d1bc1ffe6a8602d4325bc0aea8",
+      "dmcEquivalent": "745"
+    },
+    {
+      "code": "323",
+      "productUrl": "https://www.casacenina.it/stafil/profilo323.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7650/744.jpg",
+      "previewSha256": "09f5f0b4bebcff4d672cc886668826c10514d8174fa96bd074f175f93767857e",
+      "dmcEquivalent": "744"
+    },
+    {
+      "code": "324",
+      "productUrl": "https://www.casacenina.it/stafil/profilo324.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7649/743.jpg",
+      "previewSha256": "e9b7df0f7a2f774368692ce97f1299fc9ff6b7b289e97bc3aa3796d5823c82b7",
+      "dmcEquivalent": "743"
+    },
+    {
+      "code": "325",
+      "productUrl": "https://www.casacenina.it/stafil/profilo325.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7648/742.jpg",
+      "previewSha256": "9de66b7b8ad45883525524f571513f54bf94d2b164be14731d184d92620bb11a",
+      "dmcEquivalent": "742"
+    },
+    {
+      "code": "326",
+      "productUrl": "https://www.casacenina.it/stafil/profilo326.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7647/741.jpg",
+      "previewSha256": "224561ca4bb5a5c2595a98d88f69ad72abbfc7974a325ee526ccf5eba51efa9c",
+      "dmcEquivalent": "741"
+    },
+    {
+      "code": "328",
+      "productUrl": "https://www.casacenina.it/stafil/profilo328.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_015/packshot/7768/970.jpg",
+      "previewSha256": "e90bc98012fea4316d3c03fd70a07f5a0c5700ddb892f24cad3c3797ea8fbc69",
+      "dmcEquivalent": "970"
+    },
+    {
+      "code": "329",
+      "productUrl": "https://www.casacenina.it/stafil/profilo329.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7752/947.jpg",
+      "previewSha256": "34bdfdfd881a974a84317a03104a2b018b216fb0f963be03ef46e4c99c96b123",
+      "dmcEquivalent": "947"
+    },
+    {
+      "code": "331",
+      "productUrl": "https://www.casacenina.it/stafil/profilo331.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7718/900.jpg",
+      "previewSha256": "951c567058275a140a1ec43dd5d0c113ec23edd37960bec9c4d2d0c4918928d3",
+      "dmcEquivalent": "900"
+    },
+    {
+      "code": "332",
+      "productUrl": "https://www.casacenina.it/stafil/profilo332.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_014/packshot/7767/967.jpg",
+      "previewSha256": "de8dcc634f7ccd1e9a2626be495d618030cd2ba148175997fd78e6405ce07feb",
+      "dmcEquivalent": "967"
+    },
+    {
+      "code": "333",
+      "productUrl": "https://www.casacenina.it/stafil/profilo333.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7887/3824.jpg",
+      "previewSha256": "1cc8e05ef1ce5993293556afe408ce044737cb8d087533f2fb84bd014680d8c4",
+      "dmcEquivalent": "3824"
+    },
+    {
+      "code": "334",
+      "productUrl": "https://www.casacenina.it/stafil/profilo334.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7808/3341.jpg",
+      "previewSha256": "9b96c8c3198495a0c79ed86352aa4a51e5ddfe5d92b3197967974f93ea439473",
+      "dmcEquivalent": "3341"
+    },
+    {
+      "code": "335",
+      "productUrl": "https://www.casacenina.it/stafil/profilo335.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7807/3340.jpg",
+      "previewSha256": "a28cc508a3659f229c45d2d61a9b3e3b03990f7bee12cbfeb1b6d9c7c7d7973f",
+      "dmcEquivalent": "3340"
+    },
+    {
+      "code": "336",
+      "productUrl": "https://www.casacenina.it/stafil/profilo336.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7607/608.jpg",
+      "previewSha256": "a3cd6d3803cbd87ffe5721e3f48039f356137261755122ef5d86284b61265b3a",
+      "dmcEquivalent": "608"
+    },
+    {
+      "code": "337",
+      "productUrl": "https://www.casacenina.it/stafil/profilo337.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7606/606.jpg",
+      "previewSha256": "1b63cea836ec8c818149630f170871fb25eb9c6124e9f59f3bb36348a694d7b0",
+      "dmcEquivalent": "606"
+    },
+    {
+      "code": "338",
+      "productUrl": "https://www.casacenina.it/stafil/profilo338.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7755/951.jpg",
+      "previewSha256": "c1203537de48fbcb680eb39121e6bcd171aa7b493bc7cfe1d1e49ccf84a77f62",
+      "dmcEquivalent": "951"
+    },
+    {
+      "code": "339",
+      "productUrl": "https://www.casacenina.it/stafil/profilo339.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7917/3856.jpg",
+      "previewSha256": "5783940ce51dbac385ffb0aa19057c3e58c7154194968663bc0ec72b3687c91a",
+      "dmcEquivalent": "3856"
+    },
+    {
+      "code": "340",
+      "productUrl": "https://www.casacenina.it/stafil/profilo340.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7634/722.jpg",
+      "previewSha256": "dc5826496f6a62c4f4d3c7d110f0b1c4d37223b3c0ec727a9f0c122589e46917",
+      "dmcEquivalent": "722"
+    },
+    {
+      "code": "341",
+      "productUrl": "https://www.casacenina.it/stafil/profilo341.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7633/721.jpg",
+      "previewSha256": "60b9a61eb17cd7e014c153e93e79b13b775da42640223281b760dc1d30f77fb2",
+      "dmcEquivalent": "721"
+    },
+    {
+      "code": "342",
+      "productUrl": "https://www.casacenina.it/stafil/profilo342.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7632/720.jpg",
+      "previewSha256": "566fae70e1a82b5cae8f5e677de3111433a4b3defe3b15e166d75dfbd87bf5e9",
+      "dmcEquivalent": "720"
+    },
+    {
+      "code": "343",
+      "productUrl": "https://www.casacenina.it/stafil/profilo343.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7888/3825.jpg",
+      "previewSha256": "726c8651740559b6cf3691e4b244d8c0bf6cebe21dc33ad315f2d3c8b79bf719",
+      "dmcEquivalent": "3825"
+    },
+    {
+      "code": "344",
+      "productUrl": "https://www.casacenina.it/stafil/profilo344.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7735/922.jpg",
+      "previewSha256": "51e1dbb29f03d242d3d094fa524193f50a3350bd6284d0cebe2aa195c0b938c4",
+      "dmcEquivalent": "922"
+    },
+    {
+      "code": "346",
+      "productUrl": "https://www.casacenina.it/stafil/profilo346.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7733/920.jpg",
+      "previewSha256": "ebdf6d073e305c348bb93ebeeb0aa937d2256d88e229578fcf0d3e579f1aa5e1",
+      "dmcEquivalent": "920"
+    },
+    {
+      "code": "347",
+      "productUrl": "https://www.casacenina.it/stafil/profilo347.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7732/919.jpg",
+      "previewSha256": "d07c52bae89caf089c8e9bb03cc22a4b8550eaf354d9bd3af20b184f9a0535b6",
+      "dmcEquivalent": "919"
+    },
+    {
+      "code": "348",
+      "productUrl": "https://www.casacenina.it/stafil/profilo348.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7731/918.jpg",
+      "previewSha256": "5b7f6cf4e42f48eed519d04904cf1490a0c99af618434be7a5c81d43eb18348c",
+      "dmcEquivalent": "918"
+    },
+    {
+      "code": "349",
+      "productUrl": "https://www.casacenina.it/stafil/profilo349.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7851/3770.jpg",
+      "previewSha256": "385089843a6950965c7ecf2c05f5ff60d7c96f2a524baf30644099f92db8eb56",
+      "dmcEquivalent": "3770"
+    },
+    {
+      "code": "350",
+      "productUrl": "https://www.casacenina.it/stafil/profilo350.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7750/945.jpg",
+      "previewSha256": "b75806d14f58cd7de64382c7941127ebd70b183893cd4f80e38bd38042ad7532",
+      "dmcEquivalent": "945"
+    },
+    {
+      "code": "351",
+      "productUrl": "https://www.casacenina.it/stafil/profilo351.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7552/402.jpg",
+      "previewSha256": "29ea1fcdf1fbcc6b465e4b5f592c318de61b68ef7a75ad75a529163940c44ffb",
+      "dmcEquivalent": "402"
+    },
+    {
+      "code": "352",
+      "productUrl": "https://www.casacenina.it/stafil/profilo352.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7855/3776.jpg",
+      "previewSha256": "fbcebab451f3f05dad0d5ffaba0711e2d294da351f30a6490bc29c94d2c589a3",
+      "dmcEquivalent": "3776"
+    },
+    {
+      "code": "353",
+      "productUrl": "https://www.casacenina.it/stafil/profilo353.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7514/301.jpg",
+      "previewSha256": "e9ddd9397c9f0226288d514832b95635bd5197bb388381d2ea35f0ee8c87faa0",
+      "dmcEquivalent": "301"
+    },
+    {
+      "code": "354",
+      "productUrl": "https://www.casacenina.it/stafil/profilo354.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7551/400.jpg",
+      "previewSha256": "1eadb164a243346136b9ffb08e94e16cc97380342139b94754a79fb06b764eca",
+      "dmcEquivalent": "400"
+    },
+    {
+      "code": "355",
+      "productUrl": "https://www.casacenina.it/stafil/profilo355.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7513/300.jpg",
+      "previewSha256": "df0f48a5eb7d91ab98a1ff5009309d3e31d1fb95200d2f4500575c7b9afd25a2",
+      "dmcEquivalent": "300"
+    },
+    {
+      "code": "356",
+      "productUrl": "https://www.casacenina.it/stafil/profilo356.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7886/3823.jpg",
+      "previewSha256": "fd5abed9ac56a3949ed4ccc8bd27759092d1070e3330da0573c27a14172d41ec",
+      "dmcEquivalent": "3823"
+    },
+    {
+      "code": "357",
+      "productUrl": "https://www.casacenina.it/stafil/profilo357.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_084/packshot/49664/3856.jpg",
+      "previewSha256": "0668bf05ff5011742f9039a0f1bc3133cbab52ded3182ede5a37e00fb7586c4e",
+      "dmcEquivalent": "3856"
+    },
+    {
+      "code": "358",
+      "productUrl": "https://www.casacenina.it/stafil/profilo358.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7916/3854.jpg",
+      "previewSha256": "4ba8972239d8e66600c97f2969714d0801c7a0947b52ef1062ebf0511197e9df",
+      "dmcEquivalent": "3854"
+    },
+    {
+      "code": "360",
+      "productUrl": "https://www.casacenina.it/stafil/profilo360.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7890/3827.jpg",
+      "previewSha256": "7fd7597a81ed4c2a16af8ef558bd985530023333eee7bed3aeba2909fc2c658b",
+      "dmcEquivalent": "3827"
+    },
+    {
+      "code": "361",
+      "productUrl": "https://www.casacenina.it/stafil/profilo361.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_015/packshot/7773/977.jpg",
+      "previewSha256": "2d9e462d78350ad7d06c28e4db6d43aaebfc522e932e52ae5c6f68f4042f779f",
+      "dmcEquivalent": "977"
+    },
+    {
+      "code": "362",
+      "productUrl": "https://www.casacenina.it/stafil/profilo362.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_015/packshot/7772/976.jpg",
+      "previewSha256": "b6f50f524a7671e2ea4421e0abe8ff308846e0a4856230623bd403afb4461fc0",
+      "dmcEquivalent": "976"
+    },
+    {
+      "code": "363",
+      "productUrl": "https://www.casacenina.it/stafil/profilo363.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7889/3826.jpg",
+      "previewSha256": "779799e73ef207e3d0cc5338bd48b26e4ebe0c65a4695724d791c5a92f2910d2",
+      "dmcEquivalent": "3826"
+    },
+    {
+      "code": "364",
+      "productUrl": "https://www.casacenina.it/stafil/profilo364.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_015/packshot/7771/975.jpg",
+      "previewSha256": "2cd0545b8d4bb1d7c21290bc1dd2a7bc06af2ab2af6a925f0d6563f0ee555f51",
+      "dmcEquivalent": "975"
+    },
+    {
+      "code": "365",
+      "productUrl": "https://www.casacenina.it/stafil/profilo365.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7753/948.jpg",
+      "previewSha256": "5f0974a60350bc923f77b3966edc9745f85e7f05639cef0e92ec22cd96a48aa1",
+      "dmcEquivalent": "948"
+    },
+    {
+      "code": "366",
+      "productUrl": "https://www.casacenina.it/stafil/profilo366.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7654/754.jpg",
+      "previewSha256": "09392ff3eb5bfcdb48ad036601fccfe2ce2774992331125818a874414b8373a2",
+      "dmcEquivalent": "754"
+    },
+    {
+      "code": "367",
+      "productUrl": "https://www.casacenina.it/stafil/profilo367.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7852/3771.jpg",
+      "previewSha256": "900b4a974a8b74cd3cc9337eebe50a1511e412a11e0f84d832d6a24cbf801d33",
+      "dmcEquivalent": "3771"
+    },
+    {
+      "code": "369",
+      "productUrl": "https://www.casacenina.it/stafil/profilo369.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7857/3778.jpg",
+      "previewSha256": "1be5213b9b3fb6097ce29c2fa3a8958ee01f84a3f8789475f0bd97350560297d",
+      "dmcEquivalent": "3778"
+    },
+    {
+      "code": "370",
+      "productUrl": "https://www.casacenina.it/stafil/profilo370.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7544/356.jpg",
+      "previewSha256": "19d0f610089e8281c713a5ca3d9b7fbad3bd3ac49e536c061f98be824d26f54b",
+      "dmcEquivalent": "356"
+    },
+    {
+      "code": "371",
+      "productUrl": "https://www.casacenina.it/stafil/profilo371.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7893/3830.jpg",
+      "previewSha256": "d07d37e7d4894a6d9b393c6ef19993a7ebc47b9b385a23cc8cfc346868320718",
+      "dmcEquivalent": "3830"
+    },
+    {
+      "code": "372",
+      "productUrl": "https://www.casacenina.it/stafil/profilo372.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7543/355.jpg",
+      "previewSha256": "a5ee8997bc5f375e149d0e736f1be49b09afb55301b7a700acf7564b8e9706a0",
+      "dmcEquivalent": "355"
+    },
+    {
+      "code": "373",
+      "productUrl": "https://www.casacenina.it/stafil/profilo373.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7856/3777.jpg",
+      "previewSha256": "d650e60da9d9096f65c7fcdaa0220a9b74248bdb2670e9ff5d06a9ef6ae56867",
+      "dmcEquivalent": "3777"
+    },
+    {
+      "code": "374",
+      "productUrl": "https://www.casacenina.it/stafil/profilo374.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7858/3779.jpg",
+      "previewSha256": "019f15e23ba0aed9ad7459cccbab574c8f90e380d4d25f646adbb48851f14123",
+      "dmcEquivalent": "3779"
+    },
+    {
+      "code": "375",
+      "productUrl": "https://www.casacenina.it/stafil/profilo375.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7920/3859.jpg",
+      "previewSha256": "a4c3dae84b95ca0e1f95c436a143c5e68198c574d81a8326ddbf61924aa4b008",
+      "dmcEquivalent": "3859"
+    },
+    {
+      "code": "376",
+      "productUrl": "https://www.casacenina.it/stafil/profilo376.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7919/3858.jpg",
+      "previewSha256": "0c7f0109cc20836aeeb1d9fd3f814201a386aff89d5806cad23322e1375bbb9e",
+      "dmcEquivalent": "3858"
+    },
+    {
+      "code": "377",
+      "productUrl": "https://www.casacenina.it/stafil/profilo377.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7918/3857.jpg",
+      "previewSha256": "24d6a3d36ba6cf83897d5bbbe48b76e0491da5de5d06bdfdb347681ca5e4c9c4",
+      "dmcEquivalent": "3857"
+    },
+    {
+      "code": "378",
+      "productUrl": "https://www.casacenina.it/stafil/profilo378.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7854/3774.jpg",
+      "previewSha256": "a48a00ebe0024d20ed715bee9d60440057cdd41c5106c6f4e0be100ae779f797",
+      "dmcEquivalent": "3774"
+    },
+    {
+      "code": "379",
+      "productUrl": "https://www.casacenina.it/stafil/profilo379.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7754/951.jpg",
+      "previewSha256": "c1203537de48fbcb680eb39121e6bcd171aa7b493bc7cfe1d1e49ccf84a77f62",
+      "dmcEquivalent": "950"
+    },
+    {
+      "code": "380",
+      "productUrl": "https://www.casacenina.it/stafil/profilo380.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7801/3064.jpg",
+      "previewSha256": "a3e6ac28cdc9f607c50eb4bd4bf7ca42c17ed33bd1436b2f3212ca6dbf4ccfac",
+      "dmcEquivalent": "3064"
+    },
+    {
+      "code": "381",
+      "productUrl": "https://www.casacenina.it/stafil/profilo381.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7553/407.jpg",
+      "previewSha256": "a3e6ac28cdc9f607c50eb4bd4bf7ca42c17ed33bd1436b2f3212ca6dbf4ccfac",
+      "dmcEquivalent": "407"
+    },
+    {
+      "code": "382",
+      "productUrl": "https://www.casacenina.it/stafil/profilo382.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7853/3772.jpg",
+      "previewSha256": "2c237649e0b5241dffc2113337b51b572995583f2891d1dd5103c9d5e9271064",
+      "dmcEquivalent": "3772"
+    },
+    {
+      "code": "383",
+      "productUrl": "https://www.casacenina.it/stafil/profilo383.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7612/632.jpg",
+      "previewSha256": "dd9801894b67f99689f1d38198ced8d15e8bdf260c07c5789010ad277d153212",
+      "dmcEquivalent": "632"
+    },
+    {
+      "code": "384",
+      "productUrl": "https://www.casacenina.it/stafil/profilo384.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7568/453.jpg",
+      "previewSha256": "5cee625df64014bdd15c6331e4e965916a2eec8c17851e1265d998f85d68312c",
+      "dmcEquivalent": "453"
+    },
+    {
+      "code": "385",
+      "productUrl": "https://www.casacenina.it/stafil/profilo385.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7567/452.jpg",
+      "previewSha256": "cfe27c73f399681c4860d528488a9850d9797502091b104a2985be8812a3ca0d",
+      "dmcEquivalent": "452"
+    },
+    {
+      "code": "386",
+      "productUrl": "https://www.casacenina.it/stafil/profilo386.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7566/451.jpg",
+      "previewSha256": "a4f2787fe51082d4b6409b008e7dccb16383b4bc85bef2013dbad80427ebcdcc",
+      "dmcEquivalent": "451"
+    },
+    {
+      "code": "387",
+      "productUrl": "https://www.casacenina.it/stafil/profilo387.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7922/3861.jpg",
+      "previewSha256": "e81f6fff7bb53c4277e5a6dcc46d9dff6a99fa665b85fb62585a4a8173c78e62",
+      "dmcEquivalent": "3861"
+    },
+    {
+      "code": "388",
+      "productUrl": "https://www.casacenina.it/stafil/profilo388.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7921/3860.jpg",
+      "previewSha256": "81bd24879af101580ad57183c99367f8eef63ed21f38ad6c43a5638ff11e79f0",
+      "dmcEquivalent": "3860"
+    },
+    {
+      "code": "389",
+      "productUrl": "https://www.casacenina.it/stafil/profilo389.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7664/779.jpg",
+      "previewSha256": "a126e13afe55a43c1206033caffdbcb34e5325e844fb83bdeaa9fd85a2bb30be",
+      "dmcEquivalent": "779"
+    },
+    {
+      "code": "390",
+      "productUrl": "https://www.casacenina.it/stafil/profilo390.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7630/712.jpg",
+      "previewSha256": "1f1a47b5453aa033f63887844169746c8bfdba5a726b2ef0cf05f31c7db4426e",
+      "dmcEquivalent": "712"
+    },
+    {
+      "code": "391",
+      "productUrl": "https://www.casacenina.it/stafil/profilo391.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7646/739.jpg",
+      "previewSha256": "422a7d8d9e26b8f6df255d1f5e29686bdf41f79d6842324f3ec9fef39193a5ec",
+      "dmcEquivalent": "739"
+    },
+    {
+      "code": "392",
+      "productUrl": "https://www.casacenina.it/stafil/profilo392.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7645/738.jpg",
+      "previewSha256": "62bd919af2facbd9e7e315774d616fe944c05f03fa7a74144fad3024f655e956",
+      "dmcEquivalent": "738"
+    },
+    {
+      "code": "393",
+      "productUrl": "https://www.casacenina.it/stafil/profilo393.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7563/437.jpg",
+      "previewSha256": "04175776ae1e782e8274bac471aa3f96d47605ebc7890369d0b5f81bb8a58d89",
+      "dmcEquivalent": "437"
+    },
+    {
+      "code": "394",
+      "productUrl": "https://www.casacenina.it/stafil/profilo394.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7562/436.jpg",
+      "previewSha256": "eb0b22effe44f0c8afe48f92eda3d1775cd86a5a6c885b439b21558602518902",
+      "dmcEquivalent": "436"
+    },
+    {
+      "code": "395",
+      "productUrl": "https://www.casacenina.it/stafil/profilo395.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7561/435.jpg",
+      "previewSha256": "9df367e9cb715f62917e5c565df3e6c47d5f39216d0d796851b2d0d57be11579",
+      "dmcEquivalent": "435"
+    },
+    {
+      "code": "396",
+      "productUrl": "https://www.casacenina.it/stafil/profilo396.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7560/434.jpg",
+      "previewSha256": "3585ae70b4657cabd1458950486f61c647f2571eb20d4e21a64122d792e68f32",
+      "dmcEquivalent": "434"
+    },
+    {
+      "code": "397",
+      "productUrl": "https://www.casacenina.it/stafil/profilo397.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7559/433.jpg",
+      "previewSha256": "de14d960cf037d58f2cb2856097296a18b7fdcbf1996f77f1b8b3e0159635416",
+      "dmcEquivalent": "433"
+    },
+    {
+      "code": "398",
+      "productUrl": "https://www.casacenina.it/stafil/profilo398.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7678/801.jpg",
+      "previewSha256": "77a48ac4c91372939e98f2b4ec1c0dd57767dfde105d4e512d38e5650bc9d5f1",
+      "dmcEquivalent": "801"
+    },
+    {
+      "code": "399",
+      "productUrl": "https://www.casacenina.it/stafil/profilo399.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7716/898.jpg",
+      "previewSha256": "eb0264075e09c25b1be5ed5dcd691e495e9b7d6128ca98d3ba20f75d581c5792",
+      "dmcEquivalent": "898"
+    },
+    {
+      "code": "400",
+      "productUrl": "https://www.casacenina.it/stafil/profilo400.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_013/packshot/7747/938.jpg",
+      "previewSha256": "6d29d4ef18b2274a2260040f2d767ea1d388e07843d0907e97765f15acada37e",
+      "dmcEquivalent": "938"
+    },
+    {
+      "code": "401",
+      "productUrl": "https://www.casacenina.it/stafil/profilo401.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7818/3371.jpg",
+      "previewSha256": "6bc42e5ca4caab00f6b5f2f73199ecaff74c3fe02773f852d0072b7bc815e2b5",
+      "dmcEquivalent": "3371"
+    },
+    {
+      "code": "402",
+      "productUrl": "https://www.casacenina.it/stafil/profilo402.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7587/543.jpg",
+      "previewSha256": "de7b0aa993c341f466097e17864e0f53d33c4dce4914410397eb3e244600acf8",
+      "dmcEquivalent": "543"
+    },
+    {
+      "code": "403",
+      "productUrl": "https://www.casacenina.it/stafil/profilo403.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7925/3864.jpg",
+      "previewSha256": "b47e4f1fe56bec57e8ecdb344c5ca5dd6a873612cef278983503b6547826a1ae",
+      "dmcEquivalent": "3864"
+    },
+    {
+      "code": "404",
+      "productUrl": "https://www.casacenina.it/stafil/profilo404.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7924/3863.jpg",
+      "previewSha256": "7477dbadf7a237055043418af83c1fff6605f94d60bb1479b50b13240abdb21a",
+      "dmcEquivalent": "3863"
+    },
+    {
+      "code": "405",
+      "productUrl": "https://www.casacenina.it/stafil/profilo405.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7923/3862.jpg",
+      "previewSha256": "8eddaa319cb10cb8aa6082bc22bfaf9b86eb69ea9aab9388655117de26423622",
+      "dmcEquivalent": "3862"
+    },
+    {
+      "code": "406",
+      "productUrl": "https://www.casacenina.it/stafil/profilo406.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7790/3031.jpg",
+      "previewSha256": "c50b50ff26e9b6107308b963a9d5767d22f07b7bbbadc87ef159b2037d9b5da0",
+      "dmcEquivalent": "3031"
+    },
+    {
+      "code": "407",
+      "productUrl": "https://www.casacenina.it/stafil/profilo407.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_017/packshot/7483/b5200.jpg",
+      "previewSha256": "a725cc6a18a62aa60a1504d59555eff21c8decb2039b9c6b50c5e867e8e88ef9",
+      "dmcEquivalent": "B5200"
+    },
+    {
+      "code": "408",
+      "productUrl": "https://www.casacenina.it/stafil/profilo408.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_055/packshot/33384/b5200.jpg",
+      "previewSha256": "7dc71feb267a00c338c07f955d0d7d935388df786b2ecb7532c653490ef17689",
+      "dmcEquivalent": "B5200"
+    },
+    {
+      "code": "409",
+      "productUrl": "https://www.casacenina.it/stafil/profilo409.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7926/3865.jpg",
+      "previewSha256": "fe235875b8f702a5eec43a2ed0ccb9fab52fe9a6972e455f3f8722742d27de3d",
+      "dmcEquivalent": "3865"
+    },
+    {
+      "code": "410",
+      "productUrl": "https://www.casacenina.it/stafil/profilo410.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_017/packshot/7484/ecru.jpg",
+      "previewSha256": "b5e45976fb831fa5a8df631de93a71fb0740ce5fdadf8735918580978282a03d",
+      "dmcEquivalent": "Ecru"
+    },
+    {
+      "code": "411",
+      "productUrl": "https://www.casacenina.it/stafil/profilo411.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7690/822.jpg",
+      "previewSha256": "578fb9a8f58f890c8636b1eeb8fb002de8492b95fbe98bcb404071528f4eee00",
+      "dmcEquivalent": "822"
+    },
+    {
+      "code": "412",
+      "productUrl": "https://www.casacenina.it/stafil/profilo412.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7615/644.jpg",
+      "previewSha256": "9f93679492f10aeadbb80a17301d00884bfb850e5b98fe75a53949141aafdd8c",
+      "dmcEquivalent": "644"
+    },
+    {
+      "code": "413",
+      "productUrl": "https://www.casacenina.it/stafil/profilo413.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7614/642.jpg",
+      "previewSha256": "b2b2dfc2a4dc95e96954bdf53b1a4d5fc925c7329ae65fdb5166e19fc48903b7",
+      "dmcEquivalent": "642"
+    },
+    {
+      "code": "414",
+      "productUrl": "https://www.casacenina.it/stafil/profilo414.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7613/640.jpg",
+      "previewSha256": "f30d6a4ea64836cf7c903b567fcd61f4fa6e6420b9c9093779147211fd1d329d",
+      "dmcEquivalent": "640"
+    },
+    {
+      "code": "415",
+      "productUrl": "https://www.casacenina.it/stafil/profilo415.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7861/3787.jpg",
+      "previewSha256": "63fd104eb667f35f11d99b8612513dfec139a3d16417ab708bf8911777fcd3e7",
+      "dmcEquivalent": "3787"
+    },
+    {
+      "code": "416",
+      "productUrl": "https://www.casacenina.it/stafil/profilo416.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7804/3325.jpg",
+      "previewSha256": "ca5e18eee223736d535eb880c6a51eee7da3be873e7f8c5dfbac847fd3b4731e",
+      "dmcEquivalent": "3325"
+    },
+    {
+      "code": "417",
+      "productUrl": "https://www.casacenina.it/stafil/profilo417.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7789/3024.jpg",
+      "previewSha256": "42dffd20a0b3a43b9714a66aa948a5b6538fa6ef6283b34020ef4f3248d275d9",
+      "dmcEquivalent": "3024"
+    },
+    {
+      "code": "418",
+      "productUrl": "https://www.casacenina.it/stafil/profilo418.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7788/3023.jpg",
+      "previewSha256": "4c0c363f89010c526aafdde5dc992dead2e5cc7f9302cf91f042ace35515467b",
+      "dmcEquivalent": "3023"
+    },
+    {
+      "code": "419",
+      "productUrl": "https://www.casacenina.it/stafil/profilo419.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7787/3022.jpg",
+      "previewSha256": "900996b9a608447001cb7f2355a6a592bf4b18a7b1077d149ec09af0db3ab62e",
+      "dmcEquivalent": "3022"
+    },
+    {
+      "code": "420",
+      "productUrl": "https://www.casacenina.it/stafil/profilo420.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7586/535.jpg",
+      "previewSha256": "fef0170fe5a36643463451b2378e82d14fd9eef7394b6b2942700dde90534e37",
+      "dmcEquivalent": "535"
+    },
+    {
+      "code": "421",
+      "productUrl": "https://www.casacenina.it/stafil/profilo421.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7792/3033.jpg",
+      "previewSha256": "9c4fa2001f52ce1967a0872aed540cf55af117d2a16879aa057250bb38ee1a38",
+      "dmcEquivalent": "3033"
+    },
+    {
+      "code": "422",
+      "productUrl": "https://www.casacenina.it/stafil/profilo422.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7860/3782.jpg",
+      "previewSha256": "4d2565d2fb62ffe8d8a085612d388cb1aa29cc40d3896736816243abb933f0e7",
+      "dmcEquivalent": "3782"
+    },
+    {
+      "code": "423",
+      "productUrl": "https://www.casacenina.it/stafil/profilo423.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7791/3032.jpg",
+      "previewSha256": "de354dd83d1193728e010cf0e98de51635f9ca6e699d3fff877e68a534a4e79b",
+      "dmcEquivalent": "3032"
+    },
+    {
+      "code": "424",
+      "productUrl": "https://www.casacenina.it/stafil/profilo424.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7862/3790.jpg",
+      "previewSha256": "7138fff95c93e671ae409afd6a00aa4e38d34fde07568c8f73fb03ea98820435",
+      "dmcEquivalent": "3790"
+    },
+    {
+      "code": "425",
+      "productUrl": "https://www.casacenina.it/stafil/profilo425.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7859/3781.jpg",
+      "previewSha256": "2c24765a9b0f66f87458fe69d0ba947ae2d4675ab10eee95892d6ea6cbd4e6e9",
+      "dmcEquivalent": "3781"
+    },
+    {
+      "code": "426",
+      "productUrl": "https://www.casacenina.it/stafil/profilo426.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7927/3866.jpg",
+      "previewSha256": "5312be9a261e492264cdc9ce61b68141a3a992b900dbc3a058d12d2e312ac9a8",
+      "dmcEquivalent": "3866"
+    },
+    {
+      "code": "427",
+      "productUrl": "https://www.casacenina.it/stafil/profilo427.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7707/842.jpg",
+      "previewSha256": "41a2d15ee6988086c36505871d99406fb0d67f5fc30d561c76b5c6d02dd027c8",
+      "dmcEquivalent": "842"
+    },
+    {
+      "code": "428",
+      "productUrl": "https://www.casacenina.it/stafil/profilo428.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7706/841.jpg",
+      "previewSha256": "7d03687c30957fc210ad511b31d284a4c5972d2bf766350252de4af8c7511e14",
+      "dmcEquivalent": "841"
+    },
+    {
+      "code": "429",
+      "productUrl": "https://www.casacenina.it/stafil/profilo429.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7705/840.jpg",
+      "previewSha256": "1611edd854202b7c7ed9164f93dc58ffa380ff01d9329e066dd7e3db17fdeebe",
+      "dmcEquivalent": "840"
+    },
+    {
+      "code": "430",
+      "productUrl": "https://www.casacenina.it/stafil/profilo430.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7704/839.jpg",
+      "previewSha256": "66aef1b4900f06e277a2650d603fa315efc7df510456811ede766f6719665d59",
+      "dmcEquivalent": "839"
+    },
+    {
+      "code": "431",
+      "productUrl": "https://www.casacenina.it/stafil/profilo431.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7703/838.jpg",
+      "previewSha256": "9613803e816e75264ed5dc50358c6470874ffc4b078ec03fc6bd6ddd5452b1a9",
+      "dmcEquivalent": "838"
+    },
+    {
+      "code": "432",
+      "productUrl": "https://www.casacenina.it/stafil/profilo432.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7802/3072.jpg",
+      "previewSha256": "752f4e59a74f053e1557086d876452679b4365eba5fab2f18603539b04bcc443",
+      "dmcEquivalent": "3072"
+    },
+    {
+      "code": "433",
+      "productUrl": "https://www.casacenina.it/stafil/profilo433.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7619/648.jpg",
+      "previewSha256": "57220947c8333a1aa716f6776ecfb40825c97b2e9a15102056723d82a2170be0",
+      "dmcEquivalent": "648"
+    },
+    {
+      "code": "434",
+      "productUrl": "https://www.casacenina.it/stafil/profilo434.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7618/647.jpg",
+      "previewSha256": "4e4bac19289a42c17b22359be38e54f66f0c18b46300607cc4e52e39776b2483",
+      "dmcEquivalent": "647"
+    },
+    {
+      "code": "436",
+      "productUrl": "https://www.casacenina.it/stafil/profilo436.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_011/packshot/7617/646.jpg",
+      "previewSha256": "6516b0e7b222cefc06b0ad216f7234d0b8d1b94967e55eea818a0deac414385b",
+      "dmcEquivalent": "646"
+    },
+    {
+      "code": "437",
+      "productUrl": "https://www.casacenina.it/stafil/profilo437.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7708/844.jpg",
+      "previewSha256": "fcd09144aa2c7c1bc11688e6fa15d8ee125635662e2881acd41006d5f64be280",
+      "dmcEquivalent": "844"
+    },
+    {
+      "code": "438",
+      "productUrl": "https://www.casacenina.it/stafil/profilo438.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_012/packshot/7658/762.jpg",
+      "previewSha256": "753e1d4d9dcf4eef52a13634014ddff5eb7a0ca3328a794ab689aee5fbe272c6",
+      "dmcEquivalent": "762"
+    },
+    {
+      "code": "439",
+      "productUrl": "https://www.casacenina.it/stafil/profilo439.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7556/415.jpg",
+      "previewSha256": "ea9eb9dfb0f276ca70de8b777d9e2b0824caaedc15441230d132359b113e1b21",
+      "dmcEquivalent": "415"
+    },
+    {
+      "code": "440",
+      "productUrl": "https://www.casacenina.it/stafil/profilo440.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7524/318.jpg",
+      "previewSha256": "654445ec0aa35438d467dbfb87f1ad4df24565284a23b8cc0786d10fa8fbf700",
+      "dmcEquivalent": "318"
+    },
+    {
+      "code": "441",
+      "productUrl": "https://www.casacenina.it/stafil/profilo441.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7555/414.jpg",
+      "previewSha256": "cc6af69ac4a6dfefa8d1baf69cbf15693a40da9c71a9e12b78bd9289f49a6a77",
+      "dmcEquivalent": "414"
+    },
+    {
+      "code": "442",
+      "productUrl": "https://www.casacenina.it/stafil/profilo442.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7503/168.jpg",
+      "previewSha256": "7e565bef0e985e0bb947f0bc19dd7bfb1d1643e9864493fcb7a0737947a8321b",
+      "dmcEquivalent": "168"
+    },
+    {
+      "code": "443",
+      "productUrl": "https://www.casacenina.it/stafil/profilo443.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7504/169.jpg",
+      "previewSha256": "6f6f056195bd1343004bec9e3e8120c8affb3101e365b0a3eee84ba93a12af53",
+      "dmcEquivalent": "169"
+    },
+    {
+      "code": "444",
+      "productUrl": "https://www.casacenina.it/stafil/profilo444.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7523/317.jpg",
+      "previewSha256": "cc6af69ac4a6dfefa8d1baf69cbf15693a40da9c71a9e12b78bd9289f49a6a77",
+      "dmcEquivalent": "317"
+    },
+    {
+      "code": "445",
+      "productUrl": "https://www.casacenina.it/stafil/profilo445.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7554/413.jpg",
+      "previewSha256": "43d651566e850c1c10cda80f2379bfde2ea8f94d868cfe9ed1a29bcb14229a4d",
+      "dmcEquivalent": "413"
+    },
+    {
+      "code": "446",
+      "productUrl": "https://www.casacenina.it/stafil/profilo446.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7863/3799.jpg",
+      "previewSha256": "dc3a8f4fe4fd359ac4cd9034f904ac358d32c4275f9c29d6adeeb095255094c1",
+      "dmcEquivalent": "3799"
+    },
+    {
+      "code": "447",
+      "productUrl": "https://www.casacenina.it/stafil/profilo447.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_010/packshot/7518/310.jpg",
+      "previewSha256": "67c21d66a5a0284f1d7d6c79bffb0d7396eb2d94d0fd92c8cbacbbd23d38cdf5",
+      "dmcEquivalent": "310"
+    },
+    {
+      "code": "359",
+      "productUrl": "https://www.casacenina.it/stafil/mouline-profilo-359.html",
+      "imageUrl": "https://www.casacenina.it/catalog/images/img_285/packshot/155234/profilo-359-rgb.jpg",
+      "previewSha256": "6d697c3881bc62827b2d581d673b141fc00dda82c514d1739799f9efd34962ab",
+      "dmcEquivalent": null
+    }
+  ]
+}
