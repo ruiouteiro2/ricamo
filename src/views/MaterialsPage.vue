@@ -4,7 +4,7 @@ import { CHART_CATALOGUE } from '../../core/chart-collection.mjs';
 import { INVENTORY_GROUPS, customInventoryGroups, inventoryGroup, accessorySection, parseInventoryRoute, inventoryRoute, inventoryContext, matchesInventorySection } from '../inventory-navigation.mjs';
 import { materialSearchDescriptors } from '../material-descriptors.mjs';
 import { isDiscontinued } from '../../core/discontinued-materials.mjs';
-import { missingMillHillArticles, millHillMaterial } from '../mill-hill-catalogue.mjs';
+import { hasCatalogueRows, missingCatalogueArticles, catalogueMaterial } from '../catalogue-rows.mjs';
 import { computed, ref, watch, nextTick } from 'vue';
 import { Plus, Search, Package, CircleAlert, Download, ChevronLeft, ChevronRight, Heart, PackageOpen, Pencil, Trash2, ShoppingCart } from '@lucide/vue';
 import PageHeader from '../components/PageHeader.vue';
@@ -97,11 +97,12 @@ const filtered = computed(() => {
     return !query || row.search.includes(query);
   }).sort((a, b) => sort.value === 'recent' ? b.material.createdAt.localeCompare(a.material.createdAt) : sort.value === 'nameZA' ? b.material.name.localeCompare(a.material.name) : sort.value==='codeAZ' ? a.material.code.localeCompare(b.material.code) || a.material.name.localeCompare(b.material.name) : sort.value==='brandAZ' ? a.material.brand.localeCompare(b.material.brand)||a.material.range.localeCompare(b.material.range)||a.material.code.localeCompare(b.material.code) : a.material.name.localeCompare(b.material.name));
 });
-// Mill Hill articles not yet in the inventory follow the owned rows, greyed out, and can only be ordered.
+// Catalogue articles not yet in the inventory follow the owned rows, greyed out, and can only be ordered.
 const catalogueRows = computed(() => {
-  if (section.value.child?.brand !== 'Mill Hill' || filter.value !== 'active' || location.value || category.value) return [];
+  const brand = section.value.child?.brand;
+  if (!hasCatalogueRows(brand) || filter.value !== 'active' || location.value || category.value) return [];
   const query = normalize(search.value);
-  return missingMillHillArticles(state.value.materials).filter(({ product }) => !query || normalize([product.brand, product.range, product.code, product.colorName].join(' ')).includes(query));
+  return missingCatalogueArticles(brand, state.value.materials).filter(({ product }) => !query || normalize([product.brand, product.range, product.code, product.colorName].join(' ')).includes(query));
 });
 const entries = computed(() => [...filtered.value, ...catalogueRows.value]);
 const pageCount = computed(() => pageTotal(entries.value.length, pageSize));
@@ -116,7 +117,7 @@ async function placeOrder() {
   orderBusy.value = true; orderError.value = '';
   try {
     const amount = quantity(orderQuantity.value, { positive: true }), id = crypto.randomUUID();
-    await saveEntityWithAssets('material.createWithLot', { material: millHillMaterial(ordering.value, id), lot: null }, [], crypto.randomUUID());
+    await saveEntityWithAssets('material.createWithLot', { material: catalogueMaterial(ordering.value, id), lot: null }, [], crypto.randomUUID());
     await dispatch('purchase.save', { materialId: id, quantity: amount, status: 'to_buy', currency: state.value.settings.currency, source: 'manual', projectIds: [] }, crypto.randomUUID());
     ordering.value = null; notify(t('catalogueOrderAdded'));
   } catch (error) { orderError.value = errorText(error); }
@@ -205,7 +206,7 @@ function workflowSaved(){workflow.value='';selected.value=[];}
               </div></td>
             </tr></tbody>
             <tbody v-if="visibleCatalogue.length" class="catalogue-rows"><tr v-for="{ product, discontinued } in visibleCatalogue" :key="product.id"><td></td>
-              <td><div class="material-cell"><span class="swatch" :style="productPreviewStyle(product)"><Package v-if="!productPreview(product)" :size="18" /></span><div><span class="cell-title">{{ [product.code, product.colorName].filter(Boolean).join(' · ') }}</span><span v-if="discontinued" class="badge discontinued-badge">{{ t('descriptorOption_discontinued') }}</span><span class="cell-subtitle">{{ [product.brand, product.range].join(' · ') }}</span></div></div></td>
+              <td><div class="material-cell"><span class="swatch" :style="{ backgroundColor: product.hex || undefined, ...productPreviewStyle(product) }"><Package v-if="!product.hex && !productPreview(product)" :size="18" /></span><div><span class="cell-title">{{ [product.code, product.colorName].filter(Boolean).join(' · ') }}</span><span v-if="discontinued" class="badge discontinued-badge">{{ t('descriptorOption_discontinued') }}</span><span class="cell-subtitle">{{ [product.brand, product.range].join(' · ') }}</span></div></div></td>
               <td>{{ categoryName(product.category) }}</td><td>—</td><td>—</td><td></td>
               <td><div class="actions"><button v-if="!discontinued" class="icon-button" :aria-label="t('shopThreadNamed', { name: [product.code, product.colorName].filter(Boolean).join(' · ') })" :title="t('sendToShopping')" @click="orderArticle(product)"><ShoppingCart :size="18" /></button></div></td>
             </tr></tbody>
