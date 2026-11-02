@@ -4,12 +4,14 @@ import { CHART_CATALOGUE } from '../../core/chart-collection.mjs';
 import { INVENTORY_GROUPS, customInventoryGroups, inventoryGroup, accessorySection, parseInventoryRoute, inventoryRoute, inventoryContext, matchesInventorySection } from '../inventory-navigation.mjs';
 import { materialSearchDescriptors } from '../material-descriptors.mjs';
 import { isDiscontinued } from '../../core/discontinued-materials.mjs';
+import { missingMillHillArticles, millHillMaterial } from '../mill-hill-catalogue.mjs';
 import { computed, ref, watch, nextTick } from 'vue';
 import { Plus, Search, Package, CircleAlert, Download, ChevronLeft, ChevronRight, Heart, PackageOpen, Pencil, Trash2, ShoppingCart } from '@lucide/vue';
 import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
 import InventoryCategoryIcon from '../components/InventoryCategoryIcon.vue';
 import AppDialog from '../components/AppDialog.vue';
+import FormField from '../components/FormField.vue';
 import ThreadReferenceLink from '../components/ThreadReferenceLink.vue';
 import MaterialForm from '../components/MaterialForm.vue';
 import InventoryBulkForm from '../components/InventoryBulkForm.vue';
@@ -17,9 +19,10 @@ import InventoryLabels from '../components/InventoryLabels.vue';
 import InventoryRapidForm from '../components/InventoryRapidForm.vue';
 import KitLibrary from '../components/KitLibrary.vue';
 import { inventoryCategories as categoryOptions, categoryLabel as categoryName } from '../inventory-categories.mjs';
-import { state, route, navigate, notify, normalize, locate, dispatch } from '../state';
+import { state, route, navigate, notify, normalize, locate, dispatch, saveEntityWithAssets } from '../state';
 import { t, number, errorText } from '../i18n';
 import { paginationEnabled, pageTotal, pageRows } from '../pagination.mjs';
+import { quantity } from '../../core/shared.mjs';
 import CategoryManager from '../components/CategoryManager.vue';
 import { inventorySummary } from '../../core/inventory.mjs';
 
@@ -94,9 +97,31 @@ const filtered = computed(() => {
     return !query || row.search.includes(query);
   }).sort((a, b) => sort.value === 'recent' ? b.material.createdAt.localeCompare(a.material.createdAt) : sort.value === 'nameZA' ? b.material.name.localeCompare(a.material.name) : sort.value==='codeAZ' ? a.material.code.localeCompare(b.material.code) || a.material.name.localeCompare(b.material.name) : sort.value==='brandAZ' ? a.material.brand.localeCompare(b.material.brand)||a.material.range.localeCompare(b.material.range)||a.material.code.localeCompare(b.material.code) : a.material.name.localeCompare(b.material.name));
 });
-const pageCount = computed(() => pageTotal(filtered.value.length, pageSize));
+// Mill Hill articles not yet in the inventory follow the owned rows, greyed out, and can only be ordered.
+const catalogueRows = computed(() => {
+  if (section.value.child?.brand !== 'Mill Hill' || filter.value !== 'active' || location.value || category.value) return [];
+  const query = normalize(search.value);
+  return missingMillHillArticles(state.value.materials).filter(({ product }) => !query || normalize([product.brand, product.range, product.code, product.colorName].join(' ')).includes(query));
+});
+const entries = computed(() => [...filtered.value, ...catalogueRows.value]);
+const pageCount = computed(() => pageTotal(entries.value.length, pageSize));
 watch(pageCount, count => { page.value = Math.min(page.value, count); });
-const visible = computed(() => pageRows(filtered.value, page.value, pageSize));
+const pageEntries = computed(() => pageRows(entries.value, page.value, pageSize));
+const visible = computed(() => pageEntries.value.filter(row => row.material));
+const visibleCatalogue = computed(() => pageEntries.value.filter(row => row.product));
+const ordering = ref(null), orderQuantity = ref(1), orderBusy = ref(false), orderError = ref('');
+function orderArticle(product) { ordering.value = product; orderQuantity.value = 1; orderError.value = ''; }
+async function placeOrder() {
+  if (orderBusy.value) return;
+  orderBusy.value = true; orderError.value = '';
+  try {
+    const amount = quantity(orderQuantity.value, { positive: true }), id = crypto.randomUUID();
+    await saveEntityWithAssets('material.createWithLot', { material: millHillMaterial(ordering.value, id), lot: null }, [], crypto.randomUUID());
+    await dispatch('purchase.save', { materialId: id, quantity: amount, status: 'to_buy', currency: state.value.settings.currency, source: 'manual', projectIds: [] }, crypto.randomUUID());
+    ordering.value = null; notify(t('catalogueOrderAdded'));
+  } catch (error) { orderError.value = errorText(error); }
+  finally { orderBusy.value = false; }
+}
 const pageSelected=computed(()=>visible.value.length>0&&visible.value.slice(0,200).every(row=>selected.value.includes(row.material.id)));
 function togglePage(){if(pageSelected.value)selected.value=selected.value.filter(id=>!visible.value.some(row=>row.material.id===id));else selected.value=[...new Set([...selected.value,...visible.value.map(row=>row.material.id)])].slice(0,200);}
 const activeRows = computed(() => rows.value.filter(row => !row.material.archived));
@@ -161,8 +186,8 @@ function workflowSaved(){workflow.value='';selected.value=[];}
     <section class="panel">
 
       <div v-if="selected.length" class="panel-heading"><span>{{ t('selectedMaterialCount',{count:selected.length}) }}</span><div class="actions"><button class="button small" @click="selected=[]">{{ t('clearSelection') }}</button><button class="button small" @click="workflow='collectionSelection'">{{ t('kitCreateFromSelection') }}</button><button class="button small" @click="workflow='labels'">{{ t('inventoryLabels') }}</button><button class="button primary small" @click="workflow='bulk'">{{ t('bulkEdit') }}</button></div></div>
-      <EmptyState v-if="!rows.length" :icon="Package" :title="t('emptyMaterials')" :description="t('emptyMaterialsBody')"><button class="button primary" @click="addTo()"><Plus :size="16" />{{ t('addMaterial') }}</button></EmptyState>
-      <EmptyState v-else-if="!filtered.length" :icon="Search" :title="t('noResults')"><button class="button" @click="clear">{{ t('clearFilters') }}</button></EmptyState>
+      <EmptyState v-if="!rows.length && !catalogueRows.length" :icon="Package" :title="t('emptyMaterials')" :description="t('emptyMaterialsBody')"><button class="button primary" @click="addTo()"><Plus :size="16" />{{ t('addMaterial') }}</button></EmptyState>
+      <EmptyState v-else-if="!entries.length" :icon="Search" :title="t('noResults')"><button class="button" @click="clear">{{ t('clearFilters') }}</button></EmptyState>
       <template v-else>
         <div ref="inventoryTable" class="table-wrap">
           <table>
@@ -176,12 +201,17 @@ function workflowSaved(){workflow.value='';selected.value=[];}
               <td><div class="actions">
                 <button class="icon-button" :aria-label="t('editThreadNamed', { name: row.material.name })" :title="t('edit')" @click="editing=row.material"><Pencil :size="18" /></button>
                 <button class="icon-button" :aria-label="t('deleteThreadNamed', { name: row.material.name })" :title="t('deleteThread')" @click="deleting=row.material; actionError='' "><Trash2 :size="18" /></button>
-                <button class="icon-button" :aria-label="t('shopThreadNamed', { name: row.material.name })" :title="t('sendToShopping')" @click="navigate('shopping', row.material.id)"><ShoppingCart :size="18" /></button>
+                <button v-if="!isDiscontinued(row.material)" class="icon-button" :aria-label="t('shopThreadNamed', { name: row.material.name })" :title="t('sendToShopping')" @click="navigate('shopping', row.material.id)"><ShoppingCart :size="18" /></button>
               </div></td>
+            </tr></tbody>
+            <tbody v-if="visibleCatalogue.length" class="catalogue-rows"><tr v-for="{ product, discontinued } in visibleCatalogue" :key="product.id"><td></td>
+              <td><div class="material-cell"><span class="swatch" :style="productPreviewStyle(product)"><Package v-if="!productPreview(product)" :size="18" /></span><div><span class="cell-title">{{ [product.code, product.colorName].filter(Boolean).join(' · ') }}</span><span v-if="discontinued" class="badge discontinued-badge">{{ t('descriptorOption_discontinued') }}</span><span class="cell-subtitle">{{ [product.brand, product.range].join(' · ') }}</span></div></div></td>
+              <td>{{ categoryName(product.category) }}</td><td>—</td><td>—</td><td></td>
+              <td><div class="actions"><button v-if="!discontinued" class="icon-button" :aria-label="t('shopThreadNamed', { name: [product.code, product.colorName].filter(Boolean).join(' · ') })" :title="t('sendToShopping')" @click="orderArticle(product)"><ShoppingCart :size="18" /></button></div></td>
             </tr></tbody>
           </table>
         </div>
-        <div class="panel-heading"><small class="muted">{{ number(filtered.length, 0) }} {{ t('materials').toLowerCase() }}<template v-if="paginationEnabled"> · {{ t('page') }} {{ page }} / {{ pageCount }}</template></small><div v-if="paginationEnabled" class="actions"><button class="icon-button" :disabled="page <= 1" :aria-label="t('previousPage')" @click="page--"><ChevronLeft :size="18" /></button><button class="icon-button" :disabled="page >= pageCount" :aria-label="t('nextPage')" @click="page++"><ChevronRight :size="18" /></button></div></div>
+        <div class="panel-heading"><small class="muted">{{ number(filtered.length, 0) }} {{ t('materials').toLowerCase() }}<template v-if="catalogueRows.length"> · {{ t('catalogueNotOwned', { count: number(catalogueRows.length, 0) }) }}</template><template v-if="paginationEnabled"> · {{ t('page') }} {{ page }} / {{ pageCount }}</template></small><div v-if="paginationEnabled" class="actions"><button class="icon-button" :disabled="page <= 1" :aria-label="t('previousPage')" @click="page--"><ChevronLeft :size="18" /></button><button class="icon-button" :disabled="page >= pageCount" :aria-label="t('nextPage')" @click="page++"><ChevronRight :size="18" /></button></div></div>
       </template>
     </section>
     </template>
@@ -194,6 +224,13 @@ function workflowSaved(){workflow.value='';selected.value=[];}
       <p>{{ t('deleteThreadConfirm', { name: deleting.name }) }}</p><p class="field-help">{{ t('deleteThreadHelp') }}</p>
       <p v-if="actionError" role="alert" class="notice error">{{ actionError }}</p>
       <template #footer><button class="button" :disabled="actionBusy" @click="deleting=null">{{ t('cancel') }}</button><button class="button primary" :disabled="actionBusy" @click="removeMaterial">{{ t('deleteThread') }}</button></template>
+    </AppDialog>
+    <AppDialog v-if="ordering" :title="t('sendToShopping')" :busy="orderBusy" @close="ordering=null">
+      <form id="catalogue-order" @submit.prevent="placeOrder"><p><strong>{{ [ordering.brand, ordering.range, ordering.code, ordering.colorName].filter(Boolean).join(' · ') }}</strong></p>
+      <FormField :label="t('quantity')" required v-slot="{ id }"><input :id="id" v-model="orderQuantity" inputmode="decimal" required autofocus /></FormField></form>
+      <p class="field-help">{{ t('catalogueOrderHelp') }}</p>
+      <p v-if="orderError" role="alert" class="notice error">{{ orderError }}</p>
+      <template #footer><button class="button" :disabled="orderBusy" @click="ordering=null">{{ t('cancel') }}</button><button class="button primary" type="submit" form="catalogue-order" :disabled="orderBusy">{{ orderBusy ? t('saving') : t('sendToShopping') }}</button></template>
     </AppDialog>
     <CategoryManager v-if="managingCategories" @close="managingCategories = false" />
     <MaterialForm v-if="adding" :key="addFormVersion" :context="addContext" :defaults="addDefaults" @close="closeForm" @saved="created" @bulk="openRapid" />
