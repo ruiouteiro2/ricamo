@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import catalogue from '../data/dmc-alsace-catalogue.json' with {type:'json'};
 import previews from '../src/assets/dmc-alsace-previews.json' with {type:'json'};
+import pearl from '../src/assets/dmc-pearl-previews.json' with {type:'json'};
 import {bundledSupplierProducts,normalizeSupplierProduct} from '../core/supplier-products.mjs';
 import {threadRangeMatchesSize} from '../src/inventory-navigation.mjs';
 import {productPreview,sameColourSwatch} from '../src/product-previews.mjs';
@@ -32,6 +33,17 @@ test('a size without its own article borrows the same colour, never another code
  assert.ok(elsewhere);
  const sizes={};for(const key of Object.keys(previews)){const[,,size,code]=key.split(':');(sizes[code]??=[]).push(previews[key]);}
  for(const images of Object.values(sizes))assert.equal(new Set(images).size,1,'each colour keeps one photo across sizes');
+});
+
+test('every listed Ritorto and Perlé colour has a photo at every size',()=>{
+ const pearlKeys=Object.keys(pearl.byKey),code=key=>key.split(':').pop();
+ const codes=new Set([...Object.keys(previews).map(code),...pearlKeys.map(code)]);
+ assert.ok(codes.size>300);
+ for(const value of codes)for(const [family,sizes] of [['alsace',[5,8,12]],['pearl',[3,5,8,12]]])for(const size of sizes){
+  const exact=family==='alsace'?previews[`dmc:alsace:${size}:${value}`]:pearl.images[pearl.byKey[`dmc:pearl:${size}:${value}`]];
+  assert.ok(exact||sameColourSwatch({family,size,code:value})?.image,`${family} ${size} ${value}`);
+ }
+ assert.equal(sameColourSwatch({family:'alsace',size:'12',code:'414'}).size,8);
 });
 
 test('saved Ritorto rows reuse the swatch of their thickness without rewriting',()=>{
