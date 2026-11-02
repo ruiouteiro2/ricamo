@@ -41,10 +41,10 @@ select.language-switch { gap: 6px; padding: 6px 8px; width: 68px; }
   margin-block: 6px;
   padding: 6px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 14px;
   background: var(--surface);
   color: var(--ink);
-  box-shadow: var(--shadow), 0 3px 10px #28202a0d;
+  box-shadow: var(--shadow), 0 3px 10px #5a2a400d;
   overflow: auto;
   overscroll-behavior: contain;
   opacity: 0;
@@ -57,7 +57,7 @@ option {
   min-height: 44px;
   padding: 12px;
   gap: 10px;
-  border-radius: 6px;
+  border-radius: 9px;
   font-size: .83rem;
   font-weight: 400;
   letter-spacing: normal;
@@ -186,7 +186,7 @@ tbody tr { transition: background-color var(--motion-fast) var(--ease-ui); }
 /* Long tables scroll as one area: header and body share horizontal alignment. */
 .table-wrap { max-height: min(65vh, 42rem); }
 .table-wrap thead { position: sticky; top: 0; z-index: 3; }
-.table-wrap thead th { background: #f9f7f3; box-shadow: inset 0 -1px 0 var(--line); }
+.table-wrap thead th { background: #fcf5f6; box-shadow: inset 0 -1px 0 var(--line); }
 .dialog .table-wrap { max-height: 45vh; }
 .switch-control[type=checkbox] { appearance: none; position: relative; width: 42px; height: 24px; flex: 0 0 42px; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 20px; background: var(--line); transition: background var(--motion-fast); }
 .switch-control[type=checkbox]::before { content: ''; position: absolute; width: 18px; height: 18px; left: 2px; top: 2px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px #0002; transition: transform var(--motion-fast); }
