@@ -11,7 +11,7 @@ import {supplierIdentity,supplierSwatch,SUPPLIER_CATEGORIES} from '../../core/su
 import { normalizeDescriptorProperties } from '../../core/material-descriptors.mjs';
 import { state, units, saveEntityWithAssets, dispatch } from '../state';
 import { t, errorText } from '../i18n';
-import { INVENTORY_GROUPS, customInventoryGroups, inventoryGroup, accessorySection, threadReferenceFor, threadRangeMatchesSize } from '../inventory-navigation.mjs';
+import { INVENTORY_GROUPS, MILL_HILL_LINES, customInventoryGroups, inventoryGroup, accessorySection, threadReferenceFor, threadRangeMatchesSize } from '../inventory-navigation.mjs';
 import { duplicateMaterials } from '../../core/material-duplicates.mjs';
 import { convertQuantity } from '../../core/fabric.mjs';
 import { openPurchaseLink } from '../purchase-link.mjs';
@@ -53,6 +53,14 @@ watch(accessoryId, () => {
   delete draft.properties.product;
   draft.name = ''; draft.range = ''; draft.code = ''; draft.color = ''; draft.unit = 'piece';
 });
+const isMillHill = computed(() => draft.category === 'embellishment' && draft.brand === 'Mill Hill');
+watch(isMillHill, value => { if (value && !isEdit.value) { draft.range = MILL_HILL_LINES[0]; draft.unit = 'pack'; } }, { immediate: true });
+const beadName = material => [material.brand, material.range, material.code, material.properties.product?.colorName].filter(value => String(value ?? '').trim()).join(' · ');
+// A catalogue code belongs to one line, so choosing another line lets go of that code.
+function chooseBeadLine(line) {
+  if (displayProduct.value) draft.code = '';
+  draft.range = line;
+}
 const lookupBusy=ref(false);let lookupTimer,lookupToken=0;
 const catalogueCategory=computed(()=>SUPPLIER_CATEGORIES.includes(draft.category));
 const colourCategory=computed(()=>['thread','fabric','embellishment'].includes(draft.category));
@@ -145,7 +153,7 @@ watch(() => stock.quantity, value => {
 });
 const catalogueItems = ref([]), catalogueFacets = ref({ brands: [], ranges: [] });
 const catalogueBusy = ref(false), catalogueError = ref(''), catalogueAmbiguous = ref(false);
-const matchingBusy = computed(() => draft.category === 'thread' && catalogueBusy.value);
+const matchingBusy = computed(() => (draft.category === 'thread' || isMillHill.value) && catalogueBusy.value);
 let catalogueTimer, catalogueToken = 0;
 const sameColour = computed(() => {
   // The menu may list longer codes that merely contain this one (4145 for 414), which are not this colour.
@@ -158,7 +166,7 @@ const catalogueOptions = computed(() => {
   return selected && !catalogueItems.value.some(item => item.id === selected.id)
     ? [selected, ...catalogueItems.value] : catalogueItems.value;
 });
-watch(() => [draft.category, draft.brand, threadFamily.value, draft.properties.threadSize, accessoryId.value, draft.code], () => {
+watch(() => [draft.category, draft.brand, threadFamily.value, draft.properties.threadSize, accessoryId.value, draft.code, isMillHill.value ? draft.range : ''], () => {
   previewProduct.value = null;
   clearTimeout(catalogueTimer);
   const token = ++catalogueToken;
@@ -184,14 +192,20 @@ watch(() => [draft.category, draft.brand, threadFamily.value, draft.properties.t
           return result;
         }));
         products = results.flatMap(result => result.items).filter(product => familyOf(product) === threadFamily.value);
+      } else if (isMillHill.value) {
+        // A code is looked up in every line and selects its own; without a code the menu lists the chosen line.
+        const code = draft.code.trim(), args = { category: 'embellishment', brand: draft.brand, limit: 100, ...(code ? { query: code } : { range: draft.range }) };
+        const first = await supplierSearch(args), items = [...first.items];
+        for (let offset = 100; offset < Math.min(first.total, 300); offset += 100) items.push(...(await supplierSearch({ ...args, offset })).items);
+        products = items.filter(product => product.id.startsWith('casa-mh-')).sort((a, b) => (a.code || a.name).localeCompare(b.code || b.name));
       } else {
         const result = await supplierSearch({ category: draft.category, brand: draft.brand, query: draft.code, limit: 100 });
         products = result.items.filter(product => draft.category !== 'tool' || accessorySection(product) === accessoryId.value);
       }
       if (token !== catalogueToken) return;
-      catalogueItems.value = products.slice(0, draft.brand === 'Madeira' ? 300 : 100);
+      catalogueItems.value = products.slice(0, draft.brand === 'Madeira' || isMillHill.value ? 300 : 100);
       catalogueFacets.value = facets;
-      if (draft.category === 'thread') {
+      if (draft.category === 'thread' || isMillHill.value) {
         const match = exactCatalogueMatch(products, context);
         catalogueAmbiguous.value = match.ambiguous;
         if (match.product) {
@@ -243,9 +257,9 @@ watch(()=>[draft.category,draft.brand,draft.range,draft.code],()=>{
   if(snapshot){delete draft.properties.product;draft.strands='';draft.divisible=false;draft.packageSize='';}
   delete draft.properties.colorSource;
   if(!catalogueCategory.value)return;
-  if (isEdit.value && draft.category === 'thread' && supplierIdentity(draft) === supplierIdentity(original)) { draft.color = original.color || ''; return; }
+  if (isEdit.value && (draft.category === 'thread' || isMillHill.value) && supplierIdentity(draft) === supplierIdentity(original)) { draft.color = original.color || ''; return; }
   draft.color='';
-  if (draft.category === 'thread') return;
+  if (draft.category === 'thread' || isMillHill.value) return;
   if(!draft.brand||!draft.range||!draft.code)return;
   lookupBusy.value=true;
   lookupTimer=setTimeout(async()=>{try{const rows=await supplierLookup({category:draft.category,brand:draft.brand,range:draft.range,code:draft.code});if(token!==lookupToken)return;const product=(draft.brand==='DMC'&&threadFamily.value==='diamant'?rows.find(row=>row.supplier==='dmc'):null)??rows.find(row=>row.hex)??rows[0];if(product){draft.properties.product=product;draft.color=product.hex??'';draft.strands=product.pack.strands??'';draft.divisible=product.pack.divisible===true;if(draft.unit==='m')draft.packageSize=product.pack.lengthM??'';}else{const swatch=supplierSwatch({brand:draft.brand,range:draft.range,code:draft.code});if(swatch.hex){draft.color=swatch.hex;draft.properties.colorSource=swatch.rgbSource;}}}catch(caught){if(token===lookupToken)error.value=errorText(caught);}finally{if(token===lookupToken)lookupBusy.value=false;}},250);
@@ -287,7 +301,7 @@ async function save() {
       }
       applyThreadFormat(candidate.properties);
       const sizeChanged = String(properties.threadSize || '') !== String(original.properties.threadSize || '') || candidate.unit !== original.unit;
-      candidate.name = draft.category === 'thread' ? (identityChanged || sizeChanged ? [candidate.brand, candidate.range, candidate.code, properties.threadSize, threadFormatName(candidate.properties)].filter(value => String(value ?? '').trim()).join(' \u00b7 ') : original.name) : draft.name;
+      candidate.name = draft.category === 'thread' ? (identityChanged || sizeChanged ? [candidate.brand, candidate.range, candidate.code, properties.threadSize, threadFormatName(candidate.properties)].filter(value => String(value ?? '').trim()).join(' \u00b7 ') : original.name) : isMillHill.value ? (identityChanged ? beadName(candidate) : original.name) : draft.name;
       await dispatch('material.saveInventory', { material: candidate, quantity: optionalNumber(stock.quantity, 'quantity'), usageStatus: usageStatus.value, threadCountUnit: draft.category==='thread', expected: originalInventory.fingerprint }, operationId);
       emit('saved', candidate.id); return;
     }
@@ -308,7 +322,7 @@ async function save() {
     const properties = normalizeDescriptorProperties(JSON.parse(JSON.stringify(draft.properties)));
     properties.custom = Object.fromEntries(Object.entries(properties.custom || {}).map(([key,value]) => [key,String(value ?? '')]));
     for (const key of ['countX', 'countY']) if (key in properties) properties[key] = optionalNumber(properties[key], key);
-    const payload = { ...JSON.parse(JSON.stringify(draft)), name: isEdit.value || draft.category !== 'thread' ? draft.name : [draft.brand, draft.range, draft.code, draft.properties.threadSize, threadFormatName(draft.properties)].filter(value => String(value ?? '').trim()).join(' · '), id: materialId, tags: draft.tagsText.split(',').map(tag => tag.trim()).filter(Boolean), minimum: 1, packageSize: optionalNumber(draft.packageSize, 'packageSize'), strands: optionalNumber(draft.strands, 'strands'), properties };
+    const payload = { ...JSON.parse(JSON.stringify(draft)), name: isMillHill.value ? beadName(draft) : isEdit.value || draft.category !== 'thread' ? draft.name : [draft.brand, draft.range, draft.code, draft.properties.threadSize, threadFormatName(draft.properties)].filter(value => String(value ?? '').trim()).join(' · '), id: materialId, tags: draft.tagsText.split(',').map(tag => tag.trim()).filter(Boolean), minimum: 1, packageSize: optionalNumber(draft.packageSize, 'packageSize'), strands: optionalNumber(draft.strands, 'strands'), properties };
     delete payload.tagsText;
     let lot = null;
     if (!isEdit.value && stock.enabled) {
@@ -335,12 +349,13 @@ async function save() {
     <form :id="formId" @submit.prevent="save">
         <div class="form-grid">
           <FormField v-if="!isEdit && !context.groupId" :label="t('category')" required v-slot="{ id }"><select :id="id" v-model="groupId"><option v-for="group in inventoryGroups" :key="group.id" :value="group.id">{{ group.label || t(group.labelKey) }}</option></select></FormField>
-          <FormField v-if="draft.category !== 'thread'" :label="t('name')" required wide v-slot="{ id }"><input :id="id" v-model="draft.name" autofocus required maxlength="300" /></FormField>
+          <FormField v-if="draft.category !== 'thread' && !isMillHill" :label="t('name')" required wide v-slot="{ id }"><input :id="id" v-model="draft.name" autofocus required maxlength="300" /></FormField>
           <FormField :label="t('brand')" :required="groupId !== 'accessories' && !activeGroup.custom" v-slot="{ id }"><output v-if="context.brand" :id="id" class="notice">{{ brandLabel(draft.brand) }}</output><input v-else-if="activeGroup.custom" :id="id" v-model="draft.brand" maxlength="200" /><select v-else :id="id" v-model="draft.brand" :required="groupId !== 'accessories'"><option value="">{{ t('allBrands') }}</option><option v-if="draft.brand && !brandOptions.includes(draft.brand)" :value="draft.brand">{{ draft.brand }}</option><option v-for="brand in brandOptions" :key="brand" :value="brand">{{ brandLabel(brand) }}</option></select></FormField>
           <FormField v-if="draft.category === 'thread'" :label="t('addMaterialType')" required v-slot="{ id }"><select :id="id" v-model="threadFamily" required><option v-for="family in threadFamilies" :key="family" :value="family">{{ familyLabel(family) }}</option></select></FormField>
+          <FormField v-else-if="isMillHill" :label="t('addMaterialType')" required v-slot="{ id }"><select :id="id" :value="draft.range" required @change="chooseBeadLine($event.target.value)"><option v-if="!MILL_HILL_LINES.includes(draft.range)" :value="draft.range">{{ draft.range }}</option><option v-for="line in MILL_HILL_LINES" :key="line" :value="line">{{ line }}</option></select></FormField>
           <FormField v-else-if="groupId === 'accessories'" :label="t('addMaterialType')" v-slot="{ id }"><output v-if="context.section" :id="id" class="notice">{{ t(activeGroup.children.find(child => child.id === accessoryId).labelKey) }}</output><select v-else :id="id" v-model="accessoryId"><option v-for="child in activeGroup.children" :key="child.id" :value="child.id">{{ t(child.labelKey) }}</option></select></FormField>
           <FormField v-else :label="t('addMaterialType')" v-slot="{ id }"><input :id="id" v-model="draft.range" maxlength="200" /></FormField>
-          <FormField :label="t(draft.category === 'tool' ? 'materialArticleCode' : 'addMaterialColorCode')" v-slot="{ id }"><input :id="id" v-model="draft.code" :autofocus="draft.category==='thread'" maxlength="200" /></FormField>
+          <FormField :label="t(draft.category === 'tool' ? 'materialArticleCode' : 'addMaterialColorCode')" v-slot="{ id }"><input :id="id" v-model="draft.code" :autofocus="draft.category==='thread' || isMillHill" maxlength="200" /></FormField>
           <FormField v-if="draft.category === 'thread'" :label="t('addMaterialThickness')" v-slot="{ id }"><input :id="id" v-model="draft.properties.threadSize" maxlength="100" /></FormField>
           <FormField v-if="isDmcPerle" :label="t('threadFormat')" v-slot="{ id }"><select :id="id" v-model="threadFormat"><option v-for="format in ['skein','ball']" :key="format" :value="format">{{ t(`threadFormat_${format}`) }}</option></select></FormField>
           <FormField v-if="!activeGroup.custom" :label="t('addMaterialCatalogue')" :help="t('addMaterialCatalogueHelp')" wide v-slot="{ id, describedby }"><CatalogueAutoPreview :product="displayProduct" :color="draft.color" :code="draft.code" :busy="catalogueBusy" :ambiguous="catalogueAmbiguous" :error="catalogueError" :options-count="catalogueOptions.length" :same-colour="sameColour" /><select :id="id" class="catalogue-select" :value="displayProduct?.id || ''" :disabled="catalogueBusy" :aria-describedby="describedby" @change="selectCatalogue"><button type="button"><selectedcontent /></button><option :key="catalogueBusy ? 'busy' : 'idle'" value="">{{ catalogueBusy ? t('loading') : t('addMaterialCataloguePlaceholder') }}</option><option v-for="product in catalogueOptions" :key="product.id" :value="product.id"><span class="catalogue-swatch" :class="{ 'catalogue-swatch-unknown': !product.hex && !productPreview(product) }" :style="{ backgroundColor: product.hex || undefined, ...productPreviewStyle(product) }" aria-hidden="true"></span><span>{{ [product.brand, product.range, product.code, product.colorName || (product.supplier === 'dmc' && product.range === 'Diamant' ? '' : product.name)].filter(Boolean).join(' · ') }}<small v-if="!product.hex && !productPreview(product)"> — {{ t('materialColorUnavailable') }}</small></span></option></select></FormField>
