@@ -1,4 +1,5 @@
 import diamant from './assets/dmc-diamant-previews.json' with {type:'json'};
+import colbert from './assets/dmc-colbert-previews.json' with {type:'json'};
 import casa from './assets/casa-product-previews.json' with {type:'json'};
 import {bundledSupplierProducts,supplierIdentity} from '../core/supplier-products.mjs';
 const urlKey=value=>String(value??'').replace(/^https:\/\/www\.casacenina\.(?:com|fr|es)\//,'https://www.casacenina.it/');
@@ -15,7 +16,7 @@ function exactIdentityPhotos(){
 }
 export function productPreview(value){
  const product=value?.properties?.product??value;if(!product)return '';
- const official=diamant[product.id]||(product.brand==='DMC'&&product.range==='Diamant'?diamant[`dmc:diamant:${product.code}`]:'');if(official)return official;
+ const official=diamant[product.id]||colbert[product.id]||(product.brand==='DMC'&&product.range==='Diamant'?diamant[`dmc:diamant:${product.code}`]:'')||(product.brand==='DMC'&&product.range==='Laine Colbert'?colbert[`dmc:colbert:${product.code}`]:'');if(official)return official;
  const url=product.url||value?.properties?.purchaseUrl;
  const direct=casa.byUrl[urlKey(url)];if(direct)return casa.images[direct]||'';
  if(!product.brand||!product.range||!product.code)return '';
