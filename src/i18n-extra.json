@@ -1491,9 +1491,13 @@
     "Inserimento rapido",
     "Rapid entry"
   ],
+  "addMultipleMaterials": [
+    "Aggiungi più articoli",
+    "Add multiple items"
+  ],
   "rapidEntryHelp": [
-    "Inserisci fino a 200 codici della stessa marca e dello stesso tipo. Scegli per ogni riga se registrare un lotto o solo la voce di catalogo. I duplicati richiedono una scelta esplicita.",
-    "Enter up to 200 codes from the same brand and type. Choose a stock lot or catalogue entry for each row. Duplicates require an explicit decision."
+    "Inserisci fino a {count} codici della stessa marca e dello stesso tipo. Scegli per ogni riga se registrare una quantità o solo la voce di catalogo. I duplicati si confermano senza reinserire la quantità.",
+    "Enter up to {count} codes from the same brand and type. Choose stock quantity or a catalogue-only entry for each row. Confirm duplicates without entering the quantity again."
   ],
   "pasteCodes": [
     "Incolla una lista di codici",
@@ -1502,6 +1506,10 @@
   "codesOnePerLine": [
     "Un codice per riga",
     "One code per line"
+  ],
+  "codesWithQuantityHelp": [
+    "Puoi aggiungere la quantità dopo un punto e virgola: 310;3.",
+    "You can add the quantity after a semicolon: 310;3."
   ],
   "addCodes": [
     "Aggiungi i codici",
@@ -1543,6 +1551,22 @@
     "{materials} nuovi materiali · {lots} nuovi lotti",
     "{materials} new materials · {lots} new lots"
   ],
+  "rapidReviewHelp": [
+    "Controlla l'elenco. Ogni articolo già presente può essere confermato singolarmente, rimosso oppure confermato insieme agli altri.",
+    "Review the list. Confirm each existing item individually, remove it, or confirm all matching items together."
+  ],
+  "confirmAllDuplicates": [
+    "Conferma tutti i duplicati",
+    "Confirm all duplicates"
+  ],
+  "duplicateConfirmed": [
+    "Confermato: quantità aggiunta all'articolo esistente",
+    "Confirmed: quantity will be added to the existing item"
+  ],
+  "duplicateTargetRequired": [
+    "Seleziona l'articolo esistente da aggiornare",
+    "Select the existing item to update"
+  ],
   "duplicateDecision": [
     "Scelta per duplicato",
     "Duplicate decision"
@@ -1570,6 +1594,18 @@
   "confirmRapid": [
     "Registra tutte le righe",
     "Save all entries"
+  ],
+  "saveAll": [
+    "Salva tutti",
+    "Save all"
+  ],
+  "cancelAll": [
+    "Annulla tutto",
+    "Cancel all"
+  ],
+  "materialsSavedCount": [
+    "{count} articoli salvati",
+    "{count} items saved"
   ],
   "inventoryLabels": [
     "Etichette PDF",
