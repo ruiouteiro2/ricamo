@@ -1,8 +1,9 @@
 {
  "format": "ricamo-casa-millhill-previews",
- "version": 1,
- "retrievedAt": "2026-11-02T20:25:18.778663+00:00",
+ "version": 2,
+ "retrievedAt": "2026-11-02T21:04:22.854596+00:00",
  "missing": [],
+ "rejected": [],
  "evidence": [
   {
    "code": "00020",
@@ -201,6 +202,20 @@
    "previewSha256": "2dd52c6acb54d8ea2f9697906ca1d204bdf524d88fa66be544cfce1e378125bd"
   },
   {
+   "code": "00553",
+   "line": "Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/00553-old-rose-galvanized.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2711/mg_seed_00553.jpg",
+   "previewSha256": "a243efb8cf2965009b41ea032e72c81fa89e7ca0fb6d7fdbb6fd46839973b0ff"
+  },
+  {
+   "code": "00556",
+   "line": "Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/00556-antique-silver-bronze.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2710/mg_seed_00556.jpg",
+   "previewSha256": "94b4ca1dc6bd2ac1ad29995462286d57fc186bb2aef253af3764571409f901fb"
+  },
+  {
    "code": "00557",
    "line": "Glass Seed Beads",
    "productUrl": "https://www.casacenina.it/mill-hill/00557-old-gold-galvanized.html",
@@ -376,6 +391,13 @@
    "previewSha256": "a043612b3f32409e942d795ef0cd925153e224264ebab536b3ff223fd8453d67"
   },
   {
+   "code": "02015",
+   "line": "Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/02015-sea-blue-inside-color.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2684/mg_seed_02015.jpg",
+   "previewSha256": "3b978c7270e1b87d072dbc3c6ba3cad521694fe5ce4d56fa0a4b17c924ce1455"
+  },
+  {
    "code": "02016",
    "line": "Glass Seed Beads",
    "productUrl": "https://www.casacenina.it/mill-hill/02016-crystal-mint-dyed-rainbow.html",
@@ -416,6 +438,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/02021-gunmetal-opaque-luster.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2678/mg_seed_02021.jpg",
    "previewSha256": "eb47cd4d20f716b08f300acea6fa0ad3bcb9213953be6c05b11e1fd501d3e857"
+  },
+  {
+   "code": "02022",
+   "line": "Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/02022-silver-silverlined.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2677/mg_seed_02022.jpg",
+   "previewSha256": "a1b4a6afd2f0a6649874da35c2a4b86ed4f5f65e2f1464841d5213f65a4564c8"
   },
   {
    "code": "02023",
@@ -479,6 +508,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/02036-shimmering-bittersweet.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2668/mg_seed_02036.jpg",
    "previewSha256": "3ddde866e89d888db4d1d9a32a61ab43757c08cc4ae7d67bce411953c89e5ae5"
+  },
+  {
+   "code": "02038",
+   "line": "Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/02038-brilliant.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2666/mg_seed_02038.jpg",
+   "previewSha256": "88dcbe0639adac9868d2a66e2ddd15d0d4335622526ee82e7f2645fa0c16cb66"
   },
   {
    "code": "02039",
@@ -649,6 +685,13 @@
    "previewSha256": "e3ff4954e21fdd4f43f0078490504a28399ecfcfc97a5e5ad82d728219d0cac8"
   },
   {
+   "code": "02068",
+   "line": "Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/02068-opaque-crayon-brown.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2638/mg_seed_02068.jpg",
+   "previewSha256": "50a238926204f606c1ec1082fa3f36097bb1f76881b58c3e819b216c008f2618"
+  },
+  {
    "code": "02069",
    "line": "Glass Seed Beads",
    "productUrl": "https://www.casacenina.it/mill-hill/02069-opaque-crayon-purple.html",
@@ -733,6 +776,20 @@
    "previewSha256": "16e5e2dbe21745e0502100c50d0ee09e2807a424490dc280bdd8bc6b23153e3d"
   },
   {
+   "code": "02082",
+   "line": "Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/02082-opaque-hyacinth.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2624/mg_seed_02082.jpg",
+   "previewSha256": "e4020d1ad5a89f2d7c77e1e49767011af97fb10405941647fdfaf7efd03dacc7"
+  },
+  {
+   "code": "02084",
+   "line": "Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/02084-shimmering-lilac.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2622/mg_seed_02084.jpg",
+   "previewSha256": "3bb317510e07551361171f037fb721ff856e5d4f0a025ebca632b951dd79428c"
+  },
+  {
    "code": "02085",
    "line": "Glass Seed Beads",
    "productUrl": "https://www.casacenina.it/mill-hill/02085-brilliant.html",
@@ -801,6 +858,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/02097-bahama-blue.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_093/packshot/53661/mg_02097.jpg",
    "previewSha256": "01b35899d018aa35d37f8f2effca17186048b1e6708bb9ffaa8a9b288e912340"
+  },
+  {
+   "code": "02098",
+   "line": "Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/02098-pine-green.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_093/packshot/53662/mg_02098.jpg",
+   "previewSha256": "e95739a4e3d314fca955a792fbe197503530786389b50ad6a4a005a24d96a058"
   },
   {
    "code": "02099",
@@ -1013,6 +1077,13 @@
    "previewSha256": "a4ad8af618660eacbe8da31f3ddd9d17dfc39422f7fe80ff63565dafec525b11"
   },
   {
+   "code": "03022",
+   "line": "Antique Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/03022-royal-teal-galvanized.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2781/mg_seed_03022.jpg",
+   "previewSha256": "02d44019dcaba50f9231a6c70df004bc510d35162a670757961e31ede851421f"
+  },
+  {
    "code": "03023",
    "line": "Antique Glass Seed Beads",
    "productUrl": "https://www.casacenina.it/mill-hill/03023-platinum-violet-galvanized.html",
@@ -1053,6 +1124,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/03028-juniper-green-matte-color.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2775/mg_seed_03028.jpg",
    "previewSha256": "245116cdcde749e8e784a0e9d40fc316ca2a171cf15d9081a324aa2bdfdc9e48"
+  },
+  {
+   "code": "03029",
+   "line": "Antique Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/03029-autumn-green-matte-color.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2774/mg_seed_03029.jpg",
+   "previewSha256": "654bbd6f6ce6e73b9e9a54e8bcfa65814cfc4c03db230709a2e7801258920413"
   },
   {
    "code": "03030",
@@ -1160,6 +1238,13 @@
    "previewSha256": "79ce1825f4db9d1a01fb862ee7ea82581b135ce51528d834f5926a44967b1948"
   },
   {
+   "code": "03047",
+   "line": "Antique Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/03047-blue-iris-matte-color.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2757/mg_seed_03047.jpg",
+   "previewSha256": "10b37d1e23c0bd6a16b40d70455cd66d4e20ab2d4ecfb8643ab42cbe7ca1b36c"
+  },
+  {
    "code": "03048",
    "line": "Antique Glass Seed Beads",
    "productUrl": "https://www.casacenina.it/mill-hill/03048-cinnamon-red-transparent-rainbow.html",
@@ -1172,6 +1257,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/03049-rich-red-silverlined.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2755/mg_seed_03049.jpg",
    "previewSha256": "66774255a91cdb6b2d0296c0399288f31f8bb51a2ba306054bad6f0960a37cb5"
+  },
+  {
+   "code": "03050",
+   "line": "Antique Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/03050-champagne-ice-silverlined.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2754/mg_seed_03050.jpg",
+   "previewSha256": "961cdecbb2cb82ec63a9f0d23d71243dffd177cfbd961d451be190b917d50c1d"
   },
   {
    "code": "03051",
@@ -1214,6 +1306,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/03057-cherry-sorbet-inside-color.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2747/mg_seed_03057.jpg",
    "previewSha256": "4ea19c949b195eb406ca1004cf1e350ecc829616b4b603da5d53383c8e143ef1"
+  },
+  {
+   "code": "03058",
+   "line": "Antique Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/03058-mardi-gras-red-matte-color.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2746/mg_seed_03058.jpg",
+   "previewSha256": "c1cb8084e41172c8ef04f8a5573d333d570c94b7b24945e7e18acaf5965ab5c6"
   },
   {
    "code": "03059",
@@ -2168,6 +2267,13 @@
    "previewSha256": "88ccc4d58a0e4006efb890df9bae8b11f87caa872f9ad2de3c9bc08f6f6c1078"
   },
   {
+   "code": "10102",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/10102-opal-autumn-green.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_025/packshot/16650/mg_seed11102.jpg",
+   "previewSha256": "69aaf6dcc5ed9d198c6f73b2d7f1afb38a7b6796d2903cf6f14b81a5107a2601"
+  },
+  {
    "code": "10103",
    "line": "Magnifica",
    "productUrl": "https://www.casacenina.it/mill-hill/10103-sheer-lilac.html",
@@ -2294,6 +2400,132 @@
    "previewSha256": "87b983189d07f4ca3446961b61cd4c20ba64a98a77c8587e782c2e878e194a9c"
   },
   {
+   "code": "11001",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11001-ice.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178595/mg_magnifica-mill-hill-11001.jpg",
+   "previewSha256": "5588505cd7dd4af9ceeaad9afd200c2e947968fcb88593d610dcb62041503680"
+  },
+  {
+   "code": "11002",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11002-autumn-flame.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178606/mg_magnifica-beads-mill-hill-11002.jpg",
+   "previewSha256": "56f4326a0e3fea38f615bdb83265b6f0222379781ee5ca7b73ea4c7ffd044078"
+  },
+  {
+   "code": "11003",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11003-black.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178594/mg_magnifica-mill-hill-11003.jpg",
+   "previewSha256": "c12f699f1b76cc6a017b98c20bcd3e2e5b1e1ea7044d59963791b91356d2b2f2"
+  },
+  {
+   "code": "11004",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11004-jet.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178596/mg_magnifica-beads-mill-hill-11004.jpg",
+   "previewSha256": "19a649d2c5dab1e9ba8dd830c0a898588b4a83ec6edfee650019c6625cbc1799"
+  },
+  {
+   "code": "11005",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11005-midnight.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178597/mg_magnifica-beads-mill-hill-11005.jpg",
+   "previewSha256": "865e1671dd031f5af39f27ccc53320c8e27332a32cb35acca1c7678c340045f3"
+  },
+  {
+   "code": "11006",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11006-eggplant.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178598/mg_magnifica-beads-mill-hill-11006.jpg",
+   "previewSha256": "865e1671dd031f5af39f27ccc53320c8e27332a32cb35acca1c7678c340045f3"
+  },
+  {
+   "code": "11007",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11007-mercury.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178599/mg_magnifica-beads-mill-hill-11007.jpg",
+   "previewSha256": "0287cb1072fbdaf60bd0a4e6ba11e3e3c6fc1577d9e65d69cce4ea6a9be04674"
+  },
+  {
+   "code": "11008",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11008-black-plum.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178600/mg_magnifica-beads-mill-hill-11008.jpg",
+   "previewSha256": "b86ffc022168e464739326c7616b569383cc25cc3b81586662c6e2688324ded2"
+  },
+  {
+   "code": "11009",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11009-white.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178601/mg_magnifica-beads-mill-hill-11009.jpg",
+   "previewSha256": "7363f581007f51e04a026cf42b9fda00daba3d1aded256e31045d602bbdf0e4e"
+  },
+  {
+   "code": "11010",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11010-royal-pearl.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178602/mg_magnifica-beads-mill-hill-11010.jpg",
+   "previewSha256": "b3e80d29cb4d1a772a9a195473a1836efca3154953919e00ff14dc2c2683604a"
+  },
+  {
+   "code": "11011",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11011-opal-honey.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178603/mg_magnifica-beads-mill-hill-11011.jpg",
+   "previewSha256": "a6ccf6fcf58e988e1853636098cd34a8f1236514ee182833a1dbe8e05d28f448"
+  },
+  {
+   "code": "11012",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11012-bronze.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178604/mg_magnifica-beads-mill-hill-11012.jpg",
+   "previewSha256": "5fe799733bf3902c958d5a378c6b3723d2904a795313af1a66bd92a90dd15c22"
+  },
+  {
+   "code": "11013",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11013-copper.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178605/mg_magnifica-beads-mill-hill-11013.jpg",
+   "previewSha256": "0819536baaf5c592d1e49d7dd8e79ed8396ec2f330ffd055a6f52d16caf2ce4c"
+  },
+  {
+   "code": "11014",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11014-dark-blue-iris.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178607/mg_magnifica-beads-mill-hill-11014.jpg",
+   "previewSha256": "301a8a5402d1d145cdd9b0b20fc61012ef62882b314a29bb0334c576dfa2e3a3"
+  },
+  {
+   "code": "11015",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11015-golden-ginger.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178608/mg_magnifica-beads-mill-hill-11015.jpg",
+   "previewSha256": "ca3dd0cdde365225ed70e0a5bb3fcfd52818f830cc5e3af2a43b48adfb48973b"
+  },
+  {
+   "code": "11016",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11016-royal-plum.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178609/mg_magnifica-beads-mill-hill-11016.jpg",
+   "previewSha256": "3de71d76c1adefbca266624a5c0852d863318bbaa51f76d3666b3fffc3fb3f57"
+  },
+  {
+   "code": "11017",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11017-brilliant-olive.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178610/mg_magnifica-beads-mill-hill-11017.jpg",
+   "previewSha256": "8873cd07b67428b7461d7b8712a1639d768305fb3b2ac7342d3f1c13af145b1b"
+  },
+  {
+   "code": "11018",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11018-sheer-blueberry.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178611/mg_magnifica-beads-mill-hill-11018.jpg",
+   "previewSha256": "f4fc510fd9e0f4416e2e539446aaffc39f1bdfab36b81313e3f10016f180c8e6"
+  },
+  {
    "code": "11019",
    "line": "Magnifica",
    "productUrl": "https://www.casacenina.it/mill-hill/11019-claret.html",
@@ -2301,11 +2533,697 @@
    "previewSha256": "0aa9dec2cf0839423a15a6d374cd34bcbf7d5aa25d1354164251c20377e988d1"
   },
   {
+   "code": "11020",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11020-royal-amethyst.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178613/mg_magnifica-beads-mill-hill-11020.jpg",
+   "previewSha256": "a74d221b7243046c7977e3836944879708b96a3c4592ea2c8e7244a26e35c96c"
+  },
+  {
+   "code": "11021",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11021-brilliant-blue-green.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178614/mg_magnifica-beads-mill-hill-11021.jpg",
+   "previewSha256": "26b97510873eff180900c674b0ce5b727fcd4b790ca17938d1e31da4cd4a686c"
+  },
+  {
+   "code": "11022",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11022-royal-green.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178615/mg_magnifica-beads-mill-hill-11022.jpg",
+   "previewSha256": "92ec78367d1236b0080938abc085636c812dde96c4f38b90504af4a3b999fae2"
+  },
+  {
+   "code": "11023",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11023-evergreen.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178616/mg_magnifica-beads-mill-hill-11023.jpg",
+   "previewSha256": "65f188368f2b51fe3aaccd99a29e2cd2e910b426f491389ee0ee8d92ce4e6d3a"
+  },
+  {
+   "code": "11024",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11024-cognac.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178617/mg_magnifica-beads-mill-hill-11024.jpg",
+   "previewSha256": "f6382a9b8b998e185de5d3f6c8460fe37e4abfee7d86af59267e35183ad2e628"
+  },
+  {
+   "code": "11025",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11025-platinum-rose.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178618/mg_magnifica-beads-mill-hill-11025.jpg",
+   "previewSha256": "1891226826bcc994a62c453823f455f7e32bc5c91d405a03039c31f88716f5b9"
+  },
+  {
+   "code": "11026",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11026-old-rose.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_331/packshot/178589/mg_magnifica-beads-mill-hill-11026.jpg",
+   "previewSha256": "3e9d742009139f3fd32b7baa620d72b1ae8c48dc81111b64e03b99864823c93e"
+  },
+  {
+   "code": "11027",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11027-metallic-lilac.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178619/mg_magnifica-beads-mill-hill-11027.jpg",
+   "previewSha256": "c1193441e1a6575bf332477fee20bdcb382fb9a48dc2e229ca2d930d67719a27"
+  },
+  {
+   "code": "11028",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11028-silver.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178620/mg_magnifica-beads-mill-hill-11028.jpg",
+   "previewSha256": "862b73f89a474dd6843a037ab5059ca10d74fac807fadce2a1a017c1138028fb"
+  },
+  {
+   "code": "11029",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11029-brilliant-sage.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178621/mg_magnifica-beads-mill-hill-11029.jpg",
+   "previewSha256": "cf3074ce282123b35c80e60b77ed2f0348dfbe1a3a9fb4c54278c4476fe9abfe"
+  },
+  {
+   "code": "11030",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11030-ice-green.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178622/mg_magnifica-beads-mill-hill-11030.jpg",
+   "previewSha256": "13a87e2afa911021a33c147aa6ac042f10fcd0b9ca74b076a384e5c757115589"
+  },
+  {
+   "code": "11031",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11031-persimmon.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178623/mg_magnifica-beads-mill-hill-11031.jpg",
+   "previewSha256": "ffa34f23b423bb1d8544a5ce32d1953932be49f999ace44d6e6eb2da4a8e8850"
+  },
+  {
+   "code": "11032",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11032-brilliant-fucshia.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178624/mg_magnifica-beads-mill-hill-11032.jpg",
+   "previewSha256": "2c0b2ba38b01a5ad39d30e0a95f5b7261cf497c7614e210ec3ae71d705942013"
+  },
+  {
+   "code": "11033",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11033-antique-cranberry.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178625/mg_magnifica-beads-mill-hill-11033.jpg",
+   "previewSha256": "62ea213ecedeb15730584e70597a29b157712f60e0d7523a92ee062c543213eb"
+  },
+  {
+   "code": "11034",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11034-silver-moon.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178626/mg_magnifica-beads-mill-hill-11034.jpg",
+   "previewSha256": "7ce7f4d831d0ada3036c4b391c331a3dff8a4b709c422e4572474d42198884e7"
+  },
+  {
+   "code": "11035",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11035-flat-black.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178627/mg_magnifica-beads-mill-hill-11035.jpg",
+   "previewSha256": "1264aa2cd493899fab7c8242343fff887ecc7bb4c671172874d58d1861d9a416"
+  },
+  {
+   "code": "11036",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11036-victorian-gold.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178628/mg_magnifica-beads-mill-hill-11036.jpg",
+   "previewSha256": "9e95a5ed79031061e050af52f69b66909570b69657a44676b943b4250a2dbcd9"
+  },
+  {
+   "code": "11037",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11037-wild-blueberry.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178629/mg_magnifica-beads-mill-hill-11037.jpg",
+   "previewSha256": "e77f509eddcd03ef50bc131d0937e2319a036aeee6e9789fb1925cef3151930f"
+  },
+  {
+   "code": "11038",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11038-caspian-blue.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178630/mg_magnifica-beads-mill-hill-11038.jpg",
+   "previewSha256": "ac24d97f96212a4767ff519e4c77b4034aec0536ba4e5abefd51e794533ebe52"
+  },
+  {
+   "code": "11039",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11039-juniper-green.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178631/mg_magnifica-beads-mill-hill-11039.jpg",
+   "previewSha256": "cd5990db8c64235d0efd3ed7b316c84723308be9f650f3efa3eb1d39e56029a5"
+  },
+  {
+   "code": "11040",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11040-autumn-green.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178632/mg_magnifica-beads-mill-hill-11040.jpg",
+   "previewSha256": "87ed0243043a5ad1867946d4f67b50a4d78f99e3bef8378071bfc29c70d053e4"
+  },
+  {
+   "code": "11041",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11041-abalone.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178633/mg_magnifica-beads-mill-hill-11041.jpg",
+   "previewSha256": "b124e6dd22f0c8395ff16bb921f5f4e1faa5815c557a1ab78ad3e137bbd330ee"
+  },
+  {
+   "code": "11042",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11042-vanilla.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178634/mg_magnifica-beads-mill-hill-11042.jpg",
+   "previewSha256": "4d030da6119d062c064f01b500e2527dd88e03e4f6518a0a8fb24479cdf90c7d"
+  },
+  {
+   "code": "11043",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11043-butter-cream.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178635/mg_magnifica-beads-mill-hill-11043.jpg",
+   "previewSha256": "25ab2ce68c203225820bb30f6114ddb9f64a5e2eb545ce97247d2c986e9b6b95"
+  },
+  {
+   "code": "11044",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11044-blue-iris.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178636/mg_magnifica-beads-mill-hill-11044.jpg",
+   "previewSha256": "5c40badb86927e603ce8fb8690973b3a87e7dcd0f312ebaca9c947916e8ff888"
+  },
+  {
+   "code": "11045",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11045-opaline-jade.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178637/mg_magnifica-beads-mill-hill-11045.jpg",
+   "previewSha256": "1da7784ebf0e323c8a82950b9f72b11f5d213429bb09577cc57afa1f723f7c78"
+  },
+  {
+   "code": "11046",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11046-white-opal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178638/mg_magnifica-beads-mill-hill-11046.jpg",
+   "previewSha256": "f0d0faa9b14d27ab1645029f0f618bf86660c02c0f11e115a9ab00f770266e58"
+  },
+  {
+   "code": "11047",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11047-opalescent-periwinkle.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178639/mg_magnifica-beads-mill-hill-11047.jpg",
+   "previewSha256": "7dd3d4246c320a8fbe3d6847c705e498de2a7e96b4bb5a94f5d33bcf6bfbd6eb"
+  },
+  {
+   "code": "11048",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11048-opaline-tea-rose.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178640/mg_magnifica-beads-mill-hill-11048.jpg",
+   "previewSha256": "4dfc97e3ab21c135696a6b6ebb058567caddeda1109e3a129208c409ba6827e2"
+  },
+  {
+   "code": "11049",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11049-sky-blue-opal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178641/mg_magnifica-beads-mill-hill-11049.jpg",
+   "previewSha256": "79a987567c0845087103801adc47566b143da2a3b8ea18559fa23b6aaac76763"
+  },
+  {
+   "code": "11050",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11050-azure-opal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178642/mg_magnifica-beads-mill-hill-11050.jpg",
+   "previewSha256": "73ae669c7ba8e12326d7a9882a17fb4fb7cadaf574bfa121a3d66c23b9fec0b4"
+  },
+  {
+   "code": "11051",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11051-salmon-opal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178643/mg_magnifica-beads-mill-hill-11051.jpg",
+   "previewSha256": "53e2f1eec3d018a481b19e3bed2833754847c8cd43a03298ee9ea873dd93e357"
+  },
+  {
+   "code": "11052",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11052-fuchsia-opal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178644/mg_magnifica-beads-mill-hill-11052.jpg",
+   "previewSha256": "106dbfd1b2669b6c15c0d4bd9ded095be6941cbc0e282e8bcfb3ab24c0594e20"
+  },
+  {
+   "code": "11053",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11053-crystal-lilac.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178645/mg_magnifica-beads-mill-hill-11053.jpg",
+   "previewSha256": "d387154df132c835693285ea65d89f31ec5811bfbcfcd350610cdfd3ef117cba"
+  },
+  {
+   "code": "11054",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11054-sheer-deep-teal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178646/mg_magnifica-beads-mill-hill-11054.jpg",
+   "previewSha256": "2093b11cb92c27e66cc62e107c0dbd1a0ee7404bcedc910e89f26900f1b9611e"
+  },
+  {
+   "code": "11055",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11055-royal-blue.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178647/mg_magnifica-beads-mill-hill-11055.jpg",
+   "previewSha256": "05ab10c834878d225c8df8ca4fd83664c5825cdb3cfe50a0d3b6f691e5a18e22"
+  },
+  {
+   "code": "11057",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11057-crystal-clear.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178648/mg_magnifica-beads-mill-hill-11057.jpg",
+   "previewSha256": "ae257e7564d519138be235d7c6a987ce01d1e02decfff8e2660301c640707ef6"
+  },
+  {
+   "code": "11058",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11058-sheer-aqua.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178649/mg_magnifica-beads-mill-hill-11058.jpg",
+   "previewSha256": "179ef5054a2593216358ccf6948577b39eed5371e75e06fcdba0dab8b6b2e9bf"
+  },
+  {
+   "code": "11059",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11059-carribean-blue.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178650/mg_magnifica-beads-mill-hill-11059.jpg",
+   "previewSha256": "bea49b632cee39b2ed8a173f46a16d06a067a6319ecc7250b5caaa25863ed495"
+  },
+  {
+   "code": "11060",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11060-sheer-coral-red.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178651/mg_magnifica-beads-mill-hill-11060.jpg",
+   "previewSha256": "2f76407846c64d6e07972dc22bb87da119fe0d8881fb77afc700b5e6e987153d"
+  },
+  {
+   "code": "11061",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11061-silver-fox.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178652/mg_magnifica-beads-mill-hill-11061.jpg",
+   "previewSha256": "3c5ef3d0a54bb6962fa7a2bb727b830b3ec6f009b751f20ca8710cf8b95a60a3"
+  },
+  {
+   "code": "11062",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11062-taupe-shimmer.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178653/mg_magnifica-beads-mill-hill-11062.jpg",
+   "previewSha256": "35f5b6f7324498e6e6bffd335d2f01c201f2b83a647ef2b060cfa16a346a3aa7"
+  },
+  {
+   "code": "11063",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11063-deep-periwinkle.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178654/mg_magnifica-beads-mill-hill-11063.jpg",
+   "previewSha256": "96aa00814e234412dde64c379029783fa1cfce52ac033d300908152f3d7abce0"
+  },
+  {
+   "code": "11064",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11064-deep-sea-green.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178655/mg_magnifica-beads-mill-hill-11064.jpg",
+   "previewSha256": "587853a127adc7d7129e5e7e9691fa7b6b36587b2b98e407a34be2b841845885"
+  },
+  {
+   "code": "11065",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11065-christmas-green.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178656/mg_magnifica-beads-mill-hill-11065.jpg",
+   "previewSha256": "f70ced96a280a63c0d2eb91f389ab2ac842fdeed6d0e0ebfb405d04a19c872b0"
+  },
+  {
+   "code": "11066",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11066-opal-smokey-topaz.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178657/mg_magnifica-beads-mill-hill-11066.jpg",
+   "previewSha256": "eebabf24ee5f31b751a0c1e9ccdf489f7bf91e910746e5c2d99db526b8b8ec9c"
+  },
+  {
+   "code": "11067",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11067-true-green-opal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178658/mg_magnifica-beads-mill-hill-11067.jpg",
+   "previewSha256": "c9fbe9f00fc52605c21b6613ccfe50a6785ed02f83342702aabf54f576fab367"
+  },
+  {
+   "code": "11068",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11068-nutmeg.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178659/mg_magnifica-beads-mill-hill-11068.jpg",
+   "previewSha256": "5deccd8f95289af9b8298e60b061c4d4cbc198d0b1af482e30248ef280b3b253"
+  },
+  {
+   "code": "11069",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11069-royal-opal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178660/mg_magnifica-beads-mill-hill-11069.jpg",
+   "previewSha256": "503436850428b5712f7a1843ee28122c1052c06b04398fc95047768820e73f79"
+  },
+  {
+   "code": "11070",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11070-opalescent-aqua.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178661/mg_magnifica-beads-mill-hill-11070.jpg",
+   "previewSha256": "090792baf209dc6be44d73108e431b3835e4dc3935688978f0d8d4508ce3f2cc"
+  },
+  {
+   "code": "11071",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11071-opal-cinnamon-red.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178662/mg_magnifica-beads-mill-hill-11071.jpg",
+   "previewSha256": "8b4a887896b857bc741dd5199ab25d313de9a2208e69e65fa962908c76ceb525"
+  },
+  {
+   "code": "11072",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11072-khaki.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178663/mg_magnifica-beads-mill-hill-11072.jpg",
+   "previewSha256": "2542d9217d708e81ff95475e4e90ed3b862db675f73aa13825ef30f84c8f086d"
+  },
+  {
+   "code": "11073",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11073-soft-willow.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178664/mg_magnifica-beads-mill-hill-11073.jpg",
+   "previewSha256": "885ea736e51a74f57f35bc13200264c0fbe03beb4a7c5ff4da1b7370744d1ebf"
+  },
+  {
+   "code": "11074",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11074-purple-passion.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178665/mg_magnifica-beads-mill-hill-11074.jpg",
+   "previewSha256": "6c2718917614ea4f9eaeca4e14efb4bbee2c6f15f93ecaf8c828a3f6e24f38dc"
+  },
+  {
+   "code": "11075",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11075-victorian-copper.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178666/mg_magnifica-beads-mill-hill-11075.jpg",
+   "previewSha256": "2aa384095a492f88e16cdae6085ac8b5872b4b8f496c811e67b686c3bd8f1570"
+  },
+  {
+   "code": "11076",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11076-gold.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178667/mg_magnifica-beads-mill-hill-11076.jpg",
+   "previewSha256": "13450896611250e79a853c61fe0ae1a960cfe658da513ff84eb88154da9eb03a"
+  },
+  {
+   "code": "11077",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11077-charcoal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178668/mg_magnifica-beads-mill-hill-11077.jpg",
+   "previewSha256": "fb006df9b5937b97c1f8d76bcae7ce9b28bbe55503ca38a888a418cd376cc465"
+  },
+  {
+   "code": "11078",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11078-dusty-mauve.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178669/mg_magnifica-beads-mill-hill-11078.jpg",
+   "previewSha256": "53ba0b406fc364e5887676ea97aa490174bc919d3b8811ee0f3ba5c090060bf7"
+  },
+  {
+   "code": "11079",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11079-brilliant-teal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178670/mg_magnifica-beads-mill-hill-11079.jpg",
+   "previewSha256": "7d2d22a583663697dee43101f58da33e512ecbcf3105d59a0b2f2d5fe6e16165"
+  },
+  {
    "code": "11080",
-   "line": "Glass Treasures",
+   "line": "Magnifica",
    "productUrl": "https://www.casacenina.it/mill-hill/11080-brilliant-bronze.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178671/mg_magnifica-beads-mill-hill-11080.jpg",
    "previewSha256": "8ad86ba253b501ffbf00c948613df9928064b2c083f609ff13a2a42c95c69328"
+  },
+  {
+   "code": "11081",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11081-brilliant-green.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178672/mg_magnifica-beads-mill-hill-11081.jpg",
+   "previewSha256": "5b73becb8bfb7fc8f4951b275726cc43561c67f632e07e87a6658a2af3326bf2"
+  },
+  {
+   "code": "11082",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11082-heather-mauve.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178673/mg_magnifica-beads-mill-hill-11082.jpg",
+   "previewSha256": "09e96ceae7ec6ac64fdc644e24072170d08318a766d7afb4d67274802a2fbf53"
+  },
+  {
+   "code": "11083",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11083-orange-sherbet.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178674/mg_magnifica-beads-mill-hill-11083.jpg",
+   "previewSha256": "ba208d438060ef89910bb07475c341fcefe46e78f446c19f418da191bd940be8"
+  },
+  {
+   "code": "11084",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11084-golden-khaki.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178675/mg_magnifica-beads-mill-hill-11084.jpg",
+   "previewSha256": "a73d7ffc0146af359902f5a2c31d668a6723b11ff9392482159ba9bb8853cd99"
+  },
+  {
+   "code": "11085",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11085-olivine.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178676/mg_magnifica-beads-mill-hill-11085.jpg",
+   "previewSha256": "8bc0a960c0ba844faa26d8cc47d62d67a2c19c9ad8c351d0be959978842cba28"
+  },
+  {
+   "code": "11086",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11086-capri-blue.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178677/mg_magnifica-beads-mill-hill-11086.jpg",
+   "previewSha256": "908b6f60d68235d5169308f30b84acf98d3fa9329428775b8d3125d21676a9c7"
+  },
+  {
+   "code": "11087",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11087-pale-honey.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178678/mg_magnifica-beads-mill-hill-11087.jpg",
+   "previewSha256": "bf1454e996cb886ab2c13238d76b3f5a28b3837daf30ae4c3062c0ab424bf0ed"
+  },
+  {
+   "code": "11088",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11088-goldenrot.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178679/mg_magnifica-beads-mill-hill-11088.jpg",
+   "previewSha256": "f20af82a5d660bfda41134d025de11e8fd7e13b5b9fc5e9bdc38c9c6a0fd83e8"
+  },
+  {
+   "code": "11089",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11089-true-silver.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178680/mg_magnifica-beads-mill-hill-11089.jpg",
+   "previewSha256": "2e2ecf8c0cdd3fbe80b801d994f129fe0f5998dbbc325c35ceb74118e47c1e66"
+  },
+  {
+   "code": "11091",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11091-gold-nugget.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178681/mg_magnifica-beads-mill-hill-11091.jpg",
+   "previewSha256": "9c974f48f81a80ce02b0806fad6debfe7da12ebfc5c842fc9b21e01b86f03d9e"
+  },
+  {
+   "code": "11092",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11092-iris.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178682/mg_magnifica-beads-mill-hill-11092.jpg",
+   "previewSha256": "59c7bcfaa2441b73b26063ec65b5eb470f5488069c396eaea4a06da9bf1e3523"
+  },
+  {
+   "code": "11093",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11093-pink-shimmer.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178683/mg_magnifica-beads-mill-hill-11093.jpg",
+   "previewSha256": "63075ee638a231b11696f05c3779b1e4e241d2df8d023485451b78387e36e250"
+  },
+  {
+   "code": "11094",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11094-matte-heather.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178684/mg_magnifica-beads-mill-hill-11094.jpg",
+   "previewSha256": "169066bb291fa1fa23fbfe9fd19ec130e14de45bccbb93574ad008e8f1cf5b30"
+  },
+  {
+   "code": "11095",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11095-root-beer.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178685/mg_magnifica-beads-mill-hill-11095.jpg",
+   "previewSha256": "26ac943ff352c16a7f9d0441e80a4daaf04f20872b8e058d3bf0c2a0dda4ae36"
+  },
+  {
+   "code": "11096",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11096-brilliant-blueberry.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178686/mg_magnifica-beads-mill-hill-11096.jpg",
+   "previewSha256": "ac38e9433d696fd99c7116da654bdbed49fa7e21142b60444bc612e669425cda"
+  },
+  {
+   "code": "11097",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11097-matte-olive.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178687/mg_magnifica-beads-mill-hill-11097.jpg",
+   "previewSha256": "064900de70ff000146e3397eff57987db44d98b0e7f9bfcb71350e9d9ce3e2ee"
+  },
+  {
+   "code": "11098",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11098-matte-orange.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178688/mg_magnifica-beads-mill-hill-11098.jpg",
+   "previewSha256": "d46c133c511d779ee3ffd46176b0a6dbb5d07b899e2afced6cc21c2ed85662df"
+  },
+  {
+   "code": "11099",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11099-sterling-rose.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178689/mg_magnifica-beads-mill-hill-11099.jpg",
+   "previewSha256": "acf03890fa588120f52dc538ed9935e4b94d9df1bc0034813d7cdefbf7b663f3"
+  },
+  {
+   "code": "11100",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11100-matte-cranberry.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178690/mg_magnifica-beads-mill-hill-11100.jpg",
+   "previewSha256": "abdb36f105e000baadb6c8dd6f9f0711877f55520c166899178b45707d9bae9b"
+  },
+  {
+   "code": "11101",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11101-navy-seas.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178691/mg_magnifica-beads-mill-hill-11101.jpg",
+   "previewSha256": "2c71c5f433e0049c0a1c2669351596a021aa72adeebcf05d199f2658eed584d9"
+  },
+  {
+   "code": "11102",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11102-opal-autumn-green.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178692/mg_magnifica-beads-mill-hill-11102.jpg",
+   "previewSha256": "4e85ce2b11aa5bb0b287f641362d9b9f5da6ea643e75481e59f504a1a8fd4e5c"
+  },
+  {
+   "code": "11103",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11103-sheer-lilac.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178693/mg_magnifica-beads-mill-hill-11103.jpg",
+   "previewSha256": "e380bf9115599704006826bb32877c5b9834cb9bc67a3f7252c1ef6639aafeb2"
+  },
+  {
+   "code": "11104",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11104-topic-seas.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178694/mg_magnifica-beads-mill-hill-11104.jpg",
+   "previewSha256": "c5278aa1d3f45f5a2e003a0521f33a9f9d4275b8c59682c09b37df1f2c4d6b09"
+  },
+  {
+   "code": "11105",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11105-sheer-pink.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178695/mg_magnifica-beads-mill-hill-11105.jpg",
+   "previewSha256": "9c2db57fb3e440e56b62d44d5463f107a71611ccce318497d2fd7830ffe1074d"
+  },
+  {
+   "code": "11106",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11106-azalea.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178696/mg_magnifica-beads-mill-hill-11106.jpg",
+   "previewSha256": "170c1a903d1f1898824141001b740c61e72108e323513d3a7d7982c29674c663"
+  },
+  {
+   "code": "11107",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11107-spring-green.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178697/mg_magnifica-beads-mill-hill-11107.jpg",
+   "previewSha256": "33def9799c42d6fe2d728b33bdea996e0ab6304f4bde55f1f9cb6e5ad54314b6"
+  },
+  {
+   "code": "11108",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11108-matte-pewter.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178698/mg_magnifica-beads-mill-hill-11108.jpg",
+   "previewSha256": "e17ad7f69236eb303d6555260c572ee8cd9eaf826d12b515a69fa3039a7e688a"
+  },
+  {
+   "code": "11109",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11109-antique-silver.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178699/mg_magnifica-beads-mill-hill-11109.jpg",
+   "previewSha256": "48eb8f4c84bc9e48eca543a9099a880c4e124dc26dca97db9dcc782d4cf05e29"
+  },
+  {
+   "code": "11110",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11110-purple-pizzazz.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178700/mg_magnifica-beads-mill-hill-11110.jpg",
+   "previewSha256": "63dd4857e9c2bb0fef0e1f17a556414c529309e4d408dd0c884b9203c1a071ce"
+  },
+  {
+   "code": "11111",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11111-matte-wildberry.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178701/mg_magnifica-beads-mill-hill-11111.jpg",
+   "previewSha256": "54e21d5128840f4aa7521d99679fadca096b0a76f006ef6161db99530ec011e1"
+  },
+  {
+   "code": "11112",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11112-cappuccino-rose.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178702/mg_magnifica-beads-mill-hill-11112.jpg",
+   "previewSha256": "02a2045bef40615f488e036a617693288180b838d744d5e30a8fd77332b1ee54"
+  },
+  {
+   "code": "11113",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11113-aqua.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178703/mg_magnifica-beads-mill-hill-11113.jpg",
+   "previewSha256": "cc86795a95403844cb85ba0a49c6b3a263577bb8dfbbefaf1733b3d48f5c8473"
+  },
+  {
+   "code": "11114",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11114-cherry-red.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178704/mg_magnifica-beads-mill-hill-11114.jpg",
+   "previewSha256": "7372097d8dcfa9cb5c987e5486aebb3e684ab65e38c4cb800d6a0061317a5544"
+  },
+  {
+   "code": "11116",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11116-blue-satin.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178705/mg_magnifica-beads-mill-hill-11116.jpg",
+   "previewSha256": "7b9f3fe4e546e48b43c03cd0db800104a6614b107d5c1f7cc123148c7a0a26ef"
+  },
+  {
+   "code": "11117",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11117-lilac-satin.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178706/mg_magnifica-beads-mill-hill-11117.jpg",
+   "previewSha256": "6557e5d3d24d049ffa97c07727d5c0f9da309f83663272b5bee19800bbcb2fd8"
+  },
+  {
+   "code": "11118",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11118-dusty-purple.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178707/mg_magnifica-beads-mill-hill-11118.jpg",
+   "previewSha256": "c742fc05992feea9a86c1828dc6f133a848ba6a2607e3ffc352d228ad9a2316a"
+  },
+  {
+   "code": "11119",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11119-pumpkin.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178708/mg_magnifica-beads-mill-hill-11119.jpg",
+   "previewSha256": "8167c260e909cbd210c7367788764ecebf5cd40046087835cc19c40cadcb1783"
+  },
+  {
+   "code": "11120",
+   "line": "Magnifica",
+   "productUrl": "https://www.casacenina.it/mill-hill/11120-spice-brown.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_332/packshot/178709/mg_magnifica-beads-mill-hill-11120.jpg",
+   "previewSha256": "cc9f6f629a4786aebbf453cbfe974cb9dbb0334adc5a001343646505512141e7"
+  },
+  {
+   "code": "12005",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12005-5-petal-flower-matte-jonquil.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/3268/mg_treasure_12005.jpg",
+   "previewSha256": "1cb3136bae21f2537a64418b35f6347d3723e2f2ced73cb7fe843f2e064471cb"
   },
   {
    "code": "12006",
@@ -2313,6 +3231,20 @@
    "productUrl": "https://www.casacenina.it/mill-hill/12006-5-petal-flower-matte-sapphire.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/3267/mg_treasure_12006.jpg",
    "previewSha256": "121656df5edc66bca838a955754bdab6d2378825a8822647564749c92e3762a6"
+  },
+  {
+   "code": "12009",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12009-5-petal-dim-flower-ruby.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/3264/mg_treasure_12009.jpg",
+   "previewSha256": "d475e5c29083328b4dfd7c973b56090747b49f517f161084934bbcd580303048"
+  },
+  {
+   "code": "12010",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12010-5-petal-dim-flower-topaz.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/3263/mg_treasure_12010.jpg",
+   "previewSha256": "1a56928b9f02925cbdbfa97af9baa98663e626e00609cf59230f6d5bebb1837c"
   },
   {
    "code": "12011",
@@ -2357,6 +3289,13 @@
    "previewSha256": "41202e5ae66421b78c9cff902bb83bcf254da45bf63b714c8574255074d5a755"
   },
   {
+   "code": "12032",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12032-small-bell-flower-marbled-light-blue.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3241/mg_treasure_12032.jpg",
+   "previewSha256": "f7f38f085d4dda4d44339b7e494f0e346607cdde21a220f2362ddce57de032bc"
+  },
+  {
    "code": "12033",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12033-modified-fleur-de-lis-green-turmaline.html",
@@ -2369,6 +3308,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/12034-modified-fleur-de-lis-rosaline.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3239/mg_treasure_12034.jpg",
    "previewSha256": "7b36d91f9464edae3d96445b05812acbdf4abca07095d872a058b78117044c7b"
+  },
+  {
+   "code": "12035",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12035-small-snowflake-crystal-bright.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3238/mg_treasure_12035.jpg",
+   "previewSha256": "3f07f322340485c68634dce72c89904fbc082c6cac16440087c24a0068c5f1eb"
   },
   {
    "code": "12037",
@@ -2392,6 +3338,13 @@
    "previewSha256": "434766143b7db98fce97a5971fcdeb32581e9202eaabd652278cd56a63b390e3"
   },
   {
+   "code": "12045",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12045-very-sm-domed-star-matte-aqua.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3230/mg_treasure_12045.jpg",
+   "previewSha256": "d4826335c9e12d407b1a4243e9c82d9723dfa39423a214f9c3c7ca26bc867f4c"
+  },
+  {
    "code": "12047",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12047-large-domed-star-opal.html",
@@ -2404,6 +3357,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/12048-large-domed-star-matte-aqua.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3227/mg_treasure_12048.jpg",
    "previewSha256": "3251cfe61e8a1c48d8c621a4b6d511acbb8bb8a8fdb8547f0a4f7e8791fadbce"
+  },
+  {
+   "code": "12049",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12049-large-domed-star-matte-rosaline.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3226/mg_treasure_12049.jpg",
+   "previewSha256": "d48322ce13406cf4904f48fc55432fafd6703c7f7cb1a5908c2296ea5906ba2b"
   },
   {
    "code": "12050",
@@ -2448,6 +3408,20 @@
    "previewSha256": "ef8652199e6c160a6f5d75f4ba9177043513dad929b0da2cc16802e3648cb496"
   },
   {
+   "code": "12061",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12061-5-pointed-star-crystal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3214/mg_treasure_12061.jpg",
+   "previewSha256": "c6e5a4cca2ecafcfae33ed26a1d6dc96b704d9cbbb104d04532c17ce4925dde4"
+  },
+  {
+   "code": "12062",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12062-flat-bell-flower-light-topaz.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3213/mg_treasure_12062.jpg",
+   "previewSha256": "5c23f06f312108838caa6218a394eb6e0f61c1518af3a06aae7755b801544e59"
+  },
+  {
    "code": "12063",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12063-flat-bell-flower-sapphire.html",
@@ -2462,11 +3436,25 @@
    "previewSha256": "acd8800d260e02973596b63ee76079211e996fa00cd90d99cf2fded725c13bc7"
   },
   {
+   "code": "12065",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12065-flat-bell-flower-lt-turmaline.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3210/mg_treasure_12065.jpg",
+   "previewSha256": "a01ffcc8f79d5f9f9d5e7b9a2dd29f1252da9d0afb72d966224478b98ee8b370"
+  },
+  {
    "code": "12070",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12070-frosted-starburst-heart-matte-crystal.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3205/mg_treasure_12070.jpg",
    "previewSha256": "ea516e0b5b1a4f97082088b804f6c5db77b122608ebb276359874e0bf999e322"
+  },
+  {
+   "code": "12071",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12071-frosted-starburst-heart-matte-sapphire.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3204/mg_treasure_12071.jpg",
+   "previewSha256": "fe5ac935ae511dd559ab63cbe2dcd417da8535318192725dc31798a2c6e3a740"
   },
   {
    "code": "12074",
@@ -2490,6 +3478,27 @@
    "previewSha256": "1e1131b6569246f557f69783c2210f4c1b8c27c39642a645cd8473bad1ebb3c3"
   },
   {
+   "code": "12077",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12077-very-sm-domed-heart-bright-red.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3198/mg_treasure_12077.jpg",
+   "previewSha256": "acba5d8ae52af31708ad021b1b937c79ace5678ed71bf01c5e26d4934829d880"
+  },
+  {
+   "code": "12081",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12081-small-channeled-heart-matte-crystal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3197/mg_treasure_12081.jpg",
+   "previewSha256": "161fe47eac3dcff9e4a7642d898348fedd20816ff711961e516ba843cb7af765"
+  },
+  {
+   "code": "12082",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12082-small-channeled-heart-matte-ruby.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3196/mg_treasure_12082.jpg",
+   "previewSha256": "b5819be2637955099e83b0a92bf84219104774e8a56fbd47c8adc9b31904afd3"
+  },
+  {
    "code": "12083",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12083-small-channeled-heart-matte-sapphire.html",
@@ -2497,11 +3506,53 @@
    "previewSha256": "36ed36d95c00496dd1ea6b99dc93cffa0b7ee77f7d9523b785fd92f632e75c1e"
   },
   {
+   "code": "12084",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12084-small-channeled-heart-matte-opal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3194/mg_treasure_12084.jpg",
+   "previewSha256": "7885f9c829acdc470b7175a6b66fc6820a949e94887a97c5ad780a85ea1523eb"
+  },
+  {
+   "code": "12085",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12085-small-channeled-heart-matte-amethyst.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3193/mg_treasure_12085.jpg",
+   "previewSha256": "1f4b8480ab77beddb13f6ee0e80e3382c8609e2e00c3690c0cb4809a34e71f06"
+  },
+  {
+   "code": "12086",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12086-small-channeled-heart-matte-rosaline.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3192/mg_treasure_12086.jpg",
+   "previewSha256": "6a8efc6f710b2f92b382cfae48cbc1da00bcae1aacad3157bd515786a5425766"
+  },
+  {
+   "code": "12087",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12087-medium-channeled-heart-matte-crystal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3191/mg_treasure_12087.jpg",
+   "previewSha256": "0e506152145056c6b78427cac399c6cac4863a780cd44854391e01df4dc8cd86"
+  },
+  {
    "code": "12088",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12088-medium-channeled-heart-matte-ruby.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3190/mg_treasure_12088.jpg",
    "previewSha256": "6a205e9eeb070481c419641c2656e0ebb44947b4c319f77ef85addf367dc74fd"
+  },
+  {
+   "code": "12089",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12089-medium-channeled-heart-matte-sapphire.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3189/mg_treasure_12089.jpg",
+   "previewSha256": "8e4a9af12d7f378f21088728b50454fe899afba7a325c82180e889095a504a02"
+  },
+  {
+   "code": "12091",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12091-medium-channeled-heart-matte-amethyst.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3187/mg_treasure_12091.jpg",
+   "previewSha256": "e11ffdd6085b7009bfc54bb214986fb956145a96f6f874deaa53b7b60e1dca20"
   },
   {
    "code": "12099",
@@ -2537,6 +3588,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/12105-tree-turmaline.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3176/mg_treasure_12105.jpg",
    "previewSha256": "563106ac31b7f1d0fd38c7599e0a5e9c7f8d380e7c73d92fba4cdede52315201"
+  },
+  {
+   "code": "12106",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12106-christmas-tree-gold.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3175/mg_treasure_12106.jpg",
+   "previewSha256": "3b4b5af6ac76307b581ace7b357120482afe6df40ef2fa275bad306504bd7cbc"
   },
   {
    "code": "12107",
@@ -2581,11 +3639,25 @@
    "previewSha256": "c03a20bb5e6a46dc7af3a04ff96002d25e86fbdc9405fd10997f5f4f0b4b6e13"
   },
   {
+   "code": "12116",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12116-petite-flower-rose.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3165/mg_treasure_12116.jpg",
+   "previewSha256": "6eb180858306e5bd287d52cfac81842925ab07bbd3dc676856ad755a593cc202"
+  },
+  {
    "code": "12117",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12117-petite-flower-blue.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3164/mg_treasure_12117.jpg",
    "previewSha256": "49c796f7e37b2fa98daf877e2611b99e452cb9812b176a26d11130ee6dff859b"
+  },
+  {
+   "code": "12118",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12118-petite-flower-matte-silver.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3163/mg_treasure_12118.jpg",
+   "previewSha256": "f9a7e044bc174e187283a1b04f7d3157c003ca7b830ca1412aaccb30eaa85997"
   },
   {
    "code": "12122",
@@ -2609,6 +3681,13 @@
    "previewSha256": "79c233a35c5bf33d956a9918d3d4a4111c187091d86a8cc09e46870b01419859"
   },
   {
+   "code": "12131",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12131-pumpkin-matte-orange.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3150/mg_treasure_12131.jpg",
+   "previewSha256": "157bdea97e9f61b13404809172062af72e2517018e6cbc6b66105d94c4caa9db"
+  },
+  {
    "code": "12132",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12132-song-bird-matte-crystal.html",
@@ -2628,6 +3707,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/12134-song-bird-light-sapphire.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3147/mg_treasure_12134.jpg",
    "previewSha256": "58bc731086e80f4b9aaa64ea5b5506da1e952662c518dc0323910471794b0233"
+  },
+  {
+   "code": "12135",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12135-sitting-bunny-matte-crystal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3146/mg_treasure_12135.jpg",
+   "previewSha256": "b7be5ce18cd30cb3491adb4d0b2532e0668259d50d94aa0bca2917540ae3f9f5"
   },
   {
    "code": "12139",
@@ -2665,6 +3751,20 @@
    "previewSha256": "8be31f14152c2e809d5fc8d2a0bc7f0cf9951679012101ceba523b956e69a54b"
   },
   {
+   "code": "12149",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12149-very-petite-flower-matte-sapphire.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3132/mg_treasure_12149.jpg",
+   "previewSha256": "12c1f2e71f26cf3eaa3df7114ac9842cdd9dfb24d0d6f542f023c81dcb2a34b7"
+  },
+  {
+   "code": "12150",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12150-very-petite-flower-matte-medium-amethyst.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3131/mg_treasure_12150.jpg",
+   "previewSha256": "2d47f809f297fca01941923b169f7867ad4a10759e627b322014067d1d69bee7"
+  },
+  {
    "code": "12152",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12152-very-petite-flower-matte-fuschia.html",
@@ -2679,6 +3779,13 @@
    "previewSha256": "82867bf011b1016f51b0ef3f1ccbeb7efbe45b979d4d1776722542bfc7946204"
   },
   {
+   "code": "12155",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12155-very-small-tulip-matte-amethyst.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3126/mg_treasure_12155.jpg",
+   "previewSha256": "75f109a06e2417bc3411ee60cd2488460fc865b14415c089412599113c5a132c"
+  },
+  {
    "code": "12158",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12158-very-small-tulip-matte-crystal.html",
@@ -2691,6 +3798,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/12159-ladybug-red.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3122/mg_treasure_12159.jpg",
    "previewSha256": "9d69d702b424bac3bf2a5b4584f002e753700cf4cd532463f4654afd72acba9d"
+  },
+  {
+   "code": "12160",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12160-cat-frosted-crystal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3121/mg_treasure_12160.jpg",
+   "previewSha256": "30b2e25bd6c2912c876094928084d96b3cb3e365d33a7e76e272249ef23d6faf"
   },
   {
    "code": "12161",
@@ -2735,6 +3849,13 @@
    "previewSha256": "22ab13abf14f0aeb16be9372d90fe0e0a8a70fc81fe13864b03618cf6a783401"
   },
   {
+   "code": "12168",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12168-medium-star-matte-siam.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3113/mg_treasure_12168.jpg",
+   "previewSha256": "175e41d4fc1af3f291d091a9f68af28a1197872ac262efb7af8a2faeccff036f"
+  },
+  {
    "code": "12169",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12169-medium-star-topaz-bright.html",
@@ -2763,6 +3884,13 @@
    "previewSha256": "616fc90e5d78500a28bacfc4e273a23df2abffbb3f428444e74f4a1bc0caaa38"
   },
   {
+   "code": "12174",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12174-small-flat-star-opal-white.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3107/mg_treasure_12174.jpg",
+   "previewSha256": "fb4858652947484f459d8e8930faec3d2abe9da3f93e5e1472ad01113d871f16"
+  },
+  {
    "code": "12176",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12176-large-flat-star-royal-blue.html",
@@ -2782,6 +3910,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/12179-large-christmas-tree-mt-tourmaline.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3102/mg_treasure_12179.jpg",
    "previewSha256": "af0d9e173d92b166066a3a942dcfc31f8637beefabb92e4ffbcf89567c346fd1"
+  },
+  {
+   "code": "12182",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12182-medium-floral-emb-heart-pale-rose.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3099/mg_treasure_12182.jpg",
+   "previewSha256": "7aa02c1a23eff88ac483f4447e3e766682fd3e790f54801c82f3f840401ba832"
   },
   {
    "code": "12183",
@@ -2812,6 +3947,13 @@
    "previewSha256": "89c39d2d81b8d52d5838a743a1a8a508e9ebc0fa4055a36abeb19d4010ff88c4"
   },
   {
+   "code": "12187",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12187-4-petal-flower-matte-aqua.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3094/mg_treasure_12187.jpg",
+   "previewSha256": "50d34ec395b14b0d3f41017ff2b93e70d36232f57ad3952a5759a3ac1c2204c9"
+  },
+  {
    "code": "12188",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12188-4-petal-flower-matte-ruby.html",
@@ -2838,6 +3980,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/12193-turtle-matte-turtle-green.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3088/mg_treasure_12193.jpg",
    "previewSha256": "17c020edcd11514f9967efa78e6d1c5c605023e3b66e7d2ddc46281e18b30eb4"
+  },
+  {
+   "code": "12194",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12194-frog-matte-olivine.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3087/mg_treasure_12194.jpg",
+   "previewSha256": "2ced2cc9cd31f530c274b4a8c75caf95c6ad4d88389a0ee86ba64d9b1ad811d9"
   },
   {
    "code": "12195",
@@ -2896,6 +4045,20 @@
    "previewSha256": "05cfb9c42d0dddbc21b8c02e7df8d679dcb9abb746849388979c458def27385f"
   },
   {
+   "code": "12206",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12206-flat-bell-flower-matte-rose.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3075/mg_treasure_12206.jpg",
+   "previewSha256": "2f4b40ba8b13e846fcb60fc4a513b425a738f77b1b93f3a81788946d7f7b8f8e"
+  },
+  {
+   "code": "12210",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12210-petite-flower-matte-light-topaz.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3071/mg_treasure_12210.jpg",
+   "previewSha256": "48d02fd0662f647f1f760f44d73d7933ef75bc77a6f05dd1ee8b3b8a9c5cebcf"
+  },
+  {
    "code": "12213",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12213-very-small-tulip-matte-fuschia.html",
@@ -2903,11 +4066,53 @@
    "previewSha256": "e621cc91f83e73002ccc5eb49e0b613edd6fe6dbb741fa8bf652200ae390a06c"
   },
   {
+   "code": "12216",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12216-wooly-sheep.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3065/mg_treasure_12216.jpg",
+   "previewSha256": "f981c2648cb613301edab1627a73bb70c0c891c9e2f9ad23de93719d66fe33c7"
+  },
+  {
    "code": "12217",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12217-large-channeled-hearts-ruby.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3064/mg_treasure_12217.jpg",
    "previewSha256": "085c5cbd0a80aa1bca3957c1e0535da59fbcacc0cacc8ce2deb63074d6da9b7d"
+  },
+  {
+   "code": "12218",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12218-petite-pumpkin-matte-orange.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3063/mg_treasure_12218.jpg",
+   "previewSha256": "dc74f4e7275bf2777af82855147200e74ceed9a6f343d2cd1db662fa25a12a98"
+  },
+  {
+   "code": "12219",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12219-bat-matte-black.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3062/mg_treasure_12219.jpg",
+   "previewSha256": "d7d11eb0575e49bfd551bb63ffd7b41fa1ceab4732ef933f16f148668df9b86d"
+  },
+  {
+   "code": "12221",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12221-small-flat-star-black.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3060/mg_treasure_12221.jpg",
+   "previewSha256": "bf2677e1527fab497e74db47e3080aa8b2dcf9b7280e607769fb1530d69eb09f"
+  },
+  {
+   "code": "12222",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12222-large-flat-star-black.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3059/mg_treasure_12222.jpg",
+   "previewSha256": "f47bfe15465a9abd2100c2a8537152f11940d24a07c663e0b8ab6c9deb8e9c09"
+  },
+  {
+   "code": "12223",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12223-jasmine-flower-light-sapphire-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3058/mg_treasure_12223.jpg",
+   "previewSha256": "52555f7061cce2d47aa4560d4e6f7373f070c584655af187371d93aabe66fcf5"
   },
   {
    "code": "12224",
@@ -2952,11 +4157,25 @@
    "previewSha256": "66da03dc349341ddb7a01e1a9e3295ae47ef7bfe490471c3e8a84fcdb250129e"
   },
   {
+   "code": "12236",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12236-very-petite-flat-heart-matte-amethyst.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3046/mg_treasure_12236.jpg",
+   "previewSha256": "ede7cde21a6ced110a7e95b58d8bcc7d1b2bb6bb906320a914ee0f345e90b77e"
+  },
+  {
    "code": "12239",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12239-petite-flat-heart-matte-ruby.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3043/mg_treasure_12239.jpg",
    "previewSha256": "2883cf8f49a006111e3098d29b48964fa284892ee28181f4b963ca67335f9984"
+  },
+  {
+   "code": "12240",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12240-petite-flat-heart-matte-amethyst.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3042/mg_treasure_12240.jpg",
+   "previewSha256": "7bcafcaf0d59fae63491a6eea4d32ad94641e765b0e7e4e5f07163aa10294d2f"
   },
   {
    "code": "12241",
@@ -3001,6 +4220,20 @@
    "previewSha256": "9f5da7aedeb29938e4e1a795b647d3fe8170aab4c5765834f7ce2c6086df45ce"
   },
   {
+   "code": "12248",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12248-round-cut-lined-bead-crystal-silver.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3035/mg_treasure_12248.jpg",
+   "previewSha256": "40afa75322c782a43fcddbea55734b7521f850526e8820cdb9bbba9113a3d88a"
+  },
+  {
+   "code": "12249",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12249-round-cut-lined-bead-peridot-silver.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3034/mg_treasure_12249.jpg",
+   "previewSha256": "f560f3d7f5d9aee76568a8fcf93972261c52edb71f9b1ee7f73f57f61601a7af"
+  },
+  {
    "code": "12250",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12250-round-cut-lined-bead-rose-silver.html",
@@ -3029,11 +4262,53 @@
    "previewSha256": "473d8595ac7d867244c14bcfcb2e6a53f581eb507f9652dec9e54e4a04dc815f"
   },
   {
+   "code": "12256",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12256-olive-bead-red-luster.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3028/mg_treasure_12256.jpg",
+   "previewSha256": "4189c926f47b3a4829ce8a07e5d51976209b10ba5b85941f9b49258fc26da144"
+  },
+  {
+   "code": "12257",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12257-olive-bead-olivine-luster.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3027/mg_treasure_12257.jpg",
+   "previewSha256": "e8aab0ab64a36c9a50b41ea54fc2df95aaf06b64ebf8d0197d8ed69f989b30ab"
+  },
+  {
+   "code": "12258",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12258-pearshape-bead-matte-montana.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3026/mg_treasure_12258.jpg",
+   "previewSha256": "f9d9b8c74e9e6bca92250dd5cf1d34b523f7643cc7be4f98a0ed717f0bd138f4"
+  },
+  {
+   "code": "12259",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12259-pearshape-bead-matte-crystal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3025/mg_treasure_12259.jpg",
+   "previewSha256": "5cfca52a4f79ecb29ca89425d212331bac7125dac9a105f08f4f1897237f344d"
+  },
+  {
+   "code": "12260",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12260-fancy-olive-bead-bright-jet.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3024/mg_treasure_12260.jpg",
+   "previewSha256": "df8b2061473354841035a2ec8cc23640a957f2c97da5c2e0347334b56ce76f02"
+  },
+  {
    "code": "12261",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12261-fancy-olive-bead-bright-amethyst.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3023/mg_treasure_12261.jpg",
    "previewSha256": "d18f81bf661da749c137f63ca2462c195190e1e6658694398e6fce8fdc71b98c"
+  },
+  {
+   "code": "12262",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12262-fancy-olive-bead-bright-rosaline.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3022/mg_treasure_12262.jpg",
+   "previewSha256": "915bd74d02a288f871b6481c86142e193436e1d4e4bdeefcb7242f273b846c32"
   },
   {
    "code": "12263",
@@ -3050,11 +4325,32 @@
    "previewSha256": "d61aa20abc2378af75928bba2c119f60daabbfce49a9c59ab0d0f67d7a7979c7"
   },
   {
+   "code": "12265",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12265-round-bead-matte-amethyst.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3019/mg_treasure_12265.jpg",
+   "previewSha256": "35072cc2fd653bfc00d2f398b5c99e49e47bf692628beef0f1b2cff0269c98ed"
+  },
+  {
+   "code": "12266",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12266-round-bead-matte-tourmaline.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3018/mg_treasure_12266.jpg",
+   "previewSha256": "a4efeecb2045e8ee5989656bcaf3fc77836a691ac648a687c1b50e558a592d90"
+  },
+  {
    "code": "12267",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12267-round-bead-matte-brown-olive.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3017/mg_treasure_12267.jpg",
    "previewSha256": "5c50ec8f5d8014513c05945e6932a055beeb1436f9b76b99a6f1737a39b41fdd"
+  },
+  {
+   "code": "12269",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12269-round-bead-matte-fushia.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3015/mg_treasure_12269.jpg",
+   "previewSha256": "8793e863c1c7fec6cc074fa0cdd3bc27ea50dadfa525b9e82b2078a79078739d"
   },
   {
    "code": "12270",
@@ -3069,6 +4365,34 @@
    "productUrl": "https://www.casacenina.it/mill-hill/12271-round-bead-matte-crystal.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3013/mg_treasure_12271.jpg",
    "previewSha256": "328278a07910504dfe7aff186bb26eb4ecd398d9195024de73338132624edc79"
+  },
+  {
+   "code": "12272",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12272-channeled-heart-matte-smokey-topaz.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3012/mg_treasure_12272.jpg",
+   "previewSha256": "57d22b425b9907bd186d6f4d3840e0da19e00e60f01fdec8a586a1219cc63964"
+  },
+  {
+   "code": "12276",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12276-channeled-heart-matte-emerald.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3008/mg_treasure_12276.jpg",
+   "previewSha256": "f536ce8dac536ebe30408bce480d5847bac0c1ab4a2665962172d8118c2e31c0"
+  },
+  {
+   "code": "12277",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12277-channeled-heart-matte-tourmaline.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3007/mg_treasure_12277.jpg",
+   "previewSha256": "980b8faa4b575ebb24324a777be4cc59999261d08aa0b5ccbcc15ef0ea2398a1"
+  },
+  {
+   "code": "12278",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12278-round-lined-bead-goldstone-light-sapphire.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3006/mg_treasure_12278.jpg",
+   "previewSha256": "5d3523c4b7636b41114b2d764e924bcedadd6a9905bd5d6d82e66f99a7125021"
   },
   {
    "code": "12279",
@@ -3092,6 +4416,13 @@
    "previewSha256": "177852b417733d9f1cbcee946f2e9e874db0c659ec7c6502af2be102f9d3dcba"
   },
   {
+   "code": "12282",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12282-candy-cane-matte-crystal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3002/mg_treasure_12282.jpg",
+   "previewSha256": "b0d2cc8494e61d622cb78599b73a93806cee87258fc61d88602147808f76a5ed"
+  },
+  {
    "code": "12283",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12283-flat-bell-matte-crystal.html",
@@ -3104,6 +4435,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/12284-flat-bell-matte-light-topaz.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3000/mg_treasure_12284.jpg",
    "previewSha256": "186031c336cc77528da58cb48a07202102071bc4a62336e0f44b41037e99b469"
+  },
+  {
+   "code": "12287",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12287-lighthouse-matte-crystal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2997/mg_treasure_12287.jpg",
+   "previewSha256": "0af9280901ba107d158a8dccddbadc42f5fdf5d6cf22e36f25157b69eddadf32"
   },
   {
    "code": "12288",
@@ -3134,6 +4472,20 @@
    "previewSha256": "9c8d52b8dac0bc7e7068be67517c73ab8ba81203b3e02e6f46eec76fb1600b2c"
   },
   {
+   "code": "12293",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12293-large-flat-star-amethyst.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2991/mg_treasure_12293.jpg",
+   "previewSha256": "648f8889c4265caf0f49d52d19424887858d88ef834b504144ca401dcd916245"
+  },
+  {
+   "code": "12294",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12294-petite-bell-flower-matte-rose.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2990/mg_treasure_12294.jpg",
+   "previewSha256": "16697dbf5b38f1d77124f6f125d579c2221f739d58f1ee3ea45b44f9d061fc74"
+  },
+  {
    "code": "12295",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12295-petite-bell-flower-matte-tanzanite.html",
@@ -3146,6 +4498,20 @@
    "productUrl": "https://www.casacenina.it/mill-hill/12296-petite-bell-flower-matte-light-topaz.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2988/mg_treasure_12296.jpg",
    "previewSha256": "6d419572e212252507ca1b312382119c21deff764ea5118d2489eb8500a7a508"
+  },
+  {
+   "code": "12297",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12297-petite-bell-flower-matte-alexandrite.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2987/mg_treasure_12297.jpg",
+   "previewSha256": "60b0aed9fb34344965ea6146fadb37e06e539bd0bfc5e25fae110a53212bdb55"
+  },
+  {
+   "code": "12298",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12298-very-petite-teddy-bear.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2986/mg_treasure_12298.jpg",
+   "previewSha256": "d8fd79ea1959ad01e343339c778763e1027539f40d4c37b635e1f8d6e0bb580f"
   },
   {
    "code": "12299",
@@ -3162,11 +4528,32 @@
    "previewSha256": "cdee8f6fe958b0b4275c7663a0490a26c7509d49e0b0c56f1e463e6577d28b1a"
   },
   {
+   "code": "12301",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12301-roaster-matte-black.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2983/mg_treasure_12301.jpg",
+   "previewSha256": "141fb77dd17679069e16f09eee7ef7f99ad201ec0e094d382a4a2f4d4f2bb6d7"
+  },
+  {
+   "code": "12302",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12302-roaster-dark-siam.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2982/mg_treasure_12302.jpg",
+   "previewSha256": "4ffc4a16e12b0b5985973e9b75406787463377d8c4774e98f832c44d453d4e6e"
+  },
+  {
    "code": "12303",
    "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12303-sailboat-matte-crystal.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2981/mg_treasure_12303.jpg",
    "previewSha256": "312da7728e0ab715b7270a6e5576e29afc8452a4c6a80ac69c3da2f7b9c8dd66"
+  },
+  {
+   "code": "12304",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12304-flower-petal-white-opal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2980/mg_treasure_12304.jpg",
+   "previewSha256": "1189e870d92a6ae9e1a415fc9c50a92611c94d8d1a2f3762ba32b63dc06d27e6"
   },
   {
    "code": "12306",
@@ -3183,11 +4570,39 @@
    "previewSha256": "efe948d7cd2eaa7adbb33f83cde0a846fab0309790a93611cf71cc9be68efe76"
   },
   {
+   "code": "12308",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12308-easter-egg-mint.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_234/packshot/130533/mg_easter-egg-mint-12308_42542.jpeg",
+   "previewSha256": "c8a3bf06e326eeb2fed9ebbe00c95c35cf686f31235df4d970fd1f01a839b1fe"
+  },
+  {
+   "code": "12309",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12309-easter-egg-dark-lilac.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_234/packshot/130540/mg_easter-egg-dark-lilac-12309_42543.jpeg",
+   "previewSha256": "cac82487540e6e3346b47b2cdc1092affddb26991b94bd9fed7bc170b17a888a"
+  },
+  {
    "code": "12310",
-   "line": "Crystal Treasures",
+   "line": "Glass Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/12310-easter-egg-blue.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_234/packshot/130541/mg_easter-egg-blue-12310_42544.jpeg",
    "previewSha256": "b1bf5fd0da838e0f722f82eaa325660a6da27beccb5fd748b3ad90475218455c"
+  },
+  {
+   "code": "12311",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12311-easter-egg-coral.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_234/packshot/130542/mg_easter-egg-coral-12311_42545.jpeg",
+   "previewSha256": "b402a48891c383c3abce3f5528ce229ff6bd49ed50257e35d71697ffe2753df6"
+  },
+  {
+   "code": "13001",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13001-margarita-crystal-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2977/mg_treasure_13001.jpg",
+   "previewSha256": "58620f1f90fb78cb221b567da8c82705b07d02c4270fc39801d0c6cb024090e9"
   },
   {
    "code": "13002",
@@ -3202,6 +4617,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/13003-margarita-emerald-ab.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2975/mg_treasure_13003.jpg",
    "previewSha256": "98ef9903b62a3f1c229ab154cba1b2bcc1d684647cfa9ffc4982dfacc2050083"
+  },
+  {
+   "code": "13007",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13007-margarita-topaz-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2971/mg_treasure_13007.jpg",
+   "previewSha256": "0389b4dfa1aec321373723627224db61a1976fce66e88ae8f6c75b5c81fefbab"
   },
   {
    "code": "13009",
@@ -3239,6 +4661,20 @@
    "previewSha256": "0461a824ad13dcd3c73310d7f9cf4a0000dd58798c3de30e97c65019447eb7b5"
   },
   {
+   "code": "13014",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13014-round-bead-aquamarine-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2964/mg_treasure_13014.jpg",
+   "previewSha256": "15aff166b96cd5d4930dad96087f9fa9c6da89750e2f5283c99bee57ffeb3ca7"
+  },
+  {
+   "code": "13015",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13015-round-bead-black-diamond-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2963/mg_treasure_13015.jpg",
+   "previewSha256": "7926aa0d1a0d534f2438855b1a8a38b10e901d2f06eb62feee31e1703ea9db8f"
+  },
+  {
    "code": "13016",
    "line": "Crystal Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/13016-round-bead-emerald-ab.html",
@@ -3253,11 +4689,25 @@
    "previewSha256": "75889f40acff95e67dc89f2b7e683718e1e112e9b3db2cfceba77e0483524c4c"
   },
   {
+   "code": "13018",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13018-round-bead-light-colorado-topaz-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2960/mg_treasure_13018.jpg",
+   "previewSha256": "7427218071e1aa39fd263daeecf1dede2188afa70d6c526387c1196e271667bb"
+  },
+  {
    "code": "13020",
    "line": "Crystal Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/13020-round-bead-sapphire-ab.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2958/mg_treasure_13020.jpg",
    "previewSha256": "1b6ea658e619f3d0927892b452df9c963af9ece13191570825466c98526ca7ce"
+  },
+  {
+   "code": "13021",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13021-round-bead-light-rose-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2957/mg_treasure_13021.jpg",
+   "previewSha256": "5a64b9c945a5048468b0c3edfb3f4f25210cdbb053e2942fa242e6db3d3d828c"
   },
   {
    "code": "13023",
@@ -3274,6 +4724,13 @@
    "previewSha256": "a9fce57104c0f306fd4d2d6966c11e9348ee2933cc88e7591f7f747dbc6b0cf1"
   },
   {
+   "code": "13026",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13026-rondele-emerald-4mm.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2952/mg_treasure_13026.jpg",
+   "previewSha256": "e465fbe529035176d99b7e20468d417c33b528d579151d91efcdee02a215603c"
+  },
+  {
    "code": "13027",
    "line": "Crystal Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/13027-rondele-aurum-gold-4mm.html",
@@ -3286,6 +4743,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/13028-rondele-light-amethyst-ab-4mm.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2950/mg_treasure_13028.jpg",
    "previewSha256": "dcd3eda957d9616ffb6065675efbace5dd65d69d4bdb821d1a5e61b65a1f01c7"
+  },
+  {
+   "code": "13029",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13029-rondele-amethyst-ab-4mm.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2949/mg_treasure_13029.jpg",
+   "previewSha256": "1aa1e36fc1443326c9b31a20a2236e7278a077eabac5ff47f8c22a95da4cb500"
   },
   {
    "code": "13030",
@@ -3330,6 +4794,13 @@
    "previewSha256": "baca16c8b000e569eb600f352f5c9254b0fad36bd363fba846be84bd959db737"
   },
   {
+   "code": "13037",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13037-small-heart-amethyst.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2941/mg_treasure_13037.jpg",
+   "previewSha256": "1fce8ca25ac0156e32eed5c137dbcdd3b858503ff1eab9d0d1edf8830b485ebb"
+  },
+  {
    "code": "13038",
    "line": "Crystal Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/13038-small-heart-aquamarine.html",
@@ -3344,11 +4815,39 @@
    "previewSha256": "bb8b98fb3b35bf791032b2f49444491b739ddb146f3fbbafd93af55168ddc4d9"
   },
   {
+   "code": "13040",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13040-small-heart-rose.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2938/mg_treasure_13040.jpg",
+   "previewSha256": "a42a5ba7c5955eb8bc8e796c0dca4ed057d5b66bf933903d05a67bd7f349fd58"
+  },
+  {
    "code": "13041",
    "line": "Crystal Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/13041-small-heart-bermuda-blue.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2937/mg_treasure_13041.jpg",
    "previewSha256": "8c8463424ad5ab103c408073d514bf855e52f4161cbdb205c19dc3ac4bfa79c9"
+  },
+  {
+   "code": "13042",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13042-small-heart-siam.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2936/mg_treasure_13042.jpg",
+   "previewSha256": "921af639685e02dfe94fce2ae34c8dc1a973467d1f31290a664906bf3e60df6d"
+  },
+  {
+   "code": "13043",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13043-small-heart-vitrail-light.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2935/mg_treasure_13043.jpg",
+   "previewSha256": "c8d446eb27004c6eb19863a6ac1c96c64952c88654dcbe547ed4cc798e82904d"
+  },
+  {
+   "code": "13044",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13044-small-heart-vitrail-medium.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2934/mg_treasure_13044.jpg",
+   "previewSha256": "9d7f836448b849ef210d9d41dddf2b851645f97398ae3e476b8b82536b08b65e"
   },
   {
    "code": "13045",
@@ -3386,6 +4885,20 @@
    "previewSha256": "aef68188a3a4416f09012301f30a1e3ae31e3eaa769d04ecb9699f4302c4539d"
   },
   {
+   "code": "13050",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13050-large-frosted-heart-crystal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2928/mg_treasure_13050.jpg",
+   "previewSha256": "b4f4ca625a2448b4779f3df5b75ee4b03c8a58c435f4dbe9f92cdba10b6c5f43"
+  },
+  {
+   "code": "13051",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13051-very-small-teardrop-crystal-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2927/mg_treasure_13051.jpg",
+   "previewSha256": "de39341ba0f8ed7546d9587d7f3e1b55d3ea7b2e6e6d64fb6b78e7b4336f465e"
+  },
+  {
    "code": "13052",
    "line": "Crystal Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/13052-very-small-teardrop-amethyst-ab.html",
@@ -3414,6 +4927,13 @@
    "previewSha256": "649b50db842e513f9a5be455e2372614f5ca8a9c4eb0f5d7b19dc2f178bed59b"
   },
   {
+   "code": "13056",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13056-very-small-teardrop-siam.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2922/mg_treasure_13056.jpg",
+   "previewSha256": "9fc7a3cae48ebf010935cd2cd06eca4081260de7621286907a0d85b33d6b45fc"
+  },
+  {
    "code": "13057",
    "line": "Crystal Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/13057-small-teardrop-crystal-ab.html",
@@ -3428,11 +4948,32 @@
    "previewSha256": "0878d0308786dfe54104fc422fb4411eb0e515f5a5e98698c70fd0979bc922a5"
   },
   {
+   "code": "13061",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13061-rondele-champagne-light-amethyst-4mm.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2918/mg_treasure_13061.jpg",
+   "previewSha256": "72dc19e2fe23effe15a7f3c37a77e2a3cb8b12932135bd487426b9407bfc42e6"
+  },
+  {
+   "code": "13062",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13062-rondele-champagne-rose-4mm.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2917/mg_treasure_13062.jpg",
+   "previewSha256": "565b6864b83f2912a5bc9eca7a03b5ed9b333f1079e93e6ed134b886678878cd"
+  },
+  {
    "code": "13063",
    "line": "Crystal Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/13063-rondele-champagne-fuschia-4mm.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2916/mg_treasure_13063.jpg",
    "previewSha256": "ca27a27022915a479573c95eb9fa5444beba01a095f35573739833deb3d3a3a2"
+  },
+  {
+   "code": "13064",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13064-rondele-champagne-colorado-topaz-4mm.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2915/mg_treasure_13064.jpg",
+   "previewSha256": "90b97f4d2b123d1bec08d233f6831b8e6ff5b30688006df0bbf1e8082bc57ecd"
   },
   {
    "code": "13065",
@@ -3447,6 +4988,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/13066-rondele-champagne-small-topaz-4mm.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2913/mg_treasure_13066.jpg",
    "previewSha256": "b062659f73bf0a99428db897a887f6bdfaf00b35c9caab78f57a8d19d601f932"
+  },
+  {
+   "code": "13067",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13067-rondele-champagne-light-sapphire-4mm.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2912/mg_treasure_13067.jpg",
+   "previewSha256": "dc5058b8c38f18ce1c76e86719d57b1f23ae22ed3b467f8109a94fb8862c75a1"
   },
   {
    "code": "13068",
@@ -3491,6 +5039,13 @@
    "previewSha256": "0af80a097069888669179b8c7335ffb83704fca8328d9c02d80678cc00961567"
   },
   {
+   "code": "13076",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13076-rondele-sapphire-helio.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2903/mg_treasure_13076.jpg",
+   "previewSha256": "0940c3282cbe6137525c21c0d61db72f289dbf0aca3bff5bf9cee53e68ee101d"
+  },
+  {
    "code": "13077",
    "line": "Crystal Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/13077-rondele-emerald-ab.html",
@@ -3505,11 +5060,25 @@
    "previewSha256": "24dfba233ea64c4cb701b96a4fdaebfffe4b947a1876cb71e6a975b2d876c5e9"
   },
   {
+   "code": "13080",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13080-rondele-tanazanite-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2899/mg_treasure_13080.jpg",
+   "previewSha256": "9edef5f4c2d14df1a467bfe5508dffc64cdb680034d34020a4b5fab84cfa2413"
+  },
+  {
    "code": "13081",
    "line": "Crystal Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/13081-rondele-crystal-cathedral.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2898/mg_treasure_13081.jpg",
    "previewSha256": "5987c6a3d6d64afccb8e3dcdb815e1d7978154243895b9a21f9640e018b1bf62"
+  },
+  {
+   "code": "13082",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13082-rondele-peridot-citrine.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2897/mg_treasure_13082.jpg",
+   "previewSha256": "4d2f353ac120cf7c7ba2c73b21259629959a2221a8b824461510babea149f515"
   },
   {
    "code": "13084",
@@ -3519,11 +5088,25 @@
    "previewSha256": "8f268c380ec9042d2e3feafd16f6005312a8da978033fc84bf459bc16ce0c726"
   },
   {
+   "code": "13085",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13085-rondele-light-siam-hematite.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2894/mg_treasure_13085.jpg",
+   "previewSha256": "3fd5551fb0e7a1856e8a6d57094c37007c9484c6fe30eb1ef7d6379e8152c3fd"
+  },
+  {
    "code": "13086",
    "line": "Crystal Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/13086-rondele-sapphire-helio.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2893/mg_treasure_13086.jpg",
    "previewSha256": "5d0118cba4bb58b4a3ba285ed7a9c45d87f1fed96505e40ad557522b5168f894"
+  },
+  {
+   "code": "13087",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13087-rondele-emerald-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2892/mg_treasure_13087.jpg",
+   "previewSha256": "329f61a0fd30dc0b2eee6f51f13fc6ac02da01042d171fa4522637f1505d040b"
   },
   {
    "code": "13088",
@@ -3547,6 +5130,41 @@
    "previewSha256": "6c2ad0cd2a9fca0f2099561cc5c7db4ec3f1ddbd521be036448c3fc13c6ce811"
   },
   {
+   "code": "13091",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13091-crystal-cathedral.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2888/mg_treasure_13091.jpg",
+   "previewSha256": "3b62b87284d02242d8a5ce41e73c9a1b0f4c6ca7428270418186f5d110270f2c"
+  },
+  {
+   "code": "13094",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13094-rondele-crystal-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2885/mg_treasure_13094.jpg",
+   "previewSha256": "b1074643194e78054d787c6c9f0ff568c2d9bedccfe4203b88adf6f9b1bc1606"
+  },
+  {
+   "code": "13095",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13095-rondele-jet.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2884/mg_treasure_13095.jpg",
+   "previewSha256": "1fc18b2da9a7f981ff1552a1153f53a26144a7b8cd57cca60f033f79f7ea79fa"
+  },
+  {
+   "code": "13096",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13096-round-bead-jet.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2883/mg_treasure_13096.jpg",
+   "previewSha256": "82ee26d9f3295dee0a26b514df5496a06b58b26b8129eddcedfda635328e88aa"
+  },
+  {
+   "code": "13101",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13101-rondele-chili-pepper-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_052/packshot/31885/mg_mh13101.jpg",
+   "previewSha256": "899b3904d86a6788b8f801965f5c97a6efa44d5bb5f3b9c441b8df9a6a253d70"
+  },
+  {
    "code": "13102",
    "line": "Crystal Treasures",
    "productUrl": "https://www.casacenina.it/mill-hill/13102-margarita-chili-pepper-ab.html",
@@ -3566,6 +5184,20 @@
    "productUrl": "https://www.casacenina.it/mill-hill/13104-rondele-scarlet.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_234/packshot/130544/mg_rondelle-scarlet-13104_42547.jpeg",
    "previewSha256": "bf95ffa029921d75a3060d1b13cf67b3a0ea9f4d9e3a4a9d9f08742134393f62"
+  },
+  {
+   "code": "13105",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13105-tear-drop-scarlet.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_234/packshot/130545/mg_tear-drop-scarlet-13105_42548.jpeg",
+   "previewSha256": "4cd116e9509572242ecb488329db4706bcfc8ae2f3dc6c7b15489a6b693a3ec2"
+  },
+  {
+   "code": "13106",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13106-round-scarlet.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_234/packshot/130546/mg_round-scarlet-13106_42550.jpeg",
+   "previewSha256": "774b808183004eac8f6c78faa8553b0e1867051799ef3ba3414fa5279c7b82d2"
   },
   {
    "code": "15001",
@@ -3736,6 +5368,13 @@
    "previewSha256": "ac06adfb8e2b01f971b9e9f24ca8a2c967bfc0bd2004fc7e6a994420bff961a6"
   },
   {
+   "code": "16606",
+   "line": "Beads 6/0",
+   "productUrl": "https://www.casacenina.it/mill-hill/16606-brilliant-bronze-size-6-beads.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_019/packshot/7447/mg_mh16606.gif",
+   "previewSha256": "53d0e745fbcfd5b7649b59355b123122ebcd6b5025cf808c6baadfca67bde72a"
+  },
+  {
    "code": "16607",
    "line": "Beads 6/0",
    "productUrl": "https://www.casacenina.it/mill-hill/16607-umber-size-6-beads.html",
@@ -3853,6 +5492,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/18027-caspian-blue-size-8-beads.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_019/packshot/7464/mg_mh18027.gif",
    "previewSha256": "fdccee873d85a9bfca949adcb10fd10b887320eab468eb38ffec7624b26a3a6b"
+  },
+  {
+   "code": "18046",
+   "line": "Beads 8/0",
+   "productUrl": "https://www.casacenina.it/mill-hill/18046-matte-cadett-blue-size-8-beads.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_009/packshot/7482/mg_18046.jpg",
+   "previewSha256": "3c5ffb93667824a6c23042dd8edbf83e98017ef7945faa1c52da9c7b5c910f72"
   },
   {
    "code": "18081",
@@ -4076,7 +5722,7 @@
    "line": "Economy and Mini-Packs",
    "productUrl": "https://www.casacenina.it/mill-hill/20557-economy-pack-gold.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_034/packshot/21522/mg_seed20557.gif",
-   "previewSha256": "a6c80c74d5605255225c75c09ec0c7c2817fe77f878d97b19f50824a9a26d6f3"
+   "previewSha256": "4b3d694ac0aec0bda2f5df13bb683bbf5dcc20027f5ea654815e672292aeab5d"
   },
   {
    "code": "20561",
@@ -4100,6 +5746,13 @@
    "previewSha256": "9d69039c32da64f782f7692d02e58390509e4f45593565f70dff137d18e1b9f2"
   },
   {
+   "code": "22010",
+   "line": "Economy and Mini-Packs",
+   "productUrl": "https://www.casacenina.it/mill-hill/22010-economy-pack-ice.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_034/packshot/21526/mg_seed22010.gif",
+   "previewSha256": "5695d2f466b119a58b018654d5fbfa54849d9cbbb5ed4d1a00cae33fd8b8a943"
+  },
+  {
    "code": "22011",
    "line": "Economy and Mini-Packs",
    "productUrl": "https://www.casacenina.it/mill-hill/22011-economy-pack-victorian-gold.html",
@@ -4112,6 +5765,20 @@
    "productUrl": "https://www.casacenina.it/mill-hill/22013-economy-pack-red-red.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_034/packshot/21528/mg_seed22013.gif",
    "previewSha256": "e6c5da04c739bc7553e44d494797a3c039b8dd7ff4515979b8b897b757dfc337"
+  },
+  {
+   "code": "22014",
+   "line": "Economy and Mini-Packs",
+   "productUrl": "https://www.casacenina.it/mill-hill/22014-economy-pack-black.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_034/packshot/21529/mg_seed22014.gif",
+   "previewSha256": "794c5d79c3337611a4d49b922cfc7181e25fe8883ff8d07257827542aeb3be23"
+  },
+  {
+   "code": "22019",
+   "line": "Economy and Mini-Packs",
+   "productUrl": "https://www.casacenina.it/mill-hill/22019-economy-pack-crystal-honey.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_034/packshot/21530/mg_seed22019.gif",
+   "previewSha256": "52fa1cdb1ac587ce2e085579f0767a9ac714fca3afc074bcc9b0805c77953bcf"
   },
   {
    "code": "22020",
@@ -4198,6 +5865,13 @@
    "previewSha256": "a1be59612035b427d6e3a0bb05fb0bb5484826ccd4cc4303e45d308a60c2bb24"
   },
   {
+   "code": "40553",
+   "line": "Petite Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/40553-old-rose-galvanized.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2875/mg_seed_40553.jpg",
+   "previewSha256": "512f48a1b7f744028ab3679fb883c7e2a1a0a203fd4f79563f274c32068a9597"
+  },
+  {
    "code": "40556",
    "line": "Petite Glass Seed Beads",
    "productUrl": "https://www.casacenina.it/mill-hill/40556-antique-silver-galvanized.html",
@@ -4224,6 +5898,20 @@
    "productUrl": "https://www.casacenina.it/mill-hill/42010-ice-silverlined.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2871/mg_seed_42010.jpg",
    "previewSha256": "d0a184f94777a818e191dab0ae41c144be63f2fe3f7a41e347c0e443e75e05f0"
+  },
+  {
+   "code": "42011",
+   "line": "Petite Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/42011-victorian-gold-silverlined.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2870/mg_seed_42011.jpg",
+   "previewSha256": "80042ab65254d50ac2ad151028c6f18b7e92f624e8a75d9442ad9d3c39bf34ab"
+  },
+  {
+   "code": "42012",
+   "line": "Petite Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/42012-royal-plum-gold-luster.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2869/mg_seed_42012.jpg",
+   "previewSha256": "a55f32a1356ff5babee960a752cf550665600378278542decd676a11205cd82a"
   },
   {
    "code": "42013",
@@ -4758,6 +6446,13 @@
    "previewSha256": "16a863fff4f2253c2bccdb36f47c7c11bf77a8aa9586eceeab4ab5b23b4459a6"
   },
   {
+   "code": "72023",
+   "line": "Bugle Glass Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/72023-small-root-beer.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_032/packshot/20198/mg_seed72023.jpg",
+   "previewSha256": "bccb805ef1601e60b801e9dceb897a6dd4bece3275c0d675591b6923754ca739"
+  },
+  {
    "code": "72035",
    "line": "Bugle Glass Beads",
    "productUrl": "https://www.casacenina.it/mill-hill/72035-small-peppermint.html",
@@ -4933,6 +6628,13 @@
    "previewSha256": "f88d31b64009730950dc69e57bc0c349b29449316f96a92149f7dca416f6d31a"
   },
   {
+   "code": "90161",
+   "line": "Bugle Glass Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/90161-large-crystal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_032/packshot/20224/mg_seed90161.jpg",
+   "previewSha256": "c338022883f26a0bf83dc6a01dff00cfb6d6e5000aa795e302289b94ce27e163"
+  },
+  {
    "code": "90168",
    "line": "Bugle Glass Beads",
    "productUrl": "https://www.casacenina.it/mill-hill/90168-large-sapphire.html",
@@ -4952,6 +6654,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/90479-large-white.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_032/packshot/20227/mg_seed90479.jpg",
    "previewSha256": "887e17f69dd164239e7f11cc101660cb7c5cc2fbf13af25a440076f0d151d351"
+  },
+  {
+   "code": "92010",
+   "line": "Bugle Glass Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/92010-large-ice.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_032/packshot/20228/mg_seed92010.jpg",
+   "previewSha256": "ec6a4bca5d627ea6d95730edbd54aeba7dd00effb569855e37ccb40429259e23"
   },
   {
    "code": "92011",
@@ -4980,6 +6689,13 @@
    "productUrl": "https://www.casacenina.it/mill-hill/92054-large-aqua-blue.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_032/packshot/20232/mg_seed92054.jpg",
    "previewSha256": "74c5e5e2f7f9e3c297da40d9509385d528fc78af8d896425c4612438c4702cf6"
+  },
+  {
+   "code": "92055",
+   "line": "Bugle Glass Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/92055-large-red-rainbow.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_032/packshot/20233/mg_seed92055.jpg",
+   "previewSha256": "cc210a0100bb10c37f0d90137dc91af49996fd7e976075b92b23eed44a027115"
   },
   {
    "code": "",
@@ -5099,6 +6815,265 @@
    "productUrl": "https://www.casacenina.it/mill-hill/yellow-posy.html",
    "imageUrl": "https://www.casacenina.it/catalog/images/img_098/packshot/56270/mg_86334.jpg",
    "previewSha256": "be3b234612119ee2117e529de1e7446d21b9bb5330a9e39f96d3932b4e8d5c8d"
+  },
+  {
+   "code": "02083",
+   "line": "Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/02083-light-mauve.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2623/s_seed_02083.jpg",
+   "previewSha256": "b8da4dde4d5cdd5561046a105a56104b1d77bf394908a5c17b6ce27d7d8f0c3e"
+  },
+  {
+   "code": "03052",
+   "line": "Antique Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/03052-desert-peach-opaque-luster.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2752/s_seed_03052.jpg",
+   "previewSha256": "caccbf031eecc6c0d8704042e5640373b0a33fe374dc8d561649244eb9b2157b"
+  },
+  {
+   "code": "12030",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12030-small-bell-flower-marbled-rose.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3243/s_treasure_12030.jpg",
+   "previewSha256": "6e88386eaf73c3ff6d3ecb6a0ee43db50f66bde0f304bc3dedfdf1c807f736d8"
+  },
+  {
+   "code": "12121",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12121-butterfly-matte-rose.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3160/s_treasure_12121.jpg",
+   "previewSha256": "6509280bf994a18679e95148be21697a9a56f548dd884a0687e941d6b57feeea"
+  },
+  {
+   "code": "12124",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12124-petite-butterfly-matte-light-amethyst.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3157/s_treasure_12124.jpg",
+   "previewSha256": "019c69d31ba89b619d6c799600d7ab010cc7f49e16b7ed29b4b708639750f05b"
+  },
+  {
+   "code": "13005",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13005-margarita-siam-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2973/s_treasure_13005.jpg",
+   "previewSha256": "e8ffa44936e783895cf4f79d792f78e53816da5050e59b8ac44e3b0c1fb9682b"
+  },
+  {
+   "code": "13008",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13008-margarita-sapphire-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2970/s_treasure_13008.jpg",
+   "previewSha256": "2359fc40b6c92daf5d86007beb2df7c759b64eb0fd9d896ba7ce3f341ab81976"
+  },
+  {
+   "code": "12151",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12151-very-petite-flower.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3130/s_treasure_12151.jpg",
+   "previewSha256": "6509894b5b68c86e3b7a404fca84434b25ed8d215fe30a780cb393270170e482"
+  },
+  {
+   "code": "72008",
+   "line": "Bugle Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/72008-small-sea-breeze.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_031/packshot/20190/s_seed72008.jpg",
+   "previewSha256": "7d0a514a281d46aa737ecb63557ea454e4157aef1931763236a4aae5461dd760"
+  },
+  {
+   "code": "13006",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13006-margarita-rose-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2972/s_treasure_13006.jpg",
+   "previewSha256": "711f3fb9bf86cb0742cf21d018e76700125c5522e8dcc8ec1231f652a1682445"
+  },
+  {
+   "code": "12007",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12007-5-petal-flower-matte-amethyst.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/3266/s_treasure_12007.jpg",
+   "previewSha256": "253f97989f40e4d0ac213ee2c7fe405bb59057a393f2dcc7029b3a5f13931338"
+  },
+  {
+   "code": "12126",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12126-petite-butterfly.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3155/s_treasure_12126.jpg",
+   "previewSha256": "ed3de370be4cb87807ea490464281f8c64685406dbc3ebb7b11230f6bbb40bcf"
+  },
+  {
+   "code": "13019",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13019-round-bead-light-sapphire-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2959/s_treasure_13019.jpg",
+   "previewSha256": "b383b8c2183534210ce207951b646add5dfb3c5ea892afc066f8a8116326c2f5"
+  },
+  {
+   "code": "12031",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12031-small-bell-flower-marbled-opal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3242/s_treasure_12031.jpg",
+   "previewSha256": "a3c589d68dd5df7a66895e9e9a21c43c89a7097cfad79ca52a36c086eb87dd78"
+  },
+  {
+   "code": "12211",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12211-petite-rose-matte-crystal-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3070/s_treasure_12211.jpg",
+   "previewSha256": "530a125d909004456d81ec7c9c57500366612912a964dc2e49cba2f225fcd637"
+  },
+  {
+   "code": "12171",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12171-medium-star-jet-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3110/s_treasure_12171.jpg",
+   "previewSha256": "77ae6f08d4f9e3d019bff794d4f2bbc86e19695e81a1f3b3c673dc5a2f99cf75"
+  },
+  {
+   "code": "02057",
+   "line": "Glass Seed Beads",
+   "productUrl": "https://www.casacenina.it/mill-hill/02057-sea-breeze.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_020/packshot/2647/s_seed_02057.jpg",
+   "previewSha256": "ec032f07d9e291121a747136faae238e4760409bbd74e4197bcf216fd49edb8c"
+  },
+  {
+   "code": "12138",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12138-petite-rose-matte-lilac.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3143/s_treasure_12138.jpg",
+   "previewSha256": "8762903ee975926b5c2e7cb03dbb752c4e3a9141087dd20ca0fa40663f76e9c6"
+  },
+  {
+   "code": "12166",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12166-large-5-pointed-star-crystal-bright.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3115/s_treasure_12166.jpg",
+   "previewSha256": "d8fa3f13398e046fe7c5ea36c79cd7b86eb3ed9b79034c72b40bb0c7aaf474c5"
+  },
+  {
+   "code": "12058",
+   "line": "Glass Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/12058-fluted-bell-crystal.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/3217/s_treasure_12058.jpg",
+   "previewSha256": "7d189919922754f40cd55ee91ce493d225d78ae6d8cceaf86a651c7c882cf351"
+  },
+  {
+   "code": "13074",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13074-rondele-siam-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2905/s_treasure_13074.jpg",
+   "previewSha256": "e7f41f1ec5d98aec67dc710cbcab88adf2662cb6d0e2e6a6caa0f03303f51818"
+  },
+  {
+   "code": "13078",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.casacenina.it/mill-hill/13078-rondele-amethyst-ab.html",
+   "imageUrl": "https://www.casacenina.it/catalog/images/img_021/packshot/2901/s_treasure_13078.jpg",
+   "previewSha256": "5de8737a0a37e78645190392c8acd0c34db2cf18c88136242116e3eea3be1a21"
+  },
+  {
+   "code": "13097",
+   "line": "Crystal Treasures",
+   "productUrl": "https://www.mystitchworld.com/Mill-Hill-Beads-Treasures-3.asp",
+   "imageUrl": "http://www.tiendapuntodecruz.com/Mill-Hill/images/13097-s.jpg",
+   "previewSha256": "05676e570014fd6927ca76069dbce9f0076a699c67f20a25380ae9cd24fe7f62"
+  },
+  {
+   "code": "12157",
+   "line": "Glass Treasures",
+   "productUrl": "https://sandrasstitchstash.com/products/mill-hill-glass-treasures-12157",
+   "imageUrl": "https://cdn.shopify.com/s/files/1/1777/7041/products/mh12157.jpg?v=1568678920",
+   "previewSha256": "30047eda64330cc06339c1ad79693961936b40693a2fe27f842cecd1dff63176"
+  },
+  {
+   "code": "12001",
+   "line": "Glass Treasures",
+   "productUrl": "https://sandrasstitchstash.com/products/mill-hill-glass-treasures-12001",
+   "imageUrl": "https://cdn.shopify.com/s/files/1/1777/7041/products/12001.jpg?v=1661552173",
+   "previewSha256": "59a6593d04abd3d3d026764594303e2722f0623f511459a21710b2df989936ee"
+  },
+  {
+   "code": "12021",
+   "line": "Glass Treasures",
+   "productUrl": "https://sandrasstitchstash.com/products/mill-hill-glass-treasures-12021",
+   "imageUrl": "https://cdn.shopify.com/s/files/1/1777/7041/products/12021.jpg?v=1666114813",
+   "previewSha256": "49f8234307bbf96b74a20abd6d1f36c4d66631b18cf935f116ef8b9c6d6e3595"
+  },
+  {
+   "code": "12181",
+   "line": "Glass Treasures",
+   "productUrl": "https://sandrasstitchstash.com/products/mill-hill-glass-treasures-12181",
+   "imageUrl": "https://cdn.shopify.com/s/files/1/1777/7041/products/mh12181.jpg?v=1566852615",
+   "previewSha256": "155a823aa636feafe7f1f9790476523504c0d0370188232ef55f3835a983cb58"
+  },
+  {
+   "code": "12042",
+   "line": "Glass Treasures",
+   "productUrl": "https://sandrasstitchstash.com/products/mill-hill-glass-treasures-12042",
+   "imageUrl": "https://cdn.shopify.com/s/files/1/1777/7041/products/12042.jpg?v=1672875477",
+   "previewSha256": "230cf9f0fdc2e2ec812b4b5b55d1da61714b4583f062a784e192d9f53b03b90b"
+  },
+  {
+   "code": "12059",
+   "line": "Glass Treasures",
+   "productUrl": "https://sandrasstitchstash.com/products/mill-hill-glass-treasures-12059",
+   "imageUrl": "https://cdn.shopify.com/s/files/1/1777/7041/products/12059.jpg?v=1672880907",
+   "previewSha256": "c210a8e7161fffad388aa5e59de4beda994d870b6ed5ae0f602d807fa81aac76"
+  },
+  {
+   "code": "12237",
+   "line": "Glass Treasures",
+   "productUrl": "https://sandrasstitchstash.com/products/mill-hill-glass-treasures-12237",
+   "imageUrl": "https://cdn.shopify.com/s/files/1/1777/7041/products/12237.jpg?v=1672874241",
+   "previewSha256": "3b4a7c7aa2cf30b0e1fc9c64a5c11b316247f6c59ead416cdec23b3a1c533e13"
+  },
+  {
+   "code": "13075",
+   "line": "Crystal Treasures",
+   "productUrl": "https://sandrasstitchstash.com/products/mill-hill-crystal-treasures-13075",
+   "imageUrl": "https://cdn.shopify.com/s/files/1/1777/7041/products/13075.jpg?v=1666137595",
+   "previewSha256": "d48d9c29b7e96e38103a16e21c086e2c119295974786c792ea249faec58ddfce"
+  },
+  {
+   "code": "12090",
+   "line": "Glass Treasures",
+   "productUrl": "https://sandrasstitchstash.com/products/mill-hill-glass-treasures-12090",
+   "imageUrl": "https://cdn.shopify.com/s/files/1/1777/7041/products/12090.jpg?v=1666131132",
+   "previewSha256": "dcbc22345e3a621cf45ccfb7d9bb607348961b3ccfa84335d8c5cfbf4822de53"
+  },
+  {
+   "code": "12020",
+   "line": "Glass Treasures",
+   "productUrl": "https://sandrasstitchstash.com/products/mill-hill-glass-treasures-12020",
+   "imageUrl": "https://cdn.shopify.com/s/files/1/1777/7041/products/12020.jpg?v=1666114311",
+   "previewSha256": "6c3f3bfd5aca23d00a24dc7196e9967a6bacbe2760808537cdd06bb09967f780"
+  },
+  {
+   "code": "12073",
+   "line": "Glass Treasures",
+   "productUrl": "https://sandrasstitchstash.com/products/mill-hill-glass-treasures-12073",
+   "imageUrl": "https://cdn.shopify.com/s/files/1/1777/7041/products/mh12073.jpg?v=1566617330",
+   "previewSha256": "795d62fc54823a122bddc17ed09d4a350fdd1d98a97c620707325904524b8486"
+  },
+  {
+   "code": "12140",
+   "line": "Glass Treasures",
+   "productUrl": "https://sandrasstitchstash.com/products/mill-hill-glass-treasures-12140",
+   "imageUrl": "https://cdn.shopify.com/s/files/1/1777/7041/products/12140.jpg?v=1672881393",
+   "previewSha256": "155c889a1dcd45f728109612f5fa097a8b96ac4b1e0df4a8ec250eca2b679772"
+  },
+  {
+   "code": "12043",
+   "line": "Glass Treasures",
+   "productUrl": "https://sandrasstitchstash.com/products/mill-hill-glass-treasures-12043",
+   "imageUrl": "https://cdn.shopify.com/s/files/1/1777/7041/products/12043.jpg?v=1666136701",
+   "previewSha256": "4014a25921b5f0a9b63b61d0a03cefc247a58925db46cf2894dd9b3d2c97e848"
+  },
+  {
+   "code": "13035",
+   "line": "Crystal Treasures",
+   "productUrl": "https://sandrasstitchstash.com/products/mill-hill-crystal-treasures-13035",
+   "imageUrl": "https://cdn.shopify.com/s/files/1/1777/7041/products/13035.jpg?v=1661542907",
+   "previewSha256": "127f9043a0f8da081c65c47d8022687ab96aea367f1cab6d7b35e7c8a8385217"
   }
  ]
 }
