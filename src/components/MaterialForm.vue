@@ -148,7 +148,8 @@ const catalogueBusy = ref(false), catalogueError = ref(''), catalogueAmbiguous =
 const matchingBusy = computed(() => draft.category === 'thread' && catalogueBusy.value);
 let catalogueTimer, catalogueToken = 0;
 const sameColour = computed(() => {
-  if (draft.brand !== 'DMC' || displayProduct.value || catalogueBusy.value || catalogueAmbiguous.value || catalogueOptions.value.length) return null;
+  // The menu may list longer codes that merely contain this one (4145 for 414), which are not this colour.
+  if (draft.brand !== 'DMC' || displayProduct.value || catalogueBusy.value || catalogueAmbiguous.value) return null;
   const swatch = sameColourSwatch({ family: threadFamily.value, size: draft.properties.threadSize, code: draft.code });
   return swatch && { ...swatch, otherLine: swatch.line !== threadFamily.value, lineLabel: familyLabel(swatch.line) };
 });
