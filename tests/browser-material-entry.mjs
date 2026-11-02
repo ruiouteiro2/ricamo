@@ -7,7 +7,7 @@ const page=await browser.newPage({viewport:{width:1300,height:1000},reducedMotio
 const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='warning')console.log('WARN',m.text())});
 const read=()=>page.evaluate(()=>new Promise((resolve,reject)=>{const opening=indexedDB.open('ricamo-studio',1);opening.onerror=()=>reject(opening.error);opening.onsuccess=()=>{const db=opening.result,request=db.transaction('state','readonly').objectStore('state').get('current');request.onsuccess=()=>{resolve(request.result);db.close()};request.onerror=()=>reject(request.error);};}));
 const dialog=page.getByRole('dialog');
-const open=async()=>{await page.locator('.sidebar').getByRole('button',{name:'Materiali',exact:true}).click();await page.getByRole('button',{name:'Aggiungi materiale',exact:true}).first().click();await dialog.waitFor();};
+const open=async()=>{await page.locator('.sidebar').getByRole('button',{name:'Materiali',exact:true}).click();await page.locator('.inventory-category-card').filter({hasText:'Fili'}).getByRole('button',{name:'Aggiungi',exact:true}).click();await dialog.waitFor();};
 try {
 await page.goto(process.env.RICAMO_TEST_URL || 'http://127.0.0.1:4173');await page.locator('.sidebar').waitFor();await open();
 const family=dialog.getByLabel(/^Tipologia/),brand=dialog.getByLabel(/^Marca/),status=dialog.getByLabel('Stato',{exact:true}),catalogue=dialog.getByLabel('Scegli dal catalogo',{exact:true});
