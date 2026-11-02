@@ -6,7 +6,7 @@ export const FABRIC_BRANDS = ['Zweigart', 'Permin of Copenhagen', 'Anchor', 'DMC
 const brandChild = brand => ({ id: brand.toLowerCase().replace(/[^a-z0-9]+/g, '-'), label: brand, brand });
 const DMC_REFERENCES = [
   { name: 'DMC Diamant', source: 'DMC', family: 'diamant', url: 'https://www.dmc.com/IT/it/products/metallic-thread/diamant' },
-  { name: 'DMC Lana Colbert', source: 'DMC', family: 'wool', url: 'https://www.dmc.com/FR/fr/products/dmc-wool-tapestry/colbert-wool' },
+  { name: 'DMC Lana Colbert', source: 'Casa Cenina', family: 'wool', url: 'https://www.casacenina.it/fili-e-filati/dmc/dmc-lana-colbert/' },
 ];
 export const INVENTORY_GROUPS = [
   { id: 'threads', category: 'thread', labelKey: 'inventoryThreads', children: ['DMC','Anchor','Profilo','P&G','Madeira'].map(brand => ({ ...brandChild(brand), label: brand === 'Madeira' ? 'Metallici Madeira' : brand, ...(brand === 'DMC' ? { reference: DMC_REFERENCES[0], references: DMC_REFERENCES } : {}), ...(brand === 'P&G' ? { reference: { name: 'Filo rame verniciato', source: 'Tombolo e Disegni', url: 'https://www.tombolodisegnishop.it/prodotto/filo-rame-verniciato-030/' } } : {}) })) },
