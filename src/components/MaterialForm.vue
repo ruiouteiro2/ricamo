@@ -11,7 +11,7 @@ import {supplierIdentity,supplierSwatch,SUPPLIER_CATEGORIES} from '../../core/su
 import { normalizeDescriptorProperties } from '../../core/material-descriptors.mjs';
 import { state, units, saveEntityWithAssets, dispatch } from '../state';
 import { t, errorText } from '../i18n';
-import { INVENTORY_GROUPS, inventoryGroup, accessorySection } from '../inventory-navigation.mjs';
+import { INVENTORY_GROUPS, inventoryGroup, accessorySection, threadReferenceFor, threadRangeMatchesSize } from '../inventory-navigation.mjs';
 import { duplicateMaterials } from '../../core/material-duplicates.mjs';
 import { convertQuantity } from '../../core/fabric.mjs';
 import { openPurchaseLink } from '../purchase-link.mjs';
@@ -80,8 +80,7 @@ const savedFamily = original && draft.range ? familyOf(draft) : props.defaults.t
 const threadFamily = ref(threadFamilies.value.includes(savedFamily) ? savedFamily : threadFamilies.value[0]);
 const threadReference = computed(() => {
   const child = activeGroup.value.children.find(item => item.brand === draft.brand);
-  return child?.references?.find(reference => !reference.family || reference.family === threadFamily.value)
-    || ((!child?.reference?.family || child.reference.family === threadFamily.value) ? child?.reference : null);
+  return threadReferenceFor(child, threadFamily.value, draft.properties.threadSize);
 });
 if(draft.category==='thread')draft.unit=threadCountUnit({brand:draft.brand,family:threadFamily.value,properties:draft.properties});
 const usageStatus = ref(originalInventory?.usageStatus || 'new');
@@ -131,7 +130,7 @@ const catalogueOptions = computed(() => {
   return selected && !catalogueItems.value.some(item => item.id === selected.id)
     ? [selected, ...catalogueItems.value] : catalogueItems.value;
 });
-watch(() => [draft.category, draft.brand, threadFamily.value, accessoryId.value, draft.code], () => {
+watch(() => [draft.category, draft.brand, threadFamily.value, draft.properties.threadSize, accessoryId.value, draft.code], () => {
   previewProduct.value = null;
   clearTimeout(catalogueTimer);
   const token = ++catalogueToken;
@@ -144,7 +143,7 @@ watch(() => [draft.category, draft.brand, threadFamily.value, accessoryId.value,
       const query = catalogueCodeQuery(context);
       let products;
       if (draft.category === 'thread') {
-        const ranges = facets.ranges.filter(range => familyOf({ range }) === threadFamily.value);
+        const ranges = facets.ranges.filter(range => familyOf({ range }) === threadFamily.value && threadRangeMatchesSize(range, threadFamily.value, draft.properties.threadSize));
         const results = await Promise.all(ranges.map(async range => {
           const args = { category: 'thread', brand: draft.brand, range, query, limit: 100, ...(draft.brand === 'DMC' && threadFamily.value === 'diamant' ? { supplier: 'dmc' } : {}) };
           const [result, exact] = await Promise.all([
