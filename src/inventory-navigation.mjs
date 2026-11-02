@@ -4,9 +4,18 @@ export const FABRIC_BRANDS = ['Zweigart', 'Permin of Copenhagen', 'Anchor', 'DMC
   'Dames Of The Needle', 'Lady Dot Creates', 'Mani di Donna', 'MP Studia',
   'Picture This Plus', 'Polstitches Designs', 'R & R Reproductions', 'Weeks Dye Works', 'xJuDesign'];
 const brandChild = brand => ({ id: brand.toLowerCase().replace(/[^a-z0-9]+/g, '-'), label: brand, brand });
+const CASA_DMC = 'https://www.casacenina.it/fili-e-filati/dmc/';
 const DMC_REFERENCES = [
-  { name: 'DMC Diamant', source: 'DMC', family: 'diamant', url: 'https://www.dmc.com/IT/it/products/metallic-thread/diamant' },
-  { name: 'DMC Lana Colbert', source: 'Casa Cenina', family: 'wool', url: 'https://www.casacenina.it/fili-e-filati/dmc/dmc-lana-colbert/' },
+  { name: 'DMC Mouliné', source: 'Casa Cenina', family: 'mouline', url: `${CASA_DMC}dmc-mouline/` },
+  { name: 'DMC filati speciali', source: 'Casa Cenina', family: 'special', url: 'https://www.casacenina.it/filati.html#dmc' },
+  { name: 'DMC Satin', source: 'Casa Cenina', family: 'silk', url: `${CASA_DMC}dmc-satin/` },
+  { name: 'DMC Lana Colbert', source: 'Casa Cenina', family: 'wool', url: `${CASA_DMC}dmc-lana-colbert/` },
+  { name: 'DMC Mouliné - Cono', source: 'Casa Cenina', family: 'spool', url: `${CASA_DMC}dmc-mouline-cono/` },
+  { name: 'DMC Perlé', source: 'Casa Cenina', family: 'pearl', url: 'https://www.casacenina.it/filati.html#dmc' },
+  ...[3, 5, 8, 12].map(size => ({ name: `DMC Perlé #${size}`, source: 'Casa Cenina', family: 'pearl', size: String(size), url: `${CASA_DMC}dmc-perle-${size}/` })),
+  { name: 'DMC Diamant', source: 'Casa Cenina', family: 'diamant', url: `${CASA_DMC}dmc-diamant/` },
+  { name: "DMC Coton Perlé - Retors d'Alsace", source: 'Casa Cenina', family: 'alsace', url: 'https://www.casacenina.it/filati.html#dmc' },
+  ...[5, 8, 12].map(size => ({ name: `DMC Coton Perlé - Retors d'Alsace #${size}`, source: 'Casa Cenina', family: 'alsace', size: String(size), url: `${CASA_DMC}dmc-coton-perle-retors-d-alsace-${size}/` })),
 ];
 export const INVENTORY_GROUPS = [
   { id: 'threads', category: 'thread', labelKey: 'inventoryThreads', children: ['DMC','Anchor','Profilo','P&G','Madeira'].map(brand => ({ ...brandChild(brand), label: brand === 'Madeira' ? 'Metallici Madeira' : brand, ...(brand === 'DMC' ? { reference: DMC_REFERENCES[0], references: DMC_REFERENCES } : {}), ...(brand === 'P&G' ? { reference: { name: 'Filo rame verniciato', source: 'Tombolo e Disegni', url: 'https://www.tombolodisegnishop.it/prodotto/filo-rame-verniciato-030/' } } : {}) })) },
@@ -17,6 +26,20 @@ export const INVENTORY_GROUPS = [
   ] },
 ];
 const fold = value => String(value || '').normalize('NFD').replace(/\p{Diacritic}/gu, '').trim().toLowerCase();
+const threadSize = value => { const match = String(value ?? '').match(/\d+/); return match ? String(Number(match[0])) : ''; };
+export function threadReferenceFor(child, family, size = '') {
+  const references = child?.references?.filter(reference => !reference.family || reference.family === family) || [];
+  const exactSize = threadSize(size);
+  return (exactSize ? references.find(reference => threadSize(reference.size) === exactSize) : null)
+    || references.find(reference => !reference.size)
+    || ((!child?.reference?.family || child.reference.family === family) ? child?.reference : null)
+    || null;
+}
+export function threadRangeMatchesSize(range, family, size = '') {
+  const expected = threadSize(size);
+  if (!expected || !['pearl', 'alsace'].includes(family)) return true;
+  return threadSize(range) === expected;
+}
 export function inventoryGroup(material) {
   return ({ thread: 'threads', embellishment: 'beads', fabric: 'fabrics' })[material.category] || 'accessories';
 }
