@@ -1,5 +1,9 @@
 # Ricamo delivery evidence
 
+## Disk cleanup - 2026-11-02
+
+At the user's request, old local artifacts were deleted to free disk space. Only `release/` installers 0.6.30 and 0.6.31 and `Desktop/Filo/Backup aggiornamenti` folders `prima-0.6.30-20261102-165528` and `prima-0.6.31-20261102-171500` remain. `release/win-unpacked` was removed and returns with `npm run package:win`. Test profile folders under `.runtime` were removed, so installers, backups and folder evidence named in older sections below may no longer exist locally; top-level logs and JSON files were kept. The live database, the app's own automatic backups, the installed app and `node_modules` were not touched.
+
 ## DMC Coton Perlé previews and Add category - Windows 0.6.31 - 2026-11-02
 
 DMC > Perlé now covers sizes 3, 5, 8 and 12 from the official DMC product-data endpoint: 945 size and colour pairs, stored offline as 574 unique manufacturer swatches. 713 are new articles; the existing Perlé 8 offers keep their entry and pack and gain the swatch, as do saved Perlé rows with a size and a listed code. Skeins are preferred at sizes 3 and 5, balls at 8 and 12, when both exist. Three variants (`115EA-E/5_3042`, `115EA-E/8_3042`, `115EA-E/8_3865`) contradict their SKU with a different colour code and are excluded; each pair stays covered by another article. Retors d'Alsace is the separate 0.6.30 data set, unchanged. Importer: `build/acquire-dmc-pearl.py`.
