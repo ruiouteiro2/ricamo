@@ -7,5 +7,5 @@ export default defineConfig({
   base: './',
   server: { host: '127.0.0.1', port: 5173, strictPort: true },
   // desktop/protocol.mjs refuses assets over 32 MiB, so each large preview catalogue gets its own chunk.
-  build: { target: 'es2022', chunkSizeWarningLimit: 1000, rollupOptions: { output: { manualChunks: id => id.match(/assets[\/](dmc-[a-z]+-previews|casa-product-previews).json/)?.[1] } } },
+  build: { target: 'es2022', chunkSizeWarningLimit: 1000, rollupOptions: { output: { manualChunks: id => id.match(/assets[\/](dmc-[a-z]+-previews|casa-product-previews|profilo-previews).json/)?.[1] } } },
 });
