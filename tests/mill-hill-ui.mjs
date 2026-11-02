@@ -37,23 +37,34 @@ try{
  // A sold article carries no mark; an out-of-production one shows its photo and says so.
  await field('Codice colore').fill('13005');await expect(preview).toContainText('Mill Hill · Crystal Treasures · 13005',{timeout:15000});await decoded();await expect(preview.locator('.discontinued-badge')).toHaveText('Fuori produzione');await expect(field('Tipologia *')).toHaveValue('Crystal Treasures');
  await field('Quantità posseduta').fill('1');await form.getByRole('button',{name:'Salva',exact:true}).click();await expect(form).toHaveCount(0);
- await expect(page.locator('.table-wrap tbody tr').filter({hasText:'13005'}).locator('.discontinued-badge')).toHaveText('Fuori produzione');
+ await expect(page.locator('.table-wrap tbody:not(.catalogue-rows) tr').filter({hasText:'13005'}).locator('.discontinued-badge')).toHaveText('Fuori produzione');
  await page.getByRole('button',{name:'Aggiungi materiale',exact:true}).first().click();await field('Tipologia *').selectOption('Magnifica');
  // An article unknown to the catalogue can still be saved by hand under the chosen line.
  await field('Codice colore').fill('99999');await expect(preview).toContainText('99999',{timeout:15000});await expect(field('Tipologia *')).toHaveValue('Magnifica');await expect(preview.locator('img')).toHaveCount(0);
  await field('Quantità posseduta').fill('1');await form.getByRole('button',{name:'Salva',exact:true}).click();await expect(form).toHaveCount(0);
- await expect(page.locator('.table-wrap tbody tr').filter({hasText:'99999'})).toContainText('Magnifica');
+ await expect(page.locator('.table-wrap tbody:not(.catalogue-rows) tr').filter({hasText:'99999'})).toContainText('Magnifica');
  await page.getByRole('button',{name:'Aggiungi materiale',exact:true}).first().click();
  await field('Codice colore').fill('00143');await expect(preview).toContainText('Robin Egg Blue Ceylon',{timeout:15000});
  await expect(form.getByText(/^confezion/i).or(form.getByText(/confezioni\. /))).not.toHaveCount(0);
  await field('Quantità posseduta').fill('2');await form.getByRole('button',{name:'Salva',exact:true}).click();await expect(form).toHaveCount(0);
- const row=page.locator('.table-wrap tbody tr').filter({hasText:'00143'});await expect(row).toBeVisible();await expect(row).toContainText('Mill Hill · Glass Seed Beads · 00143 · Robin Egg Blue Ceylon');await expect(row).toContainText('confezioni');await expect(row.locator('.discontinued-badge')).toHaveCount(0);
+ const row=page.locator('.table-wrap tbody:not(.catalogue-rows) tr').filter({hasText:'00143'});await expect(row).toBeVisible();await expect(row).toContainText('Mill Hill · Glass Seed Beads · 00143 · Robin Egg Blue Ceylon');await expect(row).toContainText('confezioni');await expect(row.locator('.discontinued-badge')).toHaveCount(0);
  assert.ok((await row.locator('.swatch').evaluate(element=>getComputedStyle(element).backgroundImage)).startsWith('url("data:image/'),'saved row shows the beads');
  // The saved row reopens in the same layout, and a changed code renames it.
  await row.getByRole('button',{name:/^Modifica/}).click();await expect(field('Nome *')).toHaveCount(0);await expect(field('Tipologia *')).toHaveValue('Glass Seed Beads');await expect(field('Codice colore')).toHaveValue('00143');
  await expect(preview).toContainText('Robin Egg Blue Ceylon',{timeout:15000});await decoded();
  await field('Codice colore').fill('12143');await expect(preview).toContainText('Mill Hill · Glass Treasures · 12143',{timeout:15000});
  await form.getByRole('button',{name:'Salva',exact:true}).click();await expect(form).toHaveCount(0);
- const renamed=page.locator('.table-wrap tbody tr').filter({hasText:'12143'});await expect(renamed).toContainText('Mill Hill · Glass Treasures · 12143 · Medium Leaf Matte Tourmaline');await expect(renamed).toContainText('2');await expect(page.locator('.table-wrap tbody tr').filter({hasText:'00143'})).toHaveCount(0);
+ const renamed=page.locator('.table-wrap tbody:not(.catalogue-rows) tr').filter({hasText:'12143'});await expect(renamed).toContainText('Mill Hill · Glass Treasures · 12143 · Medium Leaf Matte Tourmaline');await expect(renamed).toContainText('2');
+ // Everything not yet entered is listed greyed out; only the cart acts, and never on an out-of-production article.
+ const grey=page.locator('.catalogue-rows tr'),find=page.locator('.toolbar-search input');
+ await expect(page.locator('.panel-heading small').last()).toContainText(`${catalogue.products.length-2} non ancora inseriti`);
+ await find.fill('12143');await expect(grey).toHaveCount(0);
+ await find.fill('13097');await expect(grey.locator('button')).toHaveCount(0);await expect(grey.locator('.discontinued-badge')).toHaveText('Fuori produzione');
+ await find.fill('13005');const saved13005=page.locator('.table-wrap tbody:not(.catalogue-rows) tr').filter({hasText:'13005'});await expect(saved13005.getByRole('button',{name:/^Modifica/})).toBeVisible();await expect(saved13005.locator('button.icon-button')).toHaveCount(2);
+ await find.fill('00143');const blueGrey=grey.filter({hasText:'00143'});
+ await expect(blueGrey.locator('button')).toHaveCount(1);assert.ok(Number(await blueGrey.locator('td').nth(1).evaluate(element=>getComputedStyle(element).opacity))<.6,'greyed out');
+ await blueGrey.locator('button').click();await page.getByRole('dialog').getByLabel('Quantità *',{exact:true}).fill('2');await page.getByRole('dialog').getByRole('button',{name:'Inserisci in Acquisti',exact:true}).click();await expect(form).toHaveCount(0);
+ await expect(grey.filter({hasText:'00143'})).toHaveCount(0);await expect(page.locator('.table-wrap tbody:not(.catalogue-rows) tr').filter({hasText:'00143'})).toContainText('Mill Hill · Glass Seed Beads · 00143');
+ await page.locator('.sidebar').getByRole('button',{name:'Acquisti',exact:true}).click();await expect(page.locator('.table-wrap tbody tr').filter({hasText:'00143'})).toContainText('2');await expect(page.locator('.table-wrap tbody tr').filter({hasText:'13005'})).toHaveCount(0);
  assert.deepEqual(errors,[]);assert.deepEqual(requests,[]);console.log('PASS: Mill Hill beads use the thread entry layout with offline photos. Evidence: '+data);
 }catch(error){await page.screenshot({path:resolve(data,'failure.png')});throw error;}finally{await app.close();}
