@@ -112,6 +112,14 @@ watch(() => [threadFamily.value, draft.brand], ([value]) => {
   if (draft.properties.product && draft.properties.product.brand === draft.brand && familyOf(draft.properties.product) === value) return;
   draft.range = familyLabel(value);
 });
+watch(() => draft.properties.threadSize, value => {
+  if (draft.category !== 'thread' || !draft.properties.product || threadRangeMatchesSize(draft.properties.product.range, threadFamily.value, value)) return;
+  delete draft.properties.product;
+  previewProduct.value = null;
+  explicitCatalogue.value = false;
+  draft.range = familyLabel(threadFamily.value);
+  draft.color = '';
+});
 
 watch(usageStatus, value => {
   if (value === 'finished') stock.quantity = '0';
