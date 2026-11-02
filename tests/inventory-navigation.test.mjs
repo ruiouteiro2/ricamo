@@ -1,6 +1,6 @@
 ﻿import test from 'node:test';
 import assert from 'node:assert/strict';
-import {INVENTORY_GROUPS,FABRIC_BRANDS,inventoryContext,inventoryRoute,parseInventoryRoute,matchesInventorySection,inventoryGroup,accessorySection} from '../src/inventory-navigation.mjs';
+import {INVENTORY_GROUPS,FABRIC_BRANDS,inventoryContext,inventoryRoute,parseInventoryRoute,matchesInventorySection,inventoryGroup,accessorySection,threadReferenceFor,threadRangeMatchesSize} from '../src/inventory-navigation.mjs';
 
 test('navigation routes retain selected brands and contextual creation defaults',()=>{
   for(const group of INVENTORY_GROUPS)for(const child of group.children){
@@ -43,4 +43,15 @@ test('P&G reference retains the exact user URL without becoming physical stock',
 
 test('DMC wool uses the requested Casa Cenina Colbert catalogue',async()=>{
  const {purchaseUrl}=await import('../core/pattern-fabric.mjs');const child=INVENTORY_GROUPS.find(group=>group.id==='threads').children.find(child=>child.brand==='DMC');const reference=child.references.find(reference=>reference.family==='wool');assert.equal(reference.name,'DMC Lana Colbert');assert.equal(reference.source,'Casa Cenina');assert.equal(reference.url,'https://www.casacenina.it/fili-e-filati/dmc/dmc-lana-colbert/');assert.equal(purchaseUrl(reference.url),reference.url);
+});
+
+test('DMC families and entered sizes select the exact Casa Cenina catalogue',()=>{
+ const child=INVENTORY_GROUPS.find(group=>group.id==='threads').children.find(child=>child.brand==='DMC');
+ const expected={mouline:'dmc-mouline/',special:'filati.html#dmc',silk:'dmc-satin/',wool:'dmc-lana-colbert/',spool:'dmc-mouline-cono/',diamant:'dmc-diamant/'};
+ for(const [family,suffix] of Object.entries(expected)){const reference=threadReferenceFor(child,family);assert.equal(reference.source,'Casa Cenina');assert.ok(reference.url.endsWith(suffix));}
+ for(const size of ['3','5','8','12'])assert.ok(threadReferenceFor(child,'pearl',`#0${size}`).url.endsWith(`dmc-perle-${size}/`));
+ for(const size of ['5','8','12'])assert.ok(threadReferenceFor(child,'alsace',`No. ${size}`).url.endsWith(`dmc-coton-perle-retors-d-alsace-${size}/`));
+ assert.ok(threadReferenceFor(child,'alsace','3').url.endsWith('filati.html#dmc'));
+ assert.equal(threadRangeMatchesSize('Perlé 8','pearl','08'),true);assert.equal(threadRangeMatchesSize('Perlé 5','pearl','8'),false);
+ assert.equal(threadRangeMatchesSize("Retors d'Alsace #12",'alsace','12'),true);assert.equal(threadRangeMatchesSize('Mouliné 25','mouline','8'),true);
 });
