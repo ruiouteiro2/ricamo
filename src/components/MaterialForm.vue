@@ -20,7 +20,7 @@ import {threadCountUnit} from '../../core/thread-count-unit.mjs';
 import { materialEditSnapshot } from '../../core/material-edit.mjs';
 
 const spoolOnlyBrand = brand => ['madeira', 'p&g'].includes(String(brand || '').trim().toLowerCase());
-const props = defineProps({ material: Object, context: { type: Object, default: () => ({}) } });
+const props = defineProps({ material: Object, defaults:{type:Object,default:()=>({})}, context: { type: Object, default: () => ({}) } });
 const emit = defineEmits(['close', 'saved']);
 const original = props.material ? JSON.parse(JSON.stringify(props.material)) : null;
 const originalInventory = original ? materialEditSnapshot(state.value, original.id) : null;
@@ -31,12 +31,12 @@ draft.tagsText = (props.material?.tags || []).join(', ');
 const stock = reactive({ enabled: !props.material, quantity: '', confidence: 'exact', status: 'usable', locationId: '', lotCode: '', cost: '', currency: state.value.settings.currency, supplierId: '', widthCm: '', heightCm: '', properties: {} });
 const busy = ref(false), error = ref(''), photoFiles = ref([]);
 const isEdit = computed(() => Boolean(props.material));
-const groupId = ref(props.context.groupId || inventoryGroup(draft));
+const groupId = ref(props.context.groupId || props.defaults.groupId || inventoryGroup(draft));
 const activeGroup = computed(() => INVENTORY_GROUPS.find(group => group.id === groupId.value));
-const accessoryId = ref(props.context.section || (original ? accessorySection(draft) : 'needles'));
+const accessoryId = ref(props.context.section || props.defaults.section || (original ? accessorySection(draft) : 'needles'));
 if (!props.material) {
   draft.category = activeGroup.value.category;
-  draft.brand = props.context.brand || (activeGroup.value.children.length === 1 ? activeGroup.value.children[0].brand : '');
+  draft.brand = props.context.brand || props.defaults.brand || (activeGroup.value.children.length === 1 ? activeGroup.value.children[0].brand : '');
   draft.unit = draft.category === 'thread' ? threadCountUnit({brand:draft.brand}) : 'piece';
 }
 const brandLabel = brand => activeGroup.value.children.find(child => child.brand === brand)?.label || brand;
@@ -76,7 +76,7 @@ async function confirmDuplicate() {
   finally { busy.value = false; }
 }
 const threadFamilies = computed(() => spoolOnlyBrand(draft.brand) ? ['spool'] : ['mouline', 'special', 'silk', 'wool', 'spool', 'pearl', ...(draft.brand.trim().toLowerCase() === 'dmc' ? ['diamant'] : []), ...(['dmc', 'anchor'].includes(draft.brand.trim().toLowerCase()) ? ['alsace'] : [])]);
-const savedFamily = original && draft.range ? familyOf(draft) : draft.properties.threadFamily || 'mouline';
+const savedFamily = original && draft.range ? familyOf(draft) : props.defaults.threadFamily || draft.properties.threadFamily || 'mouline';
 const threadFamily = ref(threadFamilies.value.includes(savedFamily) ? savedFamily : threadFamilies.value[0]);
 if(draft.category==='thread')draft.unit=threadCountUnit({brand:draft.brand,family:threadFamily.value,properties:draft.properties});
 const usageStatus = ref(originalInventory?.usageStatus || 'new');
@@ -299,12 +299,12 @@ async function save() {
     <form :id="formId" @submit.prevent="save">
         <div class="form-grid">
           <FormField v-if="!isEdit && !context.groupId" :label="t('category')" required v-slot="{ id }"><select :id="id" v-model="groupId"><option v-for="group in INVENTORY_GROUPS" :key="group.id" :value="group.id">{{ t(group.labelKey) }}</option></select></FormField>
-          <FormField v-if="draft.category !== 'thread'" :label="t('name')" required wide v-slot="{ id }"><input :id="id" v-model="draft.name" required maxlength="300" /></FormField>
+          <FormField v-if="draft.category !== 'thread'" :label="t('name')" required wide v-slot="{ id }"><input :id="id" v-model="draft.name" autofocus required maxlength="300" /></FormField>
           <FormField :label="t('brand')" :required="groupId !== 'accessories'" v-slot="{ id }"><output v-if="context.brand" :id="id" class="notice">{{ brandLabel(draft.brand) }}</output><select v-else :id="id" v-model="draft.brand" :required="groupId !== 'accessories'"><option value="">{{ t('allBrands') }}</option><option v-if="draft.brand && !brandOptions.includes(draft.brand)" :value="draft.brand">{{ draft.brand }}</option><option v-for="brand in brandOptions" :key="brand" :value="brand">{{ brandLabel(brand) }}</option></select></FormField>
           <FormField v-if="draft.category === 'thread'" :label="t('addMaterialType')" required v-slot="{ id }"><select :id="id" v-model="threadFamily" required><option v-for="family in threadFamilies" :key="family" :value="family">{{ familyLabel(family) }}</option></select></FormField>
           <FormField v-else-if="groupId === 'accessories'" :label="t('addMaterialType')" v-slot="{ id }"><output v-if="context.section" :id="id" class="notice">{{ t(activeGroup.children.find(child => child.id === accessoryId).labelKey) }}</output><select v-else :id="id" v-model="accessoryId"><option v-for="child in activeGroup.children" :key="child.id" :value="child.id">{{ t(child.labelKey) }}</option></select></FormField>
           <FormField v-else :label="t('addMaterialType')" v-slot="{ id }"><input :id="id" v-model="draft.range" maxlength="200" /></FormField>
-          <FormField :label="t(draft.category === 'tool' ? 'materialArticleCode' : 'addMaterialColorCode')" v-slot="{ id }"><input :id="id" v-model="draft.code" maxlength="200" /></FormField>
+          <FormField :label="t(draft.category === 'tool' ? 'materialArticleCode' : 'addMaterialColorCode')" v-slot="{ id }"><input :id="id" v-model="draft.code" :autofocus="draft.category==='thread'" maxlength="200" /></FormField>
           <FormField v-if="draft.category === 'thread'" :label="t('addMaterialThickness')" v-slot="{ id }"><input :id="id" v-model="draft.properties.threadSize" maxlength="100" /></FormField>
           <FormField :label="t('addMaterialCatalogue')" :help="t('addMaterialCatalogueHelp')" wide v-slot="{ id, describedby }"><CatalogueAutoPreview :product="displayProduct" :color="draft.color" :code="draft.code" :busy="catalogueBusy" :ambiguous="catalogueAmbiguous" :error="catalogueError" :options-count="catalogueOptions.length" /><select :id="id" class="catalogue-select" :value="displayProduct?.id || ''" :disabled="catalogueBusy" :aria-describedby="describedby" @change="selectCatalogue"><button type="button"><selectedcontent /></button><option value="">{{ catalogueBusy ? t('loading') : t('addMaterialCataloguePlaceholder') }}</option><option v-for="product in catalogueOptions" :key="product.id" :value="product.id"><span class="catalogue-swatch" :class="{ 'catalogue-swatch-unknown': !product.hex && !productPreview(product) }" :style="{ backgroundColor: product.hex || undefined, ...productPreviewStyle(product) }" aria-hidden="true"></span><span>{{ [product.brand, product.range, product.code, product.colorName || (product.supplier === 'dmc' && product.range === 'Diamant' ? '' : product.name)].filter(Boolean).join(' · ') }}<small v-if="!product.hex && !productPreview(product)"> — {{ t('materialColorUnavailable') }}</small></span></option></select></FormField>
           <FormField :label="t('addMaterialOwnedQuantity')" :help="quantityHelp" v-slot="{ id, describedby }"><input :id="id" v-model="stock.quantity" inputmode="decimal" :aria-describedby="describedby" /></FormField>
