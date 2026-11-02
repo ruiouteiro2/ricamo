@@ -1,5 +1,13 @@
 # Ricamo delivery evidence
 
+## Official DMC Colbert wool reference - Windows 0.6.24 - 2026-11-02
+
+Added the user-supplied official DMC Colbert wool URL (`https://www.dmc.com/FR/fr/products/dmc-wool-tapestry/colbert-wool`) as the catalogue reference shown specifically for DMC → Mouliné lanato. DMC now supports family-specific references: selecting wool shows DMC Lana Colbert, selecting Diamant shows the existing Diamant source, and unrelated brands/families do not inherit either link. No runtime catalogue fetching or inventory data mutation was added.
+
+The targeted journey passed in Edge and packaged Electron, opening the exact Colbert URL through the safe external-link path and rechecking the existing Diamant catalogue, local preview, persistence and full backup. Vite build and release audit passed with `sourcesMatch: true` and `dirtyFiles: 0`. Installer `release/Ricamo-0.6.24-Windows-x64-Setup.exe`, SHA-256 `37bd1a597df3cf4aae90a9cd2c873c78dd91b944e845c3b9a978e5b31a18652f`.
+
+Ricamo was normally closed, a full profile copy plus validated `.ricamobackup` was saved under `Desktop/Filo/Backup aggiornamenti`, and installation completed with exit 0. Registry reports 0.6.24; installed `app.asar` matches the tested package. Application state at revision 199, attachment hashes and SQLite integrity match before/after; the installed window reopened successfully. Evidence: `.runtime/dmc-wool-reference-ui.log`, `.runtime/dmc-wool-reference-native.log`, `.runtime/release-0624-package.log`, `.runtime/installed-upgrade-0624-verification.json`. Unsigned local build; no clean-PC/offline installation claim.
+
 ## Persistent feedback hotfix - Windows 0.6.23 - 2026-11-02
 
 Corrected the 0.6.22 feedback regression reported after installation. The previous top-layer implementation could move the feedback element into a modal and then lose it when that modal was destroyed. Feedback is now persistent: while a native dialog is open, a high-contrast copy is rendered inside that dialog at z-index 1000; when the final dialog closes, the global copy remains visible for the rest of its original timeout. The message itself was not removed or shortened, and the overlay does not intercept pointer input.
