@@ -1,5 +1,5 @@
-import diamant from './assets/dmc-diamant-previews.json';
-import casa from './assets/casa-product-previews.json';
+import diamant from './assets/dmc-diamant-previews.json' with {type:'json'};
+import casa from './assets/casa-product-previews.json' with {type:'json'};
 import {bundledSupplierProducts,supplierIdentity} from '../core/supplier-products.mjs';
 const urlKey=value=>String(value??'').replace(/^https:\/\/www\.casacenina\.(?:com|fr|es)\//,'https://www.casacenina.it/');
 let identities;
