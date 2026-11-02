@@ -19,7 +19,7 @@ const DMC_REFERENCES = [
   { name: 'DMC Coton Retors Mat', source: 'DMC', family: 'mat', url: 'https://www.dmc.com/IT/it/products/dmc-wool-tapestry/retors-mat-cotton' },
 ];
 export const INVENTORY_GROUPS = [
-  { id: 'threads', category: 'thread', labelKey: 'inventoryThreads', children: ['DMC','Anchor','Profilo','P&G','Madeira'].map(brand => ({ ...brandChild(brand), label: brand === 'Madeira' ? 'Metallici Madeira' : brand, ...(brand === 'DMC' ? { reference: DMC_REFERENCES[0], references: DMC_REFERENCES } : {}), ...(brand === 'P&G' ? { reference: { name: 'Filo rame verniciato', source: 'Tombolo e Disegni', url: 'https://www.tombolodisegnishop.it/prodotto/filo-rame-verniciato-030/' } } : {}) })) },
+  { id: 'threads', category: 'thread', labelKey: 'inventoryThreads', children: ['DMC','Anchor','Profilo','P&G','Madeira'].map(brand => ({ ...brandChild(brand), label: brand === 'Madeira' ? 'Metallici Madeira' : brand, ...(brand === 'DMC' ? { reference: DMC_REFERENCES[0], references: DMC_REFERENCES } : {}), ...(brand === 'Profilo' ? { reference: { name: 'Profilo 6 Mouliné', source: 'Casa Cenina', url: 'https://www.casacenina.it/fili-e-filati/profilo/profilo-6-mouline/' } } : {}), ...(brand === 'P&G' ? { reference: { name: 'Filo rame verniciato', source: 'Tombolo e Disegni', url: 'https://www.tombolodisegnishop.it/prodotto/filo-rame-verniciato-030/' } } : {}) })) },
   { id: 'beads', category: 'embellishment', labelKey: 'inventoryBeads', children: ['Mill Hill'].map(brandChild) },
   { id: 'fabrics', category: 'fabric', labelKey: 'inventoryFabrics', children: FABRIC_BRANDS.map(brandChild) },
   { id: 'accessories', category: 'tool', labelKey: 'inventoryAccessories', children: [
