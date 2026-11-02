@@ -111,3 +111,7 @@ The offline chart catalogue includes 482 small cover previews attributed to Mira
 ## DMC Diamant catalogue photos
 
 The Diamant catalogue includes 14 small, unmodified product-photo previews referenced by the public official DMC product page on 2026-11-01. Images and DMC marks remain the property of their respective owners and are not covered by the repository MIT license. They identify commercial thread products; no embroidery designs or instructions are included. Source URLs, variant IDs and original image SHA-256 values are recorded in `data/dmc-diamant-catalogue.json`. See `docs/DMC-DIAMANT-SOURCES.md`.
+
+## Casa Cenina material product previews
+
+Original public product-preview images are bundled for offline identification of thread, bead, fabric and other material articles. Images and associated marks remain the property of their respective owners and are not covered by this repository's MIT license. The referenced DMC Coloris category and saved public Casa Cenina component pages identify each exact product/image URL. Images are kept unmodified, with source URLs and SHA-256 evidence in `data/casa-product-preview-sources.json`. No shop account, private files, chart instructions or purchase availability data are included. See `docs/PRODUCT-PREVIEW-SOURCES.md`.
