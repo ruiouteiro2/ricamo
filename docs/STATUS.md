@@ -629,3 +629,11 @@ Available vt-deliver/design/verify guidance was used. The installed vt-app-test 
 - Validation: all 10 tests in `tests/discontinued-materials.test.mjs` passed; `npm run build` passed (existing chunk-size/dynamic-import warnings). Updated the DMC desktop journey expectation; the desktop journey and installed Windows distribution were not rerun for this change.
 
 - Installed update completed on 2026-11-03: rebuilt Windows 0.6.43 package and release audit passed (`sourcesMatch: true`, clean source tree at packaging). Packaged DMC desktop journey passed in `.runtime/dmc-mouline-rows-3SeKr3`. Closed the installed app normally, backed up its database in `.runtime/before-installed-update-*`, ran the silent installer (exit 0), verified installed app.asar SHA-256 matches the tested package and the user database hash was unchanged, then relaunched the installed app.
+
+
+## 2026-11-03 ? Select multiple threads for Shopping
+
+- Added checkboxes for catalogue rows, selection across searches, select-visible support for owned/catalogue rows, and one Shopping action with a quantity and unit for each article. Inventory-only bulk tools remain available for owned selections. Discontinued articles are excluded from purchase targets.
+- New `purchase.selection` transaction creates missing catalogue materials and purchases atomically without stock movements. SQLite regression verifies mixed selections, retry idempotency, duplicate/invalid/discontinued rollback and preserved lots.
+- Validation: 11 targeted tests and build passed; packaged Windows DMC journey passed including owned + two catalogue articles across searches and different quantities (`.runtime/dmc-mouline-rows-u3lTl2`). Release audit passed with matching sources and clean tree. General suite: 613 tests, 611 passed, 1 skipped, 1 failure in tool-activity date error precedence; that test file passed all 16 tests when run separately against both current and baseline application registration. The combined-suite failure remains unresolved.
+- Silent installer exited 0; installed app.asar hash matched the tested package. Closed normally and backed up user SQLite in `.runtime/before-multiselect-update-*`; database hash was unchanged after installation. Relaunched installed Ricamo with Electron node-mode environment removed.
