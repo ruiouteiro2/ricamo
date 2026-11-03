@@ -224,3 +224,10 @@ tbody tr { transition: background-color var(--motion-fast) var(--ease-ui); }
 /* Inventory uses the current window, including after maximize/restore. */
 .inventory-page { max-width: none; }
 .inventory-page .table-wrap { max-height: 65dvh; }
+
+/* Mounted virtual rows must not change table column widths while scrolling/resizing. */
+.inventory-table { table-layout: fixed; min-width: 820px; }
+.inventory-table td { overflow-wrap: anywhere; }
+.inventory-table .material-cell > div { min-width: 0; }
+.inventory-page .panel-heading, .inventory-page .panel-heading > .actions, .inventory-page .page-actions { flex-wrap: wrap; }
+.inventory-page .panel-heading > .actions { max-width: 100%; }
