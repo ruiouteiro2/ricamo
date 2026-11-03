@@ -1,4 +1,5 @@
 <script setup>
+import { useVirtualInventory } from '../virtual-inventory.mjs';
 import { productPreview, productPreviewStyle } from '../product-previews.mjs';
 import { CHART_CATALOGUE } from '../../core/chart-collection.mjs';
 import { INVENTORY_GROUPS, customInventoryGroups, inventoryGroup, accessorySection, parseInventoryRoute, inventoryRoute, inventoryContext, matchesInventorySection } from '../inventory-navigation.mjs';
@@ -113,8 +114,10 @@ const entries = computed(() => [...filtered.value, ...catalogueRows.value]);
 const pageCount = computed(() => pageTotal(entries.value.length, pageSize));
 watch(pageCount, count => { page.value = Math.min(page.value, count); });
 const pageEntries = computed(() => pageRows(entries.value, page.value, pageSize));
-const visible = computed(() => pageEntries.value.filter(row => row.material));
-const visibleCatalogue = computed(() => pageEntries.value.filter(row => row.product));
+const virtualInventory = useVirtualInventory(pageEntries, inventoryTable);
+const renderedEntries = virtualInventory.rows;
+const visible = computed(() => renderedEntries.value.filter(row => row.material));
+const visibleCatalogue = computed(() => renderedEntries.value.filter(row => row.product));
 const ordering = ref(null), orderBusy = ref(false), orderError = ref('');
 let orderOperationId;
 const selectionCount = computed(() => selected.value.length + selectedCatalogue.value.length);
@@ -139,15 +142,23 @@ async function placeOrder() {
   } catch (error) { orderError.value = errorText(error); }
   finally { orderBusy.value = false; }
 }
-const pageSelected=computed(()=>pageEntries.value.length>0&&visible.value.every(row=>selected.value.includes(row.material.id))&&visibleCatalogue.value.every(row=>selectedCatalogue.value.includes(row.product.id)));
-const pagePartSelected=computed(()=>visible.value.some(row=>selected.value.includes(row.material.id))||visibleCatalogue.value.some(row=>selectedCatalogue.value.includes(row.product.id)));
-function togglePage(){
+const pageSelected=computed(()=>pageEntries.value.length>0&&pageEntries.value.every(row=>row.material ? selected.value.includes(row.material.id) : selectedCatalogue.value.includes(row.product.id)));
+const pagePartSelected=computed(()=>pageEntries.value.some(row=>row.material ? selected.value.includes(row.material.id) : selectedCatalogue.value.includes(row.product.id)));
+function selectRow(target, id, checked) {
+  const selection = target === 'catalogue' ? selectedCatalogue : selected;
+  if (!checked) selection.value = selection.value.filter(value => value !== id);
+  else if (!selection.value.includes(id) && selectionCount.value < 200) selection.value = [...selection.value, id];
+}
+async function togglePage(event){
   const remove = pageSelected.value;
   for (const row of pageEntries.value) {
     const target = row.material ? selected : selectedCatalogue, id = row.material?.id || row.product.id;
     if (remove) target.value=target.value.filter(value=>value!==id);
     else if (!target.value.includes(id) && selectionCount.value<200) target.value=[...target.value,id];
   }
+  await nextTick();
+  // A capped selection can leave the computed all-selected value false before and after a native click.
+  if (event?.target) { event.target.checked = pageSelected.value; event.target.indeterminate = !pageSelected.value && pagePartSelected.value; }
 }
 const activeRows = computed(() => rows.value.filter(row => !row.material.archived));
 const lowCount = computed(() => activeRows.value.filter(row => row.low).length);
@@ -214,10 +225,10 @@ function workflowSaved(){workflow.value='';selected.value=[];}
       <EmptyState v-if="!rows.length && !catalogueRows.length" :icon="Package" :title="t('emptyMaterials')" :description="t('emptyMaterialsBody')"><button class="button primary" @click="addTo()"><Plus :size="16" />{{ t('addMaterial') }}</button></EmptyState>
       <EmptyState v-else-if="!entries.length" :icon="Search" :title="t('noResults')"><button class="button" @click="clear">{{ t('clearFilters') }}</button></EmptyState>
       <template v-else>
-        <div ref="inventoryTable" class="table-wrap">
-          <table>
+        <div ref="inventoryTable" class="table-wrap" @scroll.passive="virtualInventory.update">
+          <table :aria-rowcount="entries.length + 1">
             <thead><tr><th><input type="checkbox" :checked="pageSelected" :indeterminate="!pageSelected && pagePartSelected" :aria-label="t('selectVisibleMaterials')" @change="togglePage" /></th><th>{{ t('name') }}</th><th>{{ t('category') }}</th><th>{{ t('physical') }}</th><th>{{ t('available') }}</th><th><span class="sr-only">{{ t('status') }}</span></th><th>{{ t('actions') }}</th></tr></thead>
-            <tbody><tr v-for="row in visible" :key="row.material.id" v-memo="[language, row, selected.includes(row.material.id), selectionCount >= 200]"><td><input v-model="selected" :value="row.material.id" type="checkbox" :disabled="selectionCount>=200 && !selected.includes(row.material.id)" :aria-label="t('selectMaterial',{name:row.material.name})" /></td>
+            <tbody><tr v-if="virtualInventory.before.value" aria-hidden="true" class="inventory-spacer"><td colspan="7" :style="{ height: `${virtualInventory.before.value}px` }"></td></tr><tr v-for="row in visible" :key="row.material.id" :data-inventory-row="`material:${row.material.id}`" v-memo="[language, row, selected.includes(row.material.id), selectionCount >= 200]"><td><input :checked="selected.includes(row.material.id)" @change="selectRow('material', row.material.id, $event.target.checked)" :value="row.material.id" type="checkbox" :disabled="selectionCount>=200 && !selected.includes(row.material.id)" :aria-label="t('selectMaterial',{name:row.material.name})" /></td>
               <td><div class="material-cell"><span class="swatch" :style="{ backgroundColor: row.material.color || undefined, ...productPreviewStyle(row.material) }"><Package v-if="!row.material.color && !productPreview(row.material)" :size="18" /></span><div><button class="cell-title" @click="navigate('material', row.material.id)">{{ row.material.name }} <Heart v-if="row.material.favorite" :size="12" /></button><span v-if="isDiscontinued(row.material)" class="badge discontinued-badge">{{ t('descriptorOption_discontinued') }}</span><span class="cell-subtitle">{{ [row.material.brand, row.material.range, row.material.code].filter(Boolean).join(' · ') || '—' }}</span></div></div></td>
               <td>{{ categoryName(row.material.category) }}</td>
               <td>{{ row.summary.estimated ? '≈ ' : '' }}{{ number(row.summary.physical) }}<small v-if="row.summary.physical !== null" class="cell-subtitle">{{ t(`unit_${row.material.unit}`) }}</small><small v-else-if="row.summary.knownPhysical" class="cell-subtitle">{{ t('knownAtLeast') }} {{ number(row.summary.knownPhysical) }}</small></td>
@@ -229,11 +240,12 @@ function workflowSaved(){workflow.value='';selected.value=[];}
                 <button v-if="!isDiscontinued(row.material)" class="icon-button" :aria-label="t('shopThreadNamed', { name: row.material.name })" :title="t('sendToShopping')" @click="navigate('shopping', row.material.id)"><ShoppingCart :size="18" /></button>
               </div></td>
             </tr></tbody>
-            <tbody v-if="visibleCatalogue.length" class="catalogue-rows"><tr v-for="{ product, discontinued } in visibleCatalogue" :key="product.id" v-memo="[language, product, discontinued, selectedCatalogue.includes(product.id), selectionCount >= 200]"><td><input v-model="selectedCatalogue" :value="product.id" type="checkbox" :disabled="selectionCount>=200 && !selectedCatalogue.includes(product.id)" :aria-label="t('selectMaterial',{name:[product.code,product.colorName].filter(Boolean).join(' \u00b7 ')})" /></td>
+            <tbody v-if="visibleCatalogue.length" class="catalogue-rows"><tr v-for="{ product, discontinued } in visibleCatalogue" :key="product.id" :data-inventory-row="`catalogue:${product.id}`" v-memo="[language, product, discontinued, selectedCatalogue.includes(product.id), selectionCount >= 200]"><td><input :checked="selectedCatalogue.includes(product.id)" @change="selectRow('catalogue', product.id, $event.target.checked)" :value="product.id" type="checkbox" :disabled="selectionCount>=200 && !selectedCatalogue.includes(product.id)" :aria-label="t('selectMaterial',{name:[product.code,product.colorName].filter(Boolean).join(' \u00b7 ')})" /></td>
               <td><div class="material-cell"><span class="swatch" :style="{ backgroundColor: product.hex || undefined, ...productPreviewStyle(product) }"><Package v-if="!product.hex && !productPreview(product)" :size="18" /></span><div><span class="cell-title">{{ [product.code, product.colorName].filter(Boolean).join(' · ') }}</span><span v-if="discontinued" class="badge discontinued-badge">{{ t('descriptorOption_discontinued') }}</span><span class="cell-subtitle">{{ [product.brand, product.range].join(' · ') }}</span></div></div></td>
               <td>{{ categoryName(product.category) }}</td><td>—</td><td>—</td><td></td>
               <td><div class="actions"><button v-if="!discontinued" class="icon-button" :aria-label="t('shopThreadNamed', { name: [product.code, product.colorName].filter(Boolean).join(' · ') })" :title="t('sendToShopping')" @click="orderArticle(product)"><ShoppingCart :size="18" /></button></div></td>
             </tr></tbody>
+            <tbody v-if="virtualInventory.after.value"><tr aria-hidden="true" class="inventory-spacer"><td colspan="7" :style="{ height: `${virtualInventory.after.value}px` }"></td></tr></tbody>
           </table>
         </div>
         <div class="panel-heading"><small class="muted">{{ number(filtered.length, 0) }} {{ t('materials').toLowerCase() }}<template v-if="catalogueRows.length"> · {{ t('catalogueNotOwned', { count: number(catalogueRows.length, 0) }) }}</template><template v-if="paginationEnabled"> · {{ t('page') }} {{ page }} / {{ pageCount }}</template></small><div v-if="paginationEnabled" class="actions"><button class="icon-button" :disabled="page <= 1" :aria-label="t('previousPage')" @click="page--"><ChevronLeft :size="18" /></button><button class="icon-button" :disabled="page >= pageCount" :aria-label="t('nextPage')" @click="page++"><ChevronRight :size="18" /></button></div></div>
