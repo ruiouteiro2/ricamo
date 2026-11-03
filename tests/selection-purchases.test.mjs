@@ -23,3 +23,18 @@ test('mixed inventory/catalogue selection persists atomically and retries do not
     }
   } finally { repo.close(); }
 });
+
+
+test('catalogue selections above 200 persist together and reuse existing identities', () => {
+  const repo = new Repository(':memory:');
+  try {
+    const products = missingCatalogueArticles('DMC', []).slice(0, 250);
+    const rows = products.map(({product}, index) => ({material: catalogueMaterial(product, `catalogue-${index}`), quantity: 1}));
+    const command = {type:'purchase.selection',operationId:'large-catalogue-selection',payload:{rows}};
+    const start = performance.now(); repo.execute(command,0); repo.execute(command,0);
+    const saved = repo.load(); assert.equal(saved.purchases.length,250); assert.equal(saved.materials.length,250); assert.equal(saved.lots.length,0); assert.equal(saved.movements.length,0);
+    repo.execute({type:'purchase.selection',operationId:'reuse-identity',payload:{rows:[{material:saved.materials[0],quantity:2}]}},saved.revision);
+    assert.equal(repo.load().materials.length,250); assert.equal(repo.load().purchases.length,251);
+    console.log(`250-item purchase selection and retry: ${Math.round(performance.now()-start)} ms`);
+  } finally { repo.close(); }
+});
