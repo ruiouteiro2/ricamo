@@ -1,5 +1,19 @@
 # Third-party notices
 
+## FlossCross chart workspace
+
+FlossCross application, stitch photographs, symbols and custom fonts: copyright © 2026 FlossCross.com, https://flosscross.com. Copied at the user's explicit direction on the basis of their reported contractual authorization from the author. These materials are not relicensed under Ricamo's MIT licence. Original source bytes, paths and hashes are retained in `vendor/flosscross/runtime.json.gz`; the local integration and verification scope are described in `docs/FLOSSCROSS-AUDIT.md`. Existing upstream source notices and PDF attribution are preserved.
+
+Its bundled libraries retain their embedded notices: Vue 2.7.16, Vuex 3.6.2, Vue Router 3.0.1 (Evan You and contributors, MIT); vue-i18n 8.22.0 (Kazuya Kawaguchi, MIT); Quasar 1.22.10 (Razvan Stoenescu and contributors, MIT); Cropper.js 1.5.6 (Chen Fengyuan, MIT); jsPDF 3.0.1 and its included modules (notices included in the source); Pixi.js and the official `@pixi/unsafe-eval` CSP adapter 6.5.9 (MIT; adapter licence included in the archive). The image quantization, IndexedDB/XML/polyfill utilities and font assets remain part of the pinned upstream distribution. This is an offline adaptation, not an endorsement or affiliation with FlossCross.
+
+Image-Q: copyright 2015–2018 Igor Bezkrovnyi, MIT; upstream `image-q.js.LICENSE.txt` is included. PT Sans is accompanied by its SIL Open Font License, and Material Icons by its Apache License 2.0, in the bundled font directory. The original copyright notices in all scripts are retained. For the MIT libraries listed above, the permission and disclaimer are:
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 ## Stitch Studio engine
 
 Copyright (c) 2026 Rui. MIT licence; see LICENSE. The generation core is reused from the user-supplied Stitch Studio snapshot, independently of its interface. Original engine SHA-256: `7eb63a9d4c5915249b638fa6bd1ee35cff1e6f2e3982d8a6ca60b78279fe6052`. Integration changes are tracked in Git.
