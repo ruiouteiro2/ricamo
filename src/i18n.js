@@ -4,6 +4,13 @@ import additional from './i18n-extra.json';
 
 export const language = ref('it');
 const words = {
+  allSuppliers: ['Tutti i fornitori', 'All suppliers'],
+  unassignedSupplier: ['Fornitore non assegnato', 'Unassigned supplier'],
+  supplierOrderTotals: ['Totale ordine per fornitore', 'Order total by supplier'],
+  partialOrderTotal: ['Totale parziale', 'Partial total'],
+  orderPricesMissing: ['Prezzi da registrare', 'Prices not recorded'],
+  assignSupplierForTotal: ['Assegna il fornitore nelle righe di acquisto per raggrupparle nel suo ordine.', 'Assign a supplier to purchase lines to group them into its order.'],
+  supplierOrderTotalsHelp: ['Somma delle quantità × prezzi unitari registrati nelle righe visualizzate. Acquisti annullati e spedizione esclusi; valute separate.', 'Sum of quantities × recorded unit prices for the displayed lines. Cancelled purchases and shipping excluded; currencies kept separate.'],
   selectAllGreyed: ['Seleziona tutti gli articoli in grigio', 'Select all greyed-out items'],
   selectedPurchaseCount: ['{count} articoli selezionati', '{count} items selected'],
   catalogueSelectionLimit: ['Puoi selezionare fino a {count} articoli per acquisto.', 'You can select up to {count} items per purchase.'],
