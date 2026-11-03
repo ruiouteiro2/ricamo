@@ -4,6 +4,12 @@ import additional from './i18n-extra.json';
 
 export const language = ref('it');
 const words = {
+  schemaStudio: ['Studio schemi avanzato', 'Advanced chart studio'],
+  schemaStudioLoading: ['Apertura dello studio schemi?', 'Opening the chart studio?'],
+  schemaStudioLoadError: ['Lo studio non si ? avviato. Riprova: i tuoi dati sono conservati.', 'The studio did not start. Retry; your data is preserved.'],
+  studio_invalid_data: ['File o dati dello schema non validi.', 'Invalid chart file or data.'],
+  studio_dimensions: ['Questo studio supporta schemi fino a 300 ? 300 punti.', 'This studio supports charts up to 300 ? 300 stitches.'],
+  studio_too_large: ['Lo schema supera il limite di dimensione consentito.', 'The chart exceeds the permitted size limit.'],
   allSuppliers: ['Tutti i fornitori', 'All suppliers'],
   unassignedSupplier: ['Fornitore non assegnato', 'Unassigned supplier'],
   supplierOrderTotals: ['Totale ordine per fornitore', 'Order total by supplier'],
