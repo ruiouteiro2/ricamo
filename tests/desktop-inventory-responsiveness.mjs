@@ -41,6 +41,7 @@ try {
     await expect.poll(() => table.evaluate(element => element.clientWidth)).toBeGreaterThan(bounds.width - (bounds.width < 850 ? 210 : 410));
     await expect.poll(() => table.evaluate(element => element.clientHeight)).toBeLessThan(bounds.height * .7);
     assert.ok(await boxes.count() < 80);
+    assert.ok(await table.locator('tbody td:last-child .actions').evaluateAll(groups => groups.every(group => [...group.querySelectorAll('button')].every(button => button.getBoundingClientRect().right <= group.closest('td').getBoundingClientRect().right + 1))), 'row action buttons must fit their column');
     assert.ok(await selectionBar.evaluate(element => [...element.querySelectorAll('button')].every(button => button.getBoundingClientRect().right <= element.getBoundingClientRect().right + 1)), 'selection actions must remain inside the panel');
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'page must fit current width');
   }
