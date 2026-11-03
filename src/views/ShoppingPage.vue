@@ -1,4 +1,5 @@
 <script setup>
+import { purchaseTotalsBySupplier } from '../../core/purchase-totals.mjs';
 import PurchaseDocuments from '../components/PurchaseDocuments.vue';
 import { computed, ref } from 'vue';
 import { ShoppingBag, Plus, Download, Search, Truck, Store, RefreshCw, Pencil, PackageCheck, ClipboardList, X, RotateCcw } from '@lucide/vue';
@@ -13,6 +14,8 @@ import { zeroStockPurchases } from '../../core/purchasing.mjs';
 import { isDiscontinued } from '../../core/discontinued-materials.mjs';
 import { quantity, DomainError, subtract } from '../../core/shared.mjs';
 
+const UNASSIGNED_SUPPLIER = '@unassigned';
+const supplierFilter = ref('');
 const documentsId=ref(null);
 const tab = ref('orders'), search = ref(''), status = ref('open'), priority = ref(''), projectId = ref('');
 const form = ref(null), busy = ref(false), error = ref('');
@@ -24,6 +27,7 @@ const requirements = computed(() => shoppingNeeds(state.value, selectedProjects.
 const zeroStock = computed(() => zeroStockPurchases(state.value));
 const matchingRequirements = computed(() => requirements.value.filter(row => matchesMaterial(row.materialId)));
 const filteredOrders = computed(() => state.value.purchases.filter(row => {
+  if (supplierFilter.value && (row.supplierId || UNASSIGNED_SUPPLIER) !== supplierFilter.value) return false;
   if (status.value === 'open' && ['received', 'cancelled'].includes(row.status)) return false;
   if (status.value && status.value !== 'open' && status.value !== row.status) return false;
   if (priority.value && row.priority !== priority.value) return false;
@@ -33,12 +37,7 @@ const filteredOrders = computed(() => state.value.purchases.filter(row => {
 }).sort((a, b) => ({ high: 0, normal: 1, low: 2 }[a.priority] - { high: 0, normal: 1, low: 2 }[b.priority]) || b.createdAt.localeCompare(a.createdAt)));
 const filteredSuppliers = computed(() => state.value.suppliers.filter(s => normalize([s.name, s.contact, s.notes].join(' ')).includes(normalize(search.value))).sort((a, b) => a.name.localeCompare(b.name)));
 const openOrders = computed(() => state.value.purchases.filter(p => !['received', 'cancelled'].includes(p.status)));
-const costs = computed(() => {
-  const totals = {};
-  for (const order of filteredOrders.value) if (order.unitPrice !== null) totals[order.currency] = (totals[order.currency] || 0) + Math.round(order.quantity * order.unitPrice);
-  return Object.entries(totals);
-});
-const unpriced = computed(() => filteredOrders.value.filter(order => order.unitPrice === null).length);
+const supplierTotals = computed(() => purchaseTotalsBySupplier(filteredOrders.value).map(group => ({ ...group, name: supplierById.value.get(group.supplierId)?.name || t('unassignedSupplier') })).sort((a,b) => a.name.localeCompare(b.name)));
 const materialOptions = computed(() => state.value.materials.filter(m => (!m.archived && !isDiscontinued(m)) || m.id === form.value?.initial.materialId).map(m => ({ value: m.id, label: `${m.name}${m.code ? ` · ${m.code}` : ''} (${t(m.unit)})` })));
 const locationOptions = computed(() => state.value.locations.map(l => ({ value: l.id, label: locate(l.id) })).sort((a, b) => a.label.localeCompare(b.label)));
 const supplierOptions = computed(() => state.value.suppliers.map(s => ({ value: s.id, label: s.name })));
@@ -90,7 +89,7 @@ function openPurchase(order = null, requirement = null) {
   const material = requirement ? materialById.value.get(requirement.materialId) : null;
   const amount = requirement ? material?.packageSize ? Math.ceil(requirement.toOrder / material.packageSize) * material.packageSize : requirement.toOrder : 1;
   form.value = { kind: 'purchase', key: crypto.randomUUID(), operationId: crypto.randomUUID(), title: order ? 'editPurchase' : 'newPurchase', original: order,
-    initial: order ? { ...order, unitPriceMajor: major(order.unitPrice), projectId: order.projectIds.length === 1 ? order.projectIds[0] : '' } : { materialId: requirement?.materialId || '', quantity: amount, status: 'to_buy', supplierId: '', priority: 'normal', unitPriceMajor: '', currency: state.value.settings.currency, projectId: projectId.value, expectedDate: '', notes: '' },
+    initial: order ? { ...order, unitPriceMajor: major(order.unitPrice), projectId: order.projectIds.length === 1 ? order.projectIds[0] : '' } : { materialId: requirement?.materialId || '', quantity: amount, status: 'to_buy', supplierId: supplierFilter.value && supplierFilter.value !== UNASSIGNED_SUPPLIER ? supplierFilter.value : '', priority: 'normal', unitPriceMajor: '', currency: state.value.settings.currency, projectId: projectId.value, expectedDate: '', notes: '' },
     requirementProjects: requirement?.allocations?.length ? requirement.allocations.map(a => a.projectId) : null,
   };
 }
@@ -131,14 +130,14 @@ function saved() { form.value = null; notify(); }
 async function addMissingStock() {
   if (busy.value) return;
   busy.value = true; error.value = '';
-  try { await dispatch('purchase.addZeroStock', {}); tab.value = 'orders'; status.value = 'open'; search.value = ''; projectId.value = ''; priority.value = ''; notify(); }
+  try { await dispatch('purchase.addZeroStock', {}); tab.value = 'orders'; status.value = 'open'; supplierFilter.value = ''; search.value = ''; projectId.value = ''; priority.value = ''; notify(); }
   catch (caught) { error.value = errorText(caught); }
   finally { busy.value = false; }
 }
 async function generate() {
   if (busy.value) return;
   busy.value = true; error.value = '';
-  try { await dispatch('purchase.generate', { projectIds: selectedProjects.value }); tab.value = 'orders'; status.value = 'open'; notify(); }
+  try { await dispatch('purchase.generate', { projectIds: selectedProjects.value }); tab.value = 'orders'; status.value = 'open'; supplierFilter.value = ''; notify(); }
   catch (caught) { error.value = errorText(caught); }
   finally { busy.value = false; }
 }
@@ -193,11 +192,21 @@ if (route.value.page === 'shopping' && route.value.id) {
   <div class="toolbar">
     <div class="toolbar-search"><Search :size="17" /><input v-model="search" :aria-label="t('searchShopping')" :placeholder="t('searchShopping')" /></div>
     <select v-if="tab !== 'suppliers'" v-model="projectId" :aria-label="t('project')"><option value="">{{ t(tab === 'requirements' ? 'allActiveProjects' : 'allProjects') }}</option><option v-for="project in state.projects" :key="project.id" :value="project.id">{{ project.name }}</option></select>
+    <select v-if="tab === 'orders'" v-model="supplierFilter" :aria-label="t('supplier')"><option value="">{{ t('allSuppliers') }}</option><option :value="UNASSIGNED_SUPPLIER">{{ t('unassignedSupplier') }}</option><option v-for="supplier in state.suppliers" :key="supplier.id" :value="supplier.id">{{ supplier.name }}</option></select>
     <select v-if="tab === 'orders'" v-model="status" :aria-label="t('status')"><option value="open">{{ t('openPurchases') }}</option><option value="">{{ t('all') }}</option><option v-for="value in ['to_buy','ordered','partial','received','cancelled']" :key="value" :value="value">{{ statusText(value) }}</option></select>
     <select v-if="tab === 'orders'" v-model="priority" :aria-label="t('priority')"><option value="">{{ t('allPriorities') }}</option><option v-for="value in ['high','normal','low']" :key="value" :value="value">{{ t(value) }}</option></select>
     <button v-if="tab === 'suppliers'" class="button" @click="openSupplier()"><Plus :size="16" />{{ t('newSupplier') }}</button>
   </div>
   <template v-if="tab === 'orders'">
+    <section v-if="supplierTotals.length" class="panel supplier-order-totals" :aria-label="t('supplierOrderTotals')">
+      <div class="panel-heading"><h2>{{ t('supplierOrderTotals') }}</h2><button v-if="!state.suppliers.length" class="button small" @click="openSupplier()">{{ t('newSupplier') }}</button></div>
+      <div v-for="group in supplierTotals" :key="group.supplierId || UNASSIGNED_SUPPLIER" class="panel-body supplier-order-total">
+        <h3>{{ group.name }}</h3>
+        <div v-for="amount in group.currencies" :key="amount.currency" class="stat-row"><span>{{ amount.currency }} <span v-if="amount.missing && amount.priced" class="badge warning">{{ t('partialOrderTotal') }}</span></span><strong>{{ amount.total === null ? t('orderPricesMissing') : money(amount.total, amount.currency) }}</strong><span v-if="amount.missing" class="field-help">{{ t('unpricedRows', { count: number(amount.missing, 0) }) }}</span></div>
+        <p v-if="!group.supplierId" class="field-help">{{ t('assignSupplierForTotal') }}</p>
+      </div>
+      <div class="panel-body"><p class="field-help">{{ t('supplierOrderTotalsHelp') }}</p></div>
+    </section>
     <div class="panel">
       <div v-if="filteredOrders.length" class="table-wrap"><table><caption class="sr-only">{{ t('orders') }}</caption><thead><tr><th>{{ t('material') }}</th><th>{{ t('quantity') }}</th><th>{{ t('received') }}</th><th>{{ t('status') }}</th><th>{{ t('supplier') }}</th><th>{{ t('estimatedTotal') }}</th><th><span class="sr-only">{{ t('actions') }}</span></th></tr></thead><tbody>
         <tr v-for="order in filteredOrders" :key="order.id">
@@ -214,11 +223,6 @@ if (route.value.page === 'shopping' && route.value.id) {
         <button v-if="!state.materials.length" class="button primary" @click="navigate('materials')">{{ t('addMaterial') }}</button>
         <button v-else class="button primary" @click="openPurchase()">{{ t('newPurchase') }}</button>
       </EmptyState>
-    </div>
-    <div v-if="filteredOrders.length" class="panel-body">
-      <p class="muted"><strong>{{ t('estimatedTotalsByCurrency') }}</strong></p>
-      <div v-for="[currencyCode, total] in costs" :key="currencyCode" class="stat-row"><span>{{ currencyCode }}</span><strong>{{ money(total, currencyCode) }}</strong></div>
-      <p v-if="unpriced" class="field-help">{{ t('unpricedRows', { count: number(unpriced, 0) }) }}</p>
     </div>
   </template>
   <template v-else-if="tab === 'requirements'">
