@@ -1,3 +1,4 @@
+import { purchaseSelection } from './selection-purchases.mjs';
 import {threadCountHandlers} from './thread-count-unit.mjs';
 import { schemaShoppingHandlers, validateSchemaShopping } from './schema-shopping.mjs';
 import { materialEditHandlers } from './material-edit.mjs';
@@ -32,6 +33,7 @@ import { toolActivityHandlers, validateToolActivity } from './tool-activity.mjs'
 
 export { createState };
 const handlers = {
+  'purchase.selection': purchaseSelection,
   ...threadCountHandlers,
   ...schemaShoppingHandlers,
   ...materialEditHandlers,
