@@ -19,8 +19,8 @@ import InventoryLabels from '../components/InventoryLabels.vue';
 import InventoryRapidForm from '../components/InventoryRapidForm.vue';
 import KitLibrary from '../components/KitLibrary.vue';
 import { inventoryCategories as categoryOptions, categoryLabel as categoryName } from '../inventory-categories.mjs';
-import { state, route, navigate, notify, normalize, locate, dispatch, saveEntityWithAssets } from '../state';
-import { t, number, errorText } from '../i18n';
+import { state, route, navigate, notify, normalize, locate, dispatch } from '../state';
+import { t, number, errorText, language } from '../i18n';
 import { paginationEnabled, pageTotal, pageRows } from '../pagination.mjs';
 import { quantity } from '../../core/shared.mjs';
 import CategoryManager from '../components/CategoryManager.vue';
@@ -98,12 +98,16 @@ const filtered = computed(() => {
     return !query || row.search.includes(query);
   }).sort((a, b) => sort.value === 'recent' ? b.material.createdAt.localeCompare(a.material.createdAt) : sort.value === 'nameZA' ? b.material.name.localeCompare(a.material.name) : sort.value==='codeAZ' ? a.material.code.localeCompare(b.material.code) || a.material.name.localeCompare(b.material.name) : sort.value==='brandAZ' ? a.material.brand.localeCompare(b.material.brand)||a.material.range.localeCompare(b.material.range)||a.material.code.localeCompare(b.material.code) : a.material.name.localeCompare(b.material.name));
 });
+// Catalogue membership changes with inventory, never with checkbox selection or search.
+const missingArticles = computed(() => hasCatalogueRows(section.value.child?.brand) ? missingCatalogueArticles(section.value.child.brand, state.value.materials) : []);
+const catalogueById = computed(() => new Map(missingArticles.value.map(row => [row.product.id, row])));
+const materialById = computed(() => new Map(rows.value.map(row => [row.material.id, row.material])));
 // Catalogue articles not yet in the inventory follow the owned rows, greyed out, and can only be ordered.
 const catalogueRows = computed(() => {
   const brand = section.value.child?.brand;
   if (!hasCatalogueRows(brand) || filter.value !== 'active' || location.value || category.value) return [];
   const query = normalize(search.value);
-  return missingCatalogueArticles(brand, state.value.materials).filter(({ product }) => !query || normalize([product.brand, product.range, product.code, product.colorName].join(' ')).includes(query));
+  return missingArticles.value.filter(({ product }) => !query || normalize([product.brand, product.range, product.code, product.colorName].join(' ')).includes(query));
 });
 const entries = computed(() => [...filtered.value, ...catalogueRows.value]);
 const pageCount = computed(() => pageTotal(entries.value.length, pageSize));
@@ -114,20 +118,16 @@ const visibleCatalogue = computed(() => pageEntries.value.filter(row => row.prod
 const ordering = ref(null), orderBusy = ref(false), orderError = ref('');
 let orderOperationId;
 const selectionCount = computed(() => selected.value.length + selectedCatalogue.value.length);
-const selectedOrders = computed(() => [
-  ...rows.value.filter(row => selected.value.includes(row.material.id)).map(row => ({ materialId: row.material.id, material: row.material })),
-  ...catalogueRows.value.filter(row => selectedCatalogue.value.includes(row.product.id)).map(row => ({ product: row.product })),
-]);
-// Resolve catalogue selection against the complete catalogue, including rows hidden by search.
+// Resolve only selected IDs; catalogue indexing is cached independently of selection.
 const orderableSelection = computed(() => [
-  ...selectedOrders.value.filter(row => row.material && !row.material.archived && !isDiscontinued(row.material)),
-  ...(hasCatalogueRows(section.value.child?.brand) ? missingCatalogueArticles(section.value.child.brand, state.value.materials) : []).filter(row => selectedCatalogue.value.includes(row.product.id) && !row.discontinued).map(row => ({ product: row.product })),
+  ...selected.value.map(id => materialById.value.get(id)).filter(material => material && !material.archived && !isDiscontinued(material)).map(material => ({ materialId: material.id, material })),
+  ...selectedCatalogue.value.map(id => catalogueById.value.get(id)).filter(row => row && !row.discontinued).map(row => ({ product: row.product })),
 ]);
 function beginOrder(rows) {
   ordering.value = rows.map(row => ({ ...row, quantity: 1 })); orderOperationId = crypto.randomUUID(); orderError.value = '';
 }
 function orderArticle(product) { beginOrder([{ product }]); }
-function orderName(row) { return row.material?.name || [row.product.brand, row.product.range, row.product.code, row.product.colorName].filter(Boolean).join(' ? '); }
+function orderName(row) { return row.material?.name || [row.product.brand, row.product.range, row.product.code, row.product.colorName].filter(Boolean).join(' \u00b7 '); }
 function orderUnit(row) { return row.material?.unit || catalogueMaterial(row.product, 'preview').unit; }
 async function placeOrder() {
   if (orderBusy.value) return;
@@ -217,7 +217,7 @@ function workflowSaved(){workflow.value='';selected.value=[];}
         <div ref="inventoryTable" class="table-wrap">
           <table>
             <thead><tr><th><input type="checkbox" :checked="pageSelected" :indeterminate="!pageSelected && pagePartSelected" :aria-label="t('selectVisibleMaterials')" @change="togglePage" /></th><th>{{ t('name') }}</th><th>{{ t('category') }}</th><th>{{ t('physical') }}</th><th>{{ t('available') }}</th><th><span class="sr-only">{{ t('status') }}</span></th><th>{{ t('actions') }}</th></tr></thead>
-            <tbody><tr v-for="row in visible" :key="row.material.id"><td><input v-model="selected" :value="row.material.id" type="checkbox" :disabled="selectionCount>=200 && !selected.includes(row.material.id)" :aria-label="t('selectMaterial',{name:row.material.name})" /></td>
+            <tbody><tr v-for="row in visible" :key="row.material.id" v-memo="[language, row, selected.includes(row.material.id), selectionCount >= 200]"><td><input v-model="selected" :value="row.material.id" type="checkbox" :disabled="selectionCount>=200 && !selected.includes(row.material.id)" :aria-label="t('selectMaterial',{name:row.material.name})" /></td>
               <td><div class="material-cell"><span class="swatch" :style="{ backgroundColor: row.material.color || undefined, ...productPreviewStyle(row.material) }"><Package v-if="!row.material.color && !productPreview(row.material)" :size="18" /></span><div><button class="cell-title" @click="navigate('material', row.material.id)">{{ row.material.name }} <Heart v-if="row.material.favorite" :size="12" /></button><span v-if="isDiscontinued(row.material)" class="badge discontinued-badge">{{ t('descriptorOption_discontinued') }}</span><span class="cell-subtitle">{{ [row.material.brand, row.material.range, row.material.code].filter(Boolean).join(' · ') || '—' }}</span></div></div></td>
               <td>{{ categoryName(row.material.category) }}</td>
               <td>{{ row.summary.estimated ? '≈ ' : '' }}{{ number(row.summary.physical) }}<small v-if="row.summary.physical !== null" class="cell-subtitle">{{ t(`unit_${row.material.unit}`) }}</small><small v-else-if="row.summary.knownPhysical" class="cell-subtitle">{{ t('knownAtLeast') }} {{ number(row.summary.knownPhysical) }}</small></td>
@@ -229,7 +229,7 @@ function workflowSaved(){workflow.value='';selected.value=[];}
                 <button v-if="!isDiscontinued(row.material)" class="icon-button" :aria-label="t('shopThreadNamed', { name: row.material.name })" :title="t('sendToShopping')" @click="navigate('shopping', row.material.id)"><ShoppingCart :size="18" /></button>
               </div></td>
             </tr></tbody>
-            <tbody v-if="visibleCatalogue.length" class="catalogue-rows"><tr v-for="{ product, discontinued } in visibleCatalogue" :key="product.id"><td><input v-model="selectedCatalogue" :value="product.id" type="checkbox" :disabled="selectionCount>=200 && !selectedCatalogue.includes(product.id)" :aria-label="t('selectMaterial',{name:[product.code,product.colorName].filter(Boolean).join(' ? ')})" /></td>
+            <tbody v-if="visibleCatalogue.length" class="catalogue-rows"><tr v-for="{ product, discontinued } in visibleCatalogue" :key="product.id" v-memo="[language, product, discontinued, selectedCatalogue.includes(product.id), selectionCount >= 200]"><td><input v-model="selectedCatalogue" :value="product.id" type="checkbox" :disabled="selectionCount>=200 && !selectedCatalogue.includes(product.id)" :aria-label="t('selectMaterial',{name:[product.code,product.colorName].filter(Boolean).join(' \u00b7 ')})" /></td>
               <td><div class="material-cell"><span class="swatch" :style="{ backgroundColor: product.hex || undefined, ...productPreviewStyle(product) }"><Package v-if="!product.hex && !productPreview(product)" :size="18" /></span><div><span class="cell-title">{{ [product.code, product.colorName].filter(Boolean).join(' · ') }}</span><span v-if="discontinued" class="badge discontinued-badge">{{ t('descriptorOption_discontinued') }}</span><span class="cell-subtitle">{{ [product.brand, product.range].join(' · ') }}</span></div></div></td>
               <td>{{ categoryName(product.category) }}</td><td>—</td><td>—</td><td></td>
               <td><div class="actions"><button v-if="!discontinued" class="icon-button" :aria-label="t('shopThreadNamed', { name: [product.code, product.colorName].filter(Boolean).join(' · ') })" :title="t('sendToShopping')" @click="orderArticle(product)"><ShoppingCart :size="18" /></button></div></td>
