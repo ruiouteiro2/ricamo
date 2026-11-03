@@ -22,10 +22,17 @@ Renderer CPU sampling and Chromium Event Timing distinguished input delay, event
 
 ## Regression coverage
 
-`tests/desktop-inventory-responsiveness.mjs` uses synthetic stock and more than 1,000 catalogue entries with pagination disabled. It checks consecutive native toggles without searching, preserved neighboring selections, bounded DOM, the 200-selection limit, scrolling to distant catalogue rows and back, cross-window selection persistence, purchase creation and unchanged stock/movements. The existing DMC journey covers searching and mixed owned/catalogue purchases. The capped select-all checkbox now shows a mixed state instead of incorrectly remaining checked after reaching the limit.
+`tests/desktop-inventory-responsiveness.mjs` uses synthetic stock and more than 1,000 catalogue entries with pagination disabled. It checks consecutive native toggles without searching, preserved neighboring selections, bounded DOM, the 200-selection limit, scrolling to distant catalogue rows and back, selection across distant scroll positions, purchase creation and unchanged stock/movements. The existing DMC journey covers searching and mixed owned/catalogue purchases. The capped select-all checkbox now shows a mixed state instead of incorrectly remaining checked after reaching the limit.
 
 The general suite passed: 613 tests, 612 passed, one skipped, zero failures. The previously recurring tool-date failure came from the calendar test changing process-wide TZ in a shared Windows test process; timezone cases now execute in child processes. No product date validation was relaxed.
 
 ## Limits
 
 This is a targeted code and runtime audit of navigation, inventory interaction, catalogue preparation and command persistence on the current Windows host. It is not an exhaustive benchmark of every editor, print/export operation, physical device or possible data size. Large synchronous saves and cold module/catalogue preparation remain finite costs. The installed build and visible production-profile launch must be checked separately from source runs before delivery.
+
+
+## Installed verification
+
+The Windows installer and release audit passed with matching sources. Both native journeys passed against the packaged executable: `.runtime/inventory-responsiveness-woMXB6` and `.runtime/dmc-mouline-rows-vu3YEW`. Silent installation exited 0; installed app.asar matched the tested package. The user database hash was unchanged after installation, with a pre-update copy in `.runtime/before-audit-update-*`.
+
+The installed production-profile app was reopened through Windows Computer Use. Verified the populated dashboard and Mill Hill list, restored the three pre-update selected catalogue codes (00081, 00123, 00128), and cleared the temporary search. The UI visibly retained all three selections. No purchases or stock changes were made in the live profile.
