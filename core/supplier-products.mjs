@@ -61,11 +61,16 @@ const effectSwatches=new Map(lightEffects.colours.map(row=>[supplierIdentity({br
 export function supplierSwatch(product){const effect=effectSwatches.get(supplierIdentity(product));if(effect)return{...product,hex:product.hex??effect.hex.toLowerCase(),rgbSource:product.rgbSource??effect.rgbSource,colorVariation:effect.multicolourObserved?'multicolour':product.colorVariation??null};if(product.hex)return product;const anchorColor=anchorSwatches.get(supplierIdentity(product));if(anchorColor)return {...product,hex:anchorColor.hex,rgbSource:anchorColor.rgbSource};const swatch=dmcSwatches.get(supplierIdentity(product));return swatch?{...product,hex:swatch.hex.toLowerCase(),rgbSource:{kind:'approximate',sourceUrl:'https://github.com/makebead/craft-color-codes',label:'MakeBead DMC snapshot · CC BY 4.0 · indicative digital colour'}}:product;}
 export const SUPPLIER_SNAPSHOT_COVERAGE=acquired.coverage;
 export const BUNDLED_SUPPLIER_EXCLUSIONS=Object.freeze((acquired.sourcePages??[]).filter(page=>['excluded','non-material'].includes(page.outcome)).map(page=>Object.freeze({supplier:'tessiland',url:page.url,retrievedAt:page.retrievedAt})));
-export function bundledSupplierProducts(){const legacy=[...CASA_CENINA.fabrics,...CASA_CENINA.materials].map(row=>normalizeSupplierProduct(supplierSwatch({
+let bundledProducts;
+const freezeProduct = value => {
+ if(value && typeof value==='object' && !Object.isFrozen(value)){for(const child of Object.values(value))freezeProduct(child);Object.freeze(value);}return value;
+};
+/** Normalize the immutable bundled snapshot once; callers receive their own sortable array. */
+export function bundledSupplierProducts(){if(bundledProducts)return [...bundledProducts];const legacy=[...CASA_CENINA.fabrics,...CASA_CENINA.materials].map(row=>normalizeSupplierProduct(supplierSwatch({
  ...row,supplier:'casa-cenina',type:row.type??(row.category==='embellishment'?'bead':row.range==='Mouliné'?'mouline':row.brand==='Kreinik'?'metallic':'thread'),retrievedAt:CASA_CENINA.retrievedAt,
  pack:row.brand==='DMC'&&row.range==='Mouliné'?{unit:'skein',lengthM:8,strands:6,divisible:true}:row.category==='embellishment'?{unit:'pack'}:{},
  fabric:row.category==='fabric'&&row.countMeaning?{countX:row.count,countY:row.count,countMeaning:row.countMeaning,overX:row.over,overY:row.over}:null,
-})));return [...legacy,...[...acquired.products,...supplement.products,...madeira.products,...diamant.products,...colbert.products,...alsace.products,...pearl.products,...mat.products,...millHill.products,...coloris.products].map(row=>normalizeSupplierProduct(supplierSwatch(row)))];}
+})));bundledProducts=[...legacy,...[...acquired.products,...supplement.products,...madeira.products,...diamant.products,...colbert.products,...alsace.products,...pearl.products,...mat.products,...millHill.products,...coloris.products].map(row=>normalizeSupplierProduct(supplierSwatch(row)))].map(freezeProduct);return [...bundledProducts];}
 
 /** Catalogue pack facts are valid only for the exact saved material identity. */
 export function validateSupplierMaterial(material){
