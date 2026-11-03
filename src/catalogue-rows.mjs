@@ -39,7 +39,7 @@ export const hasCatalogueRows = brand => Object.hasOwn(sources, brand ?? '');
 export function missingCatalogueArticles(brand, materials) {
   const owned = materials.filter(material => !material.archived && material.brand === brand);
   const isOwned = brand === 'Mill Hill' ? millHillOwned(owned) : identityOwned(owned);
-  return allArticles(brand).filter(row => !isOwned(row)).map(product => ({ product, discontinued: isDiscontinued(product) }));
+  return allArticles(brand).filter(row => !isOwned(row) && !(row.category === 'thread' && isDiscontinued(row))).map(product => ({ product, discontinued: isDiscontinued(product) }));
 }
 export function catalogueMaterial(product, id) {
   const thread = product.category === 'thread';
