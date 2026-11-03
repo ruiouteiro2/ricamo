@@ -1,4 +1,5 @@
 <script setup>
+import { PURCHASE_SELECTION_LIMIT } from '../../core/selection-purchases.mjs';
 import { useVirtualInventory } from '../virtual-inventory.mjs';
 import { productPreview, productPreviewStyle } from '../product-previews.mjs';
 import { CHART_CATALOGUE } from '../../core/chart-collection.mjs';
@@ -126,6 +127,13 @@ const orderableSelection = computed(() => [
   ...selected.value.map(id => materialById.value.get(id)).filter(material => material && !material.archived && !isDiscontinued(material)).map(material => ({ materialId: material.id, material })),
   ...selectedCatalogue.value.map(id => catalogueById.value.get(id)).filter(row => row && !row.discontinued).map(row => ({ product: row.product })),
 ]);
+const purchasableCatalogue = computed(() => catalogueRows.value.filter(row => !row.discontinued));
+const allCatalogueSelected = computed(() => purchasableCatalogue.value.length > 0 && purchasableCatalogue.value.every(row => selectedCatalogue.value.includes(row.product.id)));
+function selectAllCatalogue() {
+  const ids = new Set([...selectedCatalogue.value, ...purchasableCatalogue.value.map(row => row.product.id)]);
+  if (ids.size + selected.value.length > PURCHASE_SELECTION_LIMIT) { notify(t('catalogueSelectionLimit', { count: PURCHASE_SELECTION_LIMIT })); return; }
+  selectedCatalogue.value = [...ids];
+}
 function beginOrder(rows) {
   ordering.value = rows.map(row => ({ ...row, quantity: 1 })); orderOperationId = crypto.randomUUID(); orderError.value = '';
 }
@@ -147,7 +155,7 @@ const pagePartSelected=computed(()=>pageEntries.value.some(row=>row.material ? s
 function selectRow(target, id, checked) {
   const selection = target === 'catalogue' ? selectedCatalogue : selected;
   if (!checked) selection.value = selection.value.filter(value => value !== id);
-  else if (!selection.value.includes(id) && selectionCount.value < 200) selection.value = [...selection.value, id];
+  else if (!selection.value.includes(id) && selectionCount.value < PURCHASE_SELECTION_LIMIT && (target === 'catalogue' || selected.value.length < 200)) selection.value = [...selection.value, id];
 }
 async function togglePage(event){
   const remove = pageSelected.value;
@@ -216,19 +224,20 @@ function workflowSaved(){workflow.value='';selected.value=[];}
       <select v-model="location" :aria-label="t('location')"><option value="">{{ t('allLocations') }}</option><option v-for="item in state.locations" :key="item.id" :value="item.id">{{ locate(item.id) }}</option></select>
       <select v-model="filter" :aria-label="t('status')"><option value="active">{{ t('active') }}</option><option value="low">{{ t('lowStock') }}</option><option value="review">{{ t('needsReview') }}</option><option value="partial">{{ t('inventoryPartiallyUsed') }}</option><option value="favorite">{{ t('favorite') }}</option><option value="archived">{{ t('archived') }}</option></select>
       <select v-model="sort" :aria-label="t('sort')"><option value="nameAZ">{{ t('nameAZ') }}</option><option value="recent">{{ t('recent') }}</option><option value="nameZA">{{ t('nameZA') }}</option><option value="codeAZ">{{ t('codeAZ') }}</option><option value="brandAZ">{{ t('brandAZ') }}</option></select>
-      <button class="button small" :disabled="preferenceBusy" @click="rememberFilters">{{ t('rememberFilters') }}</button>
+      <button v-if="purchasableCatalogue.length" class="button" :disabled="allCatalogueSelected" @click="selectAllCatalogue">{{ t('selectAllGreyed') }} ({{ number(purchasableCatalogue.length, 0) }})</button><button class="button small" :disabled="preferenceBusy" @click="rememberFilters">{{ t('rememberFilters') }}</button>
     </div>
     <p v-if="preferenceError" role="alert" class="notice error">{{ preferenceError }}</p>
     <section class="panel">
 
-      <div v-if="selectionCount" class="panel-heading"><span>{{ t('selectedMaterialCount',{count:selectionCount}) }}</span><div class="actions"><button class="button small" @click="selected=[];selectedCatalogue=[]">{{ t('clearSelection') }}</button><button class="button primary small" :disabled="!orderableSelection.length" @click="beginOrder(orderableSelection)"><ShoppingCart :size="16" />{{ t('sendToShopping') }}</button><button v-if="selected.length && !selectedCatalogue.length" class="button small" @click="workflow='collectionSelection'">{{ t('kitCreateFromSelection') }}</button><button v-if="selected.length && !selectedCatalogue.length" class="button small" @click="workflow='labels'">{{ t('inventoryLabels') }}</button><button v-if="selected.length && !selectedCatalogue.length" class="button primary small" @click="workflow='bulk'">{{ t('bulkEdit') }}</button></div></div>
+      <div v-if="selectionCount" class="panel-heading"><span>{{ t(selectedCatalogue.length ? 'selectedPurchaseCount' : 'selectedMaterialCount',{count:selectionCount}) }}</span><div class="actions"><button class="button small" @click="selected=[];selectedCatalogue=[]">{{ t('clearSelection') }}</button><button class="button primary small" :disabled="!orderableSelection.length" @click="beginOrder(orderableSelection)"><ShoppingCart :size="16" />{{ t('sendToShopping') }}</button><button v-if="selected.length && !selectedCatalogue.length" class="button small" @click="workflow='collectionSelection'">{{ t('kitCreateFromSelection') }}</button><button v-if="selected.length && !selectedCatalogue.length" class="button small" @click="workflow='labels'">{{ t('inventoryLabels') }}</button><button v-if="selected.length && !selectedCatalogue.length" class="button primary small" @click="workflow='bulk'">{{ t('bulkEdit') }}</button></div></div>
       <EmptyState v-if="!rows.length && !catalogueRows.length" :icon="Package" :title="t('emptyMaterials')" :description="t('emptyMaterialsBody')"><button class="button primary" @click="addTo()"><Plus :size="16" />{{ t('addMaterial') }}</button></EmptyState>
       <EmptyState v-else-if="!entries.length" :icon="Search" :title="t('noResults')"><button class="button" @click="clear">{{ t('clearFilters') }}</button></EmptyState>
       <template v-else>
         <div ref="inventoryTable" class="table-wrap" @scroll.passive="virtualInventory.update">
-          <table :aria-rowcount="entries.length + 1">
+          <table class="inventory-table" :aria-rowcount="entries.length + 1">
+            <colgroup><col style="width:44px" /><col /><col style="width:14%" /><col style="width:14%" /><col style="width:12%" /><col style="width:10%" /><col style="width:124px" /></colgroup>
             <thead><tr><th><input type="checkbox" :checked="pageSelected" :indeterminate="!pageSelected && pagePartSelected" :aria-label="t('selectVisibleMaterials')" @change="togglePage" /></th><th>{{ t('name') }}</th><th>{{ t('category') }}</th><th>{{ t('physical') }}</th><th>{{ t('available') }}</th><th><span class="sr-only">{{ t('status') }}</span></th><th>{{ t('actions') }}</th></tr></thead>
-            <tbody><tr v-if="virtualInventory.before.value" aria-hidden="true" class="inventory-spacer"><td colspan="7" :style="{ height: `${virtualInventory.before.value}px` }"></td></tr><tr v-for="row in visible" :key="row.material.id" :data-inventory-row="`material:${row.material.id}`" v-memo="[language, row, selected.includes(row.material.id), selectionCount >= 200]"><td><input :checked="selected.includes(row.material.id)" @change="selectRow('material', row.material.id, $event.target.checked)" :value="row.material.id" type="checkbox" :disabled="selectionCount>=200 && !selected.includes(row.material.id)" :aria-label="t('selectMaterial',{name:row.material.name})" /></td>
+            <tbody><tr v-if="virtualInventory.before.value" aria-hidden="true" class="inventory-spacer"><td colspan="7" :style="{ height: `${virtualInventory.before.value}px` }"></td></tr><tr v-for="row in visible" :key="row.material.id" :data-inventory-row="`material:${row.material.id}`" v-memo="[language, row, selected.includes(row.material.id), (selected.length >= 200 || selectionCount >= PURCHASE_SELECTION_LIMIT)]"><td><input :checked="selected.includes(row.material.id)" @change="selectRow('material', row.material.id, $event.target.checked)" :value="row.material.id" type="checkbox" :disabled="(selected.length>=200 || selectionCount>=PURCHASE_SELECTION_LIMIT) && !selected.includes(row.material.id)" :aria-label="t('selectMaterial',{name:row.material.name})" /></td>
               <td><div class="material-cell"><span class="swatch" :style="{ backgroundColor: row.material.color || undefined, ...productPreviewStyle(row.material) }"><Package v-if="!row.material.color && !productPreview(row.material)" :size="18" /></span><div><button class="cell-title" @click="navigate('material', row.material.id)">{{ row.material.name }} <Heart v-if="row.material.favorite" :size="12" /></button><span v-if="isDiscontinued(row.material)" class="badge discontinued-badge">{{ t('descriptorOption_discontinued') }}</span><span class="cell-subtitle">{{ [row.material.brand, row.material.range, row.material.code].filter(Boolean).join(' · ') || '—' }}</span></div></div></td>
               <td>{{ categoryName(row.material.category) }}</td>
               <td>{{ row.summary.estimated ? '≈ ' : '' }}{{ number(row.summary.physical) }}<small v-if="row.summary.physical !== null" class="cell-subtitle">{{ t(`unit_${row.material.unit}`) }}</small><small v-else-if="row.summary.knownPhysical" class="cell-subtitle">{{ t('knownAtLeast') }} {{ number(row.summary.knownPhysical) }}</small></td>
@@ -240,7 +249,7 @@ function workflowSaved(){workflow.value='';selected.value=[];}
                 <button v-if="!isDiscontinued(row.material)" class="icon-button" :aria-label="t('shopThreadNamed', { name: row.material.name })" :title="t('sendToShopping')" @click="navigate('shopping', row.material.id)"><ShoppingCart :size="18" /></button>
               </div></td>
             </tr></tbody>
-            <tbody v-if="visibleCatalogue.length" class="catalogue-rows"><tr v-for="{ product, discontinued } in visibleCatalogue" :key="product.id" :data-inventory-row="`catalogue:${product.id}`" v-memo="[language, product, discontinued, selectedCatalogue.includes(product.id), selectionCount >= 200]"><td><input :checked="selectedCatalogue.includes(product.id)" @change="selectRow('catalogue', product.id, $event.target.checked)" :value="product.id" type="checkbox" :disabled="selectionCount>=200 && !selectedCatalogue.includes(product.id)" :aria-label="t('selectMaterial',{name:[product.code,product.colorName].filter(Boolean).join(' \u00b7 ')})" /></td>
+            <tbody v-if="visibleCatalogue.length" class="catalogue-rows"><tr v-for="{ product, discontinued } in visibleCatalogue" :key="product.id" :data-inventory-row="`catalogue:${product.id}`" v-memo="[language, product, discontinued, selectedCatalogue.includes(product.id), selectionCount >= PURCHASE_SELECTION_LIMIT]"><td><input :checked="selectedCatalogue.includes(product.id)" @change="selectRow('catalogue', product.id, $event.target.checked)" :value="product.id" type="checkbox" :disabled="selectionCount>=PURCHASE_SELECTION_LIMIT && !selectedCatalogue.includes(product.id)" :aria-label="t('selectMaterial',{name:[product.code,product.colorName].filter(Boolean).join(' \u00b7 ')})" /></td>
               <td><div class="material-cell"><span class="swatch" :style="{ backgroundColor: product.hex || undefined, ...productPreviewStyle(product) }"><Package v-if="!product.hex && !productPreview(product)" :size="18" /></span><div><span class="cell-title">{{ [product.code, product.colorName].filter(Boolean).join(' · ') }}</span><span v-if="discontinued" class="badge discontinued-badge">{{ t('descriptorOption_discontinued') }}</span><span class="cell-subtitle">{{ [product.brand, product.range].join(' · ') }}</span></div></div></td>
               <td>{{ categoryName(product.category) }}</td><td>—</td><td>—</td><td></td>
               <td><div class="actions"><button v-if="!discontinued" class="icon-button" :aria-label="t('shopThreadNamed', { name: [product.code, product.colorName].filter(Boolean).join(' · ') })" :title="t('sendToShopping')" @click="orderArticle(product)"><ShoppingCart :size="18" /></button></div></td>
