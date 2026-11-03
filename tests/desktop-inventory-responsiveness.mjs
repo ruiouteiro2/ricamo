@@ -28,6 +28,19 @@ try {
   await card('Perle').locator('.inventory-category-link').click(); await card('Mill Hill').locator('.inventory-category-link').click();
   const table = page.locator('.table-wrap'), boxes = table.locator('tbody input[type=checkbox]');
   await boxes.first().waitFor(); assert.ok(await boxes.count() < 80, 'continuous lists must have bounded DOM rows');
+  // Exercise width/height changes, maximize and minimize/restore with the list open.
+  for (const bounds of [{width:800,height:620},{width:800,height:900},{width:1400,height:900}]) {
+    await app.evaluate(({BrowserWindow}, bounds) => BrowserWindow.getAllWindows()[0].setBounds(bounds), bounds);
+    await expect.poll(() => table.evaluate(element => element.clientWidth)).toBeGreaterThan(bounds.width - (bounds.width < 850 ? 210 : 410));
+    await expect.poll(() => table.evaluate(element => element.clientHeight)).toBeLessThan(bounds.height * .7);
+    assert.ok(await boxes.count() < 80);
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'page must fit current width');
+  }
+  await app.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows()[0].maximize());
+  await expect.poll(() => app.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows()[0].isMaximized())).toBe(true);
+  await app.evaluate(({BrowserWindow}) => {const window=BrowserWindow.getAllWindows()[0];window.minimize();window.restore();window.unmaximize();});
+  await expect(boxes.first()).toBeVisible();
+
   for (let round = 0; round < 3; round++) {
     for (let index = 0; index < 4; index++) {
       const start = performance.now(); await boxes.nth(index).click();
