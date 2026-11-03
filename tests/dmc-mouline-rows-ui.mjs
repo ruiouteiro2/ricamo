@@ -30,6 +30,12 @@ try{
  await find.fill('321');await red.locator('button').click();await dialog.getByLabel('Quantità *',{exact:true}).fill('3');await dialog.getByRole('button',{name:'Inserisci in Acquisti',exact:true}).click();await expect(dialog).toHaveCount(0);
  await expect(red).toHaveCount(0);const bought=owned.filter({hasText:'321'});await expect(bought).toContainText('DMC · Mouliné · 321');
  await bought.getByRole('button',{name:/^Modifica/}).click();await expect(dialog.getByLabel('Tipologia *',{exact:true})).toHaveValue('mouline');await expect(dialog.getByLabel('Codice colore',{exact:true})).toHaveValue('321');await dialog.getByRole('button',{name:'Annulla',exact:true}).click();
- await page.locator('.sidebar').getByRole('button',{name:'Acquisti',exact:true}).click();const order=page.locator('.table-wrap tbody tr').filter({hasText:'321'});await expect(order).toContainText('3');await expect(order).toContainText(/matass/i);
+ // Select owned and catalogue rows across searches, then enter quantities together.
+ await bought.locator('input[type="checkbox"]').check();
+ await find.fill('310');const black=grey.filter({has:page.locator('.cell-title',{hasText:/^310( |$)/})});await black.locator('input[type="checkbox"]').check();
+ await find.fill('666');const bright=grey.filter({has:page.locator('.cell-title',{hasText:/^666( |$)/})});await bright.locator('input[type="checkbox"]').check();
+ const selectionBar=page.locator('.panel-heading').filter({has:page.getByRole('button',{name:'Inserisci in Acquisti',exact:true})});await expect(selectionBar).toContainText('3');await selectionBar.getByRole('button',{name:'Inserisci in Acquisti',exact:true}).click();
+ const amounts=dialog.locator('input[inputmode="decimal"]');await expect(amounts).toHaveCount(3);await amounts.nth(0).fill('2');await amounts.nth(1).fill('4');await amounts.nth(2).fill('5');await dialog.getByRole('button',{name:'Inserisci in Acquisti',exact:true}).click();await expect(dialog).toHaveCount(0);
+ await page.locator('.sidebar').getByRole('button',{name:'Acquisti',exact:true}).click();const order=page.locator('.table-wrap tbody tr').filter({hasText:'321'});await expect(order).toHaveCount(2);await expect(order.first()).toContainText(/matass/i);await expect(page.locator('.table-wrap tbody tr').filter({hasText:'310'})).toContainText('4');await expect(page.locator('.table-wrap tbody tr').filter({hasText:'666'})).toContainText('5');
  assert.deepEqual(errors,[]);assert.deepEqual(requests,[]);console.log('PASS: DMC Mouliné colours not yet entered are greyed out and orderable. Evidence: '+data);
 }catch(error){await page.screenshot({path:resolve(data,'failure.png')});throw error;}finally{await app.close();}
