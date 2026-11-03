@@ -621,3 +621,9 @@ The final audited 0.4 application was also opened at 14:45 UTC from `release/win
 Code and build instructions are in README; user guides are USER-GUIDE-IT and USER-GUIDE-EN. Build from the lockfile on Windows with Node 24: `npm ci`, `npm test`, `npm run package:win`. Generated installers, runtime profiles and test artifacts stay out of Git.
 
 Available vt-deliver/design/verify guidance was used. The installed vt-app-test and engineering-loop entrypoints lacked required support references, so this work does not claim full unavailable-library protocol conformance. Authorized independent agents worked in scratch copies; root integrated and published one file at a time.
+
+
+## 2026-11-03 ? Discontinued threads in inventory lists
+
+- Unowned discontinued thread catalogue entries are omitted from grey catalogue rows. Inventory records remain intact and keep the existing localized discontinued badge. Bead catalogue behavior is unchanged.
+- Validation: all 10 tests in `tests/discontinued-materials.test.mjs` passed; `npm run build` passed (existing chunk-size/dynamic-import warnings). Updated the DMC desktop journey expectation; the desktop journey and installed Windows distribution were not rerun for this change.
