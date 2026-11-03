@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { pdfAssets } from './build/pdf-assets.mjs';
+import {schemaStudioAssets} from './build/schema-studio.mjs';
 
 export default defineConfig({
-  plugins: [vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'selectedcontent' } } }), pdfAssets()],
+  plugins: [vue({ template: { compilerOptions: { isCustomElement: tag => tag === 'selectedcontent' } } }), pdfAssets(), schemaStudioAssets()],
   base: './',
   server: { host: '127.0.0.1', port: 5173, strictPort: true },
   // desktop/protocol.mjs refuses assets over 32 MiB, so each large preview catalogue gets its own chunk.
