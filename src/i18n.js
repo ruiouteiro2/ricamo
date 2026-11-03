@@ -4,6 +4,9 @@ import additional from './i18n-extra.json';
 
 export const language = ref('it');
 const words = {
+  selectAllGreyed: ['Seleziona tutti gli articoli in grigio', 'Select all greyed-out items'],
+  selectedPurchaseCount: ['{count} articoli selezionati', '{count} items selected'],
+  catalogueSelectionLimit: ['Puoi selezionare fino a {count} articoli per acquisto.', 'You can select up to {count} items per purchase.'],
   catalogueNotOwned: ['{count} non ancora inseriti', '{count} not yet added'], catalogueOrderAdded: ['Aggiunto agli acquisti.', 'Added to Shopping.'], catalogueOrderHelp: ['L\'articolo entra in inventario a quantità zero e nella lista Acquisti.', 'The article joins the inventory at zero quantity and the Shopping list.'], material_discontinued: ['Questo articolo è fuori produzione: non si può inserire negli acquisti.', 'This article is out of production: it cannot be added to Shopping.'],
   threadReference: ['Riferimento', 'Reference'],
   openThreadReference: ['Apri riferimento filo', 'Open thread reference'],
