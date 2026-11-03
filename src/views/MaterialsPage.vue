@@ -184,7 +184,7 @@ function created(id) {
 function workflowSaved(){workflow.value='';selected.value=[];}
 </script>
 <template>
-  <div class="page">
+  <div class="page inventory-page">
     <PageHeader :eyebrow="t('materials')" :title="section.child ? tileLabel(section.child) : section.group ? tileLabel(section.group) : t('inventoryTitle')" :description="!section.group || section.showList ? t('inventorySubtitle') : undefined">
       <button v-if="!section.group || section.showList" class="button" @click="navigate('settings')"><Download :size="16" />{{ t('inventoryDataTools') }}</button>
       <button v-if="section.showList" class="button primary" @click="addTo()"><Plus :size="17" />{{ t('addMaterial') }}</button>
