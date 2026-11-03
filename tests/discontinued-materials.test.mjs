@@ -70,7 +70,7 @@ const dmcThread=(code,range='Mouliné')=>({id:code,brand:'DMC',range,code,catego
 test('each DMC Mouliné colour appears once until it is entered',()=>{
  const all=missingCatalogueArticles('DMC',[]);assert.equal(new Set(all.map(row=>supplierIdentity(row.product))).size,all.length);
  assert.ok(hasCatalogueRows('DMC'));assert.ok(hasCatalogueRows('Mill Hill'));assert.ok(!hasCatalogueRows('Anchor'));assert.ok(!hasCatalogueRows(undefined));
- assert.equal(all.length,new Set(bundledSupplierProducts().filter(row=>row.brand==='DMC'&&row.range==='Mouliné'&&row.category==='thread').map(supplierIdentity)).size+catalogue.entries.filter(row=>row.brand==='DMC').length);
+ assert.equal(all.length,new Set(bundledSupplierProducts().filter(row=>row.brand==='DMC'&&row.range==='Mouliné'&&row.category==='thread').map(supplierIdentity)).size);
  assert.ok(all.every(row=>row.product.range==='Mouliné'));
  assert.ok(!missingCatalogueArticles('DMC',[dmcThread('ECRU')]).some(row=>/^ecru$/i.test(row.product.code)));
  assert.ok(!missingCatalogueArticles('DMC',[dmcThread('blanc')]).some(row=>/^blanc$/i.test(row.product.code)));
@@ -82,5 +82,7 @@ test('a DMC Mouliné order uses the same shape as a thread entered in the form',
  const all=missingCatalogueArticles('DMC',[]),red=all.find(row=>row.product.code==='321');assert.ok(!red.discontinued);
  const material=catalogueMaterial(red.product,'id');assert.equal(material.name,'DMC · Mouliné · 321');assert.equal(material.unit,'skein');assert.equal(material.strands,6);assert.equal(material.divisible,true);assert.equal(material.properties.threadFamily,'mouline');assert.equal(material.properties.quantityBasis,'package-count');assert.equal(material.color,red.product.hex);
  assert.equal(validateSupplierMaterial(material).id,red.product.id);
- const retired=all.find(row=>row.product.code==='222');assert.ok(retired.discontinued);
+ assert.ok(!all.some(row=>row.product.code==='222'));
+ const entered=dmcThread('222');assert.ok(isDiscontinued(entered));assert.ok(!missingCatalogueArticles('DMC',[entered]).some(row=>row.product.code==='222'));
+ assert.ok(all.every(row=>!row.discontinued));
 });
