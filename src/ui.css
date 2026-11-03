@@ -231,3 +231,9 @@ tbody tr { transition: background-color var(--motion-fast) var(--ease-ui); }
 .inventory-table .material-cell > div { min-width: 0; }
 .inventory-page .panel-heading, .inventory-page .panel-heading > .actions, .inventory-page .page-actions { flex-wrap: wrap; }
 .inventory-page .panel-heading > .actions { max-width: 100%; }
+
+.supplier-order-totals { margin-bottom: 20px; }
+.supplier-order-totals .panel-heading { flex-wrap: wrap; }
+.supplier-order-total + .supplier-order-total { border-top: 1px solid var(--line); }
+.supplier-order-total .stat-row { flex-wrap: wrap; gap: 8px 16px; }
+.supplier-order-total .stat-row > .field-help { width: 100%; margin: 0; }
