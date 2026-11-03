@@ -28,18 +28,27 @@ try {
   await card('Perle').locator('.inventory-category-link').click(); await card('Mill Hill').locator('.inventory-category-link').click();
   const table = page.locator('.table-wrap'), boxes = table.locator('tbody input[type=checkbox]');
   await boxes.first().waitFor(); assert.ok(await boxes.count() < 80, 'continuous lists must have bounded DOM rows');
+  const greyCount = missingCatalogueArticles('Mill Hill', state.materials).filter(row => !row.discontinued).length;
+  await boxes.first().check();
+  await page.getByRole('button', { name: /^Seleziona tutti gli articoli in grigio/ }).click();
+  const selectionBar = page.locator('.panel-heading').filter({ has: page.getByRole('button', { name: 'Annulla selezione', exact: true }) });
+  await expect(selectionBar).toContainText(`${greyCount + 1} articoli selezionati`);
+  await expect(boxes.nth(1)).not.toBeChecked();
   // Exercise width/height changes, maximize and minimize/restore with the list open.
   for (const bounds of [{width:800,height:620},{width:800,height:900},{width:1400,height:900}]) {
     await app.evaluate(({BrowserWindow}, bounds) => BrowserWindow.getAllWindows()[0].setBounds(bounds), bounds);
     await expect.poll(() => table.evaluate(element => element.clientWidth)).toBeGreaterThan(bounds.width - (bounds.width < 850 ? 210 : 410));
     await expect.poll(() => table.evaluate(element => element.clientHeight)).toBeLessThan(bounds.height * .7);
     assert.ok(await boxes.count() < 80);
+    assert.ok(await selectionBar.evaluate(element => [...element.querySelectorAll('button')].every(button => button.getBoundingClientRect().right <= element.getBoundingClientRect().right + 1)), 'selection actions must remain inside the panel');
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'page must fit current width');
   }
   await app.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows()[0].maximize());
   await expect.poll(() => app.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows()[0].isMaximized())).toBe(true);
   await app.evaluate(({BrowserWindow}) => {const window=BrowserWindow.getAllWindows()[0];window.minimize();window.restore();window.unmaximize();});
   await expect(boxes.first()).toBeVisible();
+  await expect(selectionBar).toContainText(`${greyCount + 1} articoli selezionati`);
+  await page.getByRole('button', { name: 'Annulla selezione', exact: true }).click();
 
   for (let round = 0; round < 3; round++) {
     for (let index = 0; index < 4; index++) {
@@ -50,7 +59,7 @@ try {
   }
   await page.getByRole('button', { name: 'Annulla selezione', exact: true }).click();
   await table.locator('thead input[type=checkbox]').click();
-  await expect(page.locator('.panel-heading').filter({ hasText: 'materiali selezionati' })).toContainText('200');
+  await expect(page.locator('.panel-heading').filter({ hasText: 'selezionati' })).toContainText('200');
   await expect(table.locator('thead input[type=checkbox]')).not.toBeChecked();
   await page.getByRole('button', { name: 'Annulla selezione', exact: true }).click();
   await expect(table.locator('thead input[type=checkbox]')).not.toBeChecked();
