@@ -1,3 +1,4 @@
+import {schemaStudioHandlers,validateSchemaStudio} from './schema-studio.mjs';
 import { purchaseSelection } from './selection-purchases.mjs';
 import {threadCountHandlers} from './thread-count-unit.mjs';
 import { schemaShoppingHandlers, validateSchemaShopping } from './schema-shopping.mjs';
@@ -33,6 +34,7 @@ import { toolActivityHandlers, validateToolActivity } from './tool-activity.mjs'
 
 export { createState };
 const handlers = {
+  ...schemaStudioHandlers,
   'purchase.selection': purchaseSelection,
   ...threadCountHandlers,
   ...schemaShoppingHandlers,
@@ -146,6 +148,7 @@ export function executeCommand(state, command, context = {}) {
 
 export function validateApplicationState(state) {
   validateState(state);
+  validateSchemaStudio(state);
   validatePatternLibrary(state);
   validateCatalogueReferences(state);
   validateThreadCatalogues(state);
