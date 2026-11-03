@@ -639,3 +639,10 @@ Available vt-deliver/design/verify guidance was used. The installed vt-app-test 
 - Silent installer exited 0; installed app.asar hash matched the tested package. Closed normally and backed up user SQLite in `.runtime/before-multiselect-update-*`; database hash was unchanged after installation. Relaunched installed Ricamo with Electron node-mode environment removed.
 
 - Post-update incident: user reported a blank window. A normal launch through Windows Computer Use restored the installed application. Verified the actual user profile with renderer text and native screenshot: dashboard displays 473 materials, 2 projects and 2 charts. No renderer error observed during an instrumented launch/reload. Earlier hidden-process launch was insufficient evidence of a usable visible window; exact blank-window cause remains unconfirmed. No user data reset or cache deletion was performed.
+
+
+## 2026-11-03 ? Checkbox responsiveness
+
+- Cached missing catalogue rows and material/product indexes independently of selection/search. Resolve selected IDs through these indexes and memoize unchanged table rows, including language and selection-limit invalidation. Removed repeated catalogue rebuilding on checkbox changes.
+- Packaged comparison on copies of the existing 473-material database (user data never committed), pagination disabled: 25 DOM checkbox activations measured through two animation frames. DMC, 553 rows: median 102.5 -> 14.7 ms, p95 119.2 -> 28.9 ms. Mill Hill, 1,011 rows: median 140.8 -> 19.7 ms, p95 190.9 -> 31.7 ms. First candidate clicks were about 97?100 ms; these are host observations, not universal latency guarantees. Reports: `.runtime/checkbox-perf-f2jvva`, `checkbox-perf-B9WKCI`, `checkbox-perf-FzST1c`, `checkbox-perf-VN4JMe`.
+- Build and Windows release audit passed; packaged DMC mixed-selection/order journey passed (`.runtime/dmc-mouline-rows-bgehR9`), no benchmark renderer errors. Installer ready. Installation deferred because the open user window has 27 unsaved Mill Hill selections; asked whether to let the user finish or restart and clear that transient selection. No app closure or user inventory mutation performed.
