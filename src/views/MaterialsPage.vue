@@ -35,7 +35,7 @@ async function removeMaterial() {
 }
 function edited() { editing.value = null; notify(); }
 const props = defineProps({ initialAction: String });
-const adding = ref(props.initialAction === 'new' || route.value.id === 'new'), workflow = ref(''), selected = ref([]), rapidDefaults = ref({});
+const adding = ref(props.initialAction === 'new' || route.value.id === 'new'), workflow = ref(''), selected = ref([]), selectedCatalogue = ref([]), rapidDefaults = ref({});
 const customGroups = computed(() => customInventoryGroups(state.value.categories)), managingCategories = ref(false);
 const section = computed(() => parseInventoryRoute(route.value.id, state.value.categories));
 const addContext = ref({}), addDefaults = ref({}), addFormVersion = ref(0);
@@ -50,7 +50,7 @@ try { remembered = JSON.parse(sessionStorage.getItem('ricamo:material-view') || 
 const search = ref(remembered.search || ''), category = ref(remembered.category || ''), location = ref(remembered.location || ''), filter = ref(remembered.filter || 'active'), sort = ref(remembered.sort || 'nameAZ'), page = ref(remembered.page || 1);
 const preferenceBusy = ref(false), preferenceError = ref('');
 function currentView() { return { search: search.value, category: category.value, location: location.value, filter: filter.value, sort: sort.value, page: page.value }; }
-function applyView(view) { search.value=view.search||'';category.value=view.category||'';location.value=view.location||'';filter.value=view.filter||'active';sort.value=view.sort||'nameAZ';page.value=1;selected.value=[]; }
+function applyView(view) { search.value=view.search||'';category.value=view.category||'';location.value=view.location||'';filter.value=view.filter||'active';sort.value=view.sort||'nameAZ';page.value=1;selected.value=[];selectedCatalogue.value=[]; }
 watch([search, category, location, filter, sort, page], () => { try { sessionStorage.setItem('ricamo:material-view', JSON.stringify(currentView())); } catch { /* Preference storage may be unavailable; inventory remains usable. */ } });
 async function rememberFilters() { preferenceBusy.value = true; preferenceError.value = ''; try { await dispatch('settings.save', { preferences: { ...state.value.settings.preferences, materialFilters: currentView() } }); notify(); } catch(error) { preferenceError.value = errorText(error); } finally { preferenceBusy.value = false; } }
 if (section.value.group) applyView({});
@@ -62,7 +62,8 @@ watch([page, search, category, location, filter, sort], async () => {
 const pageSize = 50;
 watch(() => props.initialAction, value => { if (value === 'new') adding.value = true; });
 watch(() => route.value.id, value => { if (value === 'new') adding.value = true; });
-watch([search, category, location, filter, sort], () => { page.value = 1; selected.value=[]; });
+watch([search, category, location, filter, sort], () => { page.value = 1; });
+watch([category, location, filter], () => { selected.value=[]; selectedCatalogue.value=[]; });
 const rows = computed(() => {
   const lots = new Map(), reservations = new Map(), projects = new Map(), lotsById = new Map(state.value.lots.map(row=>[row.id,row]));
   const link=(materialId,projectId)=>{if(!projectId)return;if(!projects.has(materialId))projects.set(materialId,new Set());projects.get(materialId).add(projectId);};
@@ -110,21 +111,44 @@ watch(pageCount, count => { page.value = Math.min(page.value, count); });
 const pageEntries = computed(() => pageRows(entries.value, page.value, pageSize));
 const visible = computed(() => pageEntries.value.filter(row => row.material));
 const visibleCatalogue = computed(() => pageEntries.value.filter(row => row.product));
-const ordering = ref(null), orderQuantity = ref(1), orderBusy = ref(false), orderError = ref('');
-function orderArticle(product) { ordering.value = product; orderQuantity.value = 1; orderError.value = ''; }
+const ordering = ref(null), orderBusy = ref(false), orderError = ref('');
+let orderOperationId;
+const selectionCount = computed(() => selected.value.length + selectedCatalogue.value.length);
+const selectedOrders = computed(() => [
+  ...rows.value.filter(row => selected.value.includes(row.material.id)).map(row => ({ materialId: row.material.id, material: row.material })),
+  ...catalogueRows.value.filter(row => selectedCatalogue.value.includes(row.product.id)).map(row => ({ product: row.product })),
+]);
+// Resolve catalogue selection against the complete catalogue, including rows hidden by search.
+const orderableSelection = computed(() => [
+  ...selectedOrders.value.filter(row => row.material && !row.material.archived && !isDiscontinued(row.material)),
+  ...(hasCatalogueRows(section.value.child?.brand) ? missingCatalogueArticles(section.value.child.brand, state.value.materials) : []).filter(row => selectedCatalogue.value.includes(row.product.id) && !row.discontinued).map(row => ({ product: row.product })),
+]);
+function beginOrder(rows) {
+  ordering.value = rows.map(row => ({ ...row, quantity: 1 })); orderOperationId = crypto.randomUUID(); orderError.value = '';
+}
+function orderArticle(product) { beginOrder([{ product }]); }
+function orderName(row) { return row.material?.name || [row.product.brand, row.product.range, row.product.code, row.product.colorName].filter(Boolean).join(' ? '); }
+function orderUnit(row) { return row.material?.unit || catalogueMaterial(row.product, 'preview').unit; }
 async function placeOrder() {
   if (orderBusy.value) return;
   orderBusy.value = true; orderError.value = '';
   try {
-    const amount = quantity(orderQuantity.value, { positive: true }), id = crypto.randomUUID();
-    await saveEntityWithAssets('material.createWithLot', { material: catalogueMaterial(ordering.value, id), lot: null }, [], crypto.randomUUID());
-    await dispatch('purchase.save', { materialId: id, quantity: amount, status: 'to_buy', currency: state.value.settings.currency, source: 'manual', projectIds: [] }, crypto.randomUUID());
-    ordering.value = null; notify(t('catalogueOrderAdded'));
+    const rows = ordering.value.map(row => ({ quantity: quantity(row.quantity, { positive: true }), ...(row.materialId ? { materialId: row.materialId } : { material: catalogueMaterial(row.product, crypto.randomUUID()) }) }));
+    await dispatch('purchase.selection', { rows }, orderOperationId);
+    ordering.value = null; selected.value=[]; selectedCatalogue.value=[]; notify(t('catalogueOrderAdded'));
   } catch (error) { orderError.value = errorText(error); }
   finally { orderBusy.value = false; }
 }
-const pageSelected=computed(()=>visible.value.length>0&&visible.value.slice(0,200).every(row=>selected.value.includes(row.material.id)));
-function togglePage(){if(pageSelected.value)selected.value=selected.value.filter(id=>!visible.value.some(row=>row.material.id===id));else selected.value=[...new Set([...selected.value,...visible.value.map(row=>row.material.id)])].slice(0,200);}
+const pageSelected=computed(()=>pageEntries.value.length>0&&visible.value.every(row=>selected.value.includes(row.material.id))&&visibleCatalogue.value.every(row=>selectedCatalogue.value.includes(row.product.id)));
+const pagePartSelected=computed(()=>visible.value.some(row=>selected.value.includes(row.material.id))||visibleCatalogue.value.some(row=>selectedCatalogue.value.includes(row.product.id)));
+function togglePage(){
+  const remove = pageSelected.value;
+  for (const row of pageEntries.value) {
+    const target = row.material ? selected : selectedCatalogue, id = row.material?.id || row.product.id;
+    if (remove) target.value=target.value.filter(value=>value!==id);
+    else if (!target.value.includes(id) && selectionCount.value<200) target.value=[...target.value,id];
+  }
+}
 const activeRows = computed(() => rows.value.filter(row => !row.material.archived));
 const lowCount = computed(() => activeRows.value.filter(row => row.low).length);
 const reviewCount = computed(() => activeRows.value.filter(row => row.summary.unknown || row.summary.conflicts.length).length);
@@ -186,14 +210,14 @@ function workflowSaved(){workflow.value='';selected.value=[];}
     <p v-if="preferenceError" role="alert" class="notice error">{{ preferenceError }}</p>
     <section class="panel">
 
-      <div v-if="selected.length" class="panel-heading"><span>{{ t('selectedMaterialCount',{count:selected.length}) }}</span><div class="actions"><button class="button small" @click="selected=[]">{{ t('clearSelection') }}</button><button class="button small" @click="workflow='collectionSelection'">{{ t('kitCreateFromSelection') }}</button><button class="button small" @click="workflow='labels'">{{ t('inventoryLabels') }}</button><button class="button primary small" @click="workflow='bulk'">{{ t('bulkEdit') }}</button></div></div>
+      <div v-if="selectionCount" class="panel-heading"><span>{{ t('selectedMaterialCount',{count:selectionCount}) }}</span><div class="actions"><button class="button small" @click="selected=[];selectedCatalogue=[]">{{ t('clearSelection') }}</button><button class="button primary small" :disabled="!orderableSelection.length" @click="beginOrder(orderableSelection)"><ShoppingCart :size="16" />{{ t('sendToShopping') }}</button><button v-if="selected.length && !selectedCatalogue.length" class="button small" @click="workflow='collectionSelection'">{{ t('kitCreateFromSelection') }}</button><button v-if="selected.length && !selectedCatalogue.length" class="button small" @click="workflow='labels'">{{ t('inventoryLabels') }}</button><button v-if="selected.length && !selectedCatalogue.length" class="button primary small" @click="workflow='bulk'">{{ t('bulkEdit') }}</button></div></div>
       <EmptyState v-if="!rows.length && !catalogueRows.length" :icon="Package" :title="t('emptyMaterials')" :description="t('emptyMaterialsBody')"><button class="button primary" @click="addTo()"><Plus :size="16" />{{ t('addMaterial') }}</button></EmptyState>
       <EmptyState v-else-if="!entries.length" :icon="Search" :title="t('noResults')"><button class="button" @click="clear">{{ t('clearFilters') }}</button></EmptyState>
       <template v-else>
         <div ref="inventoryTable" class="table-wrap">
           <table>
-            <thead><tr><th><input type="checkbox" :checked="pageSelected" :indeterminate="!pageSelected && visible.some(row=>selected.includes(row.material.id))" :aria-label="t('selectVisibleMaterials')" @change="togglePage" /></th><th>{{ t('name') }}</th><th>{{ t('category') }}</th><th>{{ t('physical') }}</th><th>{{ t('available') }}</th><th><span class="sr-only">{{ t('status') }}</span></th><th>{{ t('actions') }}</th></tr></thead>
-            <tbody><tr v-for="row in visible" :key="row.material.id"><td><input v-model="selected" :value="row.material.id" type="checkbox" :disabled="selected.length>=200 && !selected.includes(row.material.id)" :aria-label="t('selectMaterial',{name:row.material.name})" /></td>
+            <thead><tr><th><input type="checkbox" :checked="pageSelected" :indeterminate="!pageSelected && pagePartSelected" :aria-label="t('selectVisibleMaterials')" @change="togglePage" /></th><th>{{ t('name') }}</th><th>{{ t('category') }}</th><th>{{ t('physical') }}</th><th>{{ t('available') }}</th><th><span class="sr-only">{{ t('status') }}</span></th><th>{{ t('actions') }}</th></tr></thead>
+            <tbody><tr v-for="row in visible" :key="row.material.id"><td><input v-model="selected" :value="row.material.id" type="checkbox" :disabled="selectionCount>=200 && !selected.includes(row.material.id)" :aria-label="t('selectMaterial',{name:row.material.name})" /></td>
               <td><div class="material-cell"><span class="swatch" :style="{ backgroundColor: row.material.color || undefined, ...productPreviewStyle(row.material) }"><Package v-if="!row.material.color && !productPreview(row.material)" :size="18" /></span><div><button class="cell-title" @click="navigate('material', row.material.id)">{{ row.material.name }} <Heart v-if="row.material.favorite" :size="12" /></button><span v-if="isDiscontinued(row.material)" class="badge discontinued-badge">{{ t('descriptorOption_discontinued') }}</span><span class="cell-subtitle">{{ [row.material.brand, row.material.range, row.material.code].filter(Boolean).join(' · ') || '—' }}</span></div></div></td>
               <td>{{ categoryName(row.material.category) }}</td>
               <td>{{ row.summary.estimated ? '≈ ' : '' }}{{ number(row.summary.physical) }}<small v-if="row.summary.physical !== null" class="cell-subtitle">{{ t(`unit_${row.material.unit}`) }}</small><small v-else-if="row.summary.knownPhysical" class="cell-subtitle">{{ t('knownAtLeast') }} {{ number(row.summary.knownPhysical) }}</small></td>
@@ -205,7 +229,7 @@ function workflowSaved(){workflow.value='';selected.value=[];}
                 <button v-if="!isDiscontinued(row.material)" class="icon-button" :aria-label="t('shopThreadNamed', { name: row.material.name })" :title="t('sendToShopping')" @click="navigate('shopping', row.material.id)"><ShoppingCart :size="18" /></button>
               </div></td>
             </tr></tbody>
-            <tbody v-if="visibleCatalogue.length" class="catalogue-rows"><tr v-for="{ product, discontinued } in visibleCatalogue" :key="product.id"><td></td>
+            <tbody v-if="visibleCatalogue.length" class="catalogue-rows"><tr v-for="{ product, discontinued } in visibleCatalogue" :key="product.id"><td><input v-model="selectedCatalogue" :value="product.id" type="checkbox" :disabled="selectionCount>=200 && !selectedCatalogue.includes(product.id)" :aria-label="t('selectMaterial',{name:[product.code,product.colorName].filter(Boolean).join(' ? ')})" /></td>
               <td><div class="material-cell"><span class="swatch" :style="{ backgroundColor: product.hex || undefined, ...productPreviewStyle(product) }"><Package v-if="!product.hex && !productPreview(product)" :size="18" /></span><div><span class="cell-title">{{ [product.code, product.colorName].filter(Boolean).join(' · ') }}</span><span v-if="discontinued" class="badge discontinued-badge">{{ t('descriptorOption_discontinued') }}</span><span class="cell-subtitle">{{ [product.brand, product.range].join(' · ') }}</span></div></div></td>
               <td>{{ categoryName(product.category) }}</td><td>—</td><td>—</td><td></td>
               <td><div class="actions"><button v-if="!discontinued" class="icon-button" :aria-label="t('shopThreadNamed', { name: [product.code, product.colorName].filter(Boolean).join(' · ') })" :title="t('sendToShopping')" @click="orderArticle(product)"><ShoppingCart :size="18" /></button></div></td>
@@ -227,9 +251,8 @@ function workflowSaved(){workflow.value='';selected.value=[];}
       <template #footer><button class="button" :disabled="actionBusy" @click="deleting=null">{{ t('cancel') }}</button><button class="button primary" :disabled="actionBusy" @click="removeMaterial">{{ t('deleteThread') }}</button></template>
     </AppDialog>
     <AppDialog v-if="ordering" :title="t('sendToShopping')" :busy="orderBusy" @close="ordering=null">
-      <form id="catalogue-order" @submit.prevent="placeOrder"><p><strong>{{ [ordering.brand, ordering.range, ordering.code, ordering.colorName].filter(Boolean).join(' · ') }}</strong></p>
-      <FormField :label="t('quantity')" required v-slot="{ id }"><input :id="id" v-model="orderQuantity" inputmode="decimal" required autofocus /></FormField></form>
-      <p class="field-help">{{ t('catalogueOrderHelp') }}</p>
+      <form id="catalogue-order" @submit.prevent="placeOrder"><div v-for="(row,index) in ordering" :key="row.materialId || row.product.id" class="form-section"><p><strong>{{ orderName(row) }}</strong></p>
+      <FormField :label="t('quantity')" :help="t(`unit_${orderUnit(row)}`)" required v-slot="{ id }"><input :id="id" v-model="row.quantity" inputmode="decimal" required :autofocus="index===0" /></FormField></div></form>
       <p v-if="orderError" role="alert" class="notice error">{{ orderError }}</p>
       <template #footer><button class="button" :disabled="orderBusy" @click="ordering=null">{{ t('cancel') }}</button><button class="button primary" type="submit" form="catalogue-order" :disabled="orderBusy">{{ orderBusy ? t('saving') : t('sendToShopping') }}</button></template>
     </AppDialog>
