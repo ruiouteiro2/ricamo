@@ -220,3 +220,7 @@ tbody tr { transition: background-color var(--motion-fast) var(--ease-ui); }
 
 .inventory-spacer td { padding: 0; border: 0; }
 .inventory-spacer { pointer-events: none; }
+
+/* Inventory uses the current window, including after maximize/restore. */
+.inventory-page { max-width: none; }
+.inventory-page .table-wrap { max-height: 65dvh; }
