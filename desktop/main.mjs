@@ -99,7 +99,7 @@ async function start() {
   handle('get-asset', id => repository.getAsset(id));
   handle('save-file', async ({ name, data }) => {
     name = safeDisplayName(name);
-    if (!['.csv', '.tsv', '.json', '.ricamo', '.ricamopattern', '.ricamoproject', '.ricamobackup', '.pdf', '.png', '.txt'].includes(extname(name).toLowerCase())) throw Object.assign(new Error(), { code: 'invalid_file_type' });
+    if (!['.csv', '.tsv', '.json', '.ricamo', '.ricamopattern', '.ricamoproject', '.ricamobackup', '.pdf', '.png', '.txt', '.svg', '.oxs', '.fcjson'].includes(extname(name).toLowerCase())) throw Object.assign(new Error(), { code: 'invalid_file_type' });
     if (typeof data === 'string' && Buffer.byteLength(data, 'utf8') > BACKUP_LIMIT) throw Object.assign(new Error(), { code: 'file_too_large' });
     const bytes = typeof data === 'string' ? Buffer.from(data, 'utf8') : boundedBytes(data, BACKUP_LIMIT);
     if (bytes.length > BACKUP_LIMIT) throw Object.assign(new Error(), { code: 'file_too_large' });
