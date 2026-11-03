@@ -627,3 +627,5 @@ Available vt-deliver/design/verify guidance was used. The installed vt-app-test 
 
 - Unowned discontinued thread catalogue entries are omitted from grey catalogue rows. Inventory records remain intact and keep the existing localized discontinued badge. Bead catalogue behavior is unchanged.
 - Validation: all 10 tests in `tests/discontinued-materials.test.mjs` passed; `npm run build` passed (existing chunk-size/dynamic-import warnings). Updated the DMC desktop journey expectation; the desktop journey and installed Windows distribution were not rerun for this change.
+
+- Installed update completed on 2026-11-03: rebuilt Windows 0.6.43 package and release audit passed (`sourcesMatch: true`, clean source tree at packaging). Packaged DMC desktop journey passed in `.runtime/dmc-mouline-rows-3SeKr3`. Closed the installed app normally, backed up its database in `.runtime/before-installed-update-*`, ran the silent installer (exit 0), verified installed app.asar SHA-256 matches the tested package and the user database hash was unchanged, then relaunched the installed app.
