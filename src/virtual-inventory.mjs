@@ -28,11 +28,14 @@ export function useVirtualInventory(entries, container) {
     scroll.value = Math.max(0, element.scrollTop - (element.querySelector('thead')?.offsetHeight || 0));
     viewport.value = element.clientHeight;
   }
-  let observer;
+  let observer, viewportObserver;
   async function observe() {
     await nextTick();
     observer?.disconnect();
     if (!container.value) return;
+    viewportObserver ??= new ResizeObserver(update);
+    viewportObserver.disconnect();
+    viewportObserver.observe(container.value);
     observer ??= new ResizeObserver(records => {
       const next = new Map(sizes.value); let changed = false;
       for (const record of records) {
@@ -47,6 +50,6 @@ export function useVirtualInventory(entries, container) {
   }
   watch([rows, container], observe, { flush: 'post' });
   watch(entries, () => { sizes.value = new Map(); update(); });
-  onBeforeUnmount(() => observer?.disconnect());
+  onBeforeUnmount(() => { observer?.disconnect(); viewportObserver?.disconnect(); });
   return { rows, before, after, update };
 }
