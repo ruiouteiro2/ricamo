@@ -24,8 +24,8 @@ try{
  // Greyed out with the cart as its only action.
  await find.fill('321');const red=grey.filter({has:page.locator('.cell-title',{hasText:/^321( |$)/})});await expect(red).toHaveCount(1);await expect(red.locator('button')).toHaveCount(1);assert.ok(Number(await red.locator('td').nth(1).evaluate(element=>getComputedStyle(element).opacity))<.6,'greyed out');
  await expect(red.locator('.swatch')).toBeVisible();assert.notEqual(await red.locator('.swatch').evaluate(element=>getComputedStyle(element).backgroundColor),'rgba(0, 0, 0, 0)');
- // An out-of-production colour says so and cannot be ordered.
- await find.fill('222');const retired=grey.filter({has:page.locator('.cell-title',{hasText:/^222( |$)/})});await expect(retired.locator('.discontinued-badge')).toHaveText('Fuori produzione');await expect(retired.locator('button')).toHaveCount(0);
+ // An out-of-production colour is absent until entered in the inventory.
+ await find.fill('222');const retired=grey.filter({has:page.locator('.cell-title',{hasText:/^222( |$)/})});await expect(retired).toHaveCount(0);
  // Ordering makes it a skein of DMC Mouliné, in Shopping, and it opens like any entered thread.
  await find.fill('321');await red.locator('button').click();await dialog.getByLabel('Quantità *',{exact:true}).fill('3');await dialog.getByRole('button',{name:'Inserisci in Acquisti',exact:true}).click();await expect(dialog).toHaveCount(0);
  await expect(red).toHaveCount(0);const bought=owned.filter({hasText:'321'});await expect(bought).toContainText('DMC · Mouliné · 321');
