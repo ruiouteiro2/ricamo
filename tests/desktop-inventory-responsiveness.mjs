@@ -37,6 +37,7 @@ try {
   // Exercise width/height changes, maximize and minimize/restore with the list open.
   for (const bounds of [{width:800,height:620},{width:800,height:900},{width:1400,height:900}]) {
     await app.evaluate(({BrowserWindow}, bounds) => BrowserWindow.getAllWindows()[0].setBounds(bounds), bounds);
+    await expect.poll(async () => Math.abs((await app.evaluate(({BrowserWindow}) => BrowserWindow.getAllWindows()[0].getContentBounds().width)) - await page.evaluate(() => innerWidth))).toBeLessThanOrEqual(1);
     await expect.poll(() => table.evaluate(element => element.clientWidth)).toBeGreaterThan(bounds.width - (bounds.width < 850 ? 210 : 410));
     await expect.poll(() => table.evaluate(element => element.clientHeight)).toBeLessThan(bounds.height * .7);
     assert.ok(await boxes.count() < 80);
