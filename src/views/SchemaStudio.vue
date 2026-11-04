@@ -4,10 +4,12 @@ import {ChevronLeft,RefreshCw} from '@lucide/vue';
 import {state,dispatch,navigate} from '../state';
 import {language,t,errorText} from '../i18n';
 import {storage,windowControls} from '../storage';
-import {validateStudioModel} from '../../core/schema-studio.mjs';
+import {validateStudioModel,validateSchemaStudio} from '../../core/schema-studio.mjs';
 import {boundedBytes,detectFile} from '../../core/files.mjs';
+import AppDialog from '../components/AppDialog.vue';
 
-const frame=ref(),loading=ref(true),pending=ref(false),error=ref('');
+const frame=ref(),recoveryInput=ref(),proposedRecovery=ref(null),loading=ref(true),pending=ref(false),error=ref('');
+let recoveryEntries={...state.value.schemaStudio?.entries};
 const channel='ricamo-schema-studio-v1';let nextRoute=null,closing=false,timeout;
 function post(message){frame.value?.contentWindow?.postMessage({channel,...message},location.origin==='null'?'*':location.origin);}
 function publish(){window.dispatchEvent(new CustomEvent('ricamo:draft-state',{detail:{pending:pending.value}}));}
@@ -23,7 +25,11 @@ async function receive(event){
   }
   if(!['write','validate','export','image'].includes(message.type)||typeof message.id!=='string')return;
   try{
-    if(message.type==='write')await dispatch('studio.write',message.payload);
+    if(message.type==='write'){
+      const entries={...recoveryEntries};for(const change of message.payload.changes){if(change.json===null)delete entries[change.key];else entries[change.key]=change.json;}
+      validateSchemaStudio({schemaStudio:{version:1,entries}});recoveryEntries=entries;
+      await dispatch('studio.write',message.payload);
+    }
     else if(message.type==='validate')validateStudioModel(message.payload?.model);
     else if(message.type==='image'){if(!detectFile(boundedBytes(message.payload?.data)).startsWith('image/'))throw Object.assign(Error(),{code:'invalid_file_type'});}
     else await storage.saveFile({name:message.payload?.name,data:message.payload?.data});
@@ -33,6 +39,9 @@ async function receive(event){
 function beforeNavigate(event){if(pending.value){event.preventDefault();nextRoute=event.detail;post({type:'flush'});}}
 function beforeClose(event){if(pending.value){event.preventDefault();closing=true;post({type:'flush'});}}
 function retry(){error.value='';post({type:'flush'});}
+async function recoverAndLeave(){try{const saved=await storage.saveFile({name:'Ricamo-studio-recovery.json',data:JSON.stringify({format:'ricamo-studio-recovery',version:1,entries:recoveryEntries})});if(saved===false)return;pending.value=false;publish();if(closing)await windowControls?.finishClose?.();else{const target=nextRoute;nextRoute=null;navigate(target?.page||'patterns',target?.id);}}catch(caught){error.value=errorText(caught);}}
+async function importRecovery(event){const file=event.target.files?.[0];event.target.value='';if(!file)return;try{if(file.size>64*1024*1024)throw Object.assign(Error(),{code:'studio_too_large'});const value=JSON.parse(await file.text());if(value.format!=='ricamo-studio-recovery'||value.version!==1)throw Object.assign(Error(),{code:'studio_invalid_data'});validateSchemaStudio({schemaStudio:{version:1,entries:value.entries}});proposedRecovery.value=value.entries;}catch(caught){error.value=errorText(caught);}}
+async function confirmRecovery(){try{const entries=proposedRecovery.value,changes=[...new Set([...Object.keys(state.value.schemaStudio?.entries??{}),...Object.keys(entries)])].map(key=>({key,json:entries[key]??null}));if(changes.length)await dispatch('studio.write',{changes});recoveryEntries={...entries};proposedRecovery.value=null;reload();}catch(caught){error.value=errorText(caught);}}
 function reload(){loading.value=true;error.value='';frame.value.src='/studio/index.html';}
 watch(language,value=>post({type:'language',payload:value}));
 onMounted(()=>{window.addEventListener('message',receive);window.addEventListener('ricamo:before-navigate',beforeNavigate);window.addEventListener('ricamo:before-close',beforeClose);timeout=setTimeout(()=>{if(loading.value)error.value=t('schemaStudioLoadError');},15000);});
@@ -41,8 +50,10 @@ onBeforeUnmount(()=>{clearTimeout(timeout);window.removeEventListener('message',
 <template>
  <section class="schema-studio-page">
   <div class="schema-studio-heading"><button class="button small" @click="navigate('patterns')"><ChevronLeft :size="16"/>{{t('patterns')}}</button><h1>{{t('schemaStudio')}}</h1><span class="badge" :class="pending?'warning':'green'" role="status">{{t(pending?'saving':'saved')}}</span><button v-if="error" class="button small" @click="pending?retry():reload()"><RefreshCw :size="14"/>{{t('retry')}}</button></div>
+  <input ref="recoveryInput" class="sr-only" type="file" accept=".json" @change="importRecovery"/><div class="actions"><button class="button small" :disabled="pending" @click="recoveryInput.click()">{{t('studioImportRecovery')}}</button><button class="button small" @click="navigate('patterns','image')">{{t('photoRealismBeads')}}</button><button v-if="error&&pending" class="button small" @click="recoverAndLeave">{{t('studioRecoverLeave')}}</button></div>
   <p v-if="error" class="notice error" role="alert">{{error}}</p><p v-if="loading" class="notice" role="status">{{t('schemaStudioLoading')}}</p>
   <iframe ref="frame" src="/studio/index.html" :title="t('schemaStudio')" class="schema-studio-frame" sandbox="allow-scripts allow-same-origin allow-downloads"/>
+  <AppDialog v-if="proposedRecovery" :title="t('studioImportRecovery')" @close="proposedRecovery=null"><p>{{t('studioRecoveryConfirm')}}</p><p v-if="error" class="notice error">{{error}}</p><template #footer><button class="button" @click="proposedRecovery=null">{{t('cancel')}}</button><button class="button primary" @click="confirmRecovery">{{t('confirm')}}</button></template></AppDialog>
  </section>
 </template>
 <style scoped>
