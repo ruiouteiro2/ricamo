@@ -1,3 +1,4 @@
+import {isLocalPhoto} from './local-image-evidence.mjs';
 import {closeAfterMaterialSave} from './material-entry-preference.mjs';
 import {expect,_electron as electron} from '@playwright/test';
 import assert from 'node:assert/strict';
@@ -48,7 +49,7 @@ try{
  await expect(form.getByText(/^confezion/i).or(form.getByText(/confezioni\. /))).not.toHaveCount(0);
  await field('Quantità posseduta').fill('2');await form.getByRole('button',{name:'Salva',exact:true}).click();await expect(form).toHaveCount(0);
  const row=page.locator('.table-wrap tbody:not(.catalogue-rows) tr').filter({hasText:'00143'});await expect(row).toBeVisible();await expect(row).toContainText('Mill Hill · Glass Seed Beads · 00143 · Robin Egg Blue Ceylon');await expect(row).toContainText('confezioni');await expect(row.locator('.discontinued-badge')).toHaveCount(0);
- assert.ok((await row.locator('.swatch').evaluate(element=>getComputedStyle(element).backgroundImage)).startsWith('url("data:image/'),'saved row shows the beads');
+ assert.ok(isLocalPhoto(await row.locator('.swatch').evaluate(element=>getComputedStyle(element).backgroundImage)),'saved row shows the beads');
  // The saved row reopens in the same layout, and a changed code renames it.
  await row.getByRole('button',{name:/^Modifica/}).click();await expect(field('Nome *')).toHaveCount(0);await expect(field('Tipologia *')).toHaveValue('Glass Seed Beads');await expect(field('Codice colore')).toHaveValue('00143');
  await expect(preview).toContainText('Robin Egg Blue Ceylon',{timeout:15000});await decoded();
