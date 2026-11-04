@@ -5,7 +5,7 @@
   let serial=0,started=false,language='en',pending=0,timer,modelPending=false,lastError=null;
   const requests=new Map(),entries=new Map(),dirty=new Map(),waiters=[];
   const send=message=>parent.postMessage({channel,...message},origin);
-  const request=(type,payload)=>new Promise((resolve,reject)=>{const id=String(++serial);requests.set(id,{resolve,reject});send({type,id,payload});});
+  const request=(type,payload)=>new Promise((resolve,reject)=>{const id=String(++serial),timeout=type==='export'?null:setTimeout(()=>{requests.delete(id);reject(Error('studio_request_timeout'));},20000);requests.set(id,{resolve,reject,timeout});send({type,id,payload});});
   const status=()=>send({type:'status',payload:{pending:pending>0||dirty.size>0||modelPending,error:lastError}});
   function captureModel(){
     const state=st.vueStore?.state.model,key=st.slotsSv.keys.model;
@@ -14,7 +14,8 @@
     modelPending=false;
   }
   async function flush(){
-    captureModel();clearTimeout(timer);if(!dirty.size){status();return;}
+    try{captureModel();}catch(error){modelPending=false;lastError=error.message||'storage_error';status();return;}
+    clearTimeout(timer);if(!dirty.size){status();return;}
     const changes=[...dirty].map(([key,json])=>({key,json})),batch=waiters.splice(0);dirty.clear();pending++;status();
     try{await request('write',{changes});lastError=null;batch.forEach(row=>row.resolve());}
     catch(error){for(const row of changes)if(!dirty.has(row.key))dirty.set(row.key,entries.get(row.key)??null);batch.forEach(row=>row.reject(error));lastError=error.message;status();}
@@ -61,7 +62,7 @@
     if(event.source!==parent||event.origin!==origin||event.data?.channel!==channel)return;
     const message=event.data;
     if(message.type==='init')start(message.payload);
-    else if(message.type==='reply'){const promise=requests.get(message.id);if(!promise)return;requests.delete(message.id);message.error?promise.reject(Error(message.error)):promise.resolve(message.payload);}
+    else if(message.type==='reply'){const promise=requests.get(message.id);if(!promise)return;clearTimeout(promise.timeout);requests.delete(message.id);message.error?promise.reject(Error(message.error)):promise.resolve(message.payload);}
     else if(message.type==='flush'){flush();}
     else if(message.type==='language'&&st.i18n){language=message.payload;st.i18n.vueI18n.locale=language;}
   });
