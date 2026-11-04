@@ -1,3 +1,4 @@
+import {isLocalPhoto} from './local-image-evidence.mjs';
 import {closeAfterMaterialSave} from './material-entry-preference.mjs';
 import {expect,_electron as electron} from '@playwright/test';
 import assert from 'node:assert/strict';
@@ -25,7 +26,7 @@ try{
  await page.waitForTimeout(400);assert.ok(await page.locator('select.catalogue-select option').count()>1,'catalogue lists the type');
  await dialog.getByRole('button',{name:'Salva',exact:true}).click();await expect(dialog).toHaveCount(0);
  const row=page.locator('.table-wrap tbody tr').filter({hasText:'2130'});await expect(row).toBeVisible();await expect(row).toContainText('Coton Retors Mat');
- assert.ok((await row.locator('.swatch').evaluate(element=>getComputedStyle(element).backgroundImage)).startsWith('url("data:image/'),'saved row shows the colour');
+ assert.ok(isLocalPhoto(await row.locator('.swatch').evaluate(element=>getComputedStyle(element).backgroundImage)),'saved row shows the colour');
  await row.getByRole('button',{name:/^Modifica filo:/}).click();await expect(field('Tipologia *')).toHaveValue('mat');await dialog.getByRole('button',{name:'Annulla',exact:true}).click();
  assert.deepEqual(errors,[]);assert.deepEqual(requests,[]);console.log('PASS: DMC Coton Retors Mat type, catalogue and previews. Evidence: '+data);
 }catch(error){await page.screenshot({path:resolve(data,'failure.png')});throw error;}finally{await app.close();}
