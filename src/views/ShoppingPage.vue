@@ -2,7 +2,7 @@
 import { purchaseTotalsBySupplier } from '../../core/purchase-totals.mjs';
 import {useVirtualInventory} from '../virtual-inventory.mjs';
 import PurchaseDocuments from '../components/PurchaseDocuments.vue';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { ShoppingBag, Plus, Download, Search, Truck, Store, RefreshCw, Pencil, PackageCheck, ClipboardList, X, RotateCcw } from '@lucide/vue';
 import PageHeader from '../components/PageHeader.vue';
 import EmptyState from '../components/EmptyState.vue';
@@ -37,6 +37,10 @@ const filteredOrders = computed(() => state.value.purchases.filter(row => {
   return !search.value || normalize([material?.name, material?.code, material?.brand, row.notes, supplierById.value.get(row.supplierId)?.name].join(' ')).includes(normalize(search.value));
 }).sort((a, b) => ({ high: 0, normal: 1, low: 2 }[a.priority] - { high: 0, normal: 1, low: 2 }[b.priority]) || b.createdAt.localeCompare(a.createdAt)));
 const ordersContainer=ref(),virtualOrders=useVirtualInventory(filteredOrders,ordersContainer,{key:row=>row.id,estimate:96}),visibleOrders=virtualOrders.rows;
+watch([search,status,priority,projectId,supplierFilter],()=>{
+  if(ordersContainer.value)ordersContainer.value.scrollTop=0;
+  virtualOrders.update();
+});
 const filteredSuppliers = computed(() => state.value.suppliers.filter(s => normalize([s.name, s.contact, s.notes].join(' ')).includes(normalize(search.value))).sort((a, b) => a.name.localeCompare(b.name)));
 const openOrders = computed(() => state.value.purchases.filter(p => !['received', 'cancelled'].includes(p.status)));
 const supplierTotals = computed(() => purchaseTotalsBySupplier(filteredOrders.value).map(group => ({ ...group, name: supplierById.value.get(group.supplierId)?.name || t('unassignedSupplier') })).sort((a,b) => a.name.localeCompare(b.name)));
@@ -210,7 +214,7 @@ if (route.value.page === 'shopping' && route.value.id) {
       <div class="panel-body"><p class="field-help">{{ t('supplierOrderTotalsHelp') }}</p></div>
     </section>
     <div class="panel">
-      <div v-if="filteredOrders.length" ref="ordersContainer" class="table-wrap" :class="{'shopping-orders-window':filteredOrders.length>80}" @scroll.passive="virtualOrders.update"><table><caption class="sr-only">{{ t('orders') }}</caption><thead><tr><th>{{ t('material') }}</th><th>{{ t('quantity') }}</th><th>{{ t('received') }}</th><th>{{ t('status') }}</th><th>{{ t('supplier') }}</th><th>{{ t('estimatedTotal') }}</th><th><span class="sr-only">{{ t('actions') }}</span></th></tr></thead><tbody>
+      <div v-if="filteredOrders.length" ref="ordersContainer" class="table-wrap" role="region" :aria-label="t('orders')" tabindex="0" :class="{'shopping-orders-window':filteredOrders.length>80}" @scroll.passive="virtualOrders.update"><table><caption class="sr-only">{{ t('orders') }}</caption><thead><tr><th>{{ t('material') }}</th><th>{{ t('quantity') }}</th><th>{{ t('received') }}</th><th>{{ t('status') }}</th><th>{{ t('supplier') }}</th><th>{{ t('estimatedTotal') }}</th><th><span class="sr-only">{{ t('actions') }}</span></th></tr></thead><tbody>
         <tr v-if="virtualOrders.before.value" aria-hidden="true" class="inventory-spacer"><td colspan="7" :style="{height:`${virtualOrders.before.value}px`}"/></tr><tr v-for="order in visibleOrders" :key="order.id" :data-inventory-row="order.id">
           <td><button class="cell-title" @click="navigate('material', order.materialId)">{{ materialName(order.materialId) }}</button><span class="cell-subtitle mono">{{ materialCode(order.materialId) }}</span><span v-if="order.projectIds.length" class="cell-subtitle">{{ projectNames(order.projectIds) }}</span><span v-if="order.expectedDate" class="cell-subtitle">{{ t('expectedDelivery') }}: {{ date(order.expectedDate) }}</span></td>
           <td>{{ number(order.quantity, 6) }}<span class="cell-subtitle">{{ t(order.unit) }}</span></td>
