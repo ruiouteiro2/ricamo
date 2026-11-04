@@ -1,10 +1,11 @@
 /* Offline presets and cancellable conversion for the Vue 2 chart workspace. */
 (()=>{
- const text={it:{label:'Livello di realismo',realism:'Massimo realismo',faithful:'Fotografico',balanced:'Equilibrato',simple:'Semplificato',help:'Più colori conservano sfumature e dettagli. Il dettaglio dipende anche dal numero di punti; nessuno schema riproduce esattamente una fotografia.'},en:{label:'Realism level',realism:'Maximum realism',faithful:'Photographic',balanced:'Balanced',simple:'Simplified',help:'More colours preserve shading and detail. Detail also depends on the stitch count; a chart cannot reproduce a photograph exactly.'}};
+ const text={it:{label:'Livello di realismo',realism:'Massimo realismo',faithful:'Fotografico',balanced:'Equilibrato',simple:'Semplificato',invalid:'Inserisci un numero intero di colori tra 2 e 2000, oppure scegli un livello di realismo.',help:'Più colori conservano sfumature e dettagli. Il dettaglio dipende anche dal numero di punti; nessuno schema riproduce esattamente una fotografia.'},en:{label:'Realism level',realism:'Maximum realism',faithful:'Photographic',balanced:'Balanced',simple:'Simplified',invalid:'Enter a whole colour count between 2 and 2000, or choose a realism level.',help:'More colours preserve shading and detail. Detail also depends on the stitch count; a chart cannot reproduce a photograph exactly.'}};
  for(const name of ['s-image-processor','s-colors-reducer']){
   const component=Vue.component(name).options,originalRender=component.render;
   component.methods.reduceColors=function(fixed){
    if(this.isDestroyed)return;this.setReady(false);this.__quantWorker?.terminate();clearTimeout(this.__quantTimeout);
+   if(!Number.isInteger(Number(this.reduceOptions.colors))||Number(this.reduceOptions.colors)<2||Number(this.reduceOptions.colors)>2000)return;
    try{
     if(name==='s-image-processor')this.updateImageData();if(!this.imageData)return;
     const worker=new Worker('/studio/quantize-worker.js');this.__quantWorker=worker;
@@ -24,7 +25,8 @@
   const hooks=component.beforeDestroy||[];component.beforeDestroy=[...(Array.isArray(hooks)?hooks:[hooks]),function(){this.__quantWorker?.terminate();clearTimeout(this.__quantTimeout);}];
   if(name==='s-image-processor')component.render=function(h){
    const words=text[this.$i18n.locale]||text.en;
-   return h('div',[h('div',{class:'ricamo-realism'},[h('strong',words.label),h('div',{class:'row q-gutter-sm'},['realism','faithful','balanced','simple'].map((key,index)=>h('q-btn',{props:{outline:true,color:'primary',label:words[key]},on:{click:()=>{this.reduceOptions.colors=Math.min(this.reduceOptions.palette.length,[500,120,40,16][index]);this.withDithering=index===0;this.updateColors();}}}))),h('p',words.help)]),originalRender.call(this)]);
+   const valid=Number.isInteger(Number(this.reduceOptions.colors))&&Number(this.reduceOptions.colors)>=2&&Number(this.reduceOptions.colors)<=2000;
+   return h('div',[h('div',{class:'ricamo-realism'},[h('strong',words.label),h('div',{class:'row q-gutter-sm'},['realism','faithful','balanced','simple'].map((key,index)=>h('q-btn',{props:{outline:true,color:'primary',label:words[key]},on:{click:()=>{this.reduceOptions.colors=Math.min(this.reduceOptions.palette.length,[500,120,40,16][index]);this.withDithering=index===0;this.updateColors();}}}))),h('p',{attrs:{role:valid?'note':'status'}},valid?words.help:words.invalid)]),originalRender.call(this)]);
   };
  }
  const list=Vue.component('s-colors-list').options;
