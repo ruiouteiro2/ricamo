@@ -5,17 +5,17 @@ import AppDialog from './AppDialog.vue';
 import FormField from './FormField.vue';
 import RangeSlider from './RangeSlider.vue';
 import MaterialProductPicker from './MaterialProductPicker.vue';
-import {EFFECT_MODES,suggestPatternEffects} from '../../core/pattern-effect-suggestions.mjs';
+import {EFFECT_MODES} from '../../core/pattern-effect-suggestions.mjs';
 import {colorFromProduct,isBead} from '../../core/pattern-materials.mjs';
 import {drawPattern} from '../pattern-render.mjs';
 import {t,errorText,number} from '../i18n';
 
-const props=defineProps({revision:{type:Object,required:true},apply:{type:Function,required:true}});
+const props=defineProps({revision:{type:Object,required:true},sourceImage:Object,apply:{type:Function,required:true}});
 const emit=defineEmits(['close']);
 const mode=ref('beads'),chosen=shallowRef(null),picker=ref(true),threshold=ref(88),maximum=ref(100),gap=ref(.25),strands=ref(2);
 const attachment=ref(-1),attachmentStrands=ref(1),error=ref(''),busy=ref(false),calculating=ref(false),canvas=ref(),active=ref(0),page=ref(0);
 const empty=()=>({points:[],eligible:0,total:0,reason:'effectChooseProduct',spacing:null,limited:false});
-const report=shallowRef(empty()),excluded=ref(new Set());let timer;
+const report=shallowRef(empty()),excluded=ref(new Set()),analysis=ref('highlights'),beadDiameter=ref(null);let timer,worker,workerTimeout,sequence=0;
 const key=point=>`${point.x},${point.y}`;
 const selected=computed(()=>report.value.points.filter(point=>!excluded.value.has(key(point))));
 const threads=computed(()=>props.revision.colors.map((color,index)=>({color,index})).filter(row=>!isBead(row.color)));
@@ -26,14 +26,16 @@ const scale=computed(()=>Math.min(24,760/props.revision.width,420/props.revision
 const focused=computed(()=>report.value.points[active.value]);
 const canApply=computed(()=>chosen.value&&!picker.value&&!calculating.value&&!busy.value&&validStrands.value&&!report.value.reason&&selected.value.length&&(mode.value!=='beads'||attachmentColor.value));
 
-function chooseProduct(product){try{chosen.value=colorFromProduct(product,{strands:strands.value});picker.value=false;excluded.value=new Set();error.value='';}catch(caught){error.value=errorText(caught);}}
+function chooseProduct(product){try{chosen.value=colorFromProduct(product,{strands:strands.value});beadDiameter.value=chosen.value.product?.beadSizeMm??null;picker.value=false;excluded.value=new Set();error.value='';}catch(caught){error.value=errorText(caught);}}
+function measuredDiameter(){if(!chosen.value)return;const n=Number(beadDiameter.value);chosen.value={...chosen.value,product:{...chosen.value.product,beadSizeMm:Number.isFinite(n)&&n>0&&n<=100?n:null}};}
 watch(mode,value=>{chosen.value=null;picker.value=true;threshold.value=value==='wool'?12:88;excluded.value=new Set();attachment.value=-1;});
-watch([()=>props.revision,mode,chosen,threshold,maximum,gap],()=>{
-  clearTimeout(timer);calculating.value=true;
+watch([()=>props.revision,()=>props.sourceImage,mode,chosen,threshold,maximum,gap,analysis],()=>{
+  clearTimeout(timer);worker?.terminate();clearTimeout(workerTimeout);const token=++sequence;calculating.value=true;excluded.value=new Set();
   timer=setTimeout(()=>{
-    try{report.value=suggestPatternEffects(props.revision,{mode:mode.value,product:chosen.value?.product,threshold:threshold.value/100,maxCandidates:maximum.value,gapMm:gap.value});error.value='';}
-    catch(caught){report.value=empty();error.value=errorText(caught);}
-    calculating.value=false;page.value=0;active.value=0;
+    if(!chosen.value){report.value=empty();calculating.value=false;return;}
+    const fail=caught=>{if(token!==sequence)return;worker?.terminate();clearTimeout(workerTimeout);calculating.value=false;report.value=empty();error.value=errorText(caught);};
+    try{worker=new Worker(new URL('../effect-suggestions.worker.js',import.meta.url),{type:'module'});worker.onmessage=({data})=>{if(token!==sequence)return;if(data.error){fail(data.error);return;}report.value=data.result;worker.terminate();clearTimeout(workerTimeout);calculating.value=false;error.value='';page.value=0;active.value=0;};worker.onerror=()=>fail({code:'generationFailed'});workerTimeout=setTimeout(()=>fail({code:'generationTimeout'}),30000);worker.postMessage({revision:JSON.parse(JSON.stringify(props.revision)),options:{mode:mode.value,product:JSON.parse(JSON.stringify(chosen.value.product)),threshold:threshold.value/100,maxCandidates:maximum.value,gapMm:gap.value,analysis:analysis.value,sourceImage:props.sourceImage?{width:props.sourceImage.width,height:props.sourceImage.height,rgba:props.sourceImage.rgba}:null}});}
+    catch(caught){fail(caught);}
   },150);
 },{immediate:true});
 function toggle(point){const values=new Set(excluded.value);values.has(key(point))?values.delete(key(point)):values.add(key(point));excluded.value=values;}
@@ -69,7 +71,7 @@ async function apply(){
     if(await props.apply(selected.value.map(point=>({...point})),color)!==false)emit('close');
   }catch(caught){error.value=errorText(caught);}finally{busy.value=false;}
 }
-onBeforeUnmount(()=>clearTimeout(timer));
+onBeforeUnmount(()=>{sequence++;clearTimeout(timer);clearTimeout(workerTimeout);worker?.terminate();});
 </script>
 
 <template>
@@ -78,9 +80,11 @@ onBeforeUnmount(()=>clearTimeout(timer));
   <p v-if="error" role="alert" class="notice error">{{error}}</p>
   <FormField :label="t('effectMode')" v-slot="{id}"><select :id="id" v-model="mode" :disabled="busy"><option v-for="value in EFFECT_MODES" :key="value" :value="value">{{t(`effectMode_${value}`)}}</option></select></FormField>
   <p class="field-help">{{t(mode==='wool'?'effectSoftHelp':'effectHighlightHelp')}}</p>
+  <FormField v-if="mode==='beads'" :label="t('beadDetectionStrategy')" v-slot="{id}"><select :id="id" v-model="analysis"><option value="highlights">{{t('beadHighlights')}}</option><option value="accents">{{t('beadAccents')}}</option></select></FormField><p v-if="sourceImage" class="field-help">{{t('beadSourceAnalysis')}}</p>
   <MaterialProductPicker v-if="picker" :key="mode" :category="mode==='beads'?'embellishment':'thread'" @select="chooseProduct"/>
   <div v-else class="panel"><div class="panel-body"><p><span class="swatch" :style="{background:chosen?.hex}"/> {{chosen?.brand}} {{chosen?.range}} {{chosen?.code}} · {{chosen?.name}}</p><p v-if="chosen?.product?.colorVariation==='multicolour'" class="field-help">{{t('materialMulticolour')}}</p><p v-if="chosen?.displayColorUnknown" class="field-help">{{t('materialColorUnavailable')}}</p><button class="button small" :disabled="busy" @click="picker=true">{{t('changeMaterial')}}</button></div></div>
   <template v-if="chosen&&!picker">
+   <FormField v-if="mode==='beads'" :label="t('beadMeasuredDiameter')" :help="t('beadMeasuredHelp')" v-slot="{id,describedby}"><input :id="id" v-model.number="beadDiameter" type="number" min="0.1" max="100" step="0.1" :aria-describedby="describedby" @input="measuredDiameter"/></FormField>
    <div class="form-grid">
     <FormField :label="t(mode==='wool'?'effectChroma':'effectBrightness')" v-slot="{id}"><RangeSlider :id="id" v-model="threshold" :min="mode==='wool'?0:70" :max="mode==='wool'?35:100" :step="1" unit="%" :disabled="busy"/></FormField>
     <FormField :label="t('effectMaximum')" v-slot="{id}"><RangeSlider :id="id" v-model="maximum" :min="1" :max="1000" :step="1" :disabled="busy"/></FormField>
