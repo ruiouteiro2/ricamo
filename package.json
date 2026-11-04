@@ -1,6 +1,6 @@
 {
   "name": "ricamo",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Offline embroidery studio, inventory and project companion",
   "author": "RuiOuteiro2",
   "license": "MIT",
@@ -55,7 +55,9 @@
     "test:desktop:cell-materials": "node tests/desktop-cell-materials.mjs",
     "test:desktop:pattern-effects": "node tests/desktop-pattern-effects.mjs",
     "test:desktop:print-batches": "node tests/desktop-print-batches.mjs",
-    "test:desktop:schema-studio": "node tests/desktop-schema-studio.mjs"
+    "test:desktop:schema-studio": "node tests/desktop-schema-studio.mjs",
+    "test:desktop:photo-realism": "node tests/desktop-photo-realism.mjs",
+    "test:desktop:shopping-window": "node tests/desktop-shopping-window.mjs"
   },
   "dependencies": {
     "@lucide/vue": "1.62.0",
@@ -70,7 +72,8 @@
     "@vitejs/plugin-vue": "6.0.10",
     "electron": "45.0.0",
     "electron-builder": "26.18.0",
-    "vite": "8.3.5"
+    "vite": "8.3.5",
+    "@babel/parser": "7.29.11"
   },
   "engines": {
     "node": ">=24.0.0"
