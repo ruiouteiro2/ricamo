@@ -1,12 +1,12 @@
 import { computed, ref, watch, nextTick, onBeforeUnmount } from 'vue';
 
 /** Variable-height windowing keeps continuous inventory lists small without pagination. */
-export function useVirtualInventory(entries, container) {
+export function useVirtualInventory(entries, container, options={}) {
   const scroll = ref(0), viewport = ref(600), sizes = ref(new Map());
-  const key = row => row.material ? `material:${row.material.id}` : `catalogue:${row.product.id}`;
+  const key = options.key??(row => row.material ? `material:${row.material.id}` : `catalogue:${row.product.id}`), estimate=options.estimate??72;
   const offsets = computed(() => {
     const values = [0];
-    for (const row of entries.value) values.push(values.at(-1) + (sizes.value.get(key(row)) || 72));
+    for (const row of entries.value) values.push(values.at(-1) + (sizes.value.get(key(row)) || estimate));
     return values;
   });
   const range = computed(() => {
@@ -40,7 +40,7 @@ export function useVirtualInventory(entries, container) {
       const next = new Map(sizes.value); let changed = false;
       for (const record of records) {
         const id = record.target.dataset.inventoryRow, height = record.borderBoxSize?.[0]?.blockSize || record.target.getBoundingClientRect().height;
-        if (height > 0 && Math.abs((next.get(id) || 72) - height) > .5) { next.set(id, height); changed = true; }
+        if (height > 0 && Math.abs((next.get(id) || estimate) - height) > .5) { next.set(id, height); changed = true; }
       }
       if (changed) sizes.value = next;
       update();
