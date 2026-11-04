@@ -42,3 +42,22 @@ test('Declared metallic thread can highlight actual bright cells, never transpar
   revision.cells.fill(-1);assert.equal(suggestPatternEffects(revision,{mode:'metallic',product:metallic}).points.length,0);
   assert.equal(suggestPatternEffects(revision,{mode:'beads',product:metallic}).reason,'effectWrongProduct');
 });
+
+test('Photo analysis preserves highlights lost during palette reduction and excludes transparent pixels',()=>{
+ const revision=highlights();revision.cells.fill(0);const rgba=new Uint8ClampedArray(9*9*4);
+ for(let i=0;i<81;i++)rgba.set([17,17,17,255],i*4);rgba.set([255,255,255,255],(4*9+4)*4);
+ const options={mode:'beads',product:bead,sourceImage:{width:9,height:9,rgba}};
+ assert.equal(suggestPatternEffects(revision,{mode:'beads',product:bead}).points.length,0);
+ assert.deepEqual(suggestPatternEffects(revision,options).points,[{x:4,y:4}]);
+ rgba[(4*9+4)*4+3]=0;assert.equal(suggestPatternEffects(revision,options).points.length,0);
+ assert.throws(()=>suggestPatternEffects(revision,{...options,sourceImage:{width:8,height:9,rgba}}));
+});
+
+test('Colour accent detection proposes sparse saturated details, not broad coloured surfaces',()=>{
+ const revision=highlights();revision.cells.fill(0);const rgba=new Uint8ClampedArray(9*9*4);
+ for(let i=0;i<81;i++)rgba.set([17,17,17,255],i*4);rgba.set([255,30,40,255],(4*9+4)*4);
+ const options={mode:'beads',product:bead,analysis:'accents',sourceImage:{width:9,height:9,rgba}};
+ assert.deepEqual(suggestPatternEffects(revision,options).points,[{x:4,y:4}]);
+ for(let i=0;i<81;i++)rgba.set([255,30,40,255],i*4);
+ assert.equal(suggestPatternEffects(revision,options).points.length,0);
+});
