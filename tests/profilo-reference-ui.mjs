@@ -1,3 +1,4 @@
+import {isLocalPhoto} from './local-image-evidence.mjs';
 import {closeAfterMaterialSave} from './material-entry-preference.mjs';
 import {expect,_electron as electron} from '@playwright/test';
 import assert from 'node:assert/strict';
@@ -26,7 +27,7 @@ try{
  await expect(form.locator('select.catalogue-select')).not.toContainText('Colore digitale non disponibile');
  await field('Quantità posseduta').fill('2');await form.getByRole('button',{name:'Salva',exact:true}).click();await expect(form).toHaveCount(0);
  const row=page.locator('.table-wrap tbody tr').filter({hasText:'002'});await expect(row).toBeVisible();await expect(row).toContainText('matasse');
- assert.ok((await row.locator('.swatch').evaluate(element=>getComputedStyle(element).backgroundImage)).startsWith('url("data:image/'),'saved row shows the colour');
+ assert.ok(isLocalPhoto(await row.locator('.swatch').evaluate(element=>getComputedStyle(element).backgroundImage)),'saved row shows the colour');
  await row.getByRole('button',{name:/^Modifica filo:/}).click();await expect(field('Tipologia *')).toHaveValue('mouline');await form.getByRole('button',{name:'Annulla',exact:true}).click();
  assert.deepEqual(errors,[]);assert.deepEqual(requests,[]);console.log('PASS: Profilo reference and Mouliné catalogue choice. Evidence: '+data);
 }catch(error){await page.screenshot({path:resolve(data,'failure.png')});throw error;}finally{await app.close();}
