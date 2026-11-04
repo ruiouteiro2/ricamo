@@ -257,5 +257,5 @@ if (route.value.page === 'shopping' && route.value.id) {
 </template>
 
 <style scoped>
-.shopping-orders-window{max-height:65dvh;min-height:320px;overflow:auto}.shopping-orders-window table{table-layout:fixed;min-width:1080px}.shopping-orders-window th:first-child{width:27%}.shopping-orders-window th:last-child{width:300px}.shopping-orders-window .inventory-spacer td{padding:0;border:0}
+.shopping-orders-window{max-height:65dvh;min-height:320px;overflow:auto;overflow-anchor:none}.shopping-orders-window table{table-layout:fixed;min-width:1080px}.shopping-orders-window th:first-child{width:27%}.shopping-orders-window th:last-child{width:300px}.shopping-orders-window .inventory-spacer td{padding:0;border:0}
 </style>
