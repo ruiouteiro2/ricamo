@@ -8,9 +8,11 @@ export const EFFECT_MODES=Object.freeze(['beads','metallic','wool']);
 export const EFFECT_SUGGESTION_VERSION=1;
 
 /** Screen-colour heuristics only. No image/object classifier and no revision mutation. */
-export function suggestPatternEffects(revision,{mode,product,threshold=mode==='wool'?.12:.88,maxCandidates=100,gapMm=.25}={}){
+export function suggestPatternEffects(revision,{mode,product,threshold=mode==='wool'?.12:.88,maxCandidates=100,gapMm=.25,analysis='highlights',sourceImage=null}={}){
   validateRevision(revision);
   oneOf(mode,EFFECT_MODES,'effectMode');
+  oneOf(analysis,['highlights','accents'],'effectAnalysis');
+  if(sourceImage)assert(sourceImage.width===revision.width&&sourceImage.height===revision.height&&(sourceImage.rgba instanceof Uint8Array||sourceImage.rgba instanceof Uint8ClampedArray)&&sourceImage.rgba.length===revision.width*revision.height*4,'pattern_effect_invalid');
   quantity(threshold,{field:'threshold'});assert(threshold>=0&&threshold<=1,'pattern_effect_invalid');
   integer(maxCandidates,'maxCandidates',{min:1,max:1000});
   quantity(gapMm,{field:'gapMm'});assert(gapMm>=0&&gapMm<=5,'pattern_effect_invalid');
@@ -33,11 +35,11 @@ export function suggestPatternEffects(revision,{mode,product,threshold=mode==='w
     result.spacing={diameterMm:material.beadSizeMm,gapMm,pitchX,pitchY};
   }
   const palette=revision.colors.map(color=>({brightness:(.2126*color.rgb[0]+.7152*color.rgb[1]+.0722*color.rgb[2])/255,chroma:(Math.max(...color.rgb)-Math.min(...color.rgb))/255,bead:isBead(color)}));
+  const sample=(x,y)=>{const index=revision.cells[y*revision.width+x],color=palette[index];if(!color||color.bead)return color;if(!sourceImage)return {...color,rgb:revision.colors[index].rgb};const at=(y*revision.width+x)*4,rgba=sourceImage.rgba;if(rgba[at+3]<128)return null;const rgb=Array.from(rgba.subarray(at,at+3));return {brightness:(.2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2])/255,chroma:(Math.max(...rgb)-Math.min(...rgb))/255,rgb};};
   const candidates=[],existing=[];
   for(let y=0;y<revision.height;y++)for(let x=0;x<revision.width;x++){
     const index=revision.cells[y*revision.width+x];if(index<0)continue;
-    const color=palette[index];
-    if(color.bead){
+    if(palette[index].bead){
       if(mode==='beads'){
         const diameter=revision.colors[index].product?.beadSizeMm;
         if(!diameter)return {...result,reason:'effectExistingSizeRequired'};
@@ -46,18 +48,21 @@ export function suggestPatternEffects(revision,{mode,product,threshold=mode==='w
       }
       continue;
     }
+    const color=sample(x,y);if(!color)continue;
     const soft=mode==='wool';
-    if(soft?(color.chroma>threshold||color.brightness<.2||color.brightness>.92):color.brightness<threshold)continue;
-    let count=0,sum=0,bright=0,delta=0;
+    const accent=mode==='beads'&&analysis==='accents';
+    if(soft?(color.chroma>threshold||color.brightness<.2||color.brightness>.92):accent?(color.chroma<.25||Math.max(...color.rgb)/255<threshold||color.brightness<.15):color.brightness<threshold)continue;
+    let count=0,sum=0,bright=0,delta=0,similar=0,colorDifference=0;
     for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
       if(!dx&&!dy)continue;const nx=x+dx,ny=y+dy;
       if(nx<0||ny<0||nx>=revision.width||ny>=revision.height)continue;
-      const neighbor=palette[revision.cells[ny*revision.width+nx]];if(!neighbor||neighbor.bead)continue;
+      const neighbor=sample(nx,ny);if(!neighbor||neighbor.bead)continue;
       count++;sum+=neighbor.brightness;delta+=Math.abs(color.brightness-neighbor.brightness);if(neighbor.brightness>=threshold)bright++;
+      if(accent){const distance=Math.hypot(...color.rgb.map((v,i)=>(v-neighbor.rgb[i])/255))/Math.sqrt(3);colorDifference+=distance;if(distance<.18)similar++;}
     }
     if(count<3)continue;
-    if(soft?delta/count>.08:bright>2||color.brightness-sum/count<.12)continue;
-    candidates.push({x,y,score:soft?1-color.chroma-delta/count:color.brightness-sum/count});
+    if(soft?delta/count>.08:accent?similar>2||colorDifference/count<.2:bright>2||color.brightness-sum/count<.12)continue;
+    candidates.push({x,y,score:soft?1-color.chroma-delta/count:accent?colorDifference/count:color.brightness-sum/count});
   }
   result.eligible=candidates.length;
   candidates.sort((a,b)=>b.score-a.score||a.y-b.y||a.x-b.x);
