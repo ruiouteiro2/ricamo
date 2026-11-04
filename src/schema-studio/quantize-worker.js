@@ -12,7 +12,7 @@ self.onmessage=({data:m})=>{
    self.postMessage({removed});return;
   }
   const q=self.qImage,names={'euclidean-bt709':'EuclideanBT709',euclidean:'Euclidean','color-metric':'CMetric',pngquant:'PNGQuant',manhattan:'Manhattan','manhattan-bt709':'ManhattanBT709','manhattan-nommyde':'ManhattanNommyde',ciede2000:'CIEDE2000','cie94-graphic-arts':'CIE94GraphicArts','cie94-textiles':'CIE94Textiles'};
-  if(!names[m.distance]||m.width*m.height>90000||m.rgba.length!==m.width*m.height*4)throw Error('studio_invalid_data');
+  if(!names[m.distance]||!Number.isInteger(Number(m.colors))||m.colors<2||m.colors>2000||m.width*m.height>90000||m.rgba.length!==m.width*m.height*4)throw Error('studio_invalid_data');
   const distance=new q.distance[names[m.distance]](),image=q.utils.PointContainer.fromImageData({data:m.rgba,width:m.width,height:m.height}),transparent=q.utils.Point.createByRGBA(0,0,0,0),all=new q.utils.Palette();
   for(const rgb of m.palette)all.add(q.utils.Point.createByRGBA(...rgb,255));all.add(transparent);
   let palette=all;
