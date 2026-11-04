@@ -1,3 +1,4 @@
+import {isLocalPhoto} from './local-image-evidence.mjs';
 import {closeAfterMaterialSave} from './material-entry-preference.mjs';
 import {expect,_electron as electron} from '@playwright/test';
 import assert from 'node:assert/strict';
@@ -39,6 +40,6 @@ try{
  await expect(preview).toContainText('spessore 8',{timeout:15000});await expect(preview.locator('img')).toBeVisible();
  await page.getByRole('dialog').getByRole('button',{name:'Salva',exact:true}).click();await expect(page.getByRole('dialog')).toHaveCount(0);
  const row=page.locator('.table-wrap tbody tr').filter({hasText:'211'});await expect(row).toBeVisible();
- assert.ok((await row.locator('.swatch').evaluate(element=>getComputedStyle(element).backgroundImage)).startsWith('url("data:image/'),'saved row shows the colour');
+ assert.ok(isLocalPhoto(await row.locator('.swatch').evaluate(element=>getComputedStyle(element).backgroundImage)),'saved row shows the colour');
  assert.deepEqual(errors,[]);assert.deepEqual(requests,[]);console.log("PASS: DMC Retors d'Alsace previews. Evidence: "+data);
 }catch(error){await page.screenshot({path:resolve(data,'failure.png')});throw error;}finally{await app.close();}
