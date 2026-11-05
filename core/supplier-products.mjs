@@ -1,3 +1,4 @@
+import {isExcludedMillHillProduct} from './mill-hill-exclusions.mjs';
 import coloris from '../data/dmc-coloris-catalogue.json' with {type:'json'};
 import {assert,assertSafeJson,text} from './shared.mjs';
 import {CASA_CENINA} from './retailer-catalogue.mjs';
@@ -70,7 +71,7 @@ export function bundledSupplierProducts(){if(bundledProducts)return [...bundledP
  ...row,supplier:'casa-cenina',type:row.type??(row.category==='embellishment'?'bead':row.range==='Mouliné'?'mouline':row.brand==='Kreinik'?'metallic':'thread'),retrievedAt:CASA_CENINA.retrievedAt,
  pack:row.brand==='DMC'&&row.range==='Mouliné'?{unit:'skein',lengthM:8,strands:6,divisible:true}:row.category==='embellishment'?{unit:'pack'}:{},
  fabric:row.category==='fabric'&&row.countMeaning?{countX:row.count,countY:row.count,countMeaning:row.countMeaning,overX:row.over,overY:row.over}:null,
-})));bundledProducts=[...legacy,...[...acquired.products,...supplement.products,...madeira.products,...diamant.products,...colbert.products,...alsace.products,...pearl.products,...mat.products,...millHill.products,...coloris.products].map(row=>normalizeSupplierProduct(supplierSwatch(row)))].map(freezeProduct);return [...bundledProducts];}
+})));bundledProducts=[...legacy,...[...acquired.products,...supplement.products,...madeira.products,...diamant.products,...colbert.products,...alsace.products,...pearl.products,...mat.products,...millHill.products,...coloris.products].map(row=>normalizeSupplierProduct(supplierSwatch(row)))].filter(row=>!isExcludedMillHillProduct(row)).map(freezeProduct);return [...bundledProducts];}
 
 /** Catalogue pack facts are valid only for the exact saved material identity. */
 export function validateSupplierMaterial(material){
